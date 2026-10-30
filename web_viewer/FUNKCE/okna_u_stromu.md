@@ -2,6 +2,9 @@
 history:
   - thread_id: 01a18f17-efd7-7a02-8369-186b681bfcc0
     date: 2026-10-31
+    change: Aktualizován odkaz na samostatnou kategorii Vzhled oken.
+  - thread_id: 01a18f17-efd7-7a02-8369-186b681bfcc0
+    date: 2026-10-31
     change: Rozlišena kotva kapitoly a jednotlivého okna Fotosyntéza.
   - thread_id: 01a18f17-efd7-7a02-8369-186b681bfcc0
     date: 2026-10-31
@@ -19,7 +22,7 @@ history:
 ## Popis
 
 - [Chování](../dokumentace/okna.md#statická-okna)
-- [Vzhled](../dokumentace/okna.md#vzhled-podle-podkladu)
+- [Vzhled](../dokumentace/okna.md#vzhled)
 - [Obsah oken](../dokumentace/okna.md#kapitola-fotosyntéza)
 - [Reakce elementů](../dokumentace/elementy.md)
 

@@ -2,6 +2,9 @@
 history:
   - thread_id: 01a18f17-efd7-7a02-8369-186b681bfcc0
     date: 2026-10-31
+    change: Oddělen vzhled do samostatné kategorie a odstraněno rozmístění z popisů obsahu.
+  - thread_id: 01a18f17-efd7-7a02-8369-186b681bfcc0
+    date: 2026-10-31
     change: Opraven název konkrétního okna a ověřeny odkazy.
   - thread_id: 01a18f17-efd7-7a02-8369-186b681bfcc0
     date: 2026-10-31
@@ -12,9 +15,6 @@ history:
   - thread_id: 01a18f17-efd7-7a02-8369-186b681bfcc0
     date: 2026-10-31
     change: Popsána implementace pevného rozložení a zobrazení detailů na menších displejích.
-  - thread_id: 01a18f17-efd7-7a02-8369-186b681bfcc0
-    date: 2026-10-31
-    change: Nahrazeno prostorové ukotvení statickými okny bez pohybu a spojnic ke stromu.
 ---
 
 # Okna
@@ -27,7 +27,7 @@ history:
 - Okna nemají pohybové animace ani spojnice ke stromu.
 - Při vstupu jsou otevřené detaily Cukrů a Vody; ostatní jsou skryté.
 
-## Vzhled podle podkladu
+## Vzhled
 
 ### Rozložení
 
@@ -60,32 +60,27 @@ history:
 
 #### Fotosyntéza
 
-- Umístění: vlevo dole.
 - Hodnota: aktivita v procentech s popiskem „aktivita“.
 - Detail: využití světla k tvorbě cukrů, uvolňování kyslíku a význam cukrů pro růst.
 
 #### O₂
 
-- Umístění: první blok pravého sloupce pod navigací.
 - Detail: uvolňování kyslíku při fotosyntéze.
 - Související element: [O₂ částice](elementy.md#o₂).
 
 #### CO₂
 
-- Umístění: vpravo pod O₂.
 - Detail: srovnání s předindustriální koncentrací a vliv CO₂ na fotosyntézu.
 - Související element: [CO₂ částice](elementy.md#co₂).
 
 #### Cukry
 
-- Umístění: vpravo pod CO₂.
 - Hodnota: tvorba glukózy v g/min.
 - Detail: „Tvorba cukrů ≈ glukóza“.
 - Související element: [Glukóza linka](elementy.md#glukóza-linka).
 
 #### Voda
 
-- Umístění: poslední blok pravého sloupce pod Cukry.
 - Ovládání: posuvník přísunu vody.
 - Detail: vliv nedostatku vody na průduchy, přísun CO₂ a fotosyntézu.
 - Související element: [Voda linka](elementy.md#voda-linka).
