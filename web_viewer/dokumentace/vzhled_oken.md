@@ -2,6 +2,9 @@
 history:
   - thread_id: 01a18f17-efd7-7a02-8369-186b681bfcc0
     date: 2026-10-31
+    change: Nastaven nezalamovaný řádek vstupů výpočtu.
+  - thread_id: 01a18f17-efd7-7a02-8369-186b681bfcc0
+    date: 2026-10-31
     change: Upřesněna barva vstupů výpočtu: černá ve dne a světlá v noci.
   - thread_id: 01a18f17-efd7-7a02-8369-186b681bfcc0
     date: 2026-10-31
@@ -24,7 +27,7 @@ history:
 
 - Nadpis: název tématu; kliknutí ovládá zobrazení detailu.
 - Hodnota: živé číslo s jednotkou pod nadpisem, pokud ji okno zobrazuje.
-- Vstupy výpočtu: drobný černý přehled pod hodnotou ve dne; v noci se převrátí na světlou barvu.
+- Vstupy výpočtu: drobný černý nezalamovaný řádek pod hodnotou ve dne; v noci se převrátí na světlou barvu.
 - Detail: vysvětlující text ve vyhrazeném prostoru vedle hlavních údajů.
 - Ovládání: případný posuvník nebo jiný ovládací prvek v detailu.
 - Konkrétní hodnoty, texty a ovládání jednotlivých oken určuje [Obsah oken](okna.md).
