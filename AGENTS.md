@@ -2,6 +2,9 @@
 history:
   - thread_id: 01a18f17-efd7-7a02-8369-186b681bfcc0
     date: 2026-10-31
+    change: Zpřesněno povinné sjednocení kódu a dokumentace v jednom kroku.
+  - thread_id: 01a18f17-efd7-7a02-8369-186b681bfcc0
+    date: 2026-10-31
     change: Doplněno oddělení vzhledu oken do samostatného souboru a kategorie rozcestníku.
   - thread_id: 01a18f17-efd7-7a02-8369-186b681bfcc0
     date: 2026-10-31
@@ -42,6 +45,8 @@ history:
 - Struktura: kapitola `##`, oblast `###`, konkrétní položka `####`; bez opakování slova „Okno“.
 - Zachovej uživatelovy úpravy a nevracej smazaný obsah.
 - Při změně systému automaticky aktualizuj všechny související definice, pravidla a odkazy.
+- Každou změnu kódu, vzhledu nebo chování aktualizuj současně v příslušné dokumentaci; před dokončením porovnej kód s dokumentací.
+- Samostatný commit změny kódu bez odpovídající dokumentace není dokončený úkol.
 - Překonané popisy nahraď; odstraň duplicity a dodatky porovnávající staré a nové řešení.
 - Uspořádej text do návazného pořadí; v definicích popisuj platné řešení, historii a stav drž odděleně.
 - Nesouvisející dokumenty hromadně nepřepisuj bez zadání.
