@@ -2,6 +2,9 @@
 history:
   - thread_id: 01a18f17-efd7-7a02-8369-186b681bfcc0
     date: 2026-10-31
+    change: Upřesněno nahrazování starých popisů a průběžné čištění návaznosti dokumentace.
+  - thread_id: 01a18f17-efd7-7a02-8369-186b681bfcc0
+    date: 2026-10-31
     change: Doplněna automatická aktualizace související dokumentace a pravidla statických oken.
   - thread_id: 01a18d15-6ca3-7241-81c2-fc807aeadc12
     date: 2026-10-30
@@ -35,7 +38,9 @@ history:
 - Používej krátké názvy, malé podnadpisy a mezery mezi tématy.
 - Struktura: kapitola `##`, oblast `###`, konkrétní položka `####`; bez opakování slova „Okno“.
 - Zachovej uživatelovy úpravy a nevracej smazaný obsah.
-- Při zadání změny systému automaticky aktualizuj všechny související definice, pravidla a odkazy; odstraň rozpory se starou logikou.
+- Při změně systému automaticky aktualizuj všechny související definice, pravidla a odkazy.
+- Překonané popisy nahraď; odstraň duplicity a dodatky porovnávající staré a nové řešení.
+- Uspořádej text do návazného pořadí; v definicích popisuj platné řešení, historii a stav drž odděleně.
 - Nesouvisející dokumenty hromadně nepřepisuj bez zadání.
 
 ## Historie změn dokumentů

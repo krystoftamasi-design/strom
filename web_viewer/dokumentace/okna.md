@@ -2,86 +2,96 @@
 history:
   - thread_id: 01a18f17-efd7-7a02-8369-186b681bfcc0
     date: 2026-10-31
+    change: Opraven název konkrétního okna a ověřeny odkazy.
+  - thread_id: 01a18f17-efd7-7a02-8369-186b681bfcc0
+    date: 2026-10-31
+    change: Rozlišena kotva kapitoly a jednotlivého okna Fotosyntéza.
+  - thread_id: 01a18f17-efd7-7a02-8369-186b681bfcc0
+    date: 2026-10-31
+    change: Vyčištěny definice oken a uspořádány podle chování, vzhledu a pořadí v UI.
+  - thread_id: 01a18f17-efd7-7a02-8369-186b681bfcc0
+    date: 2026-10-31
     change: Popsána implementace pevného rozložení a zobrazení detailů na menších displejích.
   - thread_id: 01a18f17-efd7-7a02-8369-186b681bfcc0
     date: 2026-10-31
     change: Nahrazeno prostorové ukotvení statickými okny bez pohybu a spojnic ke stromu.
-  - thread_id: 01a18f17-efd7-7a02-8369-186b681bfcc0
-    date: 2026-10-31
-    change: Popsán vzhled a rozmístění bloků Fotosyntézy podle Untitled.svg.
 ---
 
 # Okna
 
-Definice: [element_ui_okna_obsah.js](../okna/element_ui_okna_obsah.js), seznam `photosynthesis`.
-
-Společné chování: [Statická okna](#statická-okna).
-
 ## Statická okna
 
-- Okna mají pevnou polohu v rozhraní podle podkladu.
-- Při otáčení, přiblížení nebo posunu kamery ani při změnách stromu se nehýbou.
-- Jejich poloha ani viditelnost nezávisí na projekci bodů stromu.
-- Ke stromu nevedou spojovací linky; barevný svislý tah je součástí okna.
-- Změna hodnot nebo zobrazení detailu neposouvá okno ani okolní bloky.
-- Okna nemají animaci přesunu, roztažení ani prodlužování tahu.
-- Související element určuje význam a reakci na ovládání, nikoli prostorové ukotvení.
+- Okna mají pevnou polohu a rozměry v rozhraní, nezávisle na stromu a kameře.
+- Kliknutí na nadpis zobrazí nebo skryje detail ve vyhrazeném prostoru.
+- Změna hodnot a zobrazení detailu neposouvají bloky ani nemění délku barevného tahu.
+- Okna nemají pohybové animace ani spojnice ke stromu.
+- Při vstupu jsou otevřené detaily Cukrů a Vody; ostatní jsou skryté.
 
 ## Vzhled podle podkladu
 
+### Rozložení
+
 - Podklad: [Untitled.svg](../web_assets/ui_from_af/Untitled.svg), plátno přibližně 2020 × 1143.
-- Rozložení kapitoly Fotosyntéza: dominantní blok vlevo dole; O₂, CO₂, Cukry a Voda ve svislém sloupci vpravo v tomto pořadí.
-- Střed zůstává volný pro strom; prázdné pozadí podkladu neurčuje změnu scény.
-- Bloky nemají výplň, obrys ani zaoblený rámeček.
-- Vlevo od každého bloku je nepravidelný svislý barevný tah podle podkladu.
-- Barvy tahů a hodnot: Fotosyntéza žlutá, O₂ světle modrá, CO₂ červenooranžová, Cukry fialová, Voda modrá.
-- Nadpisy používají Nohemi Regular; v podkladu mají menší bloky přibližně 53 px.
-- Hodnota je přímo pod nadpisem, zvýrazněná barvou tématu; drobná jednotka stojí vedle čísla.
-- Zapnutý vzorec je pod hodnotou, drobný a kompaktní; nahrazuje dosavadní umístění hned pod nadpisem.
-- Vysvětlující text se rozkládá vpravo vedle bloku, jak ukazují Cukry a Voda.
-- Čísla 62 % a 2,4 g/min i pracovní odstavce v SVG jsou ukázkové; výsledky a jednotky musí odpovídat veličině.
-- Vzhled doplňuje [statické chování](#statická-okna); původní pohyblivá okna jsou nahrazena.
-- Na displejích do 700 px zůstávají dva pevné sloupce; detaily jsou pod nadpisem ve vyhrazené ploše s vlastním posuvem.
-- Cukry a Voda mají detaily při vstupu otevřené; ostatní bloky je zobrazí kliknutím na nadpis.
-- Fotosyntéza a Cukry zachovávají živé vypočítané hodnoty; Voda zachovává posuvník přísunu.
-- O₂ a CO₂ zobrazují vlastní textové detaily; ukázkové číselné hodnoty ze SVG se nepřebírají.
+- Fotosyntéza je vlevo dole; vpravo následují shora O₂, CO₂, Cukry a Voda.
+- Střed zůstává volný pro strom.
+- Bloky jsou bez výplně a rámečku; vlevo mají nepravidelný svislý tah.
+- Hodnota s jednotkou je pod nadpisem, přehled vstupů výpočtu pod hodnotou a detail vpravo vedle nich.
+- Do šířky 700 px zůstávají dva pevné sloupce; detaily mají místo pod nadpisem s vlastním posuvem a přehled vstupů je skrytý.
+
+### Písmo
+
+- Nadpisy používají Nohemi Regular, přibližně 53 px na referenčním plátně.
+- Fotosyntéza má dominantní tučný nadpis přibližně 92 px.
+- Popisky, jednotky a detaily používají Satoshi Light.
+- Přehled vstupů používá drobné písmo Satoshi Medium; názvy vstupů se liší barvou.
+- Hodnoty používají Nohemi a barvu příslušného tématu.
+
+### Barvy
+
+- Text je ve dne tmavý a v noci světlý.
+- Barvy témat zůstávají stejné ve dne i v noci.
+- Světlo a aktivita jsou žluté.
+- Voda je modrá, kyslík světle modrý a CO₂ červenooranžový.
+- Cukry jsou fialové, listy zelené, kořeny hnědé a teplota růžovočervená.
+
+## Kapitola Fotosyntéza
+
+### Okna
 
 #### Fotosyntéza
 
-- Záznam: `fotosynteza`, text v poli `text`.
-- Umístění: vlevo dole podle [podkladu](#vzhled-podle-podkladu).
-- Nadpis Fotosyntéza je dominantní, tučný; v podkladu přibližně 92 px.
-- Pod nadpisem je drobný popisek „aktivita“ a velká žlutá hodnota v procentech.
-- Hodnota: aktivita fotosyntézy, výpočet `activity`.
+- Umístění: vlevo dole.
+- Hodnota: aktivita v procentech s popiskem „aktivita“.
+- Detail: využití světla k tvorbě cukrů, uvolňování kyslíku a význam cukrů pro růst.
+
+#### O₂
+
+- Umístění: první blok pravého sloupce pod navigací.
+- Detail: uvolňování kyslíku při fotosyntéze.
+- Související element: [O₂ částice](elementy.md#o₂).
+
+#### CO₂
+
+- Umístění: vpravo pod O₂.
+- Detail: srovnání s předindustriální koncentrací a vliv CO₂ na fotosyntézu.
+- Související element: [CO₂ částice](elementy.md#co₂).
 
 #### Cukry
 
-- Záznam: `cukry`, popisek v poli `popis`.
 - Umístění: vpravo pod CO₂.
-- Hodnota: tvorba glukózy, výpočet `glucoseGramsPerMinute`.
+- Hodnota: tvorba glukózy v g/min.
+- Detail: „Tvorba cukrů ≈ glukóza“.
 - Související element: [Glukóza linka](elementy.md#glukóza-linka).
 
 #### Voda
 
-- Záznam: `voda`, text v poli `text`.
-- Umístění: vpravo pod Cukry, poslední blok sloupce.
-- Ovládání: přísun vody, posuvník `sliderTreeWater` z [index.html](../index.html).
+- Umístění: poslední blok pravého sloupce pod Cukry.
+- Ovládání: posuvník přísunu vody.
+- Detail: vliv nedostatku vody na průduchy, přísun CO₂ a fotosyntézu.
 - Související element: [Voda linka](elementy.md#voda-linka).
 
-#### CO₂
+## Související dokumenty
 
-- Záznam: `co2`, text v poli `text`.
-- Umístění: vpravo pod O₂, nad Cukry.
-
-#### O₂
-
-- Záznam: `kyslik`, text v poli `text`.
-- Umístění: vpravo, první blok sloupce pod navigací.
-
-## Technické souvislosti
-
-- Současná implementace: [tree_annotations.js](../okna/tree_annotations.js); pevné rozložení je implementováno v [Z003](zmeny.md#z003--ui-podle-svg).
-- Hodnoty počítá [tree_ecology.js](../ekologie/tree_ecology.js).
-- Technický přehled: [Architektura oken](architektura_oken.md).
-
-[Zpět na obsah](architektura_obsahu.md)
+- [Technická architektura](architektura_oken.md)
+- [Stav změn](zmeny.md)
+- [Obsah](architektura_obsahu.md)

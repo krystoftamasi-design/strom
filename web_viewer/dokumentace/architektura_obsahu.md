@@ -2,6 +2,9 @@
 history:
   - thread_id: 01a18f17-efd7-7a02-8369-186b681bfcc0
     date: 2026-10-31
+    change: Sjednoceno pořadí kapitol s navigací a odstraněny nadbytečné mezery.
+  - thread_id: 01a18f17-efd7-7a02-8369-186b681bfcc0
+    date: 2026-10-31
     change: Upravena pravidla rozcestníku pro statická okna bez bodů připojení.
   - thread_id: 01a18f17-efd7-7a02-8369-186b681bfcc0
     date: 2026-10-31
@@ -30,9 +33,17 @@ history:
 
 ### Elementy
 
+## OBDOBÍ
+
+### Text
+
+### Okna
+
+### Ovládací prvky
+
+### Elementy
 
 ## FOTOSYNTÉZA
-
 
 ### Text
 
@@ -60,16 +71,6 @@ history:
 - [CO₂ částice](elementy.md#co₂)
 - [Fotony](elementy.md#fotony)
 
-## OBDOBÍ
-
-### Text
-
-### Okna
-
-### Ovládací prvky
-
-### Elementy
-
 ## TRANSPIRACE
 
 ### Text
@@ -80,7 +81,7 @@ history:
 
 ### Elementy
 
-## KOŘENY
+## SEMENACE
 
 ### Text
 
@@ -90,7 +91,7 @@ history:
 
 ### Elementy
 
-## SEMENACE
+## KOŘENY
 
 ### Text
 
@@ -118,4 +119,3 @@ history:
 - Obecné chování a vzhled sdílej odkazem.
 - Prázdné části nech prázdné.
 - Zachovej uživatelovy úpravy a piš stručně. 😊
-

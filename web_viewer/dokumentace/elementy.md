@@ -2,6 +2,9 @@
 history:
   - thread_id: 01a18f17-efd7-7a02-8369-186b681bfcc0
     date: 2026-10-31
+    change: Odstraněny prázdné body a sjednoceny odkazy na související okna.
+  - thread_id: 01a18f17-efd7-7a02-8369-186b681bfcc0
+    date: 2026-10-31
     change: Upřesněna významová vazba elementů na statická okna.
 ---
 
@@ -10,8 +13,7 @@ history:
 #### Voda linka
 
 - Modrá linka vede z kořenů přes kmen k listům.
-- Související statické okno: [Voda](okna.md#voda).
-- 
+- Související okno: [Voda](okna.md#voda).
 - Akce: kliknutí na okno Voda.
 - Zvýraznění: při otevření okna se modrá linka rozjasní.
 - Při zavření se vrátí původní vzhled.
@@ -22,12 +24,10 @@ history:
 #### Glukóza linka
 
 - Fialová linka vede po kmeni a dělí se do dvou kořenů.
-- Související statické okno: [Cukry](okna.md#cukry).
-- 
+- Související okno: [Cukry](okna.md#cukry).
 - Akce: kliknutí na okno Cukry.
 - Zvýraznění: při otevření okna se fialová linka rozjasní.
 - Při zavření se vrátí původní vzhled.
-- 
 - Je odsazená od modré linky.
 - Končí dřív uvnitř kořenů.
 - Na jaře proudí ze zásob v kořenech a kmeni k novým listům.

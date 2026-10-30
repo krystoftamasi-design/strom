@@ -2,6 +2,9 @@
 history:
   - thread_id: 01a18f17-efd7-7a02-8369-186b681bfcc0
     date: 2026-10-31
+    change: Sloučeny technické informace do pořadí definice, hodnoty, kontroly a rozšíření.
+  - thread_id: 01a18f17-efd7-7a02-8369-186b681bfcc0
+    date: 2026-10-31
     change: Aktualizován technický přehled podle implementovaných statických oken.
   - thread_id: 01a18f17-efd7-7a02-8369-186b681bfcc0
     date: 2026-10-31
@@ -13,50 +16,53 @@ history:
 
 # Architektura oken
 
-## Rozložení
+## Definice
 
-- Definice: [Statická okna](okna.md#statická-okna) a [Vzhled podle podkladu](okna.md#vzhled-podle-podkladu).
-- `okna/element_ui_okna_obsah.js` určuje ID, téma, text, stranu, výpočet a výchozí otevření detailů.
-- `okna/tree_annotations.js` vytváří bloky a přesouvá původní ovládání, aby zachovalo své události.
-- `okna/element_ui_okna_vzhled.css` určuje pevné souřadnice podle ID okna, rozměry a typografii.
-- Rozložení nevolá projekci bodů stromu; nevytváří spojnice a nezávisí na kameře.
-- Aktualizace za snímek obsluhuje pouze ovládání období, nikoli rozmístění oken.
-- Hodnota je pod nadpisem, vzorec pod hodnotou; podrobnosti mají samostatnou vyhrazenou plochu.
-- Kliknutí mění viditelnost a přístupnost detailu; geometrie bloku i barevný tah zůstávají pevné.
-- Barvy, písmo a úzké rozložení sdílí CSS; dolní indexy dědí písmo nadpisu.
-- `kapitoly/chapters.css` určuje vodorovnou navigaci; pořadí kapitol obsahuje `kapitoly/chapters.js`.
-- Stav implementace: [Z003](zmeny.md#z003--ui-podle-svg).
+- Požadované chování a vzhled určují [Okna](okna.md).
+- Cesty ke kódu jsou uvedené od složky `web_viewer`.
+
+### Obsah
+
+- `okna/element_ui_okna_obsah.js` obsahuje záznamy v seznamu `photosynthesis`.
+- Záznam určuje ID, nadpis, téma, stranu, text, výpočet, ovládání a výchozí otevření detailu.
+- `zobrazitVzorec` a `zobrazitHodnotu` zapínají přehled vstupů a výslednou hodnotu.
+
+### Rozložení
+
+- `okna/tree_annotations.js` vytváří bloky, přepíná detaily a přebírá ovládací prvky s jejich událostmi.
+- `okna/element_ui_okna_vzhled.css` určuje pevné pozice podle ID, rozměry, písmo a barvy.
+- `okna/tree_annotations.css` obsahuje společný základ bloků kapitol.
+- Rozložení pracuje v souřadnicích rozhraní; aktualizace za snímek obsluhuje pouze ovládání období.
+- `kapitoly/chapters.js` určuje pořadí a přepínání kapitol; `kapitoly/chapters.css` vzhled navigace.
 
 ## Hodnoty
 
-- `okna/element_ui_okna_veliciny.js` převádí výpočetní názvy na popisky, barvy, jednotky a formát čísel.
-- `vstupyVzorce` rozepisuje mezivýpočty na jejich základní vstupy.
-- `veVzorci: false` skrývá technické přepočty bez změny výsledku.
-- `ekologie/tree_ecology_vzorce.js` určuje společné vzorce; `ekologie/tree_ecology.js` počítá hodnoty stromu.
-- `activeLeafArea` zahrnuje aktivní plochu listů; tvorba cukrů ji používá pouze jednou.
+### Zdroje
+
+- `ekologie/tree_ecology.js` poskytuje živé hodnoty modelu.
+- `ekologie/tree_ecology_vzorce.js` obsahuje společné výpočty a jejich vstupy.
+- `okna/element_ui_okna_veliciny.js` určuje popisky, témata, jednotky a formát čísel.
+- Fotosyntéza používá `activity`, Cukry `glucoseGramsPerMinute` a posuvník Vody `sliderTreeWater`.
+- O₂ a CO₂ mají textové detaily bez samostatného číselného výstupu; čísla ze SVG jsou pouze ukázková.
+
+### Vstupy výpočtu
+
+- `vstupyVzorce` rozepisuje mezivýpočty na základní vstupy bez živých čísel uvnitř názvů.
+- `veVzorci: false` skrývá technické přepočty a normalizaci; barevný řádek není úplný matematický vzorec.
+- `activeLeafArea` zahrnuje aktivní plochu listů a do tvorby cukrů vstupuje pouze jednou.
 - `photosynthesisEfficiency` zahrnuje světlo, vodu, CO₂ a teplotu.
-- Nové okno potřebuje záznam v příslušné kapitole a pevnou pozici v CSS; bod stromu nepotřebuje.
-- Nová veličina potřebuje skutečný výpočet a záznam v převodníku.
-- Cesty ke kódu jsou uvedené od složky `web_viewer`.
 
 ## Kontroly
 
-Kontroly zajišťuje `okna/element_ui_okna_kontrola.js`.
+- `okna/element_ui_okna_kontrola.js` při načtení ověřuje záznamy oken, jedinečná ID, ovladače a definice výpočtů.
+- Každý vstup musí mít číselný zdroj, popisek a platné téma; kontrola zachytí kruhové odkazy.
+- Chybné záznamy se přeskočí a chyba se vypíše do konzole pouze jednou.
+- Neplatný číselný výsledek se zobrazí jako `—`.
+- `testy/test_ui_okna_kontrola.mjs` kontroluje definice bez prohlížeče, včetně spuštění bez geometrie stromu.
 
-- Při načtení se před vytvářením oken zkontrolují všechny záznamy a definice výpočtů.
-- Každý vstup musí mít zdroj hodnoty.
-- Každý zobrazovaný vstup musí mít popisek a platné barevné téma.
-- Kruhový odkaz mezi vzorci se zachytí před jejich rozepisováním.
-- Výsledky se při aktualizaci zkontrolují na platné konečné číslo.
-- Místo neplatného čísla se zobrazí `—`.
-- Chybová zpráva označí konkrétní veličinu nebo okno.
-- Nové záznamy se zahrnou do kontroly automaticky.
-- Kontrola hlídá také jedinečná ID a připojené ovladače; bod stromu ověřuje jen u starších záznamů, které jej výslovně obsahují.
-- Chybné záznamy oken se přeskočí.
-- Chyby se vypisují do vývojářské konzole.
-- Stejná chyba se nevypisuje každý snímek znovu.
-- Kontrolní funkce ověřuje skript `testy/test_ui_okna_kontrola.mjs` bez prohlížeče.
+## Rozšíření
 
-Barevný řádek označujeme jako vstupy výpočtu.
-Řádek skrývá technické přepočty a normalizaci.
-Nejde tedy o úplný matematický vzorec.
+- Nové okno potřebuje záznam v kapitole a pevnou pozici v CSS.
+- Nová veličina potřebuje skutečný zdroj hodnoty a záznam v převodníku.
+
+[Stav implementace](zmeny.md#z003--ui-podle-svg) · [Obsah](architektura_obsahu.md)
