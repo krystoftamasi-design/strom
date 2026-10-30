@@ -1,3 +1,10 @@
+---
+history:
+  - thread_id: 01a18d15-6ca3-7241-81c2-fc807aeadc12
+    date: 2026-10-30
+    change: Přidáno dohledání ID threadu přes API Codexu.
+---
+
 # Prohlížeč a kontrola
 
 - Web otevírej a kontroluj pouze v Google Chrome; nikdy v integrovaném prohlížeči ani přes `open_in_codex`.
@@ -27,10 +34,10 @@
 ## Historie změn dokumentů
 
 - U každého nově vytvořeného nebo upravovaného dokumentu Markdown udržuj historii posledních pěti změn v YAML frontmatteru.
-- Ke každé změně zaznamenej `thread_id` konverzace, ve které byla změna navržena, datum a stručný popis.
+- Před zápisem změny zavolej API Codexu `list_threads` a podle aktuálního chatu ověř jeho ID; zapiš nalezené `thread_id`, datum a stručný popis.
 - Historii ve frontmatteru aktualizuj při každé změně dokumentu; ponechávej nejvýše pět nejnovějších záznamů.
 - Použij formát `history` jako seznam položek s poli `thread_id`, `date` a `change`; předchozí frontmatter zachovej a sluč jej bez ztráty ostatních polí.
-- Pokud thread ID není dostupné, nevymýšlej ho; zapiš `thread_id: null`.
+- Pokud ID není v prvním výsledku, stránkuj nebo zpřesni hledání `list_threads`; nikdy nevymýšlej `thread_id` ani nezapisuj `null` bez vyčerpání dostupného API hledání.
 
 # Rozdělení dokumentace
 
