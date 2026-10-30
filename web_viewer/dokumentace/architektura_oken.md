@@ -2,6 +2,9 @@
 history:
   - thread_id: 01a18f17-efd7-7a02-8369-186b681bfcc0
     date: 2026-10-31
+    change: Aktualizován technický přehled podle implementovaných statických oken.
+  - thread_id: 01a18f17-efd7-7a02-8369-186b681bfcc0
+    date: 2026-10-31
     change: Odstraněna koncová mezera při kontrole dokumentu.
   - thread_id: 01a18f17-efd7-7a02-8369-186b681bfcc0
     date: 2026-10-31
@@ -10,50 +13,31 @@ history:
 
 # Architektura oken
 
-## Požadované řešení
+## Rozložení
 
 - Definice: [Statická okna](okna.md#statická-okna) a [Vzhled podle podkladu](okna.md#vzhled-podle-podkladu).
-- Rozložení se počítá v souřadnicích rozhraní bez projekce bodů stromu a bez spojnic.
-- Aktualizace hodnot ani kamery nesmí měnit polohu, rozměry nebo viditelnost bloků.
-- Přechod čeká na implementaci v [Z003](zmeny.md#z003--ui-podle-svg).
+- `okna/element_ui_okna_obsah.js` určuje ID, téma, text, stranu, výpočet a výchozí otevření detailů.
+- `okna/tree_annotations.js` vytváří bloky a přesouvá původní ovládání, aby zachovalo své události.
+- `okna/element_ui_okna_vzhled.css` určuje pevné souřadnice podle ID okna, rozměry a typografii.
+- Rozložení nevolá projekci bodů stromu; nevytváří spojnice a nezávisí na kameře.
+- Aktualizace za snímek obsluhuje pouze ovládání období, nikoli rozmístění oken.
+- Hodnota je pod nadpisem, vzorec pod hodnotou; podrobnosti mají samostatnou vyhrazenou plochu.
+- Kliknutí mění viditelnost a přístupnost detailu; geometrie bloku i barevný tah zůstávají pevné.
+- Barvy, písmo a úzké rozložení sdílí CSS; dolní indexy dědí písmo nadpisu.
+- `kapitoly/chapters.css` určuje vodorovnou navigaci; pořadí kapitol obsahuje `kapitoly/chapters.js`.
+- Stav implementace: [Z003](zmeny.md#z003--ui-podle-svg).
 
-## Současný kód
+## Hodnoty
 
-Následující přehled popisuje dosavadní implementaci; prostorové ukotvení, animace a původní typografie se při Z003 nahrazují.
-
-- `okna/element_ui_okna_obsah.js` obsahuje jeden záznam pro každé okno.
-- Záznam určuje text, téma, stranu, bod stromu a zobrazovaný výpočet.
-- `okna/element_ui_okna_vzhled.css` určuje vzhled, barvy a animace.
-- Dočasné tlačítko v boční nabídce přepíná zavřené nadpisy na černou.
-- Po rozkliknutí se nadpis vrátí do barvy svého tématu.
-- Dolní indexy v nadpisech používají stejné písmo jako zbytek nadpisu.
-- Proměnné `--ui-font-*`, `--ui-text-*`, `--ui-heading-*`, `--ui-formula-*` a `--ui-value-*` určují společné písmo všech oken.
-- Nadpisy mají společný styl Nohemi 27 px s tloušťkou 500.
-- Texty, popisky a jednotky mají společný styl Satoshi 16 px s tloušťkou 300.
-- Všechny vzorce používají Satoshi Medium 12 px s tloušťkou 500.
-- Velikost vzorců určuje `--ui-formula-size` a tloušťku určuje `--ui-formula-weight`.
-- Barevné názvy ve vzorci přebírají společné písmo vzorce.
-- Výsledná čísla mají společný styl Nohemi 30 px s tloušťkou 400.
-- Mobilní velikosti se mění společně pro všechna okna.
-- `okna/tree_annotations.js` vytváří okna a zajišťuje rozkliknutí i pohyb podle stromu.
-- Zapnutý vzorec vytváří vždy hned pod nadpisem před popisem a ostatním textem.
-- `okna/tree_annotations.css` obsahuje společný základ prostorových popisků.
-- `okna/element_ui_okna_veliciny.js` převádí výpočetní názvy na krátké popisky, barvy, jednotky a formát čísel.
-- Funkce `vstupyVzorce` rozepisuje mezivýpočty na jejich základní vstupy.
-- Pole `veVzorci: false` skryje technický přepočet v barevném přehledu bez změny výpočtu.
-- `ekologie/tree_ecology_vzorce.js` určuje společné vzorce pro výpočet i zobrazení.
-- `ekologie/tree_ecology.js` počítá hodnoty stromu.
-- Veličina `activeLeafArea` spojuje plochu listů a podíl listů tvořících cukry.
-- Převodník ji zobrazuje zeleně jako „listy“.
-- Aktivita ji vztahuje k plnému olistění a tvorba cukrů používá přímo její plochu.
-- Veličina `photosynthesisEfficiency` vyjadřuje účinnost světla, vody, CO₂ a teploty bez dalšího násobení podílem listů.
-- `index.html` dodává pojmenované body stromu.
-
-Nové okno přidáš záznamem do seznamu příslušné kapitoly.
-Nová veličina potřebuje záznam v převodníku a skutečný výpočet.
-Nový bod potřebuje definici v `getAnchors` v `index.html`.
-
-Cesty k souborům jsou uvedené od složky `web_viewer`.
+- `okna/element_ui_okna_veliciny.js` převádí výpočetní názvy na popisky, barvy, jednotky a formát čísel.
+- `vstupyVzorce` rozepisuje mezivýpočty na jejich základní vstupy.
+- `veVzorci: false` skrývá technické přepočty bez změny výsledku.
+- `ekologie/tree_ecology_vzorce.js` určuje společné vzorce; `ekologie/tree_ecology.js` počítá hodnoty stromu.
+- `activeLeafArea` zahrnuje aktivní plochu listů; tvorba cukrů ji používá pouze jednou.
+- `photosynthesisEfficiency` zahrnuje světlo, vodu, CO₂ a teplotu.
+- Nové okno potřebuje záznam v příslušné kapitole a pevnou pozici v CSS; bod stromu nepotřebuje.
+- Nová veličina potřebuje skutečný výpočet a záznam v převodníku.
+- Cesty ke kódu jsou uvedené od složky `web_viewer`.
 
 ## Kontroly
 
@@ -67,7 +51,7 @@ Kontroly zajišťuje `okna/element_ui_okna_kontrola.js`.
 - Místo neplatného čísla se zobrazí `—`.
 - Chybová zpráva označí konkrétní veličinu nebo okno.
 - Nové záznamy se zahrnou do kontroly automaticky.
-- Kontrola hlídá také jedinečná ID, body stromu a připojené ovladače.
+- Kontrola hlídá také jedinečná ID a připojené ovladače; bod stromu ověřuje jen u starších záznamů, které jej výslovně obsahují.
 - Chybné záznamy oken se přeskočí.
 - Chyby se vypisují do vývojářské konzole.
 - Stejná chyba se nevypisuje každý snímek znovu.

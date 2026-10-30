@@ -2,6 +2,9 @@
 history:
   - thread_id: 01a18f17-efd7-7a02-8369-186b681bfcc0
     date: 2026-10-31
+    change: Popsána implementace pevného rozložení a zobrazení detailů na menších displejích.
+  - thread_id: 01a18f17-efd7-7a02-8369-186b681bfcc0
+    date: 2026-10-31
     change: Nahrazeno prostorové ukotvení statickými okny bez pohybu a spojnic ke stromu.
   - thread_id: 01a18f17-efd7-7a02-8369-186b681bfcc0
     date: 2026-10-31
@@ -38,7 +41,10 @@ Společné chování: [Statická okna](#statická-okna).
 - Vysvětlující text se rozkládá vpravo vedle bloku, jak ukazují Cukry a Voda.
 - Čísla 62 % a 2,4 g/min i pracovní odstavce v SVG jsou ukázkové; výsledky a jednotky musí odpovídat veličině.
 - Vzhled doplňuje [statické chování](#statická-okna); původní pohyblivá okna jsou nahrazena.
-- Rozložení na úzkých displejích podklad neurčuje.
+- Na displejích do 700 px zůstávají dva pevné sloupce; detaily jsou pod nadpisem ve vyhrazené ploše s vlastním posuvem.
+- Cukry a Voda mají detaily při vstupu otevřené; ostatní bloky je zobrazí kliknutím na nadpis.
+- Fotosyntéza a Cukry zachovávají živé vypočítané hodnoty; Voda zachovává posuvník přísunu.
+- O₂ a CO₂ zobrazují vlastní textové detaily; ukázkové číselné hodnoty ze SVG se nepřebírají.
 
 #### Fotosyntéza
 
@@ -74,7 +80,7 @@ Společné chování: [Statická okna](#statická-okna).
 
 ## Technické souvislosti
 
-- Současná implementace: [tree_annotations.js](../okna/tree_annotations.js); přechod na pevné rozložení čeká v [Z003](zmeny.md#z003--ui-podle-svg).
+- Současná implementace: [tree_annotations.js](../okna/tree_annotations.js); pevné rozložení je implementováno v [Z003](zmeny.md#z003--ui-podle-svg).
 - Hodnoty počítá [tree_ecology.js](../ekologie/tree_ecology.js).
 - Technický přehled: [Architektura oken](architektura_oken.md).
 

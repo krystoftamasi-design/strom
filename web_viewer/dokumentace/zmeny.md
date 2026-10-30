@@ -2,6 +2,9 @@
 history:
   - thread_id: 01a18f17-efd7-7a02-8369-186b681bfcc0
     date: 2026-10-31
+    change: Přesunuta Z003 do implementovaných změn a zapsány skutečné výsledky kontrol.
+  - thread_id: 01a18f17-efd7-7a02-8369-186b681bfcc0
+    date: 2026-10-31
     change: Rozšířena Z003 o nahrazení pohyblivých oken statickým UI.
   - thread_id: 01a18f17-efd7-7a02-8369-186b681bfcc0
     date: 2026-10-31
@@ -24,17 +27,20 @@ history:
 - Stav: Čeká.
 - Ověření: neprovedeno.
 
-#### Z003 — UI podle SVG
-
-- Zadání: [Fotosyntéza](architektura_obsahu.md#fotosyntéza), [statická okna](okna.md#statická-okna), [vzhled bloků](okna.md#vzhled-podle-podkladu), [Kapitoly](prvky.md#kapitoly).
-- Stav: Čeká; nyní je zapsaná definice, implementace naváže samostatně.
-- Rozdíl proti kódu: pevné bloky UI nahrazují polohování podle stromu; odstraňuje se projekce kotev, spojnice a animované změny geometrie.
-- Rozložení: velká Fotosyntéza vlevo dole, čtyři bloky vpravo, vzorec pod hodnotou.
-- Ověření: v `tree_annotations.js` potvrzeno dosavadní polohování přes `getAnchors` a `project`; související dokumentace sjednocena, kód nezměněn, finální kontrola uživatelem.
-
 ## Rozpracováno
 
 ## Implementováno
+
+#### Z003 — UI podle SVG
+
+- Zadání: [Fotosyntéza](architektura_obsahu.md#fotosyntéza), [statická okna](okna.md#statická-okna), [vzhled bloků](okna.md#vzhled-podle-podkladu), [Kapitoly](prvky.md#kapitoly).
+- Stav: Implementováno; finální kontrola uživatelem.
+- Provedeno: pevné bloky UI, odstraněna projekce kotev i spojnice, detaily bez animace a změny geometrie; vodorovná navigace.
+- Rozložení: velká Fotosyntéza vlevo dole, čtyři bloky vpravo, vzorec pod hodnotou.
+- Ověření: kontrola syntaxe změněných modulů a `test_ui_okna_kontrola.mjs` prošly; test zahrnuje spuštění bez bodů stromu.
+- Omezení: širší `test_tree_ecology.mjs` selhává na „Excess inflow stops at capacity“ v nezměněném ekologickém modelu.
+- Vizuální a závěrečné ověření: finální kontrola uživatelem.
+
 
 ## Ověřeno
 
