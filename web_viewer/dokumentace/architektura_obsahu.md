@@ -1,5 +1,8 @@
 ---
 history:
+  - thread_id: 01a18f17-efd7-7a02-8369-186b681bfcc0
+    date: 2026-10-31
+    change: Uspořádána Fotosyntéza podle UI podkladu a sjednocena úroveň kapitoly.
   - thread_id: 01a18d15-6ca3-7241-81c2-fc807aeadc12
     date: 2026-10-30
     change: Změněn smajlík na konci pravidel dokumentu.
@@ -25,7 +28,7 @@ history:
 ### Elementy
 
 
-# FOTOSYNTÉZA
+## FOTOSYNTÉZA
 
 
 ### Text
@@ -35,10 +38,10 @@ history:
 ### Okna
 
 - [Fotosyntéza](okna.md#fotosyntéza)
+- [O₂](okna.md#o₂)
+- [CO₂](okna.md#co₂)
 - [Cukry](okna.md#cukry)
 - [Voda](okna.md#voda)
-- [CO₂](okna.md#co₂)
-- [O₂](okna.md#o₂)
 
 ### Ovládací prvky
 
