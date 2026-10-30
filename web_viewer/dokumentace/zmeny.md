@@ -2,6 +2,9 @@
 history:
   - thread_id: 01a18f17-efd7-7a02-8369-186b681bfcc0
     date: 2026-10-31
+    change: Rozšířena Z003 o nahrazení pohyblivých oken statickým UI.
+  - thread_id: 01a18f17-efd7-7a02-8369-186b681bfcc0
+    date: 2026-10-31
     change: Evidována čekající úprava UI podle SVG jako Z003.
 ---
 
@@ -23,10 +26,11 @@ history:
 
 #### Z003 — UI podle SVG
 
-- Zadání: [Fotosyntéza](architektura_obsahu.md#fotosyntéza), [vzhled bloků](okna.md#vzhled-podle-podkladu), [Kapitoly](prvky.md#kapitoly).
+- Zadání: [Fotosyntéza](architektura_obsahu.md#fotosyntéza), [statická okna](okna.md#statická-okna), [vzhled bloků](okna.md#vzhled-podle-podkladu), [Kapitoly](prvky.md#kapitoly).
 - Stav: Čeká; nyní je zapsaná definice, implementace naváže samostatně.
-- Rozdíl proti kódu: požadován velký blok Fotosyntézy vlevo dole, čtyři bloky vpravo a vzorec pod hodnotou; dosavadní rozložení oken se mění.
-- Ověření: porovnán obsah SVG, místní obrazový náhled a současné definice s kódem oken; web netestován, finální kontrola uživatelem.
+- Rozdíl proti kódu: pevné bloky UI nahrazují polohování podle stromu; odstraňuje se projekce kotev, spojnice a animované změny geometrie.
+- Rozložení: velká Fotosyntéza vlevo dole, čtyři bloky vpravo, vzorec pod hodnotou.
+- Ověření: v `tree_annotations.js` potvrzeno dosavadní polohování přes `getAnchors` a `project`; související dokumentace sjednocena, kód nezměněn, finální kontrola uživatelem.
 
 ## Rozpracováno
 

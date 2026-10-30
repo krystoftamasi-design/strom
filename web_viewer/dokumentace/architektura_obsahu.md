@@ -2,6 +2,9 @@
 history:
   - thread_id: 01a18f17-efd7-7a02-8369-186b681bfcc0
     date: 2026-10-31
+    change: Upravena pravidla rozcestníku pro statická okna bez bodů připojení.
+  - thread_id: 01a18f17-efd7-7a02-8369-186b681bfcc0
+    date: 2026-10-31
     change: Uspořádána Fotosyntéza podle UI podkladu a sjednocena úroveň kapitoly.
   - thread_id: 01a18d15-6ca3-7241-81c2-fc807aeadc12
     date: 2026-10-30
@@ -109,9 +112,9 @@ history:
 - Podrobnosti patří do `texty.md`, `okna.md`, `prvky.md` a `elementy.md`.
 - Každý prvek definuj pouze jednou; kapitoly na něj odkazují.
 - Konkrétní definice mají úroveň `####`.
-- U oken uveď odkaz „Napojení“ a stručný „Bod linky“.
+- Chování oken určuje společná definice [Statická okna](okna.md#statická-okna).
 - Elementy jsou konkrétní prvky děje, například vodní a glukózová linka; ne obecné části scény jako strom, listy nebo slunce.
-- Odkaz „Napojení“ použij jen u oken skutečně spojených s definovaným elementem; jinak uveď pouze bod linky na stromu.
+- U oken odkazuj na související element; body připojení a spojnice ke stromu se nepoužívají.
 - Obecné chování a vzhled sdílej odkazem.
 - Prázdné části nech prázdné.
 - Zachovej uživatelovy úpravy a piš stručně. 😊

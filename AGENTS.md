@@ -1,5 +1,8 @@
 ---
 history:
+  - thread_id: 01a18f17-efd7-7a02-8369-186b681bfcc0
+    date: 2026-10-31
+    change: Doplněna automatická aktualizace související dokumentace a pravidla statických oken.
   - thread_id: 01a18d15-6ca3-7241-81c2-fc807aeadc12
     date: 2026-10-30
     change: Zpřesněno přidávání a ověřování historie Markdownu.
@@ -32,7 +35,8 @@ history:
 - Používej krátké názvy, malé podnadpisy a mezery mezi tématy.
 - Struktura: kapitola `##`, oblast `###`, konkrétní položka `####`; bez opakování slova „Okno“.
 - Zachovej uživatelovy úpravy a nevracej smazaný obsah.
-- Další dokumenty hromadně nepřepisuj bez zadání.
+- Při zadání změny systému automaticky aktualizuj všechny související definice, pravidla a odkazy; odstraň rozpory se starou logikou.
+- Nesouvisející dokumenty hromadně nepřepisuj bez zadání.
 
 ## Historie změn dokumentů
 
@@ -50,7 +54,7 @@ Soubory jsou v `web_viewer/dokumentace`.
 
 - `architektura_obsahu.md`: rozcestník; kapitoly → Text, Okna, Ovládací prvky, Elementy; pouze krátké klikací názvy.
 - `texty.md`: samostatné nápisy, písmo, poloha a barva.
-- `okna.md`: skutečná okna kolem stromu, obsah, hodnoty, „Napojení“ na element a „Bod linky“.
+- `okna.md`: statická okna rozhraní, pevné rozmístění, obsah, hodnoty a související elementy; bez prostorového ukotvení ke stromu.
 - `prvky.md`: tlačítka a ovládání.
 - `elementy.md`: linky, částice a jejich chování včetně reakcí na okna; bez zdrojových souborů a interních názvů.
 - `zmeny.md`: stav změn a ověření, odkazy na definice.
