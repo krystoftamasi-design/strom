@@ -1,0 +1,4131 @@
+<!DOCTYPE html>
+<html lang="cs">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Život buku — interaktivní strom</title>
+
+  <link rel="preload" href="./web_assets/fonts/Nohemi-VF.ttf" as="font" type="font/ttf" crossorigin>
+  <link rel="preload" href="./web_assets/fonts/Satoshi-Variable.ttf" as="font" type="font/ttf" crossorigin>
+
+  <script type="importmap">
+  {
+    "imports": {
+      "three": "./web_assets/vendor/three.module.js",
+      "three/addons/": "./web_assets/jsm/"
+    }
+  }
+  </script>
+
+  <style>
+    :root {
+      --bg-studio: #dcded0;
+      --bg-dark: #0f1115;
+      --bg-panel: rgba(18, 20, 26, 0.78);
+      --bg-panel-border: rgba(255, 255, 255, 0.08);
+      --bg-card: rgba(255, 255, 255, 0.04);
+      --bg-card-hover: rgba(255, 255, 255, 0.08);
+      --accent: #22c55e;
+      --accent-glow: rgba(34, 197, 94, 0.25);
+      --accent-autumn: #f59e0b;
+      --text-main: #f3f4f6;
+      --text-muted: #9ca3af;
+      --text-dim: #6b7280;
+      --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-font-smoothing: antialiased;
+      user-select: none;
+    }
+
+    body {
+      font-family: var(--font-sans);
+      background-color: var(--bg-studio);
+      color: var(--text-main);
+      width: 100vw;
+      height: 100vh;
+      overflow: hidden;
+      position: relative;
+    }
+
+    #canvas3d {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 1;
+      display: block;
+      outline: none;
+    }
+
+    /* HEADER BAR */
+    .top-bar {
+      position: absolute;
+      top: 16px;
+      left: 20px;
+      right: 20px;
+      z-index: 10;
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+      pointer-events: none;
+    }
+
+    .brand-card {
+      pointer-events: auto;
+      background: var(--bg-panel);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid var(--bg-panel-border);
+      padding: 10px 18px;
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+    }
+
+    .brand-icon {
+      width: 38px;
+      height: 38px;
+      background: linear-gradient(135deg, #22c55e, #15803d);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      box-shadow: 0 4px 12px var(--accent-glow);
+    }
+
+    .brand-info h1 {
+      font-size: 15px;
+      font-weight: 600;
+      letter-spacing: -0.01em;
+      color: #fff;
+    }
+
+    .brand-info p {
+      font-size: 11px;
+      color: var(--text-muted);
+      font-family: var(--font-mono);
+    }
+
+    .top-actions {
+      pointer-events: auto;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .manager-controlled.manager-hidden { display: none !important; }
+    body[data-chapter="intro"] .time-playback-panel,
+    body[data-chapter="intro"] .time-of-day-control,
+    body[data-chapter="intro"] #btnManager,
+    body[data-chapter="intro"] .manager-controlled,
+    body[data-chapter="intro"] #controlsPanel { display: none !important; }
+    body:not(.manager-open) #chapterShared { display: none !important; }
+
+    .action-btn {
+      background: var(--bg-panel);
+      backdrop-filter: blur(14px);
+      border: 1px solid var(--bg-panel-border);
+      color: var(--text-main);
+      padding: 9px 14px;
+      border-radius: 10px;
+      font-size: 12px;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.2);
+    }
+
+    .action-btn:hover {
+      background: rgba(255, 255, 255, 0.12);
+      border-color: rgba(255, 255, 255, 0.2);
+      transform: translateY(-1px);
+    }
+
+    .action-btn.active {
+      background: var(--accent);
+      color: #000;
+      font-weight: 600;
+      border-color: var(--accent);
+      box-shadow: 0 4px 15px var(--accent-glow);
+    }
+
+    /* CONTROL DRAWER / PANEL */
+    .controls-panel {
+      position: absolute;
+      top: 80px;
+      left: 20px;
+      bottom: 20px;
+      width: 340px;
+      max-width: calc(100vw - 40px);
+      background: var(--bg-panel);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid var(--bg-panel-border);
+      border-radius: 18px;
+      z-index: 10;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 20px 45px rgba(0, 0, 0, 0.35);
+      transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.35s ease;
+      overflow: hidden;
+    }
+
+    .controls-panel.collapsed {
+      transform: translateX(-370px);
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .panel-header {
+      padding: 16px 18px;
+      border-bottom: 1px solid var(--bg-panel-border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .panel-header h2 {
+      font-size: 13px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--text-muted);
+    }
+
+    .panel-content {
+      padding: 16px 18px;
+      overflow-y: auto;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+    }
+
+    .panel-content::-webkit-scrollbar {
+      width: 4px;
+    }
+
+    .panel-content::-webkit-scrollbar-thumb {
+      background: rgba(255, 255, 255, 0.15);
+      border-radius: 4px;
+    }
+
+    .section-title {
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-dim);
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    /* CONTROL GROUPS */
+    .control-box {
+      background: var(--bg-card);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      border-radius: 12px;
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    /* TOGGLE SWITCHES */
+    .toggle-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 12.5px;
+      font-weight: 500;
+      cursor: pointer;
+    }
+
+    .toggle-row:hover span {
+      color: #fff;
+    }
+
+    .switch {
+      position: relative;
+      width: 36px;
+      height: 20px;
+    }
+
+    .switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .slider-switch {
+      position: absolute;
+      cursor: pointer;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: rgba(255, 255, 255, 0.15);
+      transition: .3s;
+      border-radius: 20px;
+    }
+
+    .slider-switch:before {
+      position: absolute;
+      content: "";
+      height: 14px;
+      width: 14px;
+      left: 3px;
+      bottom: 3px;
+      background-color: white;
+      transition: .3s;
+      border-radius: 50%;
+    }
+
+    input:checked+.slider-switch {
+      background-color: var(--accent);
+    }
+
+    input:checked+.slider-switch:before {
+      transform: translateX(16px);
+      background-color: #000;
+    }
+
+    /* RANGE SLIDERS */
+    .slider-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .slider-label {
+      display: flex;
+      justify-content: space-between;
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    .slider-val {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: #fff;
+    }
+
+    input[type=range] {
+      -webkit-appearance: none;
+      width: 100%;
+      background: rgba(255, 255, 255, 0.1);
+      height: 5px;
+      border-radius: 3px;
+      outline: none;
+    }
+
+    input[type=range]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      background: var(--accent);
+      cursor: pointer;
+      box-shadow: 0 0 8px var(--accent-glow);
+      transition: transform 0.1s;
+    }
+
+    input[type=range]::-webkit-slider-thumb:hover {
+      transform: scale(1.2);
+    }
+
+    /* BUTTON GRIDS */
+    .btn-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 6px;
+    }
+
+    .grid-btn {
+      background: var(--bg-card);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      color: var(--text-main);
+      padding: 8px 10px;
+      border-radius: 8px;
+      font-size: 11.5px;
+      font-weight: 500;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .grid-btn:hover {
+      background: var(--bg-card-hover);
+      border-color: rgba(255, 255, 255, 0.15);
+      color: #fff;
+    }
+
+    .grid-btn.active {
+      background: rgba(34, 197, 94, 0.15);
+      border-color: var(--accent);
+      color: var(--accent);
+      font-weight: 600;
+    }
+
+    /* SEASON PRESETS */
+    .season-btn-row {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 5px;
+    }
+
+    .season-btn {
+      padding: 7px 4px;
+      font-size: 10.5px;
+      border-radius: 7px;
+      background: var(--bg-card);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      color: var(--text-muted);
+      cursor: pointer;
+      text-align: center;
+      transition: all 0.2s;
+    }
+
+    .season-btn:hover {
+      color: #fff;
+      background: var(--bg-card-hover);
+    }
+
+    .season-btn.active {
+      color: #000;
+      font-weight: 600;
+    }
+
+    .season-btn.active[data-season="spring"] {
+      background: #4ade80;
+    }
+
+    .season-btn.active[data-season="summer"] {
+      background: #22c55e;
+    }
+
+    .season-btn.active[data-season="autumn"] {
+      background: #f59e0b;
+    }
+
+    .season-btn.active[data-season="latefall"] {
+      background: #ea580c;
+    }
+
+    /* HUD BOTTOM BAR */
+    .hud-bottom {
+      position: absolute;
+      bottom: 20px;
+      right: 20px;
+      z-index: 10;
+      display: flex;
+      gap: 12px;
+      pointer-events: none;
+    }
+
+    .time-of-day-control {
+      pointer-events: auto;
+      min-width: 210px;
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 10px;
+      padding: 8px 12px;
+      border: 1px solid var(--bg-panel-border);
+      border-radius: 12px;
+      background: var(--bg-panel);
+      backdrop-filter: blur(14px);
+      box-shadow: 0 4px 15px rgba(0,0,0,.2);
+      color: var(--text-muted);
+      font: 11px var(--font-mono);
+    }
+    .time-of-day-timeline { min-width: 155px; flex: 1; display: flex; flex-direction: column; gap: 5px; }
+    .time-of-day-control .time-label { display: flex; justify-content: space-between; gap: 14px; }
+    .time-of-day-control input { width: 100%; margin: 0; accent-color: #f6c85f; cursor: pointer; }
+    .time-playback-buttons { display: flex; flex-wrap: wrap; gap: 5px; }
+    .time-playback-panel {
+      pointer-events: auto;
+      padding: 8px;
+      border: 1px solid var(--bg-panel-border);
+      border-radius: 12px;
+      background: var(--bg-panel);
+      backdrop-filter: blur(14px);
+      box-shadow: 0 4px 15px rgba(0,0,0,.2);
+    }
+    .time-playback-buttons button {
+      width: 36px;
+      height: 34px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 6px;
+      border: 1px solid var(--bg-panel-border);
+      border-radius: 7px;
+      background: rgba(255,255,255,.05);
+      color: var(--text-main);
+      font: inherit;
+      cursor: pointer;
+    }
+    .time-playback-buttons button:hover { background: rgba(255,255,255,.12); }
+    .time-playback-buttons button[aria-pressed="true"] { color: #f6c85f; border-color: #f6c85f; }
+    .time-playback-buttons svg { width: 20px; height: 20px; fill: currentColor; }
+    .time-playback-buttons .time-pause-play { display: none; }
+    .time-playback-buttons button[aria-pressed="true"] .time-pause-bars { display: none; }
+    .time-playback-buttons button[aria-pressed="true"] .time-pause-play { display: inline; }
+    .time-playback-buttons button:focus-visible { outline: 2px solid #f6c85f; outline-offset: 2px; }
+    @media (max-width: 700px) {
+      .hud-bottom { left: 10px; right: 10px; bottom: 10px; flex-wrap: wrap; justify-content: flex-end; gap: 6px; }
+      .time-of-day-control { min-width: 155px; flex: 1 1 100%; order: 2; }
+      .stat-pill { padding: 7px 9px; font-size: 9px; }
+    }
+    .stat-pill {
+      pointer-events: auto;
+      background: var(--bg-panel);
+      backdrop-filter: blur(14px);
+      border: 1px solid var(--bg-panel-border);
+      border-radius: 12px;
+      padding: 8px 14px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--text-muted);
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    .stat-pill strong {
+      color: #fff;
+      font-weight: 600;
+    }
+
+    .stat-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--accent);
+      box-shadow: 0 0 6px var(--accent);
+    }
+
+    /* LOADING SCREEN */
+    #loader {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: #11141a;
+      z-index: 100;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 18px;
+      transition: opacity 0.5s ease, visibility 0.5s;
+    }
+
+    #loader.hidden {
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+    }
+
+    .spinner {
+      width: 50px;
+      height: 50px;
+      border: 3px solid rgba(34, 197, 94, 0.15);
+      border-top-color: var(--accent);
+      border-radius: 50%;
+      animation: spin 0.9s cubic-bezier(0.5, 0, 0.5, 1) infinite;
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    .load-text {
+      font-size: 14px;
+      font-weight: 500;
+      color: #fff;
+      letter-spacing: -0.01em;
+    }
+
+    .load-subtext {
+      font-size: 11.5px;
+      color: var(--text-muted);
+      font-family: var(--font-mono);
+    }
+
+    .progress-bar-container {
+      width: 260px;
+      height: 5px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 3px;
+      overflow: hidden;
+    }
+
+    .progress-bar {
+      width: 0%;
+      height: 100%;
+      background: linear-gradient(90deg, #22c55e, #a3e635);
+      transition: width 0.2s ease;
+    }
+
+    /* TOAST MESSAGE */
+    #toast {
+      position: absolute;
+      top: 80px;
+      left: 50%;
+      transform: translateX(-50%) translateY(-20px);
+      background: rgba(18, 20, 26, 0.9);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      color: #fff;
+      padding: 10px 20px;
+      border-radius: 10px;
+      font-size: 12.5px;
+      font-weight: 500;
+      opacity: 0;
+      pointer-events: none;
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      z-index: 50;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+    }
+
+    #toast.show {
+      transform: translateX(-50%) translateY(0);
+      opacity: 1;
+    }
+
+    /* DRIP ZONE HOVER WINDOW (MONOCHROMATIC & NO EMOJI) */
+    .drip-hover-card {
+      position: fixed;
+      z-index: 90;
+      background: #14171d;
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      border-radius: 8px;
+      padding: 10px 14px;
+      width: 250px;
+      box-shadow: 0 12px 28px rgba(0, 0, 0, 0.55);
+      pointer-events: none;
+      opacity: 0;
+      transform: translate(-50%, -100%) translateY(4px);
+      transition: opacity 0.18s ease, transform 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .drip-hover-card.visible {
+      opacity: 1;
+      transform: translate(-50%, -100%) translateY(-14px);
+    }
+
+    .drip-hover-title {
+      font-size: 13px;
+      font-weight: 600;
+      color: #ffffff;
+      margin-bottom: 4px;
+      letter-spacing: -0.01em;
+    }
+
+    .drip-hover-desc {
+      font-size: 11px;
+      line-height: 1.45;
+      color: #9ca3af;
+      font-weight: 400;
+    }
+  </style>
+  <link rel="stylesheet" href="./kapitoly/chapters.css?v=kapitoly-normal-title-5">
+  <link rel="stylesheet" href="./okna/tree_annotations.css?v=date-night-1">
+  <link rel="stylesheet" href="./okna/element_ui_okna_vzhled.css?v=title-test-subscript-3&checks=1">
+</head>
+
+<body>
+
+  <!-- 3D Canvas -->
+  <canvas id="canvas3d"></canvas>
+
+  <!-- Top Bar -->
+  <div class="top-bar">
+    <div class="top-actions">
+      <button class="action-btn manager-controlled manager-hidden" id="btnSaveCameraView" title="Uložit tento pohled kamery pro příští spuštění">
+        <span>⌖ Uložit pohled</span>
+      </button>
+      <button class="action-btn manager-controlled manager-hidden" id="btnTogglePanel" title="Zobrazit/skrýt nastavení">
+        <span>⚙ Nastavení</span>
+      </button>
+      <button class="action-btn" id="btnManager" type="button" aria-pressed="false" title="Zobrazit/skrýt ovládací prvky">
+        <span>Manager</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Left Control Panel -->
+  <div class="controls-panel" id="controlsPanel">
+    <div class="panel-header">
+      <h2>Nastavení modelu & scény</h2>
+      <button class="action-btn" id="btnClosePanel" style="padding: 4px 8px; font-size: 10px;">✕</button>
+    </div>
+
+    <div class="panel-content">
+      <!-- 1. ROČNÍ OBDOBÍ / LISTOVÍ -->
+      <div class="control-box">
+        <div class="section-title">🍃 Sezóna & Barva listí</div>
+        <div class="season-btn-row">
+          <button class="season-btn" data-season="spring">Jaro</button>
+          <button class="season-btn" data-season="summer">Léto</button>
+          <button class="season-btn active" data-season="autumn">Podzim</button>
+          <button class="season-btn" data-season="latefall">Pozdní</button>
+        </div>
+        <div class="slider-group" style="margin-top: 4px;">
+          <div class="slider-label">
+            <span>Posun barevného tónu</span>
+            <span class="slider-val" id="valSeason">50 %</span>
+          </div>
+          <input type="range" id="sliderSeason" min="0" max="100" value="50" title="Nejdřív schnou listy s nejdelší cestou po větvích od paty kmene. Skupiny listů mají mírně náhodné pořadí. Barva stínu zůstává stejná.">
+        </div>
+        <div class="slider-group" style="margin-top: 12px;">
+          <div class="slider-label">
+            <label for="sliderDryingSpeed">Rychlost přechodu do červené</label>
+            <span class="slider-val" id="valDryingSpeed">0,50×</span>
+          </div>
+          <input type="range" id="sliderDryingSpeed" min="1" max="300" step="1" value="50" title="Rozsah 0,01× až 3,00×. Doleva: pomalejší přechod přes žlutou a oranžovou. Doprava: rychlejší přechod do červené.">
+        </div>
+        <div class="slider-group" style="margin-top: 12px;">
+          <div class="slider-label">
+            <label for="sliderYellowPhase">Délka žluté fáze</label>
+            <span class="slider-val" id="valYellowPhase">65 %</span>
+          </div>
+          <input type="range" id="sliderYellowPhase" min="0" max="100" step="1" value="65" title="Doleva: rychlejší přechod ze žluté do červené. Doprava: delší žlutá fáze až do 100 %.">
+        </div>
+        <div class="slider-group" style="margin-top: 12px;">
+          <div class="slider-label">
+            <label for="sliderLeafFallSpeed">Rychlost padání listů</label>
+            <span class="slider-val" id="valLeafFallSpeed">150 %</span>
+          </div>
+          <input type="range" id="sliderLeafFallSpeed" min="25" max="300" step="5" value="150" title="Doleva: pomalejší padání. Doprava: rychlejší padání.">
+        </div>
+        <div class="slider-group" style="margin-top: 12px;">
+          <div class="slider-label">
+            <label for="sliderLeafFallAmount">Kolik listů spadne za sekundu</label>
+            <span class="slider-val" id="valLeafFallAmount">700</span>
+          </div>
+          <input type="range" id="sliderLeafFallAmount" min="1" max="30000" step="1" value="700" title="Rychlost opadávání: přibližný počet listů, které se uvolní za sekundu.">
+        </div>
+        <div class="btn-grid" style="margin-top: 12px;">
+          <button class="grid-btn active" id="btnLeafFall" aria-pressed="true">🍂 Opadávání: zapnuto</button>
+        </div>
+        <div class="slider-group" style="margin-top: 12px;">
+          <div class="slider-label">
+            <label for="sliderDryingSharpness">Ostrost hranice schnutí</label>
+            <span class="slider-val" id="valDryingSharpness">100 %</span>
+          </div>
+          <input type="range" id="sliderDryingSharpness" min="0" max="100" step="1" value="100" title="Doleva: široké pásmo přechodu přes více skupin listů. Doprava: úzká hranice přibližně přes 1–2 sousední skupiny.">
+        </div>
+        <div class="slider-group" style="margin-top: 12px;">
+          <div class="slider-label">
+            <label for="sliderLeafSize">Velikost listů</label>
+            <span class="slider-val" id="valLeafSize">100 %</span>
+          </div>
+          <input type="range" id="sliderLeafSize" min="25" max="250" step="5" value="100">
+        </div>
+        <div class="slider-group">
+          <div class="slider-label">
+            <label for="sliderLeafCount">Počet listů</label>
+            <span class="slider-val" id="valLeafCount">20 000</span>
+          </div>
+          <input type="range" id="sliderLeafCount" min="0" max="29796" step="1" value="20000">
+        </div>
+      </div>
+
+      <div class="control-box">
+        <div class="section-title">Větřík</div>
+        <div class="slider-group">
+          <div class="slider-label">
+            <label for="sliderLeafWind">Síla větru v listech</label>
+            <span class="slider-val" id="valLeafWind">25 %</span>
+          </div>
+          <input type="range" id="sliderLeafWind" min="0" max="300" step="1" value="25" title="0 %: bez větru. 100 %: jemný vítr. 300 %: silný vítr.">
+        </div>
+      </div>
+
+      <!-- TOON / CEL-SHADING (BLENDER NPR) -->
+      <div class="control-box">
+        <div class="section-title">🎨 Toon / Cel-Shading (Blender NPR)</div>
+        <div class="btn-grid">
+          <button class="grid-btn active" data-toon="3step">Blender (2 barvy)</button>
+          <button class="grid-btn" data-toon="none">Plynulý přechod</button>
+        </div>
+        <div class="slider-group" style="margin-top: 10px;">
+          <div class="slider-label">
+            <span>Černo-modrý stín (Color Ramp práh)</span>
+            <span class="slider-val" id="valRamp">1.00 (Blender)</span>
+          </div>
+          <input type="range" id="sliderRamp" min="10" max="150" value="100">
+        </div>
+        <div class="section-title" style="margin-top: 12px;">✂️ Vykreslení Alfy (Okraje štětce)</div>
+        <div class="btn-grid">
+          <button class="grid-btn active" data-alphamode="2">Alpha Hashed (Blender)</button>
+          <button class="grid-btn" data-alphamode="1">Hladké okraje</button>
+          <button class="grid-btn" data-alphamode="0" style="grid-column: span 2;">Ostrý Cutout</button>
+        </div>
+        <div class="slider-group" style="margin-top: 12px;">
+          <div class="slider-label">
+            <label for="sliderLeafEdgeTransition">Alfa přechod na okrajích</label>
+            <span class="slider-val" id="valLeafEdgeTransition">0 % (původní)</span>
+          </div>
+          <input type="range" id="sliderLeafEdgeTransition" min="0" max="300" step="5" value="0"
+            title="0 %: původní alfa maska z Blenderu, 100–300 %: dodatečné měkké prolnutí">
+        </div>
+        <div class="slider-group" style="margin-top: 12px;">
+          <div class="slider-label">
+            <label for="sliderLeafAlpha">Síla alfy listů</label>
+            <span class="slider-val" id="valLeafAlpha">100 %</span>
+          </div>
+          <input type="range" id="sliderLeafAlpha" min="0" max="200" step="5" value="100">
+        </div>
+      </div>
+
+      <!-- 2. VIDITELNOST ČÁSTÍ -->
+      <div class="control-box">
+        <div class="section-title">🧩 Části stromu</div>
+        <div class="toggle-row">
+          <span id="canopyLeafCountLabel">🍃 Koruna a listy (20 000 listů)</span>
+          <label class="switch">
+            <input type="checkbox" id="chkLeaves" checked>
+            <span class="slider-switch"></span>
+          </label>
+        </div>
+        <div class="toggle-row">
+          <span>🪵 Kmen a větve</span>
+          <label class="switch">
+            <input type="checkbox" id="chkTrunk" checked>
+            <span class="slider-switch"></span>
+          </label>
+        </div>
+        <div class="toggle-row">
+          <span>🌿 Kořenový systém</span>
+          <label class="switch">
+            <input type="checkbox" id="chkRoots" checked>
+            <span class="slider-switch"></span>
+          </label>
+        </div>
+        <div class="toggle-row">
+          <span>🌱 Řez terénem (Hladina půdy Z=0)</span>
+          <label class="switch">
+            <input type="checkbox" id="chkGround">
+            <span class="slider-switch"></span>
+          </label>
+        </div>
+        <div class="toggle-row">
+          <span>💧 Okapová linie koruny (Drip Line)</span>
+          <label class="switch">
+            <input type="checkbox" id="chkQuickDrip">
+            <span class="slider-switch"></span>
+          </label>
+        </div>
+      </div>
+
+      <!-- 2b. CÉVNÍ SYSTÉM / TOK MÍZY (3D TRUBICE) -->
+      <div class="control-box">
+        <div class="section-title">💧 Cévní systém & Tok mízy (3D Trubice)</div>
+        <div class="toggle-row">
+          <span>💧 Zobrazit modré linky toku</span>
+          <label class="switch">
+            <input type="checkbox" id="chkSapFlow">
+            <span class="slider-switch"></span>
+          </label>
+        </div>
+        <!-- SLIDER PRŮHLEDNOSTI MODRÉ LINKY (OPACITY) -->
+        <div class="slider-group" style="margin-top: 10px;">
+          <div class="slider-label">
+            <span>Průhlednost modré linky (Opacity)</span>
+            <span class="slider-val" id="valSapOpacity">100%</span>
+          </div>
+          <input type="range" id="sliderSapOpacity" min="0" max="100" value="100">
+        </div>
+
+        <!-- SLIDER ZÁSOBY VODY VE STROMU V LITRECH -->
+        <div class="slider-group" style="margin-top: 10px; padding: 10px; background: rgba(56, 189, 248, 0.08); border: 1px solid rgba(56, 189, 248, 0.25); border-radius: 8px;">
+          <div class="slider-label">
+            <span style="font-weight: 700; color: #38bdf8;">💧 Voda ve stromu (litry)</span>
+            <span class="slider-val" id="valTreeWater" style="font-weight: 700; color: #38bdf8; font-size: 13px;">6 l/h</span>
+          </div>
+          <input type="range" id="sliderTreeWater" min="0" max="120" step="0.06" value="6" aria-label="Voda dodaná ke kořenům v litrech za hodinu">
+          <div style="display: flex; justify-content: space-between; font-size: 9.5px; color: #64748b; margin-top: 3px;">
+            <span>0 L (uschnutí)</span>
+            <span style="color: #38bdf8; font-weight: 600;">800 L (normál)</span>
+            <span>1500 L (maximum)</span>
+          </div>
+          <div id="statusTreeWater" style="margin-top: 6px; font-size: 11px; font-weight: 600; color: #10b981; line-height: 1.35;">
+            🟢 Optimální turgor (100% hydratace pletiv)
+          </div>
+          <div id="droughtBarContainer" style="display: none; margin-top: 7px; padding-top: 6px; border-top: 1px solid rgba(255,255,255,0.08);">
+            <div style="display: flex; justify-content: space-between; font-size: 10px; color: #fbbf24; margin-bottom: 3px;">
+              <span id="droughtBarLabel">🍂 Postup schnutí listů:</span>
+              <span id="droughtBarVal" style="font-family: var(--font-mono); font-weight: 700;">0%</span>
+            </div>
+            <div style="width: 100%; height: 6px; background: rgba(0,0,0,0.5); border-radius: 3px; overflow: hidden;">
+              <div id="droughtBarFill" style="width: 0%; height: 100%; background: linear-gradient(90deg, #f59e0b, #ef4444); transition: width 0.1s linear;"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="slider-group" style="margin-top: 8px;">
+          <div class="slider-label">
+            <label for="sliderLeafRegrowthSpeed">Rychlost růstu nových listů</label>
+            <span class="slider-val" id="valLeafRegrowthSpeed">100 %</span>
+          </div>
+          <input type="range" id="sliderLeafRegrowthSpeed" min="10" max="300" step="5" value="100">
+        </div>
+
+        <div class="slider-group" style="margin-top: 10px;">
+          <div class="slider-label">
+            <span>Základní tloušťka linky (Poloměr)</span>
+            <span class="slider-val" id="valSapThickness">0.08 m</span>
+          </div>
+          <input type="range" id="sliderSapThickness" min="1" max="30" value="8">
+        </div>
+        <div class="slider-group" style="margin-top: 8px;">
+          <div class="slider-label">
+            <span>Rychlost proudění</span>
+            <span class="slider-val" id="valSapSpeed">1.0×</span>
+          </div>
+          <input type="range" id="sliderSapSpeed" min="0" max="250" value="100">
+        </div>
+        <div class="slider-group" style="margin-top: 8px;">
+          <div class="slider-label">
+            <span>Intenzita záře / neonu</span>
+            <span class="slider-val" id="valSapGlow">100%</span>
+          </div>
+          <input type="range" id="sliderSapGlow" min="20" max="250" value="100">
+        </div>
+        <div class="toggle-row" style="margin-top: 8px;">
+          <span>✨ Prosvítání dřevem (X-Ray)</span>
+          <label class="switch">
+            <input type="checkbox" id="chkSapXray" checked>
+            <span class="slider-switch"></span>
+          </label>
+        </div>
+        <div class="toggle-row" style="margin-top: 8px;">
+          <span>🤖 Trasování podle nejtlustšího kmene</span>
+          <span style="font-size: 11px; color: var(--accent); font-family: var(--font-mono); font-weight: 600;">Automatické</span>
+        </div>
+        <div class="toggle-row" style="margin-top: 8px;">
+          <span style="display: flex; align-items: center; gap: 6px;">
+            <span style="display: inline-block; width: 9px; height: 9px; border-radius: 50%; background: #ffd700; box-shadow: 0 0 6px #ffd700;"></span>
+            <span>Proud fotonů (Světlo)</span>
+          </span>
+          <label class="switch">
+            <input type="checkbox" id="chkPhotonLine" checked>
+            <span class="slider-switch"></span>
+          </label>
+        </div>
+        <div class="toggle-row" style="margin-top: 8px;">
+          <span style="display: flex; align-items: center; gap: 6px;">
+            <span style="display: inline-block; width: 9px; height: 9px; border-radius: 50%; background: #38bdf8; box-shadow: 0 0 6px #38bdf8;"></span>
+            <span>Bubliny kyslíku (O₂)</span>
+          </span>
+          <label class="switch">
+            <input type="checkbox" id="chkOxygenLine" checked>
+            <span class="slider-switch"></span>
+          </label>
+        </div>
+        <div class="slider-group" style="margin-top: 8px;">
+          <div class="slider-label">
+            <label for="sliderOxygenSize">Velikost bublin O₂</label>
+            <span class="slider-val" id="valOxygenSize">150 %</span>
+          </div>
+          <input type="range" id="sliderOxygenSize" min="25" max="400" step="5" value="150">
+        </div>
+        <div class="slider-group" style="margin-top: 8px;">
+          <div class="slider-label">
+            <label for="sliderOxygenSpawnDistance">Vzdálenost vzniku bublin</label>
+            <span class="slider-val" id="valOxygenSpawnDistance">1.5 bodu</span>
+          </div>
+          <input type="range" id="sliderOxygenSpawnDistance" min="0" max="30" step="0.1" value="1.5">
+        </div>
+      </div>
+
+      <!-- 2c. OKAPOVÁ ZÓNA KORUNY (DRIP LINE & VLÁHA) -->
+      <div class="control-box">
+        <div class="section-title">💧 Okapová zóna koruny (Drip Line)</div>
+        <div class="toggle-row">
+          <span>💧 Zobrazit okapovou linii</span>
+          <label class="switch">
+            <input type="checkbox" id="chkDripLine">
+            <span class="slider-switch"></span>
+          </label>
+        </div>
+        <div class="toggle-row">
+          <span>🌧️ Padající kapky vody (Drip efekt)</span>
+          <label class="switch">
+            <input type="checkbox" id="chkDripRain" checked>
+            <span class="slider-switch"></span>
+          </label>
+        </div>
+
+        <div class="slider-group" style="margin-top: 10px;">
+          <div class="slider-label">
+            <span>Tloušťka bílé linie</span>
+            <span class="slider-val" id="valDripThickness">0.05 m</span>
+          </div>
+          <input type="range" id="sliderDripThickness" min="2" max="15" value="5">
+        </div>
+
+        <div class="slider-group" style="margin-top: 8px;">
+          <div class="slider-label">
+            <span>Průhlednost bílé linie (Opacity)</span>
+            <span class="slider-val" id="valDripGlow">95%</span>
+          </div>
+          <input type="range" id="sliderDripGlow" min="10" max="100" value="95">
+        </div>
+        <div class="toggle-row" style="margin-top: 8px;">
+          <span>Informační okno</span>
+          <span style="font-size: 11px; color: #38bdf8; font-family: var(--font-mono); font-weight: 500;">Při najetí myší</span>
+        </div>
+        <div class="toggle-row" style="margin-top: 8px;">
+          <span>Biologická funkce</span>
+          <span style="font-size: 11px; color: #38bdf8; font-family: var(--font-mono); font-weight: 600;">Okapová linie</span>
+        </div>
+      </div>
+
+      <!-- 3. OSVĚTLENÍ (BLENDER REPLIKACE) -->
+      <div class="control-box">
+        <div class="section-title">☀️ Slunce</div>
+        <div class="slider-group">
+          <div class="slider-label">
+            <span>Síla slunce</span>
+            <span class="slider-val" id="valSun">100%</span>
+          </div>
+          <input type="range" id="sliderSun" min="0" max="250" value="100">
+        </div>
+        <div class="slider-group">
+          <div class="slider-label">
+            <span>Hloubka zastínění koruny</span>
+            <span class="slider-val" id="valCanopyAO">45%</span>
+          </div>
+          <input type="range" id="sliderCanopyAO" min="0" max="100" value="45"
+            aria-label="Hloubka zastínění koruny" title="Měkké zastínění spodních a vnitřních listů podle hustoty koruny">
+        </div>
+        <div class="slider-group">
+          <div class="slider-label">
+            <span>Rotace slunce / Úhel dopadu</span>
+            <span class="slider-val" id="valLightRot">0°</span>
+          </div>
+          <input type="range" id="sliderLightRot" min="0" max="360" value="0">
+        </div>
+        <div class="slider-group" style="margin-top: 8px;">
+          <div class="slider-label">
+            <span>Výška slunce nad obzorem (Elevace)</span>
+            <span class="slider-val" id="valSunElevation">45°</span>
+          </div>
+          <input type="range" id="sliderSunElevation" min="-90" max="90" value="45">
+        </div>
+        <div class="toggle-row">
+          <span>Měkké stíny (PCF Soft)</span>
+          <label class="switch">
+            <input type="checkbox" id="chkShadows" checked>
+            <span class="slider-switch"></span>
+          </label>
+        </div>
+        <div class="toggle-row">
+          <span>☀️ Zobrazit směr paprsků a popisky</span>
+          <label class="switch">
+            <input type="checkbox" id="chkSunHelper">
+            <span class="slider-switch"></span>
+          </label>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- HUD Bottom Bar -->
+  <div class="hud-bottom">
+    <div class="time-of-day-control manager-controlled manager-hidden">
+      <div class="time-of-day-timeline">
+        <label class="time-label" for="sliderTimeOfDay"><span>Čas dne · <output id="valTimePlaybackSpeed" aria-live="polite">1×</output></span><strong id="valTimeOfDay">poledne</strong></label>
+        <input type="range" id="sliderTimeOfDay" min="0" max="24" step="0.1" value="12" aria-label="Čas dne od půlnoci do půlnoci">
+      </div>
+    </div>
+      <div class="time-playback-buttons time-playback-panel" role="group" aria-label="Běh času">
+        <button type="button" id="btnTimePause" aria-pressed="false" aria-label="Pozastavit čas" title="Pozastavit čas">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><g class="time-pause-bars"><rect x="6" y="4" width="4" height="16" rx="1"/><rect x="14" y="4" width="4" height="16" rx="1"/></g><path class="time-pause-play" d="M7 4v16l13-8z"/></svg>
+        </button>
+        <button type="button" id="btnTimeFaster" aria-pressed="false" aria-label="Rychlost času 2×" title="Rychlost 2× · druhým kliknutím 1×">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 5v14l10-7zM12 5v14l10-7z"/></svg>
+        </button>
+        <button type="button" id="btnTimeFastest" aria-pressed="false" aria-label="Rychlost času 4×" title="Rychlost 4× · druhým kliknutím 1×">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M1 5v14l7-7zM9 5v14l7-7zM17 5v14l7-7z"/></svg>
+        </button>
+      </div>
+    <div class="stat-pill manager-controlled manager-hidden">
+      <div class="stat-dot"></div>
+      <span>FPS: <strong id="valFps">60</strong></span>
+    </div>
+    <div class="stat-pill manager-controlled manager-hidden">
+      <span>Výška: <strong id="valTreeHeight">—</strong></span>
+    </div>
+  </div>
+
+  <!-- Loading Overlay -->
+  <div id="loader">
+    <div class="spinner"></div>
+    <div class="load-text">Načítám 3D model stromu...</div>
+    <div class="progress-bar-container">
+      <div class="progress-bar" id="progressBar"></div>
+    </div>
+    <div class="load-subtext" id="loadProgressText">Připravuji geometrii, materiály a osvětlení...</div>
+  </div>
+
+  <!-- Toast Notification -->
+  <div id="toast"></div>
+
+  <!-- Drip Zone Hover Window (Monochromatic, No Emoji) -->
+  <div id="dripTooltip" class="drip-hover-card">
+    <div class="drip-hover-title">Okapová zóna</div>
+    <div class="drip-hover-desc">Projekce obvodu koruny na terén. Místo stékání srážkové vody z okraje koruny a hlavní vrstva savých kořenů.</div>
+  </div>
+
+  <!-- THREE.JS APPLICATION SCRIPT -->
+    <script type="module">
+    import * as THREE from 'three';
+    import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+    import { setupLeafBreeze } from './listy/leaf_breeze.js?v=3';
+    import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+    import { PhotolysisSystem } from './vykreslovani/photolysis_system.js?v=horizon-photons-3';
+    import { loadBarkReference, loadBarkAttributes, attachBarkAttributes, createBarkMaterial } from './vykreslovani/bark_material.js?v=stable-shadow-4';
+    import { loadLeafReference, loadLeafAttributes, attachLeafAttributes, createLeafMaterial, createLeafDepthMaterial, setLeafEdgeTransition } from './vykreslovani/leaf_material.js?v=narrow-canopy-shade-6';
+    import { LeafControls } from './listy/leaf_controls.js?v=beech-calendar-1';
+    import { loadBranchDryingReference, branchDryingFrontWidth } from './listy/leaf_branch_drying.js?v=3';
+    import { CanopyOcclusion } from './vykreslovani/canopy_occlusion.js?v=sky-1';
+    import { createWaterBrushMaterial, addWaterBrushAttributes } from './vykreslovani/water_brush.js?v=glucose-purple-1';
+    import { TreeEcology, SEASONS, MODEL_MINUTES_PER_SECOND } from './ekologie/tree_ecology.js?v=active-leaves-1&checks=1';
+    import { createChapters } from './kapitoly/chapters.js?v=kapitoly-no-numbers-2&anchors=4';
+    import { createSeasonRing } from './obdobi/season_ring.js?v=beech-calendar-1';
+    import { createIntroForest } from './obdobi/intro_forest.js?v=intro-closer-camera-2';
+    import { seasonColorForPosition } from './obdobi/season_timeline.js?v=beech-calendar-1';
+    import { BEECH_CALENDAR, seasonDayForPosition, beechLeafFallProgress, beechLeafGrowthProgress } from './obdobi/beech_phenology.js?v=1';
+
+    const ecology = new TreeEcology();
+
+    // UI ELEMENTS
+    const canvas = document.getElementById('canvas3d');
+    const loader = document.getElementById('loader');
+    const progressBar = document.getElementById('progressBar');
+    const loadProgressText = document.getElementById('loadProgressText');
+    const valFps = document.getElementById('valFps');
+    const toast = document.getElementById('toast');
+
+    function showToast(msg) {
+      toast.textContent = msg;
+      toast.classList.add('show');
+      setTimeout(() => toast.classList.remove('show'), 2500);
+    }
+
+    // 1. SCENE & RENDERER SETUP
+    const scene = new THREE.Scene();
+    const studioColor = new THREE.Color(0xdcded0); // Exact Blender background
+    scene.background = studioColor;
+
+    // Keep the page canvas opaque. MSAA resolves leaf coverage against the
+    // scene background; a second browser alpha composite would add pale halos.
+    const rendererOptions = {
+      alpha: false,
+      depth: true,
+      stencil: true,
+      antialias: true,
+      powerPreference: 'high-performance',
+      preserveDrawingBuffer: false
+    };
+    const renderContext = canvas.getContext('webgl2', rendererOptions) || canvas.getContext('webgl', rendererOptions);
+    const renderer = new THREE.WebGLRenderer({ canvas, context: renderContext, ...rendererOptions });
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.5));
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.toneMapping = THREE.NoToneMapping;
+    renderer.toneMappingExposure = 1.08;
+    renderer.shadowMap.enabled = true;
+    renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+    // Camera motion does not change the tree's light-space depth. Reuse all
+    // shadow map until a caster, its alpha mask, or the sun changes.
+    renderer.shadowMap.autoUpdate = false;
+    function invalidateShadows() {
+      renderer.shadowMap.needsUpdate = true;
+    }
+    invalidateShadows();
+
+
+    // 2. CAMERA SETUP (EXACT BLENDER CAMERA PARAMETERS)
+    // Blender: loc = [37.91, -28.07, 18.18], Blender Z-up -> glTF Y-up: [37.91, 18.18, 28.07]
+    const camera = new THREE.PerspectiveCamera(43, window.innerWidth / window.innerHeight, 0.5, 300);
+    const blenderCamPos = new THREE.Vector3(37.9, 18.2, 28.1);
+    const treeTarget = new THREE.Vector3(0, 11.5, 0); // Tree center
+    camera.position.copy(blenderCamPos);
+
+    // 3. ORBIT CONTROLS
+    const controls = new OrbitControls(camera, renderer.domElement);
+    controls.target.copy(treeTarget);
+    controls.enableDamping = true;
+    controls.dampingFactor = 0.15;
+    controls.enablePan = true;
+    controls.screenSpacePanning = true;
+    controls.addEventListener('change', () => {
+      // Right-drag can change the height, but the orbit axis stays on the trunk.
+      const offsetX = controls.target.x - treeTarget.x;
+      const offsetZ = controls.target.z - treeTarget.z;
+      camera.position.x -= offsetX;
+      camera.position.z -= offsetZ;
+      controls.target.x = treeTarget.x;
+      controls.target.z = treeTarget.z;
+    });
+    controls.minDistance = 3;
+    controls.maxDistance = 140;
+    controls.maxPolarAngle = Math.PI - 0.02; // Allow viewing roots from below
+    const savedCameraViewKey = 'strom.camera-view.v1';
+    try {
+      const savedCameraView = JSON.parse(localStorage.getItem(savedCameraViewKey) || 'null');
+      if (Array.isArray(savedCameraView?.position) && savedCameraView.position.length === 3
+          && savedCameraView.position.every(Number.isFinite)) {
+        camera.position.fromArray(savedCameraView.position);
+        controls.target.copy(treeTarget);
+        if (Number.isFinite(savedCameraView?.target?.[1])) {
+          controls.target.y = savedCameraView.target[1];
+        }
+        controls.update();
+      }
+    } catch { /* A missing or invalid saved view keeps the default camera. */ }
+    document.getElementById('btnSaveCameraView').addEventListener('click', () => {
+      try {
+        localStorage.setItem(savedCameraViewKey, JSON.stringify({
+          position: camera.position.toArray(),
+          target: controls.target.toArray()
+        }));
+        showToast('Pohled kamery uložen pro příští spuštění');
+      } catch {
+        showToast('Pohled kamery se nepodařilo uložit');
+      }
+    });
+
+    // 4. One sun with daytime ambient fill and moonlight at night.
+    const lightsGroup = new THREE.Group();
+    scene.add(lightsGroup);
+    const sunStrength = 50.4;
+    // Sky fill comes from above; the ground contributes no light from below.
+    const daytimeAmbient = new THREE.HemisphereLight(0xe4edff, 0x000000, 0);
+    daytimeAmbient.position.set(0, 1, 0);
+    scene.add(daytimeAmbient);
+    const sun1 = new THREE.DirectionalLight(0xffffff, sunStrength);
+    sun1.name = 'Canopy Sun';
+    sun1.color.setRGB(1.2123382850, 0.9605242564, 0.7617739723);
+    sun1.target.position.set(0, 10, 0);
+    scene.add(sun1.target);
+    const sunAzimuths = [THREE.MathUtils.degToRad(57.25)];
+    const initialPitch = THREE.MathUtils.degToRad(45);
+    sun1.position.set(86.1 * Math.cos(initialPitch) * Math.cos(sunAzimuths[0]),
+      86.1 * Math.sin(initialPitch), 86.1 * Math.cos(initialPitch) * Math.sin(sunAzimuths[0])).add(sun1.target.position);
+    sun1.castShadow = true;
+    sun1.shadow.mapSize.set(1024, 1024);
+    Object.assign(sun1.shadow.camera, { near: 35, far: 135, left: -17, right: 17, top: 22, bottom: -16 });
+    sun1.shadow.bias = -0.0003;
+    sun1.shadow.normalBias = 0.015;
+    sun1.shadow.radius = 2;
+    lightsGroup.add(sun1);
+    const allSuns = [sun1];
+
+    // Moon opposite the sun, with its original soft blue light.
+    const moonLight = new THREE.DirectionalLight(0xb9d2ff, 0);
+    moonLight.target = sun1.target;
+    scene.add(moonLight);
+    const moonMaterial = new THREE.MeshBasicMaterial({
+      color: 0xdce7ff, transparent: true, opacity: 0, toneMapped: false
+    });
+    // Roughly half a degree across at the sky radius below.
+    const moonMesh = new THREE.Mesh(new THREE.SphereGeometry(0.32, 24, 16), moonMaterial);
+    moonMesh.visible = false;
+    scene.add(moonMesh);
+
+    // 4b. VIZUÁLNÍ UKAZATEL SMĚRU SVĚTLA & SLUNCE V PROSTORU (Ukaž odkud jde světlo)
+    const sunHelpersGroup = new THREE.Group();
+    sunHelpersGroup.visible = false;
+    lightsGroup.add(sunHelpersGroup);
+
+    // Visible sun disc, independent of the optional direction helpers.
+    // Render the supplied PNG directly, including all original brush coverage.
+    const sunSurfaceTexture = new THREE.TextureLoader().load('./web_assets/sun_brush_user.png?v=92a8bc3f');
+    sunSurfaceTexture.colorSpace = THREE.SRGBColorSpace;
+    sunSurfaceTexture.generateMipmaps = false;
+    sunSurfaceTexture.minFilter = THREE.LinearFilter;
+    sunSurfaceTexture.magFilter = THREE.LinearFilter;
+    const sunMat = new THREE.SpriteMaterial({
+      map: sunSurfaceTexture,
+      color: 0xffffff,
+      transparent: true,
+      opacity: 1,
+      alphaTest: 0,
+      depthWrite: false,
+      toneMapped: false
+    });
+    const sunHorizonColor = new THREE.Color(0xff4f27);
+    const sunDayColor = new THREE.Color(0xffedac);
+    // Keep the original PNG's brush coverage while letting daylight set its hue.
+    sunMat.customProgramCacheKey = () => 'sun_brush_daylight_colour_1';
+    sunMat.onBeforeCompile = shader => {
+      shader.fragmentShader = shader.fragmentShader.replace('#include <map_fragment>', `
+        #include <map_fragment>
+        #ifdef USE_MAP
+          diffuseColor.rgb = diffuse * mix(0.85, 1.0, clamp(sampledDiffuseColor.r, 0.0, 1.0));
+        #endif
+      `);
+    };
+    const sunMesh1 = new THREE.Sprite(sunMat);
+    sunMesh1.scale.set(6, 6, 1);
+    const sunMarkerDistance = 22;
+    sunMesh1.position.copy(sun1.position).sub(sun1.target.position).normalize().multiplyScalar(sunMarkerDistance).add(sun1.target.position);
+    lightsGroup.add(sunMesh1);
+
+    // Zářící koróna kolem hlavního slunce (vždy čelem ke kameře)
+    const coronaGeo = new THREE.RingGeometry(2.6, 5.0, 32);
+    const coronaMat = new THREE.MeshBasicMaterial({
+      color: 0xffc107,
+      side: THREE.DoubleSide,
+      transparent: true,
+      opacity: 0.65
+    });
+    const coronaMesh = new THREE.Mesh(coronaGeo, coronaMat);
+    coronaMesh.position.copy(sunMesh1.position);
+    coronaMesh.visible = false;
+    sunHelpersGroup.add(coronaMesh);
+
+    // Zlatý paprsek od slunce přímo do středu stromu
+    const rayPoints = [sun1.position.clone(), new THREE.Vector3(0, 11.5, 0)];
+    const rayGeo = new THREE.BufferGeometry().setFromPoints(rayPoints);
+    const rayLine = new THREE.Line(rayGeo, new THREE.LineDashedMaterial({
+      color: 0xffd54f,
+      dashSize: 2.0,
+      gapSize: 1.0,
+      transparent: true,
+      opacity: 0.8
+    }));
+    rayLine.computeLineDistances();
+    sunHelpersGroup.add(rayLine);
+
+    // Zlatá směrová šipka přímo nad korunou stromu (ukazuje přesný úhel dopadu světla na strom)
+    const sunDirVec = new THREE.Vector3().subVectors(new THREE.Vector3(0, 11.5, 0), sun1.position).normalize();
+    const crownArrow = new THREE.ArrowHelper(
+      sunDirVec,
+      new THREE.Vector3(0, 26, 0),
+      8.0,
+      0xffc107,
+      2.5,
+      1.2
+    );
+    crownArrow.visible = false;
+    sunHelpersGroup.add(crownArrow);
+
+    // 3D Šítek "☀️ HLAVNÍ SLUNCE"
+    const sunCanvas = document.createElement('canvas');
+    sunCanvas.width = 600;
+    sunCanvas.height = 140;
+    const sctx = sunCanvas.getContext('2d');
+    sctx.scale(2, 2);
+    sctx.fillStyle = 'rgba(18, 20, 26, 0.88)';
+    sctx.beginPath();
+    sctx.roundRect ? sctx.roundRect(4, 4, 292, 62, 12) : sctx.rect(4, 4, 292, 62);
+    sctx.fill();
+    sctx.strokeStyle = '#ffd54f';
+    sctx.lineWidth = 3;
+    sctx.stroke();
+    sctx.fillStyle = '#ffffff';
+    sctx.font = 'bold 24px Inter, sans-serif';
+    sctx.textAlign = 'center';
+    sctx.textBaseline = 'middle';
+    sctx.fillText('☀️ SLUNCE & OBLOHA', 150, 35);
+    const sunLabelTex = new THREE.CanvasTexture(sunCanvas);
+    sunLabelTex.minFilter = THREE.LinearMipmapLinearFilter;
+    sunLabelTex.magFilter = THREE.LinearFilter;
+    sunLabelTex.anisotropy = Math.min(8, renderer.capabilities.getMaxAnisotropy());
+    const sunLabel = new THREE.Sprite(new THREE.SpriteMaterial({ map: sunLabelTex, transparent: true }));
+    sunLabel.scale.set(11, 2.6, 1);
+    sunLabel.position.copy(sunMesh1.position).add(new THREE.Vector3(0, 5.0, 0));
+    sunHelpersGroup.add(sunLabel);
+
+    // Ground plane (for shadow reception and terrain boundary)
+    const groundGeo = new THREE.PlaneGeometry(80, 80);
+    const groundMat = new THREE.MeshStandardMaterial({
+      color: 0xcfd1c2,
+      roughness: 0.9,
+      transparent: true,
+      opacity: 0.5,
+      depthWrite: false
+    });
+    const groundPlane = new THREE.Mesh(groundGeo, groundMat);
+    groundPlane.rotation.x = -Math.PI / 2;
+    groundPlane.position.y = 0; // Ground surface
+    groundPlane.receiveShadow = true;
+    groundPlane.visible = false; // Off by default, toggleable in UI
+    scene.add(groundPlane);
+
+    // Invisible to the camera, but opaque in the lights' shadow maps.
+    const groundLightBlocker = new THREE.Mesh(
+      new THREE.PlaneGeometry(200, 200),
+      new THREE.MeshBasicMaterial({
+        side: THREE.DoubleSide,
+        shadowSide: THREE.DoubleSide,
+        colorWrite: false,
+        depthWrite: false
+      })
+    );
+    groundLightBlocker.name = 'Invisible ground light blocker';
+    groundLightBlocker.rotation.x = -Math.PI / 2;
+    groundLightBlocker.position.y = -0.02;
+    groundLightBlocker.castShadow = true;
+    scene.add(groundLightBlocker);
+
+    // 5. TOON / CEL-SHADING SHADERS (EXACT 1:1 REPLICATION OF BLENDER NPR MAT 003, 005 & SEASON)
+    const textureLoader = new THREE.TextureLoader();
+    const [leafReference,barkReference,branchDryingReference] = await Promise.all([loadLeafReference(textureLoader),loadBarkReference(),loadBranchDryingReference()]);
+
+    const shaderUniforms = {
+      uSunDirection: { value: new THREE.Vector3(0.5, 0.8, 0.4).normalize() },
+      uSunIntensity: { value: 1.0 },     // Napojeno na sliderSun
+      uSceneIllumination: { value: 1.0 },
+      uMoonDirection: { value: new THREE.Vector3(0, 1, 0) },
+      uMoonIntensity: { value: 0 },
+      uLightRotRad: { value: 0.0 },      // Napojeno na sliderLightRot (pro kmen)
+      uSeasonOffset: { value: 0.0 }, // 0.0 = original Blender season mix
+      uDryingSpeed: { value: Number(document.getElementById('sliderDryingSpeed').value) / 100 },
+      uYellowPhaseWidth: { value: Number(document.getElementById('sliderYellowPhase').value) / 100 },
+      uLeafFallEnabled: { value: 1.0 },
+      uLeafFallTime: { value: 0.0 },
+      uLeafFallSpeed: { value: Number(document.getElementById('sliderLeafFallSpeed').value) / 100 },
+      uDryingSharpness: { value: Number(document.getElementById('sliderDryingSharpness').value) / 100 },
+      uDryingFrontWidth: { value: branchDryingFrontWidth(branchDryingReference) },
+      uToonSteps: { value: 3.0 },    // Original CONSTANT leaf ramp; three bands for bark
+      uRampThreshold: { value: 1.0 }, // Right CONSTANT stop of Material.003
+      uLeafAlphaStrength: { value: 1.0 }, // Shared by leaf color and shadow materials
+      uCrownAO: { value: 0.45 },
+      uAlphaMode: { value: 2.0 }     // Original Blender brush; stochastic pattern is fixed in leaf UV space
+    };
+
+    const leafToonMat1 = createLeafMaterial(0, leafReference, shaderUniforms); // Material.003 - Leaf Type 1
+    const leafToonMat2 = createLeafMaterial(1, leafReference, shaderUniforms); // Material.005 - Leaf Type 2
+    const leafDepthMat1 = createLeafDepthMaterial(0, leafReference, shaderUniforms);
+    const leafDepthMat2 = createLeafDepthMaterial(1, leafReference, shaderUniforms);
+    const leafBreeze = setupLeafBreeze([leafToonMat1, leafToonMat2, leafDepthMat1, leafDepthMat2], { leafCenters: true });
+    const barkToonMat = createBarkMaterial(barkReference,leafReference,shaderUniforms);
+    const canopyOcclusion = new CanopyOcclusion(leafReference, shaderUniforms);
+
+    // 6. GLTF TREE LOADER
+    let currentModel = null;
+    let leavesMeshes = [];
+    let trunkMesh = null;
+    let rootsMesh = null;
+    const gltfLoader = new GLTFLoader();
+    const leafControls = new LeafControls({
+      branchDryingReference,
+      sizeInput: document.getElementById('sliderLeafSize'),
+      countInput: document.getElementById('sliderLeafCount'),
+      sizeLabel: document.getElementById('valLeafSize'),
+      countLabel: document.getElementById('valLeafCount'),
+      canopyLabel: document.getElementById('canopyLeafCountLabel'),
+      onChange: () => { initDripZone(); invalidateShadows(); updateCanopyOcclusion(); }
+    });
+
+
+    function updateCanopyOcclusion() {
+      if (currentModel) canopyOcclusion.request(currentModel, leafControls);
+    }
+    let canopyEditTimer;
+    function queueCanopyOcclusion() {
+      clearTimeout(canopyEditTimer);
+      canopyEditTimer = setTimeout(updateCanopyOcclusion, 140);
+    }
+
+    async function loadTreeModel(modelUrl) {
+      loader.classList.remove('hidden');
+      progressBar.style.width = '10%';
+      loadProgressText.textContent = 'Stahuji 3D model stromu...';
+      let referenceAttributes, barkAttributes;
+      try {
+        [referenceAttributes,barkAttributes] = await Promise.all([loadLeafAttributes(modelUrl),loadBarkAttributes(modelUrl)]);
+      } catch (error) {
+        loadProgressText.textContent = 'Chyba načtení Blender materiálu: ' + error.message;
+        console.error(error);
+        return;
+      }
+
+
+      if (currentModel) {
+        scene.remove(currentModel);
+        invalidateShadows();
+      }
+      leavesMeshes = [];
+      trunkMesh = null;
+      rootsMesh = null;
+
+      gltfLoader.load(
+        modelUrl,
+        (gltf) => {
+          progressBar.style.width = '85%';
+          loadProgressText.textContent = 'Aplikuji Blender Toon / Cel-Shader...';
+
+          currentModel = gltf.scene;
+          const lightsToRemove = [];
+          currentModel.traverse((node) => {
+            if (node.isLight) lightsToRemove.push(node);
+          });
+          lightsToRemove.forEach((l) => l.parent && l.parent.remove(l));
+          scene.add(currentModel);
+
+          let totalTris = 0;
+
+          currentModel.traverse((node) => {
+            if (node.isMesh) {
+              node.castShadow = true;
+              node.receiveShadow = true;
+
+              // Ensure geometry has color attribute to prevent WebGL attribute errors
+              if (!node.geometry.attributes.color) {
+                const count = node.geometry.attributes.position.count;
+                const dummyColors = new Float32Array(count * 3);
+                for (let i = 0; i < count; i++) {
+                  dummyColors[i * 3 + 0] = 0.5;
+                  dummyColors[i * 3 + 1] = 0.0;
+                  dummyColors[i * 3 + 2] = 2.0;
+                }
+                node.geometry.setAttribute('color', new THREE.BufferAttribute(dummyColors, 3));
+              }
+
+              const triCount = node.geometry.index ? node.geometry.index.count / 3 : node.geometry.attributes.position.count / 3;
+              totalTris += triCount;
+
+              const origMatName = node.material && node.material.name ? node.material.name : '';
+              const name = node.name.toLowerCase();
+
+              // LEAVES 1 & 2 (Material.003 i Material.005)
+              if (origMatName.includes('003') || name === 'plane001' || origMatName.includes('005') || origMatName === 'Leaf_Material_1' || origMatName === 'Leaf_Material_2' || name === 'plane001_1') {
+                const isMat2 = origMatName.includes('005') || origMatName === 'Leaf_Material_2' || name === 'plane001_1';
+                attachLeafAttributes(node.geometry, referenceAttributes[isMat2 ? 1 : 0]);
+                node.material = isMat2 ? leafToonMat2 : leafToonMat1;
+                node.customDepthMaterial = isMat2 ? leafDepthMat2 : leafDepthMat1; // <-- Listy vrhají stín podle tvaru štětce!
+                // The leaves still cast shadows, but use stable canopy
+                // occlusion for their own shading instead of a moving texel.
+                node.receiveShadow = false;
+                leavesMeshes.push(node);
+
+              }
+              // ROOTS (Tree_Roots)
+              else if (name.includes('roots')) {
+                rootsMesh = node;
+                attachBarkAttributes(node.geometry,barkAttributes.roots);
+                node.material = barkToonMat;
+              }
+              // TRUNK & BRANCHES (Plane001_2)
+              else {
+                trunkMesh = node;
+                attachBarkAttributes(node.geometry,barkAttributes.trunk);
+                node.material = barkToonMat;
+              }
+            }
+          });
+
+          configureTreeEcology();
+          leafControls.setMeshes(leavesMeshes, leafReference.metadata.atlas);
+          updateCanopyOcclusion();
+
+          // Automatické trasování cévního systému podél nejtlustšího kmene a kořenů
+          if (typeof autoCalculateThickestPaths === 'function') {
+            autoCalculateThickestPaths();
+          }
+
+          // Adaptivní aktualizace okapové linie podle skutečné geometrie koruny
+          if (typeof initDripZone === 'function') {
+            initDripZone();
+          }
+
+          invalidateShadows();
+          progressBar.style.width = '100%';
+          loadProgressText.textContent = 'Hotovo!';
+          setTimeout(() => loader.classList.add('hidden'), 350);
+          chapterApp.modelReady();
+          showToast('Blender Toon / Cel-Shader úspěšně aplikován!');
+        },
+        (xhr) => {
+          if (xhr.lengthComputable) {
+            const percent = (xhr.loaded / xhr.total) * 75 + 10;
+            progressBar.style.width = percent + '%';
+            const mbLoaded = (xhr.loaded / (1024 * 1024)).toFixed(1);
+            const mbTotal = (xhr.total / (1024 * 1024)).toFixed(1);
+            loadProgressText.textContent = `Načítám: ${mbLoaded} MB z ${mbTotal} MB`;
+          }
+        },
+        (error) => {
+          console.error('Error loading tree model:', error);
+          loadProgressText.textContent = 'Chyba při načítání!';
+        }
+      );
+    }
+
+    // ==========================================
+    // 6b. CÉVNÍ SYSTÉM & TOK MÍZY (3D TRUBICE / SAP FLOW)
+    // Přesné anatomické osy extrahované přímo z masivních nosných větví a kořenů
+    // ==========================================
+    const junctionPoint = new THREE.Vector3(0.12, 0.32, 0.12);
+
+    // 1. Kořen 1 (spodní vlevo - sestupující větev hluboko do země)
+    const defaultRoot1 = [
+      new THREE.Vector3(-2.008, -1.570, 5.042),
+      new THREE.Vector3(-1.392, -1.360, 4.757),
+      new THREE.Vector3(-0.795, -0.713, 4.473),
+      new THREE.Vector3(-0.470, -0.275, 4.267),
+      new THREE.Vector3(-0.376, -0.238, 3.438),
+      new THREE.Vector3(-0.317, -0.168, 2.576),
+      new THREE.Vector3(-0.116, -0.196, 1.660),
+      new THREE.Vector3(0.012, -0.032, 0.833),
+      junctionPoint
+    ];
+
+    // 2. Kořen 2 (střední vlevo - masivní boční kořen)
+    const defaultRoot2 = [
+      new THREE.Vector3(-3.847, -1.503, 3.279),
+      new THREE.Vector3(-3.160, -0.887, 2.795),
+      new THREE.Vector3(-2.657, -0.261, 2.363),
+      new THREE.Vector3(-2.225, -0.153, 2.008),
+      new THREE.Vector3(-1.640, -0.167, 1.632),
+      new THREE.Vector3(-1.089, -0.207, 1.164),
+      new THREE.Vector3(-0.586, -0.040, 0.605),
+      junctionPoint
+    ];
+
+    // 3. Kořen 3 (pravý kořen - přirozeně klesající oblouk do půdy)
+    const defaultRoot3 = [
+      new THREE.Vector3(4.864, -1.404, 1.094),
+      new THREE.Vector3(4.149, -0.881, 0.776),
+      new THREE.Vector3(3.536, -0.352, 0.754),
+      new THREE.Vector3(2.499, -0.245, 0.616),
+      new THREE.Vector3(1.460, -0.270, 0.272),
+      new THREE.Vector3(0.807, -0.022, 0.123),
+      junctionPoint
+    ];
+
+    // 4. Kmen a větev (středem kmene až do Y=13.5, kde přechází do skutečné masivní pravé větve)
+    const defaultTrunkBranch = [
+      junctionPoint,
+      new THREE.Vector3(0.134, 1.336, 0.076),
+      new THREE.Vector3(0.162, 2.230, 0.166),
+      new THREE.Vector3(0.128, 3.283, 0.259),
+      new THREE.Vector3(0.187, 4.303, 0.325),
+      new THREE.Vector3(0.237, 5.253, 0.398),
+      new THREE.Vector3(0.339, 6.254, 0.476),
+      new THREE.Vector3(0.400, 7.294, 0.550),
+      new THREE.Vector3(0.491, 8.316, 0.531),
+      new THREE.Vector3(0.498, 9.310, 0.439),
+      new THREE.Vector3(0.577, 10.342, 0.375),
+      new THREE.Vector3(0.845, 11.278, 0.381),
+      new THREE.Vector3(1.138, 12.324, 0.487),
+      // Zahnutí přímo do skutečné pravé větve koruny (viditelné bez listí):
+      new THREE.Vector3(0.871, 13.562, 0.103),
+      new THREE.Vector3(1.127, 14.071, 0.073),
+      new THREE.Vector3(1.517, 14.659, 0.044),
+      new THREE.Vector3(1.958, 15.212, 0.067),
+      new THREE.Vector3(2.335, 15.813, 0.053),
+      new THREE.Vector3(3.104, 16.422, 0.132),
+      new THREE.Vector3(3.739, 17.064, -0.679),
+      new THREE.Vector3(4.330, 17.464, -0.836)
+    ];
+
+    // Aktuální trasy cévního systému (dynamicky přepsané trasováním z geometrie sítě).
+    // root1..3 slouží jako záložní (fallback) hodnoty, dokud nedoběhne auto-trasování.
+    const sapPaths = {
+      trunk: [...defaultTrunkBranch],
+      roots: [ [...defaultRoot1], [...defaultRoot2], [...defaultRoot3] ]
+    };
+
+    // Vyčistit případné staré ruční úpravy z localStorage
+    try {
+      localStorage.removeItem('tree_sap_custom_paths');
+    } catch (e) { }
+
+    // Jednoduchá čistá barva pulzující s bílou (bez 3D stínování a bez fresnelu)
+    const sapUniforms = {
+      uTime: { value: 0 },
+      uSpeed: { value: 1.0 },
+      uGlow: { value: 1.0 },
+      uOpacity: { value: 1.0 },                          // Slider opacity (0.0 až 1.0)
+      uColor: { value: new THREE.Color(0x0088ff) },      // jednoduchá sytá vodní modrá bez stínování
+      uHighlightColor: { value: new THREE.Color(0x248cff) },
+      uFlowDirection: { value: 1.0 },
+      uColorCore: { value: new THREE.Color(0xffffff) },  // čistá bílá
+      uColorEdge: { value: new THREE.Color(0x0088ff) },  // zpětná kompatibilita
+      uColorBack: { value: new THREE.Color(0x0088ff) }   // zpětná kompatibilita
+    };
+
+    // The user's cara.png alpha brush, tinted blue; speed/glow/opacity
+    // controls and the original anatomical water routes are preserved.
+    const sapMaterial = await createWaterBrushMaterial(textureLoader, sapUniforms);
+
+    const sapGroup = new THREE.Group();
+    sapGroup.name = "SapFlowGroup";
+    scene.add(sapGroup);
+
+    let sapMeshes = [];
+    let sapJointMesh = null;
+    let sapFlowMinDistance = 0;
+    let sapFlowMaxDistance = 0;
+    let sapFlowRetraction = 0;
+    let sapLeafRedWasStarted = false;
+    let sapLeafRedRetractionActive = false;
+    var sapWaterLabel = null;
+    var isPhotosynthesisReady = false;
+    var photosynthesisGroup = null;
+    var photonGroup = null;
+    var oxygenGroup = null;
+    var carbonDioxideGroup = null;
+    var photolysisSystem = null;
+    var greenRootFlowMesh = null;
+    var photonLineMesh = null;
+    var oxygenLineMesh = null;
+    var photonOrb = null;
+    var photonHalo = null;
+    var reactionOrb = null;
+    var oxygenOrb = null;
+    var photonLabel = null;
+    var oxygenLabel = null;
+    var sunElevationDeg = 45;
+    var sunAzimuthDeg = 0;
+    let baseSapRadius = 0.08;       // Základní tloušťka nastavená uživatelem
+    let treeWaterLiters = 0; // Derived from the shared water store, never set directly by the user.
+    let currentSapRadius = 0.08;
+
+    // Geometry keeps the base radius; each flow scales its width in the shader.
+    function calculateEffectiveSapRadius() {
+      return baseSapRadius;
+    }
+
+    function refreshSapTubes() {
+      currentSapRadius = calculateEffectiveSapRadius();
+      buildSapTubes(currentSapRadius);
+      const valThicknessEl = document.getElementById('valSapThickness');
+      if (valThicknessEl) {
+        valThicknessEl.textContent = `${currentSapRadius.toFixed(2)} m`;
+      }
+    }
+
+    function buildSapTubes(radius) {
+      currentSapRadius = radius;
+      // Vyčistit starou geometrii trubic
+      sapMeshes.forEach(m => {
+        sapGroup.remove(m);
+        if (m.geometry) m.geometry.dispose();
+      });
+      sapMeshes = [];
+
+      if (sapJointMesh) {
+        sapGroup.remove(sapJointMesh);
+        if (sapJointMesh.geometry) sapJointMesh.geometry.dispose();
+        sapJointMesh = null;
+      }
+
+      // Kmen + libovolný počet automaticky nalezených kořenů
+      const curvesData = [
+        { pts: sapPaths.trunk, segs: Math.max(48, (sapPaths.trunk || []).length * 8) }
+      ];
+      const rootCount = (sapPaths.roots || []).length;
+      const glucoseRootIndices = rootCount >= 2
+        ? [0, rootCount - 1]
+        : [];
+      (sapPaths.roots || []).forEach((rp, rootIndex) => {
+        // These two roots are reserved for the purple glucose return flow.
+        if (glucoseRootIndices.includes(rootIndex)) return;
+        curvesData.push({ pts: rp, segs: Math.max(32, (rp || []).length * 8) });
+      });
+
+      curvesData.forEach((d, pathIndex) => {
+        if (d.pts && d.pts.length >= 2) {
+          const curve = new THREE.CatmullRomCurve3(d.pts, false, 'centripetal');
+          if (pathIndex === 0) {
+            sapFlowMaxDistance = curve.getLength();
+            sapFlowMinDistance = 0;
+          } else {
+            sapFlowMinDistance = Math.min(sapFlowMinDistance, -curve.getLength());
+          }
+          const geo = new THREE.TubeGeometry(curve, d.segs, radius, 12, false);
+          addWaterBrushAttributes(geo, curve, pathIndex === 0 ? 0 : -curve.getLength());
+          const mesh = new THREE.Mesh(geo, sapMaterial);
+          mesh.renderOrder = 8;
+          sapGroup.add(mesh);
+          sapMeshes.push(mesh);
+        }
+      });
+
+      // Kulové spojení v patě kmene
+      const jointGeo = new THREE.SphereGeometry(radius * 1.35, 16, 16);
+      addWaterBrushAttributes(jointGeo);
+      sapJointMesh = new THREE.Mesh(jointGeo, sapMaterial);
+      sapJointMesh.position.copy(junctionPoint);
+      sapJointMesh.renderOrder = 8;
+      sapGroup.add(sapJointMesh);
+
+      // Aktualizace pozice štítku H₂O doprostřed kmenové části
+      if (typeof updateSapWaterLabelPosition === 'function') {
+        updateSapWaterLabelPosition();
+      }
+      if (isPhotosynthesisReady && typeof buildPhotosynthesisLines === "function") {
+        buildPhotosynthesisLines(radius);
+      }
+    }
+
+    // ==========================================================================
+    //  AUTOMATICKÉ TRASOVÁNÍ CÉVNÍHO SYSTÉMU Z GEOMETRIE SÍTĚ
+    //  1) Kmen: "prstenový walker" – sít je sled prstenců vrcholů po křivce
+    //     větve; prstence za sebou v bufferu tvoří přesnou osu kmene a na
+    //     vidlicích se pokračuje nejsilnějším navazujícím prstencem.
+    //  2) Kořeny: geodesické trasování (Dijkstra po povrchu sítě) z automaticky
+    //     detekovaných dominantních směrů kořenů do paty kmene.
+    // ==========================================================================
+    function traceSapAnatomy(trunkGeo, rootsGeo, junction) {
+      const angDiff = (a, b) => { let d = Math.abs(a - b) % (Math.PI * 2); return d > Math.PI ? Math.PI * 2 - d : d; };
+
+      function flatten(geo) {
+        const pos = geo.attributes.position;
+        const N = pos.count;
+        const V = new Float32Array(N * 3);
+        for (let i = 0; i < N; i++) { V[i * 3] = pos.getX(i); V[i * 3 + 1] = pos.getY(i); V[i * 3 + 2] = pos.getZ(i); }
+        return { V, N };
+      }
+      function makeGrid(V, N, cell) {
+        const g = new Map();
+        for (let i = 0; i < N; i++) {
+          const k = ((Math.floor(V[i * 3] / cell) + 512) * 1024 + (Math.floor(V[i * 3 + 1] / cell) + 512)) * 1024 + (Math.floor(V[i * 3 + 2] / cell) + 512);
+          let a = g.get(k); if (!a) { a = []; g.set(k, a); }
+          a.push(i);
+        }
+        return { g, cell };
+      }
+      function cellNbrs(G, V, i, R, out) {
+        out.length = 0;
+        const cell = G.cell, g = G.g;
+        const R2 = R * R;
+        const bx = Math.floor(V[i * 3] / cell), by = Math.floor(V[i * 3 + 1] / cell), bz = Math.floor(V[i * 3 + 2] / cell);
+        for (let x = bx - 1; x <= bx + 1; x++) for (let y = by - 1; y <= by + 1; y++) for (let z = bz - 1; z <= bz + 1; z++) {
+          const a = g.get(((x + 512) * 1024 + (y + 512)) * 1024 + (z + 512)); if (!a) continue;
+          for (let t = 0; t < a.length; t++) {
+            const j = a[t]; if (j === i) continue;
+            const dx = V[j * 3] - V[i * 3], dy = V[j * 3 + 1] - V[i * 3 + 1], dz = V[j * 3 + 2] - V[i * 3 + 2];
+            if (dx * dx + dy * dy + dz * dz <= R2) out.push(j);
+          }
+        }
+        return out;
+      }
+
+      // ---------- 1) KMEN: prstenový walker ----------
+      function buildRings(V, N) {
+        const rings = [];
+        let s = 0;
+        for (let i = 1; i < N; i++) {
+          const d = Math.hypot(V[i * 3] - V[(i - 1) * 3], V[i * 3 + 1] - V[(i - 1) * 3 + 1], V[i * 3 + 2] - V[(i - 1) * 3 + 2]);
+          if (d < 0.0015 || d > 1.0) { // šev prstence nebo skok mezi větvemi
+            if (i - s >= 3) rings.push({ s, e: i - 1, n: i - s });
+            s = i;
+          }
+        }
+        if (N - s >= 3) rings.push({ s, e: N - 1, n: N - s });
+        for (let k = 0; k < rings.length; k++) {
+          const r = rings[k];
+          let sx = 0, sy = 0, sz = 0;
+          for (let i = r.s; i <= r.e; i++) { sx += V[i * 3]; sy += V[i * 3 + 1]; sz += V[i * 3 + 2]; }
+          const m = r.e - r.s + 1;
+          r.c = new THREE.Vector3(sx / m, sy / m, sz / m);
+          r.cy = sy / m;
+        }
+        return rings;
+      }
+      function walkStem(rings, startIdx, maxSteps, minAlign) {
+        if (!rings[startIdx]) return []; // Full GLB may not preserve consecutive trunk rings.
+        const path = [rings[startIdx].c.clone()];
+        let idx = startIdx;
+        const useDir = new THREE.Vector3(0, 1, 0);
+        for (let s = 0; s < maxSteps; s++) {
+          const c0 = rings[idx];
+          let bestJ = -1, bestScore = -Infinity, bestAlign = 0;
+          for (let j = Math.max(0, idx - 2); j < Math.min(rings.length, idx + 12); j++) {
+            if (j === idx) continue;
+            const r = rings[j];
+            if (r.s < c0.e) continue;                 // musí být dál v bufferu
+            const dx = r.c.x - c0.c.x, dy = r.c.y - c0.c.y, dz = r.c.z - c0.c.z;
+            const dist = Math.hypot(dx, dy, dz);
+            if (dist < 1e-6 || dist > 1.35) continue; // moc daleko = jiná větev
+            const align = (dx * useDir.x + dy * useDir.y + dz * useDir.z) / dist;
+            const gap = Math.abs(r.s - c0.e);
+            const score = align * 2.0 - gap * 0.01 + Math.log(r.n) * 0.05; // plynulost + tloušťka
+            if (score > bestScore) { bestScore = score; bestJ = j; bestAlign = align; }
+          }
+          if (bestJ < 0 || bestAlign < minAlign * 0.6) break;
+          const bc = rings[bestJ].c;
+          useDir.set(bc.x - c0.c.x, bc.y - c0.c.y, bc.z - c0.c.z).normalize().lerp(useDir, 0.3).normalize();
+          idx = bestJ;
+          path.push(bc.clone());
+        }
+        return path;
+      }
+      function findBaseRing(rings) {
+        let best = 0, bestScore = Infinity;
+        for (let i = 0; i < rings.length; i++) {
+          const r = rings[i];
+          if (r.n < 4) continue;
+          const score = r.cy * 10 + Math.hypot(r.c.x, r.c.z);
+          if (score < bestScore) { bestScore = score; best = i; }
+        }
+        return best;
+      }
+
+      // ---------- 2) KOŘENY: geodesické trasování ----------
+      function largestComponent(V, N, G, linkR) {
+        const seen = new Uint8Array(N), mask = new Uint8Array(N);
+        const q = [], nb = [];
+        let bestSize = 0, bestMem = null;
+        for (let s = 0; s < N; s++) {
+          if (seen[s]) continue;
+          seen[s] = 1; q.length = 0; q.push(s);
+          const mem = [];
+          while (q.length) {
+            const i = q.pop(); mem.push(i);
+            cellNbrs(G, V, i, linkR, nb);
+            for (let t = 0; t < nb.length; t++) { const j = nb[t]; if (!seen[j]) { seen[j] = 1; q.push(j); } }
+          }
+          if (mem.length > bestSize) { bestSize = mem.length; bestMem = mem; }
+        }
+        for (let t = 0; t < bestMem.length; t++) mask[bestMem[t]] = 1;
+        return { mask, size: bestSize };
+      }
+      function rootDirections(V, N, mask, count) {
+        const bins = 72, step = 360 / bins;
+        const maxR = new Float32Array(bins);
+        for (let i = 0; i < N; i++) {
+          if (!mask[i]) continue;
+          if (V[i * 3 + 1] > 0.45) continue;               // jen podzemní část
+          const r = Math.hypot(V[i * 3], V[i * 3 + 2]);
+          if (r < 1.6) continue;
+          const b = Math.floor(((Math.atan2(V[i * 3 + 2], V[i * 3]) + Math.PI) / (Math.PI * 2)) * bins) % bins;
+          if (r > maxR[b]) maxR[b] = r;
+        }
+        const sm = new Float32Array(bins);
+        for (let b = 0; b < bins; b++) sm[b] = (maxR[(b - 1 + bins) % bins] + 2 * maxR[b] + maxR[(b + 1) % bins]) / 4;
+        const peaks = [];
+        for (let b = 0; b < bins; b++) {
+          if (sm[b] >= sm[(b - 1 + bins) % bins] && sm[b] >= sm[(b + 1) % bins] && sm[b] > 3.0) peaks.push({ deg: b * step - 180, r: sm[b] });
+        }
+        peaks.sort((a, b) => b.r - a.r);
+        const kept = [];
+        for (let i = 0; i < peaks.length; i++) {
+          const p = peaks[i];
+          let tooClose = false;
+          for (let k = 0; k < kept.length; k++) if (Math.abs(((kept[k].deg - p.deg + 540) % 360) - 180) < 45) { tooClose = true; break; }
+          if (!tooClose) kept.push(p);
+          if (kept.length >= count) break;
+        }
+        return kept;
+      }
+      function dijkstraRoot(V, N, G, mask, junctionPt, deg, spreadDeg, linkR) {
+        const a0 = deg * Math.PI / 180, spread = spreadDeg * Math.PI / 180;
+        let tip = -1, tipR = -1;
+        for (let i = 0; i < N; i++) {
+          if (!mask[i]) continue;
+          const r = Math.hypot(V[i * 3], V[i * 3 + 2]);
+          if (r < 2) continue;
+          if (angDiff(Math.atan2(V[i * 3 + 2], V[i * 3]), a0) > spread * 0.75) continue;
+          if (r > tipR) { tipR = r; tip = i; }
+        }
+        if (tip < 0) return null;
+
+        const dist = new Float32Array(N).fill(Infinity);
+        const prev = new Int32Array(N).fill(-1);
+        const done = new Uint8Array(N);
+        const heap = [];
+        const push = (d, i) => { heap.push([d, i]); let c = heap.length - 1; while (c > 0) { const p = (c - 1) >> 1; if (heap[p][0] <= heap[c][0]) break; const t = heap[p]; heap[p] = heap[c]; heap[c] = t; c = p; } };
+        const pop = () => { const top = heap[0], last = heap.pop(); if (heap.length) { heap[0] = last; let c = 0; for (; ;) { const l = 2 * c + 1, r = 2 * c + 2; let m = c; if (l < heap.length && heap[l][0] < heap[m][0]) m = l; if (r < heap.length && heap[r][0] < heap[m][0]) m = r; if (m === c) break; const t = heap[m]; heap[m] = heap[c]; heap[c] = t; c = m; } } return top; };
+        dist[tip] = 0; push(0, tip);
+
+        const nb = [];
+        let goal = -1, iter = 0;
+        while (heap.length > 0) {
+          const top = pop(); const d = top[0], i = top[1];
+          if (done[i]) continue; done[i] = 1;
+          if (i !== tip && Math.hypot(V[i * 3], V[i * 3 + 2]) < 0.75) { goal = i; break; }
+          if (++iter > 900000) break;
+          cellNbrs(G, V, i, linkR, nb);
+          for (let t = 0; t < nb.length; t++) {
+            const j = nb[t]; if (done[j]) continue;
+            const dx = V[j * 3] - V[i * 3], dy = V[j * 3 + 1] - V[i * 3 + 1], dz = V[j * 3 + 2] - V[i * 3 + 2];
+            const nd = d + Math.hypot(dx, dy, dz);
+            if (nd < dist[j]) { dist[j] = nd; prev[j] = i; push(nd, j); }
+          }
+        }
+        if (goal < 0) return null;
+
+        const raw = [];
+        let c = goal, guard = 0;
+        while (c !== -1 && guard++ < N) { raw.push(new THREE.Vector3(V[c * 3], V[c * 3 + 1], V[c * 3 + 2])); c = prev[c]; }
+        raw.reverse();
+        raw.push(junctionPt.clone());
+
+        // vyhlazení klouzavým průměrem a převzorkování na ~0.4 m
+        const sm = raw.map((p, i) => {
+          let sx = 0, sy = 0, sz = 0, n = 0;
+          for (let k = Math.max(0, i - 7); k <= Math.min(raw.length - 1, i + 7); k++) { sx += raw[k].x; sy += raw[k].y; sz += raw[k].z; n++; }
+          return new THREE.Vector3(sx / n, sy / n, sz / n);
+        });
+        const out = [sm[0]];
+        for (let i = 0; i < sm.length; i++) if (sm[i].distanceTo(out[out.length - 1]) >= 0.4) out.push(sm[i]);
+        if (out[out.length - 1].distanceTo(sm[sm.length - 1]) > 0.05) out.push(sm[sm.length - 1]);
+        out[out.length - 1].copy(junctionPt);
+        return { pts: out, deg: deg };
+      }
+
+      // ---------- 3) OŘEZ OBRATU (zákrut / "otočení o 360°" na konci cesty) ----------
+      //  Porovnává směr cesty přes okno bodů. Když se lokální směr obrátí
+      //  (tečna "před" a "za" bodem míří proti sobě), cesta se vrací zpět –
+      //  typicky když trasování na vidlici vklouzne do větve a ta se ohne zpátky.
+      //  V takovém bodě cestu uřízneme.
+      function trimReversal(path, window, threshold) {
+        if (path.length < window * 2 + 2) return path;
+        for (let i = window; i < path.length; i++) {
+          const a = path[Math.max(0, i - window)], b = path[i], c = path[Math.min(path.length - 1, i + window)];
+          const d1x = b.x - a.x, d1y = b.y - a.y, d1z = b.z - a.z;
+          const d2x = c.x - b.x, d2y = c.y - b.y, d2z = c.z - b.z;
+          const l1 = Math.hypot(d1x, d1y, d1z), l2 = Math.hypot(d2x, d2y, d2z);
+          if (l1 < 1e-9 || l2 < 1e-9) continue;
+          const dot = (d1x * d2x + d1y * d2y + d1z * d2z) / (l1 * l2);
+          if (dot < threshold) return path.slice(0, Math.max(2, i - 1));
+        }
+        return path;
+      }
+
+      const result = { stem: [], roots: [] };
+
+      if (trunkGeo) {
+        const trunk = flatten(trunkGeo);
+        const rings = buildRings(trunk.V, trunk.N);
+        if (!rings.length) return result; // Keep fallback paths for the differently ordered full GLB.
+        const startIdx = findBaseRing(rings);
+        const stem = walkStem(rings, startIdx, 260, 0.55);
+        const clean = [stem[0]];
+        for (let i = 1; i < stem.length; i++) {
+          const d = stem[i].distanceTo(clean[clean.length - 1]);
+          if (d > 0.08 && stem[i].y >= clean[clean.length - 1].y - 0.02) clean.push(stem[i]);
+        }
+        // Odříznout zákrut na konci (kmen končí v koruně, ne otočkou zpět)
+        //  Širší okno (10) + volnější práh = povolený plynulý oblouk, řez až u skutečného obratu.
+        if (clean.length >= 2) result.stem = trimReversal(clean, 10, -0.55);
+      }
+
+      if (rootsGeo) {
+        const roots = flatten(rootsGeo);
+        const CELL = 0.35, LINK = 0.34;
+        const G = makeGrid(roots.V, roots.N, CELL);
+        const LC = largestComponent(roots.V, roots.N, G, LINK);
+        const dirs = rootDirections(roots.V, roots.N, LC.mask, 6);
+        for (let i = 0; i < dirs.length; i++) {
+          const r = dijkstraRoot(roots.V, roots.N, G, LC.mask, junction, dirs[i].deg, 34, LINK);
+          if (r && r.pts.length >= 3) result.roots.push(trimReversal(r.pts, Math.min(6, Math.floor(r.pts.length / 4)), -0.55));
+        }
+      }
+      return result;
+    }
+
+    // AUTOMATICKÝ PŘEPOČET TRAS CÉVNÍHO SYSTÉMU Z GEOMETRIE
+    function autoCalculateThickestPaths() {
+      if (!trunkMesh || !rootsMesh) return;
+      try {
+        const t0 = (typeof performance !== 'undefined') ? performance.now() : 0;
+        const res = traceSapAnatomy(trunkMesh.geometry, rootsMesh.geometry, junctionPoint);
+        if (res.stem && res.stem.length >= 2) sapPaths.trunk = res.stem;
+        if (res.roots && res.roots.length >= 1) sapPaths.roots = res.roots;
+        refreshSapTubes();
+        const dt = (typeof performance !== 'undefined') ? (performance.now() - t0) : 0;
+        const nRoots = (sapPaths.roots || []).length;
+        console.log(`[SapFlow] Anatomie natrasována: kmen ${sapPaths.trunk.length} bodů, ${nRoots} kořenů (${dt.toFixed(0)} ms)`);
+        showToast(`💧 Cévní systém natrasován podle kmene a ${nRoots} kořenů!`);
+      } catch (err) {
+        console.error('[SapFlow] Trasování selhalo, ponechávám záložní trasy:', err);
+      }
+    }
+
+    // Výchozí sestavení trubic podle aktuální zásoby vody a tloušťky
+    refreshSapTubes();
+
+    // ==========================================
+    // 6b-2. FOTON & O₂ TOK (DVĚ JEDNODUCHÉ ROVNÉ 3D LINKY)
+    //  Všechny 3 linky se stýkají v reakčním místě fotosyntézy na konci větve koruny:
+    //  1. Modrá linka: Voda (H₂O) z kořenů a kmene přivádí vláhu do listu
+    //  2. Žlutá linka: Foton (Světlo) dopadá jako rovný paprsek ze slunce/nebe do listu
+    //  3. Zelená linka: Kyslík (O₂) uvolněný fotolýzou vody odchází rovně do atmosféry
+    // ==========================================
+    photosynthesisGroup = new THREE.Group();
+    photosynthesisGroup.name = "PhotosynthesisGroup";
+    sapGroup.add(photosynthesisGroup);
+
+    photonGroup = new THREE.Group();
+    photonGroup.name = "PhotonGroup";
+    photosynthesisGroup.add(photonGroup);
+
+    oxygenGroup = new THREE.Group();
+    oxygenGroup.name = "OxygenGroup";
+    photosynthesisGroup.add(oxygenGroup);
+    carbonDioxideGroup = new THREE.Group();
+    carbonDioxideGroup.name = 'CarbonDioxideGroup';
+    photosynthesisGroup.add(carbonDioxideGroup);
+
+    // Sdílené uniformy se systémem mízy + biologická aktivita
+    const photonFlowUniforms = {
+      uTime: sapUniforms.uTime,
+      uSpeed: sapUniforms.uSpeed,
+      uGlow: sapUniforms.uGlow,
+      uOpacity: sapUniforms.uOpacity,
+      uActivity: { value: 1.0 } // 1.0 = optimální hydratace, 0.0 = sucho / stomata uzavřena
+    };
+
+    const photonFlowVert = `
+      varying vec2 vUv;
+      void main() {
+        vUv = uv;
+        gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+      }
+    `;
+
+    const photonFlowFrag = `
+      uniform float uTime;
+      uniform float uSpeed;
+      uniform float uGlow;
+      uniform float uOpacity;
+      uniform float uDir;
+      uniform vec3 uColor;
+      uniform vec3 uCore;
+      uniform float uActivity;
+      varying vec2 vUv;
+
+      void main() {
+        float speed = max(0.05, uSpeed) * max(0.05, uActivity);
+
+        // Putující impulsy bílé barvy (fotony / molekuly O₂)
+        float pc = fract(uTime * 0.38 * speed);
+        float target = (uDir > 0.0) ? pc : (1.0 - pc);
+        float pulse = smoothstep(0.18, 0.0, abs(vUv.x - target));
+
+        float pc2 = fract(uTime * 0.38 * speed + 0.5);
+        float target2 = (uDir > 0.0) ? pc2 : (1.0 - pc2);
+        float pulse2 = smoothstep(0.18, 0.0, abs(vUv.x - target2));
+        float totalPulse = max(pulse, pulse2);
+
+        // Jemná vlna bílého toku podél linky
+        float flowDir = (uDir > 0.0) ? 1.0 : -1.0;
+        float wave = pow(sin(vUv.x * 20.0 - flowDir * uTime * 3.0 * speed) * 0.5 + 0.5, 3.5) * 0.35;
+
+        // Celková míra bílé pulzace
+        float whitePulse = clamp((totalPulse * 0.90 + wave) * min(1.5, uGlow), 0.0, 1.0);
+
+        // Bez jakéhokoliv stínování – čistá plochá barva pulzující s čistou bílou
+        vec3 col = mix(uColor, vec3(1.0, 1.0, 1.0), whitePulse);
+
+        float alpha = uOpacity * max(0.18, uActivity);
+        if (alpha <= 0.001) discard;
+        gl_FragColor = vec4(col, alpha);
+      }
+    `;
+
+    function makePhotonLineMaterial(colorOuter, colorCore, dir) {
+      return new THREE.ShaderMaterial({
+        uniforms: {
+          uTime: photonFlowUniforms.uTime,
+          uSpeed: photonFlowUniforms.uSpeed,
+          uGlow: photonFlowUniforms.uGlow,
+          uOpacity: photonFlowUniforms.uOpacity,
+          uActivity: photonFlowUniforms.uActivity,
+          uDir: { value: dir },
+          uColor: { value: new THREE.Color(colorOuter) },
+          uCore: { value: new THREE.Color(colorCore) }
+        },
+        vertexShader: photonFlowVert,
+        fragmentShader: photonFlowFrag,
+        transparent: true,
+        depthWrite: false,
+        depthTest: false,
+        side: THREE.DoubleSide
+      });
+    }
+
+    // Objekty a geometrie fotosyntetického systému
+    var photonLineMesh = null;
+    var oxygenLineMesh = null;
+    var photonOrb = null;
+    var photonHalo = null;
+    var reactionOrb = null;
+    var oxygenOrb = null;
+
+    // Foton na začátku paprsku – zářící koule slunečního kvanta
+    const pOrbGeo = new THREE.SphereGeometry(0.28, 20, 20);
+    const pOrbMat = new THREE.MeshBasicMaterial({ color: 0xfff9c4 });
+    photonOrb = new THREE.Mesh(pOrbGeo, pOrbMat);
+    photonOrb.renderOrder = 9;
+    photonOrb.visible = false; // The textured sun is the visible source marker.
+
+    const pHaloGeo = new THREE.SphereGeometry(0.62, 20, 20);
+    const pHaloMat = new THREE.MeshBasicMaterial({
+      color: 0xffc107,
+      transparent: true,
+      opacity: 0.38,
+      blending: THREE.AdditiveBlending,
+      depthWrite: false,
+      depthTest: false
+    });
+    photonHalo = new THREE.Mesh(pHaloGeo, pHaloMat);
+    photonHalo.renderOrder = 9;
+    photonHalo.visible = false;
+    photonGroup.add(photonOrb);
+    photonGroup.add(photonHalo);
+
+    // Reakční uzel fotosyntézy (místo setkání vody, fotonu a výstupu kyslíku)
+    const rOrbGeo = new THREE.SphereGeometry(0.18, 16, 16);
+    const rOrbMat = new THREE.MeshBasicMaterial({
+      color: 0x86efac,
+      transparent: true,
+      opacity: 0.85
+    });
+    reactionOrb = new THREE.Mesh(rOrbGeo, rOrbMat);
+    reactionOrb.renderOrder = 9;
+    // The reaction endpoint is kept as an internal pulse target, but is not
+    // rendered as a green sphere at the end of the blue water line.
+    reactionOrb.visible = false;
+
+    // Získání reakčního bodu fotosyntézy (špička kmenové vodní křivky v koruně)
+    function getPhotosynthesisReactionPoint() {
+      const pts = (sapPaths && sapPaths.trunk) ? sapPaths.trunk : defaultTrunkBranch;
+      if (pts && pts.length > 0) return pts[pts.length - 1];
+      return new THREE.Vector3(4.33, 17.46, -0.84);
+    }
+
+    // Sestavení fotosyntetického reakčního uzlu (statické trubice plně nahrazeny částicovým systémem)
+    function buildPhotosynthesisLines(radius = currentSapRadius) {
+      if (!isPhotosynthesisReady) return;
+      const reactionPoint = getPhotosynthesisReactionPoint();
+      if (reactionOrb) {
+        reactionOrb.position.copy(reactionPoint);
+      }
+      if (greenRootFlowMesh) {
+        photosynthesisGroup.remove(greenRootFlowMesh);
+        greenRootFlowMesh.traverse(node => {
+          if (node.geometry) node.geometry.dispose();
+          if (node.material) node.material.dispose();
+        });
+        greenRootFlowMesh = null;
+      }
+      const rootPaths = sapPaths.roots || [];
+      // Glucose returns through the same trunk route as water, then branches
+      // into two separate root routes with the reversed flow direction.
+      const trunkRoute = sapPaths.trunk || [];
+      if (rootPaths.length >= 3 && trunkRoute.length >= 3) {
+        const greenGroup = new THREE.Group();
+        const glucoseCutoff = { value: -1000000.0 };
+        const glucoseRevealBottom = { value: 0.0 };
+        let glucoseMinDistance = Infinity;
+        let glucoseMaxDistance = -Infinity;
+        const trunkPoints = trunkRoute.slice();
+        if (trunkPoints[0].distanceToSquared(junctionPoint)
+            > trunkPoints[trunkPoints.length - 1].distanceToSquared(junctionPoint)) trunkPoints.reverse();
+        const trunkCurve = new THREE.CatmullRomCurve3(trunkPoints, false, 'centripetal');
+        const greenRootIndices = rootPaths.length >= 4
+          ? [0, rootPaths.length - 1]
+          : [0, Math.max(0, rootPaths.length - 1)];
+        // Build the shared trunk once, followed by the two root branches.
+        const glucoseRoutes = [
+          { route: trunkPoints, name: 'Trunk', trunk: true },
+          ...greenRootIndices.map(rootIndex => ({ route: rootPaths[rootIndex], name: `Root${rootIndex}`, trunk: false }))
+        ];
+        for (const { route, name, trunk } of glucoseRoutes) {
+          if (!route || route.length < 3) continue;
+          const oriented = route.slice();
+        if (!trunk && oriented[oriented.length - 1].distanceToSquared(junctionPoint)
+            > oriented[0].distanceToSquared(junctionPoint)) oriented.reverse();
+        const rootCurve = new THREE.CatmullRomCurve3(oriented, false, 'centripetal');
+        // All branches meet at the same offset junction, away from the water.
+        const sideOffset = new THREE.Vector3(0.20, 0, -0.14);
+        const combined = [];
+        if (trunk) {
+          for (let i = 0; i < 58; i++) {
+            combined.push(trunkCurve.getPoint(i / 57).add(sideOffset));
+          }
+        } else for (let i = 0; i < 44; i++) {
+          combined.push(rootCurve.getPoint(0.35 + 0.65 * i / 43).add(sideOffset));
+        }
+        const greenCurve = new THREE.CatmullRomCurve3(combined, false, 'centripetal');
+        if (!greenGroup.userData.sugarAnchor) {
+          greenGroup.userData.sugarAnchor = greenCurve.getPointAt(0.5).toArray();
+        }
+        const geometry = new THREE.TubeGeometry(greenCurve, 320, radius, 12, false);
+        const flowStart = trunk ? 0 : -rootCurve.getLength() * 0.65;
+        addWaterBrushAttributes(geometry, greenCurve, flowStart);
+        glucoseMinDistance = Math.min(glucoseMinDistance, flowStart);
+        glucoseMaxDistance = Math.max(glucoseMaxDistance, flowStart + greenCurve.getLength());
+        const material = sapMaterial.clone();
+        material.uniforms.uTime = sapUniforms.uTime;
+        material.uniforms.uSpeed = sapUniforms.uSpeed;
+        material.uniforms.uGlow = sapUniforms.uGlow;
+        material.uniforms.uOpacity = sapUniforms.uOpacity;
+        // Spring reserves move upward into newly forming leaves; in summer
+        // glucose moves away from mature leaves toward storage and growth.
+        material.uniforms.uFlowDirection = { value: 1.0 };
+        material.uniforms.uWidthScale = { value: 1.0 };
+        material.uniforms.uFlowCutoff = glucoseCutoff;
+        material.uniforms.uFlowRevealBottom = glucoseRevealBottom;
+        material.uniforms.uColor = { value: new THREE.Color(0xd42fd5) };
+        material.uniforms.uHighlightColor = { value: new THREE.Color(0xf4a7ff) };
+          const mesh = new THREE.Mesh(geometry, material);
+          mesh.name = `PhotosynthesisPurpleFlow${name}`;
+          mesh.renderOrder = 9;
+          greenGroup.add(mesh);
+        }
+        greenRootFlowMesh = greenGroup;
+        greenRootFlowMesh.name = 'PhotosynthesisPurpleRootFlows';
+        greenGroup.userData.flowMinDistance = glucoseMinDistance;
+        greenGroup.userData.flowMaxDistance = glucoseMaxDistance;
+        greenGroup.userData.flowCutoff = glucoseCutoff;
+        greenGroup.userData.flowRevealBottom = glucoseRevealBottom;
+        photosynthesisGroup.add(greenRootFlowMesh);
+      }
+      updatePhotosynthesisLabelsPosition();
+    }
+
+    // ==========================================
+    // 6b-3. TEXTOVÉ POPISKY (H₂O, FOTON, O₂)
+    // Čisté texty v písmu Satoshi s chemickým dolním indexem pro H₂O a O₂
+    // Umístěné po straně linek, s pevnou orientací zepředu (neotáčí se s kamerou)
+    // ==========================================
+    function createChemicalTextTexture(text, colorHex) {
+      const canvas = document.createElement('canvas');
+      const width = 512, height = 256, resolution = 2;
+      canvas.width = width * resolution;
+      canvas.height = height * resolution;
+      const ctx = canvas.getContext('2d');
+      ctx.scale(resolution, resolution);
+      ctx.clearRect(0, 0, width, height);
+      ctx.fillStyle = colorHex;
+
+      const fontName = "'Satoshi', Inter, Arial, sans-serif";
+      const centerY = height / 2;
+
+      if (text === 'H2O') {
+        // Chemické zobrazení H₂O: velká písmena H a O, dolní index 2 posunutý níže
+        const mainSize = 160;
+        const subSize = 105;
+        ctx.textBaseline = 'middle';
+        ctx.textAlign = 'left';
+
+        ctx.font = `900 ${mainSize}px ${fontName}`;
+        const wH = ctx.measureText('H').width;
+        const wO = ctx.measureText('O').width;
+
+        ctx.font = `900 ${subSize}px ${fontName}`;
+        const w2 = ctx.measureText('2').width;
+
+        const gap = 3;
+        const totalW = wH + gap + w2 + gap + wO;
+        let curX = (width - totalW) / 2;
+
+        // Písmeno H
+        ctx.font = `900 ${mainSize}px ${fontName}`;
+        ctx.fillText('H', curX, centerY - 12);
+        curX += wH + gap;
+
+        // Číslo 2 (chemický dolní index)
+        ctx.font = `900 ${subSize}px ${fontName}`;
+        ctx.fillText('2', curX, centerY + 36);
+        curX += w2 + gap;
+
+        // Písmeno O
+        ctx.font = `900 ${mainSize}px ${fontName}`;
+        ctx.fillText('O', curX, centerY - 12);
+      } else if (text === 'O2') {
+        // Chemické zobrazení O₂ v azurově modré barvě (#38bdf8)
+        const mainSize = 160;
+        const subSize = 105;
+        ctx.textBaseline = 'middle';
+        ctx.textAlign = 'left';
+
+        ctx.font = `900 ${mainSize}px ${fontName}`;
+        const wO = ctx.measureText('O').width;
+
+        ctx.font = `900 ${subSize}px ${fontName}`;
+        const w2 = ctx.measureText('2').width;
+
+        const gap = 3;
+        const totalW = wO + gap + w2;
+        let curX = (width - totalW) / 2;
+
+        ctx.font = `900 ${mainSize}px ${fontName}`;
+        ctx.fillText('O', curX, centerY - 12);
+        curX += wO + gap;
+
+        ctx.font = `900 ${subSize}px ${fontName}`;
+        ctx.fillText('2', curX, centerY + 36);
+      } else {
+        // Běžný text (např. FOTON) v písmu Satoshi
+        ctx.font = `900 135px ${fontName}`;
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText(text, 256, centerY);
+      }
+
+      const tex = new THREE.CanvasTexture(canvas);
+      tex.minFilter = THREE.LinearMipmapLinearFilter;
+      tex.magFilter = THREE.LinearFilter;
+      tex.anisotropy = Math.min(8, renderer.capabilities.getMaxAnisotropy());
+      tex.needsUpdate = true;
+      return tex;
+    }
+
+    function createTextPlaneMesh(text, colorHex, name) {
+      const tex = createChemicalTextTexture(text, colorHex);
+      const geo = new THREE.PlaneGeometry(1.6, 0.8);
+      const mat = new THREE.MeshBasicMaterial({
+        map: tex,
+        transparent: true,
+        side: THREE.DoubleSide,
+        depthTest: false,
+        depthWrite: false
+      });
+      const mesh = new THREE.Mesh(geo, mat);
+      mesh.name = name;
+      mesh.renderOrder = 10;
+      mesh.rotation.set(0, 0, 0); // Pevná orientace přímo zepředu, neotáčí se s kamerou
+      return mesh;
+    }
+
+    // Automatický reload textur po načtení písma Satoshi
+    if (document.fonts) {
+      document.fonts.load("900 160px 'Satoshi'").then(() => {
+        if (sapWaterLabel && sapWaterLabel.material) {
+          sapWaterLabel.material.map = createChemicalTextTexture('H2O', '#003399');
+          sapWaterLabel.material.map.needsUpdate = true;
+        }
+        if (oxygenLabel && oxygenLabel.material) {
+          oxygenLabel.material.map = createChemicalTextTexture('O2', '#38bdf8');
+          oxygenLabel.material.map.needsUpdate = true;
+        }
+        if (photonLabel && photonLabel.material) {
+          photonLabel.material.map = createChemicalTextTexture('FOTON', '#ffd700');
+          photonLabel.material.map.needsUpdate = true;
+        }
+      });
+    }
+
+    function updateSapWaterLabelPosition() {
+      if (!sapWaterLabel) return;
+      const pts = (sapPaths && sapPaths.trunk) ? sapPaths.trunk : defaultTrunkBranch;
+      if (!pts || pts.length < 2) return;
+
+      const trunkPts = pts.filter(p => p.y <= 12.0);
+      let midPoint;
+      if (trunkPts.length >= 2) {
+        const trunkCurve = new THREE.CatmullRomCurve3(trunkPts, false, 'centripetal');
+        midPoint = trunkCurve.getPoint(0.22); // Posunuto níže do spodní části kmene (výška cca 2.6 m)
+      } else {
+        let best = pts[0];
+        let bestDiff = Math.abs(best.y - 2.6);
+        for (let i = 1; i < pts.length; i++) {
+          const diff = Math.abs(pts[i].y - 2.6);
+          if (diff < bestDiff) { bestDiff = diff; best = pts[i]; }
+        }
+        midPoint = best.clone();
+      }
+
+      // Po straně kmenové vodní linky, pevně zepředu
+      sapWaterLabel.position.set(midPoint.x + 0.95, midPoint.y, midPoint.z + 0.15);
+      sapWaterLabel.rotation.set(0, 0, 0);
+    }
+
+    function updatePhotosynthesisLabelsPosition() {
+      const rx = getPhotosynthesisReactionPoint();
+      if (photolysisSystem) {
+        const pOrigin = photolysisSystem.getPhotonOrigin();
+        if (photonLabel) {
+          const pMid = rx.clone().lerp(pOrigin, 0.52);
+          photonLabel.position.set(pMid.x - 0.75, pMid.y + 0.35, pMid.z + 0.15);
+          photonLabel.rotation.set(0, 0, 0);
+        }
+      }
+      if (oxygenLabel) {
+        oxygenLabel.position.set(rx.x + 1.25, rx.y + 1.15, rx.z - 0.35);
+        oxygenLabel.rotation.set(0, 0, 0);
+      }
+    }
+
+    function initPhotosynthesisLabels() {
+      updatePhotosynthesisLabelsPosition();
+    }
+
+    // Inicializace fotolýzního částicového systému a popisků
+    isPhotosynthesisReady = true;
+    try {
+      photolysisSystem = new PhotolysisSystem({
+        THREE,
+        photonGroup: photonGroup,
+        oxygenGroup: oxygenGroup,
+        carbonGroup: carbonDioxideGroup,
+        getFrontDirection: () => {
+          const rx = getPhotosynthesisReactionPoint();
+          return new THREE.Vector3(camera.position.x - rx.x, 0, camera.position.z - rx.z).normalize();
+        },
+        reactionOrb: reactionOrb,
+        getReactionPoint: getPhotosynthesisReactionPoint,
+        getSunPosition: target => sunMesh1.getWorldPosition(target),
+        getSunDirection: () => {
+          const sunWorld = new THREE.Vector3();
+          if (typeof sunMesh1 !== 'undefined' && sunMesh1) {
+            sunMesh1.getWorldPosition(sunWorld);
+          } else {
+            sunWorld.set(55.63, 61.78, 22.47);
+          }
+          const rx = getPhotosynthesisReactionPoint();
+          return sunWorld.sub(rx).normalize();
+        },
+        treeWaterLiters: treeWaterLiters,
+        sunElevationDeg: sunElevationDeg,
+        streamDistance: 15.0,
+        photonSpeed: 24.0,
+        bubbleSpeed: 2.2,
+        bubbleSpawnDistance: 1.5,
+        photonsPerSecond: 8.0
+      });
+      window.photolysisSystem = photolysisSystem;
+    } catch (err) {
+      console.warn('Nepodařilo se inicializovat PhotolysisSystem:', err);
+    }
+
+    try {
+      buildPhotosynthesisLines(currentSapRadius);
+      initPhotosynthesisLabels();
+    } catch (err) {
+      console.warn('Chyba při sestavování fotosyntetických linek a popisků:', err);
+    }
+
+    // Každý snímek: aktualizace animace fotolýzy a částicových proudů
+    function updatePhotonFlow(delta = 0.016, now = performance.now()) {
+      if (!photosynthesisGroup || !sapGroup.visible) return;
+
+      const speed = (typeof sapUniforms !== 'undefined' && sapUniforms.uSpeed) ? sapUniforms.uSpeed.value : 1.0;
+      const opacity = (typeof sapUniforms !== 'undefined' && sapUniforms.uOpacity) ? sapUniforms.uOpacity.value : 1.0;
+
+      if (photolysisSystem) {
+        photolysisSystem.setWaterVolume(treeWaterLiters);
+        photolysisSystem.setActivity(ecology.activity);
+        photolysisSystem.setSunElevation(sunElevationDeg);
+        photolysisSystem.update(delta);
+
+        updatePhotosynthesisLabelsPosition();
+      }
+
+      // Synchronizace průhlednosti textových popisků se sliderem opacity
+      if (sapWaterLabel && sapWaterLabel.material) sapWaterLabel.material.opacity = opacity;
+      if (photonLabel && photonLabel.material) photonLabel.material.opacity = opacity;
+      if (oxygenLabel && oxygenLabel.material) oxygenLabel.material.opacity = opacity;
+    }
+
+    function updateSapWaterLabel(delta, now) {
+      if (!sapWaterLabel) return;
+      const labelsEnabled = document.getElementById('chkSapWaterLabel')?.checked !== false;
+      sapWaterLabel.visible = labelsEnabled && ecology.transpiration > 0.0001 && sapGroup.visible;
+    }
+
+    // ==========================================
+    // 6c. OKAPOVÁ ZÓNA KORUNY (DRIP LINE & VLÁHOVÝ PÁS)
+    // Biologická zóna dešťového okapu koruny stromu a maximální absorpce savých kořínků
+    // ==========================================
+
+    const dripZoneGroup = new THREE.Group();
+    dripZoneGroup.name = "DripZoneGroup";
+    scene.add(dripZoneGroup);
+
+    // Výchozí sektorové poloměry koruny (36 sektorů po 10° změřených v Blenderu z koruny buku)
+    const defaultDripSectors = [
+      4.45, 4.53, 4.70, 4.73, 4.45, 3.95, 3.45, 3.20, 3.19, 3.22, 3.26, 3.28,
+      3.25, 3.18, 3.17, 3.40, 3.88, 4.24, 4.34, 4.21, 4.07, 4.18, 4.40, 4.56,
+      4.58, 4.48, 4.45, 4.64, 4.95, 5.31, 5.63, 5.80, 5.66, 5.22, 4.75, 4.48
+    ];
+    let activeDripSectors = [...defaultDripSectors];
+    let dripCanopyHeights = new Float32Array(36).fill(18.0);
+
+    let dripLineMesh = null;
+    let dripHitProxy = null;
+    let dripRainMesh = null;
+    let dripRainEnabled = true;
+    let isHoveringDrip = false;
+
+    // Uniforms pro shader okapové linie a kapek (sytá neonová vodní modrá)
+    const dripUniforms = {
+      uTime: { value: 0 },
+      uGlow: { value: 1.0 },
+      uColorCore: { value: new THREE.Color(0x38bdf8) },  // jasná azurová pro světelné impulsy
+      uColorEdge: { value: new THREE.Color(0x0099ff) },  // sytá elektrizující modrá
+      uColorBack: { value: new THREE.Color(0x033866) }   // hluboká sytá vodní modrá báze
+    };
+
+    // 1. Získání 3D bodů okapové linie na terénu (Y = 0.05 m pro čisté zobrazení bez ořezu)
+    function getDripContourPoints(sectors) {
+      const N = sectors.length;
+      const pts = [];
+      for (let s = 0; s < N; s++) {
+        const az = (s / N) * Math.PI * 2;
+        const r = sectors[s];
+        // Blender X -> Three X, Blender Y -> Three Z
+        const x = Math.cos(az) * r;
+        const z = Math.sin(az) * r;
+        pts.push(new THREE.Vector3(x, 0.05, z));
+      }
+      return pts;
+    }
+
+    let currentDripRadius = 0.05;
+
+    // 2. Sestavení čistě bílé okapové linie bez efektů
+    function buildDripLineTube(sectors, radius = currentDripRadius) {
+      currentDripRadius = radius;
+      if (dripLineMesh) {
+        dripZoneGroup.remove(dripLineMesh);
+        if (dripLineMesh.geometry) dripLineMesh.geometry.dispose();
+        if (dripLineMesh.material) dripLineMesh.material.dispose();
+        dripLineMesh = null;
+      }
+      if (dripHitProxy) {
+        dripZoneGroup.remove(dripHitProxy);
+        if (dripHitProxy.geometry) dripHitProxy.geometry.dispose();
+        if (dripHitProxy.material) dripHitProxy.material.dispose();
+        dripHitProxy = null;
+      }
+
+      const pts = getDripContourPoints(sectors);
+      const curve = new THREE.CatmullRomCurve3(pts, true, 'centripetal');
+      const tubeGeo = new THREE.TubeGeometry(curve, 240, radius, 12, true);
+
+      const opInput = document.getElementById('sliderDripGlow');
+      const baseOp = opInput ? parseFloat(opInput.value) / 100 : 0.95;
+
+      const tubeWhiteMat = new THREE.MeshBasicMaterial({
+        color: 0xffffff,
+        transparent: true,
+        opacity: isHoveringDrip ? 1.0 : baseOp,
+        side: THREE.DoubleSide
+      });
+
+      dripLineMesh = new THREE.Mesh(tubeGeo, tubeWhiteMat);
+      dripLineMesh.renderOrder = 9;
+      dripZoneGroup.add(dripLineMesh);
+
+      // 3. Velký neviditelný detekční prostor (hit-proxy) mnohonásobně větší než tloušťka linky:
+      // Zahrnuje široký pás na zemi (cca 2.7 m široký) + svislou stěnu (výška až 8.5 m pro zachycení i v prostoru kapek)
+      const hitMargin = 1.35; // 1.35 m na každou stranu = 2.7 m široký registrační koridor
+      const N_HIT = 72;
+      const hitPositions = [];
+      const hitIndices = [];
+
+      // A) Široký vodorovný pás na úrovni země
+      for (let i = 0; i < N_HIT; i++) {
+        const t = (i / N_HIT) * sectors.length;
+        const idx0 = Math.floor(t) % sectors.length;
+        const idx1 = (idx0 + 1) % sectors.length;
+        const frac = t - Math.floor(t);
+        const r = sectors[idx0] * (1.0 - frac) + sectors[idx1] * frac;
+        const az = (i / N_HIT) * Math.PI * 2;
+        const cosA = Math.cos(az);
+        const sinA = Math.sin(az);
+
+        // Vnitřní bod (r - margin) a vnější bod (r + margin) na zemi (y = 0.04m)
+        hitPositions.push(cosA * Math.max(0.5, r - hitMargin), 0.04, sinA * Math.max(0.5, r - hitMargin));
+        hitPositions.push(cosA * (r + hitMargin), 0.04, sinA * (r + hitMargin));
+
+        const curr = i * 2;
+        const next = ((i + 1) % N_HIT) * 2;
+        hitIndices.push(curr, curr + 1, next);
+        hitIndices.push(curr + 1, next + 1, next);
+      }
+
+      // B) Svislá stěna / opona podél linie (výška až 8.5 m pro zachycení i při najetí na prostor padajících kapek)
+      const baseVOffset = N_HIT * 2;
+      for (let i = 0; i < N_HIT; i++) {
+        const t = (i / N_HIT) * sectors.length;
+        const idx0 = Math.floor(t) % sectors.length;
+        const idx1 = (idx0 + 1) % sectors.length;
+        const frac = t - Math.floor(t);
+        const r = sectors[idx0] * (1.0 - frac) + sectors[idx1] * frac;
+        const az = (i / N_HIT) * Math.PI * 2;
+        const cosA = Math.cos(az);
+        const sinA = Math.sin(az);
+
+        const h = Math.min((dripCanopyHeights && dripCanopyHeights[idx0]) ? dripCanopyHeights[idx0] : 10.0, 8.5);
+        hitPositions.push(cosA * r, 0.02, sinA * r);
+        hitPositions.push(cosA * r, h, sinA * r);
+
+        const curr = baseVOffset + i * 2;
+        const next = baseVOffset + ((i + 1) % N_HIT) * 2;
+        hitIndices.push(curr, curr + 1, next);
+        hitIndices.push(curr + 1, next + 1, next);
+      }
+
+      const hitGeo = new THREE.BufferGeometry();
+      hitGeo.setAttribute('position', new THREE.Float32BufferAttribute(hitPositions, 3));
+      hitGeo.setIndex(hitIndices);
+      hitGeo.computeVertexNormals();
+
+      const hitMat = new THREE.MeshBasicMaterial({
+        transparent: true,
+        opacity: 0.0,
+        depthWrite: false,
+        side: THREE.DoubleSide
+      });
+      dripHitProxy = new THREE.Mesh(hitGeo, hitMat);
+      dripZoneGroup.add(dripHitProxy);
+    }
+
+
+    // 4. Padající kapky vody z okraje koruny (Rain & Drops particle system)
+    const NUM_DRIP_DROPS = 110;
+    const dropData = [];
+
+    // 5. Vodní kruhy (Ripples) na zemi po dopadu kapek
+    const NUM_RIPPLES = 20;
+    const rippleData = [];
+    let rippleMeshes = [];
+
+    function buildDripRipples() {
+      rippleMeshes.forEach(m => {
+        dripZoneGroup.remove(m);
+        if (m.geometry) m.geometry.dispose();
+      });
+      rippleMeshes = [];
+      rippleData.length = 0;
+
+      const ringGeo = new THREE.RingGeometry(0.04, 0.08, 24);
+      ringGeo.rotateX(-Math.PI / 2);
+
+      const rippleMat = new THREE.MeshBasicMaterial({
+        color: 0x38bdf8,
+        transparent: true,
+        opacity: 0.0,
+        side: THREE.DoubleSide,
+        depthWrite: false
+      });
+
+      for (let i = 0; i < NUM_RIPPLES; i++) {
+        const mesh = new THREE.Mesh(ringGeo.clone(), rippleMat.clone());
+        mesh.position.set(0, 0.022, 0);
+        mesh.visible = false;
+        mesh.renderOrder = 8;
+        dripZoneGroup.add(mesh);
+        rippleMeshes.push(mesh);
+        rippleData.push({ active: false, life: 0, maxLife: 0.7, x: 0, z: 0 });
+      }
+    }
+
+    function spawnRipple(x, z) {
+      if (!dripRainEnabled || !isHoveringDrip) return;
+      const freeIdx = rippleData.findIndex(r => !r.active);
+      if (freeIdx === -1) return;
+      const rip = rippleData[freeIdx];
+      rip.active = true;
+      rip.life = 0;
+      rip.maxLife = 0.5 + Math.random() * 0.35;
+      rip.x = x;
+      rip.z = z;
+      const mesh = rippleMeshes[freeIdx];
+      mesh.position.set(x, 0.022, z);
+      mesh.scale.set(0.1, 0.1, 0.1);
+      mesh.material.opacity = 0.75 * dripUniforms.uGlow.value;
+      mesh.visible = true;
+    }
+
+    function buildDripRainSystem(sectors) {
+      if (dripRainMesh) {
+        dripZoneGroup.remove(dripRainMesh);
+        if (dripRainMesh.geometry) dripRainMesh.geometry.dispose();
+        if (dripRainMesh.material) dripRainMesh.material.dispose();
+        dripRainMesh = null;
+      }
+
+      dropData.length = 0;
+      const N = sectors.length;
+      const positions = new Float32Array(NUM_DRIP_DROPS * 2 * 3); // 2 vrcholy na čárovou kapku
+      const colors = new Float32Array(NUM_DRIP_DROPS * 2 * 3);
+
+      for (let k = 0; k < NUM_DRIP_DROPS; k++) {
+        const az = Math.random() * Math.PI * 2;
+        const s = Math.floor((az / (Math.PI * 2)) * N) % N;
+        const r = sectors[s] + (Math.random() - 0.5) * 0.45;
+        const topY = dripCanopyHeights[s] || (14.0 + Math.random() * 8.0);
+        const y = 0.05 + Math.random() * (topY - 0.5);
+        const speed = 10.0 + Math.random() * 6.0;
+        const len = 0.35 + Math.random() * 0.25;
+
+        dropData.push({
+          az, r, y, topY, speed, len,
+          x: Math.cos(az) * r,
+          z: Math.sin(az) * r
+        });
+      }
+
+      const rainGeo = new THREE.BufferGeometry();
+      rainGeo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+      rainGeo.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+
+      const rainMat = new THREE.LineBasicMaterial({
+        vertexColors: true,
+        transparent: true,
+        opacity: 0.85,
+        blending: THREE.AdditiveBlending,
+        depthWrite: false
+      });
+
+      dripRainMesh = new THREE.LineSegments(rainGeo, rainMat);
+      dripRainMesh.renderOrder = 10;
+      dripRainMesh.visible = dripRainEnabled && isHoveringDrip;
+      dripZoneGroup.add(dripRainMesh);
+
+      // Příprava vlnících se kruhů na zemi po dopadu kapky (Ripples)
+      buildDripRipples();
+    }
+
+    // 6. Automatická detekce okapové linie přímo ze sítě listů
+    function scanDripLineFromLeaves(leavesList) {
+      if (!leavesList || leavesList.length === 0) return null;
+      const N = 36;
+      const foundR = new Float32Array(N);
+      const canopyY = new Float32Array(N).fill(16.0);
+      let countHits = 0;
+
+      leavesList.forEach(node => {
+        if (!node.visible || !node.geometry || !node.geometry.attributes.position) return;
+        const pos = node.geometry.attributes.position;
+        const index = node.geometry.index;
+        const end = Math.min(index ? index.count : pos.count, node.geometry.drawRange.count);
+        for (let vertex = 0; vertex < end; vertex += 6) {
+          const i = index ? index.getX(vertex) : vertex;
+          const x = pos.getX(i);
+          const y = pos.getY(i);
+          const z = pos.getZ(i);
+          if (y < 6.5) continue; // Pouze koruna
+          const r = Math.hypot(x, z);
+          let az = Math.atan2(z, x);
+          if (az < 0) az += Math.PI * 2;
+          const s = Math.floor((az / (Math.PI * 2)) * N) % N;
+          if (r > foundR[s]) {
+            foundR[s] = r;
+            canopyY[s] = y;
+            countHits++;
+          }
+        }
+      });
+
+      if (countHits < 30) return null;
+
+      // Plynulé vyhlazení 3-bodovým plovoucím průměrem
+      const smoothR = [];
+      for (let s = 0; s < N; s++) {
+        const prev = foundR[(s - 1 + N) % N];
+        const curr = foundR[s];
+        const next = foundR[(s + 1) % N];
+        smoothR.push(prev * 0.25 + curr * 0.5 + next * 0.25);
+      }
+      return { radii: smoothR, heights: canopyY };
+    }
+
+    // Kompletní inicializace celého okapového systému
+    function initDripZone() {
+      // Zkusit adaptivní sken z načtených listů, jinak použít přesná data z Blenderu
+      const scanned = scanDripLineFromLeaves(leavesMeshes);
+      if (scanned && scanned.radii && scanned.radii.length === 36) {
+        activeDripSectors = scanned.radii;
+        dripCanopyHeights = scanned.heights;
+      } else {
+        activeDripSectors = [...defaultDripSectors];
+      }
+
+      buildDripLineTube(activeDripSectors);
+      buildDripRainSystem(activeDripSectors);
+    }
+
+    // Inicializovat s výchozími daty
+    initDripZone();
+
+    // 7. Aktualizace animace kapek a vlnění v animační smyčce
+    function updateDripZoneAnimation(delta, now) {
+      if (!dripZoneGroup.visible) return;
+
+      dripUniforms.uTime.value = now * 0.001;
+
+      // Animace padajících kapek
+      if (dripRainMesh && dripRainMesh.visible && dripRainMesh.geometry) {
+        const posAttr = dripRainMesh.geometry.attributes.position;
+        const colAttr = dripRainMesh.geometry.attributes.color;
+        const glowVal = dripUniforms.uGlow.value;
+
+        for (let k = 0; k < dropData.length; k++) {
+          const d = dropData[k];
+          d.y -= d.speed * delta;
+          if (d.y <= 0.04) {
+            // Dopad na zem -> vytvořit vlnku na zemi
+            spawnRipple(d.x, d.z);
+            d.y = d.topY - Math.random() * 2.0;
+          }
+
+          const topY = d.y + d.len;
+          const botY = d.y;
+
+          const idx = k * 2;
+          // Horní bod kapky
+          posAttr.setXYZ(idx, d.x, topY, d.z);
+          // Spodní bod kapky
+          posAttr.setXYZ(idx + 1, d.x, botY, d.z);
+
+          // Barva a záblesk kapky
+          const rCol = 0.22 * glowVal;
+          const gCol = 0.75 * glowVal;
+          const bCol = 0.98 * glowVal;
+          colAttr.setXYZ(idx, rCol * 0.4, gCol * 0.4, bCol * 0.4);
+          colAttr.setXYZ(idx + 1, rCol, gCol, bCol);
+        }
+        posAttr.needsUpdate = true;
+        colAttr.needsUpdate = true;
+      }
+
+      // Animace rozšiřujících se vlnek na zemi
+      for (let i = 0; i < rippleData.length; i++) {
+        const rip = rippleData[i];
+        if (!rip.active) continue;
+        rip.life += delta;
+        const progress = rip.life / rip.maxLife;
+        if (progress >= 1.0) {
+          rip.active = false;
+          rippleMeshes[i].visible = false;
+        } else {
+          const curScale = 0.1 + progress * 1.8;
+          rippleMeshes[i].scale.set(curScale, curScale, curScale);
+          rippleMeshes[i].material.opacity = (1.0 - progress) * 0.65 * dripUniforms.uGlow.value;
+        }
+      }
+    }
+
+    // DYNAMIC SEASON COLOR SHIFTING VIA GPU UNIFORM & DROUGHT DRYING SIMULATION
+    let userSeasonShift = 0.25;
+    let droughtDryProgress = 0.0; // 0.0 = zdravé listí, 1.0 = uschlé listy
+    let leafRegrowthProgress = 1.0;
+    let leafRegrowthActive = false;
+    let leafWasDry = false;
+    let seasonalNewLeaves = false;
+    let seasonalRegrowthActive = false;
+    let seasonalRegrowthPending = false;
+    let previousSeasonPhase = null;
+
+    function isLeafGrowthSeason() {
+      const day = seasonDayForPosition(ecology.seasonPosition);
+      return day >= BEECH_CALENDAR.budburst && day < 243;
+    }
+
+    function startSeasonalRegrowth() {
+      seasonalRegrowthPending = false;
+      seasonalNewLeaves = true;
+      seasonalRegrowthActive = true;
+      leafRegrowthActive = true;
+      leafWasDry = false;
+      setLeafRegrowthProgress(0);
+      leafControls.resetLeafFall();
+    }
+
+    function setLeafRegrowthProgress(progress) {
+      leafRegrowthProgress = THREE.MathUtils.clamp(progress, 0, 1.0);
+      if (typeof leafControls !== 'undefined' && leafControls?.setGrowthProgress) {
+        leafControls.setGrowthProgress(leafRegrowthProgress);
+      }
+    }
+
+    function getLeafRegrowthSpeed() {
+      const input = document.getElementById('sliderLeafRegrowthSpeed');
+      return Math.max(0.1, Number(input?.value || 100) / 100);
+    }
+
+    function updateEffectiveSeason() {
+      // Při suchu (droughtDryProgress > 0) listy plynule přecházejí do podzimních a uschlých jantarových odstínů
+      // 1.08 odpovídá uschlým hnědo-jantarovým listům (v shaderu uSeasonOffset cca +0.255)
+      const dryTargetShift = 1.08;
+      // Spring regrowth uses the current spring colours.
+      const seasonalShift = seasonalNewLeaves && ecology.season === 'latefall' ? 0 : userSeasonShift;
+      const effectiveShift = seasonalShift * (1.0 - droughtDryProgress) + dryTargetShift * droughtDryProgress;
+      shaderUniforms.uSeasonOffset.value = (effectiveShift - 0.5) * 0.44;
+    }
+
+    function applySeasonShift(shiftFactor) {
+      userSeasonShift = shiftFactor;
+      updateEffectiveSeason();
+    }
+
+    function updateWaterAndDrought(modelMinutes) {
+      if (!ecology.ready) return;
+      ecology.hourOfDay = timeOfDayHours;
+      ecology.sunElevation = sunElevationDeg;
+      ecology.sunAzimuth = sunAzimuthDeg;
+      ecology.sunIntensity = Number(document.getElementById('sliderSun').value) / 100;
+      ecology.activeFoliage = leafControls.getActiveFoliage(leafFallAnimationTime);
+      ecology.photosyntheticFoliage = leafControls.getPhotosyntheticFoliage(
+        leafFallAnimationTime,
+        THREE.MathUtils.clamp(shaderUniforms.uSeasonOffset.value / 0.44 + 0.5, 0, 1),
+        shaderUniforms.uDryingSpeed.value,
+        shaderUniforms.uDryingSharpness.value,
+        shaderUniforms.uDryingFrontWidth.value
+      );
+      ecology.step(modelMinutes);
+      treeWaterLiters = ecology.reserve;
+      droughtDryProgress = ecology.dryness;
+      updateSapFlowDynamics();
+    }
+
+    // The presentation and interactive ring both drive this same leaf lifecycle.
+    function updateSeasonalLeaves(delta) {
+      if (!ecology.ready) return;
+      const seasonPhase = ((ecology.seasonPosition % 4) + 4) % 4;
+      const reachedSpring = previousSeasonPhase !== null && previousSeasonPhase >= 2 && seasonPhase < 1;
+      if (seasonPhase >= 1 && seasonPhase < 3.5) seasonalNewLeaves = false;
+      if ((seasonPhase >= 3.5 || reachedSpring) && !seasonalNewLeaves && !seasonalRegrowthPending) {
+        // Finish the old leaves' fall now, then wait until late April to regrow.
+        seasonalRegrowthPending = true;
+        leafRegrowthActive = false;
+      }
+      previousSeasonPhase = seasonPhase;
+      // Preserve the established visual recovery, driven by the shared water state.
+      if (!chapterApp.introduction && droughtDryProgress > 0.85) leafWasDry = true;
+      if (!chapterApp.introduction && !seasonalRegrowthPending && isLeafGrowthSeason() && leafWasDry && ecology.hydration > 0.95 && !leafRegrowthActive) {
+        leafRegrowthActive = true;
+        setLeafRegrowthProgress(0.05);
+      }
+      if (leafRegrowthActive) {
+        setLeafRegrowthProgress(seasonalRegrowthActive
+          ? beechLeafGrowthProgress(ecology.seasonPosition)
+          : leafRegrowthProgress + delta * 0.45 * getLeafRegrowthSpeed());
+        if (leafRegrowthProgress >= 0.999) {
+          leafRegrowthActive = false;
+          seasonalRegrowthActive = false;
+          leafWasDry = false;
+        }
+      }
+      updateEffectiveSeason();
+    }
+
+    function updateSapFlowDynamics() {
+      if (typeof sapUniforms === 'undefined') return;
+      const normWater = ecology.ready ? ecology.hydration : 1;
+      const speedInput = document.getElementById('sliderSapSpeed');
+      const userSpeed = parseFloat(speedInput ? speedInput.value : 100) / 100.0;
+      // Při 0 L se proudění zastaví, při nízké vodě teče pomaleji
+      const waterFlowMult = ecology.ready ? Math.min(1.4, ecology.transpiration / Math.max(0.001, ecology.baseTranspiration)) : 0;
+      const photosynthesisRunning = ecology.ready && ecology.activity > 0.0001;
+      sapUniforms.uSpeed.value = photosynthesisRunning ? userSpeed * waterFlowMult : 0;
+
+      // Water and glucose always share the same width, driven by water input.
+      const waterAmount = ecology.ready
+        ? THREE.MathUtils.clamp(ecology.waterInput / Math.max(0.001, ecology.baseTranspiration), 0, 2)
+        : 1;
+      sapUniforms.uWidthScale.value = 0.12 + 0.88 * waterAmount;
+      greenRootFlowMesh?.traverse(node => {
+        if (node.material?.uniforms?.uWidthScale) {
+          node.material.uniforms.uWidthScale.value = sapUniforms.uWidthScale.value;
+        }
+      });
+
+      const glowInput = document.getElementById('sliderSapGlow');
+      const userGlow = parseFloat(glowInput ? glowInput.value : 100) / 100.0;
+      const waterGlowMult = normWater <= 0.001 ? 0.30 : Math.min(1.2, 0.45 + 0.55 * normWater);
+      sapUniforms.uGlow.value = userGlow * waterGlowMult;
+    }
+
+    function updateSapRetraction(delta) {
+      if (!ecology.ready) return;
+      const seasonProgress = THREE.MathUtils.clamp(shaderUniforms.uSeasonOffset.value / 0.44 + 0.5, 0, 1);
+      const firstRedProgress = leafControls.getFirstRedSeasonProgress(
+        shaderUniforms.uDryingSpeed.value,
+        shaderUniforms.uDryingSharpness.value,
+        shaderUniforms.uDryingFrontWidth.value
+      );
+      const leavesStartedTurningRed = seasonProgress >= firstRedProgress;
+      if (leavesStartedTurningRed && !sapLeafRedWasStarted) sapLeafRedRetractionActive = true;
+      if (!leavesStartedTurningRed) sapLeafRedRetractionActive = false;
+      sapLeafRedWasStarted = leavesStartedTurningRed;
+      // The first leaf's red color transition starts the root-to-crown retraction.
+      const target = ecology.activity > 0.0001 && !sapLeafRedRetractionActive ? 0 : 1;
+      const step = delta / 3.6;
+      sapFlowRetraction += THREE.MathUtils.clamp(target - sapFlowRetraction, -step, step);
+      const revealingFromBottom = target === 0;
+      sapUniforms.uFlowRevealBottom.value = revealingFromBottom ? 1 : 0;
+      // Shutdown removes the roots first; restart reveals roots first.
+      const flowProgress = revealingFromBottom ? 1 - sapFlowRetraction : sapFlowRetraction;
+      sapUniforms.uFlowCutoff.value = THREE.MathUtils.lerp(
+        sapFlowMinDistance - 0.4, sapFlowMaxDistance + 0.4, flowProgress);
+      const glucoseFlow = greenRootFlowMesh?.userData;
+      if (greenRootFlowMesh) {
+        const glucoseDirection = ecology.season === 'spring' ? 1.0 : -1.0;
+        greenRootFlowMesh.traverse(node => {
+          if (node.material?.uniforms?.uFlowDirection) {
+            node.material.uniforms.uFlowDirection.value = glucoseDirection;
+          }
+        });
+      }
+      if (glucoseFlow?.flowCutoff && glucoseFlow.flowMinDistance < glucoseFlow.flowMaxDistance) {
+        // Keep the retraction direction consistent across seasons. Only the
+        // animated glucose flow direction changes for spring growth.
+        glucoseFlow.flowRevealBottom.value = revealingFromBottom ? 0 : 1;
+        glucoseFlow.flowCutoff.value = THREE.MathUtils.lerp(
+          glucoseFlow.flowMaxDistance + 0.4,
+          glucoseFlow.flowMinDistance - 0.4,
+          flowProgress);
+      }
+    }
+
+    // 7. UI EVENT LISTENERS & CONTROLS
+
+    // Panel collapse / toggle
+    const controlsPanel = document.getElementById('controlsPanel');
+    const btnTogglePanel = document.getElementById('btnTogglePanel');
+    const btnClosePanel = document.getElementById('btnClosePanel');
+
+    btnTogglePanel.addEventListener('click', () => {
+      controlsPanel.classList.toggle('collapsed');
+      btnTogglePanel.classList.toggle('active', !controlsPanel.classList.contains('collapsed'));
+    });
+    btnClosePanel.addEventListener('click', () => {
+      controlsPanel.classList.add('collapsed');
+      btnTogglePanel.classList.remove('active');
+    });
+
+    const btnManager = document.getElementById('btnManager');
+    const managerControls = () => document.querySelectorAll('.manager-controlled');
+    btnManager.addEventListener('click', () => {
+      const show = btnManager.getAttribute('aria-pressed') !== 'true';
+      document.body.classList.toggle('manager-open', show);
+      managerControls().forEach(element => {
+        element.classList.toggle('manager-hidden', !show);
+        if (element.id === 'btnBlackWindowTitles') element.hidden = !show;
+      });
+      btnManager.setAttribute('aria-pressed', String(show));
+      btnManager.classList.toggle('active', show);
+    });
+
+    // Visibility toggles
+    document.getElementById('chkLeaves').addEventListener('change', (e) => {
+      syncSeasonFoliage();
+    });
+    document.getElementById('chkTrunk').addEventListener('change', (e) => {
+      if (trunkMesh) trunkMesh.visible = e.target.checked;
+    });
+    document.getElementById('chkRoots').addEventListener('change', (e) => {
+      if (rootsMesh) rootsMesh.visible = e.target.checked;
+    });
+    document.getElementById('chkGround').addEventListener('change', (e) => {
+      groundPlane.visible = e.target.checked;
+    });
+    // CÉVNÍ SYSTÉM & TOK MÍZY (UI EVENT LISTENERS)
+    const chkSapFlow = document.getElementById('chkSapFlow');
+    const sliderSapThickness = document.getElementById('sliderSapThickness');
+    const valSapThickness = document.getElementById('valSapThickness');
+    const sliderSapSpeed = document.getElementById('sliderSapSpeed');
+    const valSapSpeed = document.getElementById('valSapSpeed');
+    const sliderSapGlow = document.getElementById('sliderSapGlow');
+    const valSapGlow = document.getElementById('valSapGlow');
+    const chkSapXray = document.getElementById('chkSapXray');
+
+    if (chkSapFlow) {
+      chkSapFlow.addEventListener('change', (e) => {
+        sapGroup.visible = e.target.checked;
+        showToast(e.target.checked ? '💧 Proudění mízy zobrazeno' : 'Proudění mízy skryto');
+      });
+      sapGroup.visible = chkSapFlow.checked;
+    }
+
+    // Slider průhlednosti linek (Opacity)
+    const sliderSapOpacity = document.getElementById('sliderSapOpacity');
+    const valSapOpacity = document.getElementById('valSapOpacity');
+    if (sliderSapOpacity && valSapOpacity) {
+      sliderSapOpacity.addEventListener('input', (e) => {
+        const val = parseFloat(e.target.value);
+        valSapOpacity.textContent = `${Math.round(val)}%`;
+        const opVal = val / 100.0;
+        sapUniforms.uOpacity.value = opVal;
+        if (typeof photonFlowUniforms !== 'undefined' && photonFlowUniforms.uOpacity) {
+          photonFlowUniforms.uOpacity.value = opVal;
+        }
+        if (sapWaterLabel && sapWaterLabel.material) sapWaterLabel.material.opacity = opVal;
+        if (photonLabel && photonLabel.material) photonLabel.material.opacity = opVal;
+        if (oxygenLabel && oxygenLabel.material) oxygenLabel.material.opacity = opVal;
+      });
+    }
+
+    const chkPhotonLine = document.getElementById('chkPhotonLine');
+    if (chkPhotonLine) {
+      chkPhotonLine.addEventListener('change', (e) => {
+        if (photonGroup) photonGroup.visible = e.target.checked;
+        showToast(e.target.checked ? '☀️ Proud fotonů (Světlo) zobrazen' : 'Proud fotonů skryt');
+      });
+    }
+
+    document.getElementById('sliderOxygenSize').addEventListener('input', (e) => {
+      const percent = Number(e.target.value);
+      document.getElementById('valOxygenSize').textContent = `${percent} %`;
+      if (photolysisSystem) photolysisSystem.setBubbleSize(percent / 100);
+    });
+    const initialOxygenSize = document.getElementById('sliderOxygenSize');
+    if (initialOxygenSize && photolysisSystem) {
+      photolysisSystem.setBubbleSize(Number(initialOxygenSize.value) / 100);
+    }
+
+    const sliderOxygenSpawnDistance = document.getElementById('sliderOxygenSpawnDistance');
+    const valOxygenSpawnDistance = document.getElementById('valOxygenSpawnDistance');
+    if (sliderOxygenSpawnDistance && valOxygenSpawnDistance) {
+      sliderOxygenSpawnDistance.addEventListener('input', (e) => {
+        const distance = Number(e.target.value);
+        valOxygenSpawnDistance.textContent = `${distance} bodu`;
+        if (photolysisSystem) photolysisSystem.setBubbleSpawnDistance(distance);
+      });
+    }
+
+    const chkOxygenLine = document.getElementById('chkOxygenLine');
+    if (chkOxygenLine) {
+      chkOxygenLine.addEventListener('change', (e) => {
+        if (oxygenGroup) oxygenGroup.visible = e.target.checked;
+        showToast(e.target.checked ? '🫧 Bubliny kyslíku (O₂) zobrazeny' : 'Bubliny kyslíku skryty');
+      });
+    }
+
+    const chkSapWaterLabel = document.getElementById('chkSapWaterLabel');
+    if (chkSapWaterLabel) {
+      chkSapWaterLabel.addEventListener('change', (e) => {
+        const vis = e.target.checked;
+        if (sapWaterLabel) sapWaterLabel.visible = vis;
+        if (photonLabel) photonLabel.visible = vis;
+        if (oxygenLabel) oxygenLabel.visible = vis;
+        showToast(vis ? '🏷️ Popisek vody zobrazen' : 'Popisek vody skryt');
+      });
+    }
+
+    // The user controls water offered to roots; uptake has a seasonal ceiling.
+    const sliderTreeWater = document.getElementById('sliderTreeWater');
+    const valTreeWater = document.getElementById('valTreeWater');
+    const hourlyWater = ratePerMinute => `${(ratePerMinute * 60).toLocaleString('cs-CZ', {maximumFractionDigits: 2})} l/h`;
+    if (sliderTreeWater && valTreeWater) {
+      sliderTreeWater.addEventListener('input', (e) => {
+        ecology.setWaterInput(Number(e.target.value) / 60);
+        valTreeWater.textContent = hourlyWater(ecology.waterInput);
+      });
+    }
+    function syncSeasonWaterControl() {
+      sliderTreeWater.value = ecology.waterInput * 60;
+      valTreeWater.textContent = hourlyWater(ecology.waterInput);
+    }
+
+    const sliderLeafRegrowthSpeed = document.getElementById('sliderLeafRegrowthSpeed');
+    const valLeafRegrowthSpeed = document.getElementById('valLeafRegrowthSpeed');
+    if (sliderLeafRegrowthSpeed && valLeafRegrowthSpeed) {
+      sliderLeafRegrowthSpeed.addEventListener('input', (e) => {
+        valLeafRegrowthSpeed.textContent = `${Math.round(Number(e.target.value))} %`;
+      });
+    }
+
+    if (sliderSapThickness && valSapThickness) {
+      sliderSapThickness.addEventListener('input', (e) => {
+        const val = parseFloat(e.target.value);
+        baseSapRadius = val / 100; // 1 = 0.01m, 8 = 0.08m, 30 = 0.30m
+        refreshSapTubes();
+      });
+    }
+
+    if (sliderSapSpeed && valSapSpeed) {
+      sliderSapSpeed.addEventListener('input', (e) => {
+        const val = parseFloat(e.target.value);
+        valSapSpeed.textContent = `${(val / 100).toFixed(1)}×`;
+        sapUniforms.uSpeed.value = val / 100;
+      });
+    }
+
+    if (sliderSapGlow && valSapGlow) {
+      sliderSapGlow.addEventListener('input', (e) => {
+        const val = parseFloat(e.target.value);
+        valSapGlow.textContent = `${Math.round(val)}%`;
+        sapUniforms.uGlow.value = val / 100;
+      });
+    }
+
+    if (chkSapXray) {
+      chkSapXray.addEventListener('change', (e) => {
+        sapMaterial.depthTest = !e.target.checked;
+        sapMaterial.needsUpdate = true;
+        showToast(e.target.checked ? '✨ X-Ray režim zapnut (prosvítání)' : 'Standardní hloubkový test');
+      });
+    }
+
+    // OKAPOVÁ ZÓNA KORUNY (UI EVENT LISTENERS)
+    const chkDripLine = document.getElementById('chkDripLine');
+    const chkQuickDrip = document.getElementById('chkQuickDrip');
+    const chkDripRain = document.getElementById('chkDripRain');
+    const sliderDripGlow = document.getElementById('sliderDripGlow');
+    const valDripGlow = document.getElementById('valDripGlow');
+
+    function setDripVisibility(vis) {
+      dripZoneGroup.visible = vis;
+      if (chkDripLine) chkDripLine.checked = vis;
+      if (chkQuickDrip) chkQuickDrip.checked = vis;
+      if (!vis) {
+        if (isHoveringDrip) {
+          isHoveringDrip = false;
+          if (dripTooltipEl) dripTooltipEl.classList.remove('visible');
+          renderer.domElement.style.cursor = 'default';
+        }
+        if (dripRainMesh) dripRainMesh.visible = false;
+        rippleMeshes.forEach(m => m.visible = false);
+        rippleData.forEach(r => r.active = false);
+      }
+      showToast(vis ? '💧 Okapová zóna zobrazena' : 'Okapová zóna skryta');
+    }
+
+    if (chkDripLine) chkDripLine.addEventListener('change', (e) => setDripVisibility(e.target.checked));
+    if (chkQuickDrip) chkQuickDrip.addEventListener('change', (e) => setDripVisibility(e.target.checked));
+    setDripVisibility(Boolean(chkDripLine?.checked || chkQuickDrip?.checked));
+
+    if (chkDripRain) {
+      chkDripRain.addEventListener('change', (e) => {
+        dripRainEnabled = e.target.checked;
+        if (dripRainMesh) dripRainMesh.visible = dripRainEnabled && isHoveringDrip;
+        if (!dripRainEnabled || !isHoveringDrip) {
+          rippleMeshes.forEach(m => m.visible = false);
+          rippleData.forEach(r => r.active = false);
+        }
+        showToast(e.target.checked ? '🌧️ Efekt kapek povolen (aktivní při najetí)' : 'Efekt kapek vypnut');
+      });
+    }
+
+    const sliderDripThickness = document.getElementById('sliderDripThickness');
+    const valDripThickness = document.getElementById('valDripThickness');
+    if (sliderDripThickness && valDripThickness) {
+      sliderDripThickness.addEventListener('input', (e) => {
+        const val = parseFloat(e.target.value);
+        const radius = val / 100; // 2 = 0.02m, 5 = 0.05m, 15 = 0.15m
+        valDripThickness.textContent = `${radius.toFixed(2)} m`;
+        buildDripLineTube(activeDripSectors, radius);
+      });
+    }
+
+    if (sliderDripGlow && valDripGlow) {
+      sliderDripGlow.addEventListener('input', (e) => {
+        const val = parseFloat(e.target.value);
+        valDripGlow.textContent = `${Math.round(val)}%`;
+        if (dripLineMesh && dripLineMesh.material) {
+          dripLineMesh.material.opacity = val / 100;
+        }
+      });
+    }
+
+    // RAYCASTING & HOVER PRO OKAPOVOU ZÓNU (Zobrazení okna a drip efektu pouze při najetí)
+    const dripRaycaster = new THREE.Raycaster();
+    const dripMouse = new THREE.Vector2(-999, -999);
+    const dripTooltipEl = document.getElementById('dripTooltip');
+
+    function getBaseDripOpacity() {
+      return sliderDripGlow ? parseFloat(sliderDripGlow.value) / 100 : 0.95;
+    }
+
+    window.addEventListener('pointermove', (event) => {
+      dripMouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+      dripMouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+
+      if (!dripZoneGroup.visible) {
+        if (isHoveringDrip) {
+          isHoveringDrip = false;
+          dripTooltipEl.classList.remove('visible');
+          renderer.domElement.style.cursor = 'default';
+          if (dripRainMesh) dripRainMesh.visible = false;
+          rippleMeshes.forEach(m => m.visible = false);
+          rippleData.forEach(r => r.active = false);
+        }
+        return;
+      }
+
+      dripRaycaster.setFromCamera(dripMouse, camera);
+      // Pokud je kurzor na štítku H₂O, deaktivujeme tooltip okapu a nastavíme ukazatel
+      if (sapWaterLabel && sapWaterLabel.visible && sapGroup.visible) {
+        const labelHits = dripRaycaster.intersectObject(sapWaterLabel, false);
+        if (labelHits.length > 0) {
+          if (isHoveringDrip) {
+            isHoveringDrip = false;
+            dripTooltipEl.classList.remove('visible');
+          }
+          renderer.domElement.style.cursor = 'pointer';
+          return;
+        }
+      }
+
+      const targets = [];
+      if (dripHitProxy) targets.push(dripHitProxy);
+      if (dripLineMesh) targets.push(dripLineMesh);
+
+      const hits = dripRaycaster.intersectObjects(targets, false);
+      if (hits.length > 0) {
+        if (!isHoveringDrip) {
+          isHoveringDrip = true;
+          dripTooltipEl.classList.add('visible');
+          renderer.domElement.style.cursor = 'pointer';
+          if (dripRainEnabled && dripRainMesh) dripRainMesh.visible = true;
+        }
+        dripTooltipEl.style.left = `${event.clientX}px`;
+        dripTooltipEl.style.top = `${event.clientY}px`;
+        if (dripLineMesh && dripLineMesh.material) dripLineMesh.material.opacity = 1.0;
+      } else {
+        if (isHoveringDrip) {
+          isHoveringDrip = false;
+          dripTooltipEl.classList.remove('visible');
+          renderer.domElement.style.cursor = 'default';
+          if (dripLineMesh && dripLineMesh.material) dripLineMesh.material.opacity = getBaseDripOpacity();
+          if (dripRainMesh) dripRainMesh.visible = false;
+          rippleMeshes.forEach(m => m.visible = false);
+          rippleData.forEach(r => r.active = false);
+        }
+      }
+    });
+
+    window.addEventListener('click', (event) => {
+      if (event.target.closest('#controlsPanel') || event.target.closest('#hudTopBar') || event.target.closest('.stats-card')) return;
+      if (!sapWaterLabel || !sapWaterLabel.visible || !sapGroup.visible) return;
+
+      dripMouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+      dripMouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+      dripRaycaster.setFromCamera(dripMouse, camera);
+
+      const hits = dripRaycaster.intersectObject(sapWaterLabel, false);
+      if (hits.length > 0) {
+        showToast('💧 H₂O — Voda a minerální živiny proudící z kořenů do koruny (xylém)');
+      }
+    });
+
+    window.addEventListener('pointerleave', () => {
+      if (isHoveringDrip) {
+        isHoveringDrip = false;
+        dripTooltipEl.classList.remove('visible');
+        renderer.domElement.style.cursor = 'default';
+        if (dripLineMesh && dripLineMesh.material) dripLineMesh.material.opacity = getBaseDripOpacity();
+        if (dripRainMesh) dripRainMesh.visible = false;
+        rippleMeshes.forEach(m => m.visible = false);
+        rippleData.forEach(r => r.active = false);
+      }
+    });
+
+    // Spuštění načtení 3D modelu stromu po dokončení inicializace všech podsystémů
+    loadTreeModel('./web_assets/strom_web_fast.glb');
+
+    // Season controls
+    document.getElementById('sliderDryingSharpness').addEventListener('input', event => {
+      const sharpness = Number(event.target.value);
+      shaderUniforms.uDryingSharpness.value = sharpness / 100;
+      document.getElementById('valDryingSharpness').textContent = sharpness + ' %';
+    });
+    document.getElementById('sliderDryingSpeed').addEventListener('input', event => {
+      const speed = Number(event.target.value) / 100;
+      shaderUniforms.uDryingSpeed.value = speed;
+      document.getElementById('valDryingSpeed').textContent = speed.toLocaleString('cs-CZ', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + '×';
+    });
+    document.getElementById('sliderYellowPhase').addEventListener('input', event => {
+      const width = Number(event.target.value);
+      shaderUniforms.uYellowPhaseWidth.value = width / 100;
+      document.getElementById('valYellowPhase').textContent = width + ' %';
+    });
+    document.getElementById('sliderLeafFallSpeed').addEventListener('input', event => {
+      const percent = Number(event.target.value);
+      shaderUniforms.uLeafFallSpeed.value = percent / 100;
+      document.getElementById('valLeafFallSpeed').textContent = `${percent} %`;
+      invalidateShadows();
+    });
+    document.getElementById('sliderLeafFallAmount').addEventListener('input', event => {
+      const amount = Number(event.target.value);
+      document.getElementById('valLeafFallAmount').textContent = amount;
+      if (typeof leafControls !== 'undefined') leafControls.fallEmissionTokens = Math.min(leafControls.fallEmissionTokens, amount * 1.5);
+      invalidateShadows();
+    });
+    const btnLeafFall = document.getElementById('btnLeafFall');
+    btnLeafFall.addEventListener('click', () => {
+      const enabled = shaderUniforms.uLeafFallEnabled.value < 0.5;
+      shaderUniforms.uLeafFallEnabled.value = enabled ? 1.0 : 0.0;
+      invalidateShadows();
+      btnLeafFall.classList.toggle('active', enabled);
+      btnLeafFall.setAttribute('aria-pressed', String(enabled));
+      btnLeafFall.textContent = enabled ? '🍂 Opadávání: zapnuto' : '🍂 Opadávání: vypnuto';
+      showToast(enabled ? 'Opadávání listů zapnuto' : 'Opadávání listů vypnuto');
+    });
+    const sliderSeason = document.getElementById('sliderSeason');
+    const valSeason = document.getElementById('valSeason');
+    const seasonBtns = document.querySelectorAll('.season-btn');
+
+    sliderSeason.addEventListener('input', (e) => {
+      const val = parseFloat(e.target.value);
+      const key = val < 15 ? 'spring' : val < 40 ? 'summer' : val < 99.95 ? 'autumn' : 'latefall';
+      if (!Number.isFinite(e.detail?.seasonPosition)) ecology.setSeason(key);
+      syncSeasonWaterControl();
+      applySeasonShift(val / 100);
+      syncSeasonFoliage();
+      valSeason.textContent = `${Math.round(val)} %`;
+      seasonBtns.forEach(b => b.classList.remove('active'));
+    });
+
+    seasonBtns.forEach((btn) => {
+      btn.addEventListener('click', () => {
+        seasonBtns.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        const season = btn.dataset.season;
+        setEcologySeason(season);
+      });
+    });
+
+    // Cel-shading selection
+    document.querySelectorAll('[data-toon]').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('[data-toon]').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        const mode = btn.dataset.toon;
+        if (mode === '2step') shaderUniforms.uToonSteps.value = 2.0;
+        else if (mode === '3step') shaderUniforms.uToonSteps.value = 3.0;
+        else if (mode === '4step') shaderUniforms.uToonSteps.value = 4.0;
+        else shaderUniforms.uToonSteps.value = 0.0;
+        showToast(`Cel-Shading: ${btn.textContent.trim()}`);
+      });
+    });
+
+    // Cel-shading Color Ramp threshold slider (Black-blue shadow threshold)
+    const sliderRamp = document.getElementById('sliderRamp');
+    const valRamp = document.getElementById('valRamp');
+    if (sliderRamp && valRamp) {
+      sliderRamp.addEventListener('input', (e) => {
+        const val = parseFloat(e.target.value) / 100;
+        shaderUniforms.uRampThreshold.value = val;
+        valRamp.textContent = val.toFixed(2) + (val === 1.0 ? ' (Blender)' : '');
+      });
+    }
+
+    document.getElementById('sliderLeafEdgeTransition').addEventListener('input', event => {
+      const percent = Number(event.target.value);
+      setLeafEdgeTransition(leafReference, percent / 100);
+      document.getElementById('valLeafEdgeTransition').textContent = percent === 0 ? '0 % (původní)' : `${percent} %`;
+    });
+
+    document.getElementById('sliderLeafAlpha').addEventListener('input', event => {
+      const percent = Number(event.target.value);
+      shaderUniforms.uLeafAlphaStrength.value = percent / 100;
+      document.getElementById('valLeafAlpha').textContent = `${percent} %`;
+    });
+
+    // Režim vykreslení Alfy (Okraje štětce)
+    document.querySelectorAll('[data-alphamode]').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('[data-alphamode]').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        const mode = parseFloat(btn.dataset.alphamode);
+        shaderUniforms.uAlphaMode.value = mode;
+        [leafToonMat1, leafToonMat2].forEach(mat => { mat.alphaToCoverage = mode > 0.5; mat.needsUpdate = true; });
+        invalidateShadows();
+        updateCanopyOcclusion();
+        showToast(`Režim alfy: ${btn.textContent.trim()}`);
+      });
+    });
+
+    document.getElementById('sliderCanopyAO').addEventListener('input', event => {
+      const percent = Number(event.target.value);
+      shaderUniforms.uCrownAO.value = percent / 100;
+      document.getElementById('valCanopyAO').textContent = `${percent}%`;
+    });
+
+    // Lighting controls
+    const sliderSun = document.getElementById('sliderSun');
+    const valSun = document.getElementById('valSun');
+    sliderSun.addEventListener('input', (e) => {
+      const mult = parseFloat(e.target.value) / 100;
+      valSun.textContent = Math.round(mult * 100) + '%';
+      updateSunElevation(sunElevationDeg);
+    });
+
+    const sliderLightRot = document.getElementById('sliderLightRot');
+    const valLightRot = document.getElementById('valLightRot');
+    function selectManualSun(event) {
+      if (!event.isTrusted) return;
+      ecology.dayCycleEnabled = false;
+      const dayNightToggle = document.getElementById('chkDayNight');
+      if (dayNightToggle) dayNightToggle.checked = false;
+    }
+    function updateSunAzimuth(deg) {
+      sunAzimuthDeg = deg;
+      const totalAzimuth = (57 + Math.round(deg)) % 360;
+      valLightRot.textContent = `${Math.round(deg)}° (Azimut ${totalAzimuth}°)`;
+      const rad = THREE.MathUtils.degToRad(deg);
+      lightsGroup.rotation.y = rad;
+      shaderUniforms.uLightRotRad.value = rad; // <-- Otáčí sluncem i na kmeni
+      const activeSunDir = sun1.position.clone().sub(sun1.target.position).normalize().applyAxisAngle(new THREE.Vector3(0, 1, 0), rad);
+      shaderUniforms.uSunDirection.value.copy(activeSunDir);
+    }
+    sliderLightRot.addEventListener('input', (e) => {
+      selectManualSun(e);
+      updateSunAzimuth(parseFloat(e.target.value));
+    });
+
+    // Slider výšky slunce nad obzorem (Elevace)
+    const sliderSunElevation = document.getElementById('sliderSunElevation');
+    const valSunElevation = document.getElementById('valSunElevation');
+    const sliderTimeOfDay = document.getElementById('sliderTimeOfDay');
+    const valTimeOfDay = document.getElementById('valTimeOfDay');
+    let timeOfDayHours = Number(sliderTimeOfDay.value);
+    let adjustingTimeOfDay = false;
+    let timePaused = false;
+    let timePlaybackSpeed = 1;
+    const btnTimePause = document.getElementById('btnTimePause');
+    const btnTimeFaster = document.getElementById('btnTimeFaster');
+    const btnTimeFastest = document.getElementById('btnTimeFastest');
+    const valTimePlaybackSpeed = document.getElementById('valTimePlaybackSpeed');
+    function getDayClockSpeed() {
+      const isNight = timeOfDayHours >= 18 || timeOfDayHours < 6;
+      // Úvod má vlastní tempo: den 5×, noc 14×.
+      const clockSpeed = chapterApp.introduction
+        ? (isNight ? 14 : 5)
+        : (isNight ? 12 : 1) * 0.5;
+      return timePaused ? 0 : timePlaybackSpeed * clockSpeed;
+    }
+    function syncTimePlaybackControls() {
+      const pauseLabel = timePaused ? 'Pokračovat v čase' : 'Pozastavit čas';
+      btnTimePause.setAttribute('aria-label', pauseLabel);
+      btnTimePause.title = pauseLabel;
+      btnTimePause.setAttribute('aria-pressed', String(timePaused));
+      valTimePlaybackSpeed.textContent = `${timePaused ? 'Pauza · ' : ''}${timePlaybackSpeed.toLocaleString('cs-CZ')}×`;
+      btnTimeFaster.setAttribute('aria-pressed', String(!timePaused && timePlaybackSpeed === 2));
+      btnTimeFastest.setAttribute('aria-pressed', String(!timePaused && timePlaybackSpeed === 4));
+    }
+    btnTimePause.addEventListener('click', () => {
+      timePaused = !timePaused;
+      syncTimePlaybackControls();
+    });
+    btnTimeFaster.addEventListener('click', () => {
+      timePlaybackSpeed = !timePaused && timePlaybackSpeed === 2 ? 1 : 2;
+      timePaused = false;
+      syncTimePlaybackControls();
+    });
+    btnTimeFastest.addEventListener('click', () => {
+      timePlaybackSpeed = !timePaused && timePlaybackSpeed === 4 ? 1 : 4;
+      timePaused = false;
+      syncTimePlaybackControls();
+    });
+    sliderTimeOfDay.addEventListener('pointerdown', () => { adjustingTimeOfDay = true; });
+    window.addEventListener('pointerup', () => { adjustingTimeOfDay = false; });
+    window.addEventListener('pointercancel', () => { adjustingTimeOfDay = false; });
+
+    function updateSunElevation(deg) {
+      sunElevationDeg = Number(deg);
+      if (valSunElevation) valSunElevation.textContent = `${Math.round(sunElevationDeg)}°`;
+      if (photolysisSystem) photolysisSystem.setSunElevation(sunElevationDeg);
+
+      const pitchRad = THREE.MathUtils.degToRad(sunElevationDeg);
+      const radius = 86.1;
+      const horizontal = radius * Math.cos(pitchRad);
+      const height = radius * Math.sin(pitchRad);
+      const mult = parseFloat(sliderSun.value) / 100;
+      const daylight = THREE.MathUtils.clamp(Math.sin(pitchRad) / Math.sin(Math.PI / 3), 0, 1) * mult;
+      allSuns.forEach((sun, index) => {
+        const yaw = sunAzimuths[index];
+        sun.position.set(horizontal * Math.cos(yaw), height, horizontal * Math.sin(yaw)).add(sun.target.position);
+        sun.intensity = sunStrength * daylight;
+      });
+      shaderUniforms.uSunIntensity.value = daylight;
+
+      // Keep every visible sun and its ray at the actual light position.
+      sunMesh1.position.copy(sun1.position).sub(sun1.target.position).normalize().multiplyScalar(sunMarkerDistance).add(sun1.target.position);
+      sunMat.opacity = THREE.MathUtils.smoothstep(sunElevationDeg, -6, 0);
+      sunMesh1.visible = sunMat.opacity > 0;
+      sunMat.color.copy(sunHorizonColor).lerp(sunDayColor,
+        THREE.MathUtils.smoothstep(sunElevationDeg, 0, 50));
+      const sunsetTint = THREE.MathUtils.clamp((24 - Math.max(0, sunElevationDeg)) / 24, 0, 1);
+      coronaMesh.position.copy(sunMesh1.position);
+      coronaMesh.visible = false;
+      coronaMat.color.set(0xffc107).lerp(new THREE.Color(0xff5a1f), sunsetTint);
+      coronaMat.opacity = 0.65 * Math.min(1, daylight);
+      sunLabel.position.copy(sunMesh1.position).add(new THREE.Vector3(0, 5, 0));
+      sunLabel.visible = rayLine.visible = sunElevationDeg > 0;
+      crownArrow.visible = false;
+      const updateRay = (ray, position) => {
+        const positions = ray.geometry.attributes.position;
+        positions.setXYZ(0, position.x, position.y, position.z);
+        positions.needsUpdate = true;
+        ray.geometry.computeBoundingSphere();
+      };
+      updateRay(rayLine, sunMesh1.position);
+      rayLine.computeLineDistances();
+      crownArrow.setDirection(new THREE.Vector3(0, 11.5, 0).sub(sun1.position).normalize());
+
+      const activeSunDir = sun1.position.clone().sub(sun1.target.position).normalize()
+        .applyAxisAngle(new THREE.Vector3(0, 1, 0), shaderUniforms.uLightRotRad.value);
+      shaderUniforms.uSunDirection.value.copy(activeSunDir);
+    }
+
+    // A single tilted orbit avoids crossing straight over the tree at noon.
+    const sunPathInclination = THREE.MathUtils.degToRad(35);
+    function updateSunFromDayClock(hour) {
+      const angle = (hour - 6) / 24 * Math.PI * 2;
+      const arc = Math.sin(angle);
+      const elevation = THREE.MathUtils.radToDeg(Math.asin(arc * Math.cos(sunPathInclination)));
+      const azimuth = (THREE.MathUtils.radToDeg(Math.atan2(
+        arc * Math.sin(sunPathInclination), Math.cos(angle))) + 360) % 360;
+      sliderSunElevation.value = elevation;
+      sliderLightRot.value = azimuth;
+      updateSunElevation(elevation);
+      updateSunAzimuth(azimuth);
+    }
+
+    if (sliderTimeOfDay) sliderTimeOfDay.addEventListener('input', e => {
+      const hour = parseFloat(e.target.value);
+      timeOfDayHours = hour;
+      updateSunFromDayClock(hour);
+      invalidateShadows();
+      if (valTimeOfDay) {
+        const h = Math.floor(hour) % 24;
+        const m = Math.round((hour - Math.floor(hour)) * 60) % 60;
+        valTimeOfDay.textContent = `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}`;
+      }
+    });
+
+    if (sliderSunElevation) {
+      sliderSunElevation.addEventListener('input', (e) => {
+        selectManualSun(e);
+        updateSunElevation(parseFloat(e.target.value));
+      });
+    }
+
+    const daylightBackground = studioColor.clone();
+    const twilightBackground = new THREE.Color(0x9f8c8a);
+    const nightBackground = new THREE.Color(0x121b2b);
+    let lastDaylightFrame = -Infinity;
+    let lastDaylightShadow = -Infinity;
+    function updateDayNightScene(now) {
+      if (!ecology.ready || document.hidden || now - lastDaylightFrame < 50) return;
+      lastDaylightFrame = now;
+      document.body.classList.toggle('scene-night', sunElevationDeg < -3);
+      const sunAmount = Math.sqrt(Math.max(0, Number(sliderSun.value) / 100));
+      const twilight = THREE.MathUtils.smoothstep(sunElevationDeg, -10, 1) * Math.min(1, sunAmount);
+      const daylight = THREE.MathUtils.smoothstep(sunElevationDeg, 0, 25) * Math.min(1, sunAmount);
+      daytimeAmbient.intensity = 8.297856 * daylight;
+      studioColor.copy(nightBackground).lerp(twilightBackground, twilight).lerp(daylightBackground, daylight);
+      const moonAmount = THREE.MathUtils.smoothstep(-sunElevationDeg, 0, 18);
+      const moonRadius = 70;
+      // Keep the moon exactly opposite the sun's current world-space direction.
+      // This follows both the day clock and manual sun rotation without a
+      // second, subtly mismatched azimuth calculation.
+      moonMesh.position.copy(sun1.position).sub(sun1.target.position)
+        .normalize().multiplyScalar(-moonRadius).add(sun1.target.position);
+      moonMesh.visible = sunElevationDeg < 0;
+      moonMaterial.opacity = moonAmount;
+      moonLight.position.copy(moonMesh.position);
+      moonLight.intensity = 1.125 * moonAmount;
+      shaderUniforms.uMoonDirection.value.copy(moonLight.position).sub(sun1.target.position)
+        .transformDirection(camera.matrixWorldInverse);
+      shaderUniforms.uMoonIntensity.value = 0.75 * moonAmount;
+      shaderUniforms.uSceneIllumination.value = 0.07 * moonAmount
+        + 3.15 * Math.min(1, shaderUniforms.uSunIntensity.value);
+      if (ecology.dayCycleEnabled && sunElevationDeg > 0 && now - lastDaylightShadow >= 750) {
+        invalidateShadows();
+        lastDaylightShadow = now;
+      }
+    }
+
+    const chkSunHelper = document.getElementById('chkSunHelper');
+    if (chkSunHelper) {
+      chkSunHelper.addEventListener('change', (e) => {
+        sunHelpersGroup.visible = e.target.checked;
+        showToast(e.target.checked ? '☀️ Paprsky a popisky zobrazeny' : 'Paprsky a popisky skryty');
+      });
+    }
+
+    document.getElementById('chkShadows').addEventListener('change', (e) => {
+      renderer.shadowMap.enabled = e.target.checked;
+      allSuns.forEach(s => s.castShadow = e.target.checked);
+      if (currentModel) {
+        currentModel.traverse((node) => {
+          if (node.isMesh) {
+            const mats = Array.isArray(node.material) ? node.material : [node.material];
+            mats.forEach(m => m.needsUpdate = true);
+          }
+        });
+      }
+    });
+
+    // These handlers run after the controls update geometry/uniforms. Leaf
+    // shadows refresh immediately, independently of the slower drip-line scan.
+    for (const id of ['sliderLeafSize', 'sliderLeafCount', 'sliderLeafEdgeTransition',
+      'sliderLeafAlpha', 'sliderLeafFallSpeed', 'sliderLightRot', 'sliderSunElevation']) {
+      document.getElementById(id).addEventListener('input', invalidateShadows);
+    }
+    for (const id of ['chkLeaves', 'chkTrunk', 'chkRoots', 'chkShadows']) {
+      document.getElementById(id).addEventListener('change', invalidateShadows);
+    }
+
+    for (const id of ['sliderLeafEdgeTransition', 'sliderLeafAlpha']) {
+      document.getElementById(id).addEventListener('input', queueCanopyOcclusion);
+    }
+    for (const id of ['chkLeaves', 'chkTrunk', 'chkRoots']) {
+      document.getElementById(id).addEventListener('change', updateCanopyOcclusion);
+    }
+
+    // Geometry is inspected once per loaded asset, before leaf density copies.
+    function configureTreeEcology() {
+      currentModel.updateWorldMatrix(true, true);
+      const crownBox = new THREE.Box3();
+      leavesMeshes.forEach(mesh => crownBox.union(new THREE.Box3().setFromObject(mesh)));
+      const size = crownBox.getSize(new THREE.Vector3());
+      const treeBox = new THREE.Box3().setFromObject(trunkMesh).union(crownBox);
+      let woodVolume = 0;
+      const a = new THREE.Vector3(), b = new THREE.Vector3(), c = new THREE.Vector3();
+      for (const mesh of [trunkMesh, rootsMesh].filter(Boolean)) {
+        const geometry = mesh.geometry, p = geometry.attributes.position, index = geometry.index;
+        let signedVolume = 0;
+        for (let t = 0; t < (index ? index.count : p.count); t += 3) {
+          a.fromBufferAttribute(p, index ? index.getX(t) : t);
+          b.fromBufferAttribute(p, index ? index.getX(t + 1) : t + 1);
+          c.fromBufferAttribute(p, index ? index.getX(t + 2) : t + 2);
+          signedVolume += a.dot(b.cross(c)) / 6;
+        }
+        woodVolume += Math.abs(signedVolume * mesh.matrixWorld.determinant());
+      }
+      ecology.configure({ height: treeBox.max.y, woodVolume, crownArea: Math.PI * size.x * size.z / 4 });
+      treeWaterLiters = ecology.reserve;
+      document.getElementById('valTreeHeight').textContent = `${ecology.height.toLocaleString('cs-CZ', {maximumFractionDigits: 1})} m`;
+      // Cover both modest and high water demand without exposing the store itself.
+      // The chapter UI can detach this control; keep using its original handle.
+      if (sliderTreeWater) sliderTreeWater.max = Math.max(120, Math.ceil(ecology.baseTranspiration * 120));
+      syncSeasonWaterControl();
+    }
+
+    function syncSeasonFoliage() {
+      // Keep airborne and fallen leaves rendered when the slider reaches winter.
+      leafControls.setVisible(document.getElementById('chkLeaves').checked);
+      invalidateShadows();
+    }
+
+    function setEcologySeason(key) {
+      if (!SEASONS[key]) return;
+      ecology.setSeasonPosition(Object.keys(SEASONS).indexOf(key) + 0.5, true);
+      syncSeasonWaterControl();
+      const season = SEASONS[key];
+      const colour = seasonColorForPosition(ecology.seasonPosition);
+      sliderSeason.value = colour * 100;
+      valSeason.textContent = `${season.label} · ${Math.round(colour * 100)} %`;
+      seasonBtns.forEach(button => button.classList.toggle('active', button.dataset.season === key));
+      applySeasonShift(colour);
+      if (!seasonalRegrowthActive && !seasonalRegrowthPending) setLeafRegrowthProgress(1);
+      syncSeasonFoliage();
+    }
+
+    let rootCameraSnapshot = null;
+    function restoreRootCamera() {
+      if (!rootCameraSnapshot) return;
+      camera.position.copy(rootCameraSnapshot.position);
+      controls.target.copy(rootCameraSnapshot.target);
+      rootCameraSnapshot = null;
+      document.getElementById('btnRootCamera').textContent = 'Přiblížit kořeny';
+    }
+    const annotationProjector = new THREE.Vector3();
+    const annotationRight = new THREE.Vector3();
+    const crownProbe = new THREE.Vector3();
+    const annotationAnchors = {
+      intro: [0, 18, 0], leaves: [4.05, 17.75, -0.65], sugars: [0.55, 14.2, -0.1], co2Air: [-5.8, 14.8, 0], oxygen: [2.8, 21, -0.65],
+      water: [1.1, 10.8, 0], evaporation: [2, 19, 0], roots: [0, 0.2, 0],
+      rootTip: [4, -0.5, 1], seeds: [2, 18, 0], wheel: [0, 2.5, 0]
+    };
+    let seasonRingControl = null;
+    const introForest = createIntroForest({
+      scene, camera, controls, sun: sun1, getHeight: () => ecology.height,
+      invalidateShadows
+    });
+    const chapterApp = createChapters({
+      model: ecology,
+      createSeasonControl: () => {
+        seasonRingControl = createSeasonRing({ scene, camera, controls, canvas, model: ecology });
+        return seasonRingControl;
+      },
+      project: (point, result = {}) => {
+        annotationProjector.set(...point).project(camera);
+        result.x = (annotationProjector.x * 0.5 + 0.5) * window.innerWidth;
+        result.y = (-annotationProjector.y * 0.5 + 0.5) * window.innerHeight;
+        result.visible = annotationProjector.z > -1 && annotationProjector.z < 1;
+        return result;
+      },
+      getAnchors: () => {
+        const height = ecology.height || 24.5;
+        annotationAnchors.intro[1] = height * 0.73;
+        introForest.positionAnchor(annotationAnchors.intro);
+        annotationAnchors.leaves[1] = height * 0.76;
+        const sugarAnchor = greenRootFlowMesh?.userData.sugarAnchor;
+        if (sugarAnchor) {
+          annotationAnchors.sugars.splice(0, 3, ...sugarAnchor);
+        }
+        // These anchors belong to fixed places on the tree, even as the camera turns.
+        annotationAnchors.co2Air[0] = -5.8;
+        annotationAnchors.co2Air[1] = height * 0.65;
+        annotationAnchors.co2Air[2] = 0;
+        annotationAnchors.oxygen[1] = height * 0.88;
+        annotationAnchors.water[1] = height * 0.43;
+        annotationAnchors.evaporation[1] = height * 0.8;
+        annotationAnchors.seeds[1] = height * 0.76;
+        const tips = sapPaths.roots;
+        let tip = null;
+        for (const path of tips) if (path[0] && (!tip || path[0].x > tip.x)) tip = path[0];
+        if (tip) {
+          annotationAnchors.rootTip[0] = tip.x;
+          annotationAnchors.rootTip[1] = tip.y;
+          annotationAnchors.rootTip[2] = tip.z;
+        }
+        return annotationAnchors;
+      },
+      getCrownBounds: () => {
+        // Project the crown outline each frame so the labels follow its
+        // apparent width as the camera zooms or orbits.
+        const height = ecology.height || 24.5;
+        annotationRight.setFromMatrixColumn(camera.matrixWorld, 0).setY(0).normalize();
+        let left = Infinity, right = -Infinity;
+        for (const level of [0.44, 0.65, 0.86]) {
+          const radius = level < 0.5 ? 7.3 : 8.5;
+          for (let i = 0; i < 16; i++) {
+            const angle = i * Math.PI / 8;
+            const across = Math.cos(angle) * radius;
+            const depth = Math.sin(angle) * radius;
+            crownProbe.set(
+              annotationRight.x * across + annotationRight.z * depth,
+              height * level,
+              annotationRight.z * across - annotationRight.x * depth
+            ).project(camera);
+            if (crownProbe.z <= -1 || crownProbe.z >= 1) continue;
+            const x = (crownProbe.x * 0.5 + 0.5) * window.innerWidth;
+            left = Math.min(left, x);
+            right = Math.max(right, x);
+          }
+        }
+        return Number.isFinite(left) ? { left, right } : null;
+      },
+      applySeason: setEcologySeason,
+      setSun: degrees => {
+        sliderSunElevation.value = degrees;
+        updateSunElevation(degrees);
+        invalidateShadows();
+      },
+      setAzimuth: degrees => {
+        sliderLightRot.value = degrees;
+        sliderLightRot.dispatchEvent(new Event('input'));
+      },
+      setVisualChapter: chapter => {
+        lastDaylightFrame = -Infinity;
+
+        // Show the complete flow immediately on chapter entry; only a new
+        // leaf-fall event during the chapter should start its retraction.
+        sapFlowRetraction = 0;
+        sapUniforms.uFlowCutoff.value = sapFlowMinDistance - 0.4;
+        sapUniforms.uFlowRevealBottom.value = 0;
+        const glucoseFlow = greenRootFlowMesh?.userData;
+        if (glucoseFlow?.flowCutoff) {
+          glucoseFlow.flowCutoff.value = glucoseFlow.flowMaxDistance + 0.4;
+          glucoseFlow.flowRevealBottom.value = 1;
+        }
+        const firstRedProgress = leafControls.getFirstRedSeasonProgress(
+          shaderUniforms.uDryingSpeed.value,
+          shaderUniforms.uDryingSharpness.value,
+          shaderUniforms.uDryingFrontWidth.value
+        );
+        sapLeafRedWasStarted = THREE.MathUtils.clamp(shaderUniforms.uSeasonOffset.value / 0.44 + 0.5, 0, 1) >= firstRedProgress;
+        sapLeafRedRetractionActive = false;
+
+        controls.enabled = chapter !== 'intro';
+        controls.autoRotate = false;
+        sunHelpersGroup.visible = document.getElementById('chkSunHelper').checked;
+        if (chapter !== 'roots') restoreRootCamera();
+        introForest.setActive(chapter === 'intro');
+        const sap = ['photosynthesis', 'transpiration', 'roots'].includes(chapter);
+        sapGroup.visible = sap;
+        document.getElementById('chkSapFlow').checked = sap;
+        if (photosynthesisGroup) photosynthesisGroup.visible = chapter === 'photosynthesis';
+        if (carbonDioxideGroup) carbonDioxideGroup.visible = chapter === 'photosynthesis';
+        const roots = chapter === 'roots';
+        if (rootsMesh) rootsMesh.visible = chapter === 'intro' || roots || document.getElementById('chkRoots').checked;
+        groundPlane.visible = !roots && document.getElementById('chkGround').checked;
+        dripZoneGroup.visible = roots && document.getElementById('chkDripLine').checked;
+        if (chapter !== 'intro') {
+          setLeafRegrowthProgress(leafRegrowthProgress);
+          syncSeasonFoliage();
+        }
+        invalidateShadows();
+      },
+      introFrame: (position, reset = false) => {
+        ecology.setSeasonPosition(position);
+        if (reset) {
+          // Begin in summer with a full canopy; later seasonal transitions use
+          // the same falling and regrowth lifecycle as the season ring.
+          droughtDryProgress = 0;
+          previousSeasonPhase = null;
+          seasonalNewLeaves = false;
+          seasonalRegrowthActive = false;
+          seasonalRegrowthPending = false;
+          leafRegrowthActive = false;
+          leafWasDry = false;
+          setLeafRegrowthProgress(1);
+          leafControls.resetLeafFall();
+          syncSeasonFoliage();
+          // Start the intro just before sunrise.
+          timeOfDayHours = 2;
+          sliderTimeOfDay.value = 2;
+          sliderSunElevation.value = 0;
+          sliderLightRot.value = 90;
+          valTimeOfDay.textContent = '02:00';
+          ecology.dayCycleEnabled = true;
+          document.getElementById('chkDayNight').checked = true;
+          updateSunFromDayClock(timeOfDayHours);
+          invalidateShadows();
+          lastDaylightFrame = -Infinity;
+        }
+        applySeasonShift(seasonColorForPosition(position));
+      },
+      focusRoots: () => {
+        if (rootCameraSnapshot) { restoreRootCamera(); return false; }
+        rootCameraSnapshot = { position: camera.position.clone(), target: controls.target.clone() };
+        controls.target.set(0, -0.3, 0);
+        camera.position.set(14, 7, 18);
+        return true;
+      }
+    });
+    document.getElementById('chkDayNight')?.addEventListener('change', event => {
+      ecology.dayCycleEnabled = event.target.checked;
+      if (ecology.dayCycleEnabled) updateSunFromDayClock(timeOfDayHours);
+      if (ecology.ready) ecology.evaluate(0);
+      lastDaylightFrame = -Infinity;
+      invalidateShadows();
+    });
+    setEcologySeason('summer');
+    window.treeApp = { ecology, chapters: chapterApp }; // Readable diagnostics for the local viewer.
+
+    // 9. ANIMATION LOOP & FPS COUNTER
+    let lastTime = performance.now();
+    let simulationTime = lastTime * 0.001;
+    let leafFallAnimationTime = lastTime * 0.001;
+    let frameCount = 0;
+    let fpsTimer = 0;
+    function animate(now) {
+      requestAnimationFrame(animate);
+
+      const delta = document.hidden ? 0 : Math.min(0.1, (now - lastTime) / 1000);
+      lastTime = now;
+      const playbackDelta = timePaused ? 0 : delta * timePlaybackSpeed;
+      simulationTime += playbackDelta;
+      const simulationNow = simulationTime * 1000;
+
+      // FPS Calculation
+      frameCount++;
+      fpsTimer += delta;
+      if (fpsTimer >= 0.5) {
+        valFps.textContent = Math.round(frameCount / fpsTimer);
+        frameCount = 0;
+        fpsTimer = 0;
+      }
+
+      if (playbackDelta > 0) chapterApp.tick(playbackDelta);
+      controls.update();
+      leafBreeze.update(simulationTime);
+      if (typeof coronaMesh !== 'undefined') coronaMesh.quaternion.copy(camera.quaternion);
+      if (typeof sunLabel !== 'undefined') sunLabel.quaternion.copy(camera.quaternion);
+      if (playbackDelta > 0 && typeof updateDripZoneAnimation === 'function') updateDripZoneAnimation(playbackDelta, simulationNow);
+      // Accelerate during late autumn and winter, before spring growth is due.
+      // Keep the same clock and paths so airborne leaves continue their flight.
+      const fallSeasonPhase = ((ecology.seasonPosition % 4) + 4) % 4;
+      const winterFallSpeed = !seasonalNewLeaves
+        ? 1 + 7 * THREE.MathUtils.smoothstep(fallSeasonPhase, 2.5, 3)
+        : 1;
+      leafFallAnimationTime += playbackDelta * (seasonalRegrowthPending ? 12 : winterFallSpeed);
+      shaderUniforms.uLeafFallTime.value = leafFallAnimationTime;
+      // Calculate time once, before crossing day/night boundaries. The clock,
+      // weather and water balance all consume this same model-minute increment.
+      const modelMinutes = adjustingTimeOfDay ? 0 : delta * MODEL_MINUTES_PER_SECOND * getDayClockSpeed();
+      if (modelMinutes > 0 && sliderTimeOfDay) {
+        timeOfDayHours = (timeOfDayHours + modelMinutes / 60) % 24;
+        sliderTimeOfDay.value = timeOfDayHours;
+        if (ecology.dayCycleEnabled) updateSunFromDayClock(timeOfDayHours);
+        const h = Math.floor(timeOfDayHours);
+        const m = Math.floor((timeOfDayHours - h) * 60);
+        if (valTimeOfDay) valTimeOfDay.textContent = `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}`;
+      }
+      // Water balance uses the clock's increment, including intro/night speeds.
+      updateWaterAndDrought(modelMinutes);
+      updateSapRetraction(delta);
+      if (playbackDelta > 0) updateSeasonalLeaves(playbackDelta);
+      if (typeof sapUniforms !== 'undefined') sapUniforms.uTime.value = ecology.elapsedMinutes / 10;
+      updateDayNightScene(now);
+      if (playbackDelta > 0 && typeof leafControls !== 'undefined' && typeof shaderUniforms !== 'undefined') {
+        const leavesAnimating = leafControls.updateLeafFall(
+          THREE.MathUtils.clamp(shaderUniforms.uSeasonOffset.value / 0.44 + 0.5, 0, 1),
+          leafFallAnimationTime,
+          {
+            dryingSpeed: shaderUniforms.uDryingSpeed.value,
+            dryingSharpness: shaderUniforms.uDryingSharpness.value,
+            dryingFrontWidth: shaderUniforms.uDryingFrontWidth.value,
+            fallSpeed: shaderUniforms.uLeafFallSpeed.value,
+            maxAirborne: Number(document.getElementById('sliderLeafFallAmount').value),
+            calendarFallProgress: seasonalRegrowthPending ? 1 : (seasonalNewLeaves ? 0 : beechLeafFallProgress(ecology.seasonPosition)),
+            enabled: shaderUniforms.uLeafFallEnabled.value > 0.5
+          }
+        );
+        if (seasonalRegrowthPending && isLeafGrowthSeason() && !leafControls.hasUnfinishedLeafFall(leafFallAnimationTime)) {
+          startSeasonalRegrowth();
+          invalidateShadows();
+        }
+        // Animated leaves and their shadow silhouettes must use the same frame.
+        // A cached moving shadow visibly jumps across the neighbouring leaves.
+        if (leavesAnimating || leafRegrowthActive || leafBreeze.active) {
+          invalidateShadows();
+        }
+      }
+      if (playbackDelta > 0 && typeof updatePhotonFlow === 'function') updatePhotonFlow(playbackDelta, simulationNow);
+      if (typeof updateSapWaterLabel === 'function') updateSapWaterLabel(playbackDelta, simulationNow);
+      camera.updateMatrixWorld();
+      chapterApp.updateScene(playbackDelta);
+      introForest.update();
+      renderer.render(scene, camera);
+    }
+    requestAnimationFrame(animate);
+
+    // 10. RESIZE LISTENER
+    window.addEventListener('resize', () => {
+      camera.aspect = window.innerWidth / window.innerHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(window.innerWidth, window.innerHeight);
+      introForest.resize();
+    });
+
+    window.treeControlsReady = true;
+    window.dispatchEvent(new Event('tree-controls-ready'));
+
+  </script>
+</body>
+
+</html>
