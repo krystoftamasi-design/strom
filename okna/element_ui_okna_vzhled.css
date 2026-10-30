@@ -1,0 +1,207 @@
+/* ==========================================================================
+   ELEMENT UI OKNA VZHLED
+   Vizuální stylování informačních oken a ovládacích prvků (kapitola Fotosyntéza).
+   ========================================================================== */
+
+/* 1. Hlavní proměnné – definice barevné palety prvků a časování animací */
+.tree-overlay {
+  --ui-ink: #181818;          /* Základní barva textu / tmavý inkoust */
+  --ui-water: #2f49d6;        /* Voda - modrá */
+  --ui-oxygen: #4fa2da;       /* Kyslík - světle modrá */
+  --ui-co2: #ff583c;          /* Oxid uhličitý - červeno-oranžová */
+  --ui-light: #ffcc00;        /* Světlo - žlutá */
+  --ui-leaves: #51b700;       /* Listy - zelená */
+  --ui-roots: #311619;        /* Kořeny - hnědá */
+  --ui-sugar: #d42fd5;        /* Glukóza / cukr - fialová */
+  --ui-temperature: #ff1f4c;  /* Teplota - červená */
+  --ui-duration: 420ms;       /* Výchozí doba trvání animací */
+  /* Společné role písma pro všechna okna. */
+  --ui-font-text: 'Satoshi', sans-serif;
+  --ui-font-display: 'Nohemi', sans-serif;
+  --ui-text-size: 16px;
+  --ui-text-weight: 300;
+  --ui-text-leading: 1.35;
+  --ui-formula-size: 12px;
+  --ui-formula-weight: 500;
+  --ui-heading-size: 27px;
+  --ui-heading-weight: 500;
+  --ui-value-size: 30px;
+  --ui-value-weight: 400;
+  --ui-text-style: var(--ui-text-weight) var(--ui-text-size)/var(--ui-text-leading) var(--ui-font-text);
+}
+
+/* Noční režim – přepnutí základního inkoustu na světlou barvu */
+body.scene-night .tree-overlay { --ui-ink: #f0f2e9; }
+
+/* 2. Základní styl okna anotace v kapitole fotosyntézy */
+.tree-overlay .element-ui-okno {
+  --ui-topic: var(--ui-ink);
+  box-sizing: border-box; width: 280px; padding: 0 0 0 17px;
+  color: var(--ui-ink); background: none; border: 0; border-radius: 0;
+  font: var(--ui-text-style);
+  box-shadow: none; backdrop-filter: none;
+}
+
+/* Nastavení barvy tématu (--ui-topic) podle typu okna */
+.tree-overlay .element-ui-okno[data-topic="water"] { --ui-topic: var(--ui-water); }
+.tree-overlay .element-ui-okno[data-topic="oxygen"] { --ui-topic: var(--ui-oxygen); }
+.tree-overlay .element-ui-okno[data-topic="co2"] { --ui-topic: var(--ui-co2); }
+.tree-overlay .element-ui-okno[data-topic="sugar"] { --ui-topic: var(--ui-sugar); }
+.tree-overlay .element-ui-okno[data-topic="light"] { --ui-topic: var(--ui-light); }
+.tree-overlay .element-ui-okno[data-topic="leaves"] { --ui-topic: var(--ui-leaves); }
+.tree-overlay .element-ui-okno[data-topic="roots"] { --ui-topic: var(--ui-roots); }
+.tree-overlay .element-ui-okno[data-topic="temperature"] { --ui-topic: var(--ui-temperature); }
+.tree-overlay.ui-test-black-window-titles .element-ui-okno.collapsed > header > h2,
+.tree-overlay.ui-test-black-window-titles .element-ui-okno.collapsed > header > h3 {
+  color: #000;
+}
+
+/* Zarovnání a odsazení pro okna umístěná na levé straně */
+.tree-overlay .element-ui-okno[data-side="left"] {
+  padding: 0 17px 0 0; text-align: right;
+}
+
+/* 3. Hlavička okna */
+.tree-overlay .element-ui-okno > header {
+  position: relative; min-height: 38px; padding: 2px 0 3px;
+  justify-content: flex-start; border: 0;
+}
+.tree-overlay .element-ui-okno[data-side="left"] > header { justify-content: flex-end; }
+
+/* Nadpisy v hlavičce (používají barvu tématu a písmo Nohemi) */
+.tree-overlay .element-ui-okno h2,
+.tree-overlay .element-ui-okno h3 {
+  margin: 0; color: var(--ui-topic);
+  font: var(--ui-heading-weight) var(--ui-heading-size)/1.2 var(--ui-font-display);
+  letter-spacing: -.035em; transition: color 180ms ease;
+}
+.tree-overlay .element-ui-okno[data-topic="light"].collapsed h2 { color: var(--ui-ink); }
+.tree-overlay .element-ui-okno .ui-heading-subscript {
+  font: inherit; font-size: 60%; line-height: 0;
+  position: relative; bottom: -.2em; vertical-align: baseline; letter-spacing: 0;
+}
+
+/* Neviditelné tlačítko přes celou hlavičku pro rozbalení/sbalení */
+.tree-overlay .element-ui-trigger {
+  position: absolute; inset: 0; width: 100%; height: 100%; min-height: 38px;
+  margin: 0; padding: 0; color: transparent; background: transparent; border: 0;
+  border-radius: 0; opacity: 1; cursor: pointer; font-size: 0;
+}
+.tree-overlay .element-ui-trigger:focus-visible { outline: 2px solid var(--ui-topic); outline-offset: 4px; }
+.tree-overlay .element-ui-trigger:hover { background: none; }
+
+/* 4. Tělo okna (textový obsah a rozbalovací animace) */
+.tree-overlay .element-ui-okno .annotation-reveal {
+  transition: grid-template-rows var(--ui-duration) ease, opacity 220ms ease;
+}
+.tree-overlay .element-ui-okno .annotation-body {
+  padding: 0 0 8px; max-height: min(48vh, 360px); overflow-y: auto;
+  scrollbar-width: thin; scrollbar-color: var(--ui-ink) transparent;
+}
+.tree-overlay .element-ui-okno .annotation-body p {
+  margin: 0 0 9px; color: var(--ui-ink); font: var(--ui-text-style);
+}
+.tree-overlay .element-ui-okno .annotation-body > :last-child { margin-bottom: 0; }
+.tree-overlay .element-ui-okno .annotation-body .ui-window-formula,
+.tree-overlay .element-ui-okno .annotation-body .ui-window-description {
+  margin: 0 0 9px; font: var(--ui-text-style);
+}
+.tree-overlay .element-ui-okno .annotation-body .ui-window-formula {
+  font: var(--ui-formula-weight) var(--ui-formula-size)/var(--ui-text-leading) var(--ui-font-text);
+}
+.tree-overlay .element-ui-okno .ui-word { font: inherit; }
+.tree-overlay .element-ui-okno .chapter-link {
+  display: inline-block; margin: 6px 0 0; color: var(--ui-ink); font: var(--ui-text-style);
+}
+
+/* 5. Sekce s číselnými hodnotami a metrikami */
+.tree-overlay .element-ui-values { padding-top: 2px; }
+.tree-overlay .element-ui-values:empty { display: none; }
+.tree-overlay .element-ui-values .chapter-metric {
+  display: flex; flex-direction: row; align-items: baseline; justify-content: flex-start;
+  gap: 5px; padding: 0; margin: 0; border: 0; border-radius: 0; background: none;
+}
+.tree-overlay .element-ui-okno[data-side="left"] .chapter-metric { justify-content: flex-end; }
+.tree-overlay .element-ui-values .chapter-metric > span {
+  color: var(--ui-ink); font: var(--ui-text-style);
+}
+.tree-overlay .element-ui-values strong {
+  position: relative; display: inline-flex; align-items: baseline; gap: 0;
+  width: auto; height: auto; padding: 0 0 6px; color: var(--ui-topic);
+  font: var(--ui-value-weight) var(--ui-value-size)/1.1 var(--ui-font-display); white-space: nowrap;
+}
+.tree-overlay .element-ui-values output { color: var(--ui-topic); font: inherit; }
+.tree-overlay .element-ui-values .element-ui-unit {
+  margin-left: 5px; color: var(--ui-ink); font: var(--ui-text-style);
+}
+
+/* Stylizované "tahové" podtržítko pod hodnotou (skryje se při sbalení okna) */
+.tree-overlay .element-ui-values strong::after {
+  content: ''; position: absolute; left: 0; bottom: 0; width: 100%; height: 3px;
+  background: var(--ui-ink); clip-path: polygon(0 20%, 100% 0, 90% 50%, 30% 75%, 60% 100%, 0 65%);
+  opacity: 1; transition: opacity 180ms ease;
+}
+.tree-overlay .element-ui-okno.collapsed .element-ui-values strong::after { opacity: 0; }
+.tree-overlay .element-ui-okno .annotation-frame { display: none; }
+
+/* 6. Boční texturovaná linka okna */
+.tree-overlay .element-ui-okno .element-ui-edge {
+  display: block; position: absolute; top: 0; width: var(--ui-edge-width, 9px);
+  height: var(--ui-edge-open, 38px); pointer-events: none;
+  /* Preserve the original top/bottom 6px; only the continuous middle stretches. */
+  box-sizing: border-box; background: none;
+  border-style: solid; border-color: transparent; border-width: 6px 0;
+  border-image-source: var(--ui-edge-variant);
+  border-image-slice: 6 0 fill;
+  border-image-width: 6px 0;
+  border-image-repeat: stretch;
+  filter: brightness(0); transition: height var(--ui-duration) ease;
+}
+.tree-overlay .element-ui-okno[data-side="left"] .element-ui-edge { right: 0; }
+.tree-overlay .element-ui-okno[data-side="right"] .element-ui-edge { left: 0; }
+.tree-overlay .element-ui-okno.collapsed .element-ui-edge { height: var(--ui-edge-closed, 38px); }
+
+/* Vzhled spojovacích linek v nočním režimu (invertování na bílou) */
+.tree-connector-brush { pointer-events: none; filter: brightness(0); }
+body.scene-night .tree-connector-brush,
+body.scene-night .tree-overlay .element-ui-okno .element-ui-edge { filter: brightness(0) invert(1); }
+
+/* 7. Pomocné třídy pro obarvení klíčových slov v textu */
+.tree-overlay .element-ui-okno .ui-word-light { color: var(--ui-light); }
+.tree-overlay .element-ui-okno .ui-word-water { color: var(--ui-water); }
+.tree-overlay .element-ui-okno .ui-word-temperature { color: var(--ui-temperature); }
+.tree-overlay .element-ui-okno .ui-word-co2 { color: var(--ui-co2); }
+.tree-overlay .element-ui-okno .ui-word-leaves { color: var(--ui-leaves); }
+.tree-overlay .element-ui-okno .ui-word-sugar { color: var(--ui-sugar); }
+.tree-overlay .element-ui-okno .ui-word-oxygen { color: var(--ui-oxygen); }
+.tree-overlay .element-ui-okno .ui-word-roots { color: var(--ui-roots); }
+
+/* 8. Posuvník (slider) pro řízení přísunu vody */
+.tree-overlay .element-ui-okno .shared-water {
+  display: flex; flex-direction: column-reverse; gap: 2px; margin: 12px 0 0; padding: 0;
+}
+.tree-overlay .element-ui-okno .shared-water input[type="range"] {
+  appearance: none; height: 22px; margin: 0; background: linear-gradient(var(--ui-water),var(--ui-water)) center / 100% 2px no-repeat;
+}
+.tree-overlay .element-ui-okno .shared-water input[type="range"]::-webkit-slider-thumb {
+  appearance: none; width: 20px; height: 16px; border: 0; border-radius: 0; box-shadow: none;
+  background: url('../web_assets/ui_slider_tecka.png') center / contain no-repeat; cursor: grab;
+}
+.tree-overlay .element-ui-okno .shared-water input[type="range"]:focus-visible { outline: 2px solid var(--ui-water); outline-offset: 2px; }
+.tree-overlay .element-ui-okno .shared-water .slider-label { margin: 0; }
+.tree-overlay .element-ui-okno .shared-water .slider-label label,
+.tree-overlay .element-ui-okno .shared-water .slider-val { color: var(--ui-water); font: var(--ui-text-style); }
+
+/* 9. Responzivní přizpůsobení pro menší displeje (mobily/tablety do 700px) */
+@media (max-width: 700px) {
+  .tree-overlay { --ui-heading-size: 21px; --ui-text-size: 14px; }
+  .tree-overlay .element-ui-okno { width: min(240px, calc(50vw - 22px)); }
+  .tree-overlay .element-ui-okno .annotation-body { max-height: 36vh; }
+}
+
+/* 10. Uživatelská volba omezení animací (přístupnost) */
+@media (prefers-reduced-motion: reduce) {
+  .tree-overlay .element-ui-okno { --ui-duration: 0ms; }
+  .tree-overlay .element-ui-okno .annotation-reveal { transition: none; }
+}
+
