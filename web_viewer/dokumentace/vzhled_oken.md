@@ -2,10 +2,22 @@
 history:
   - thread_id: 01a18f17-efd7-7a02-8369-186b681bfcc0
     date: 2026-10-31
+    change: Doplněna obecná skladba obsahu oken bez přesunu konkrétních textů.
+  - thread_id: 01a18f17-efd7-7a02-8369-186b681bfcc0
+    date: 2026-10-31
     change: Přesunut samostatný popis vzhledu oken z okna.md.
 ---
 
 # Vzhled oken
+
+### Obecný obsah
+
+- Nadpis: název tématu; kliknutí ovládá zobrazení detailu.
+- Hodnota: živé číslo s jednotkou pod nadpisem, pokud ji okno zobrazuje.
+- Vstupy výpočtu: drobný barevný přehled pod hodnotou, pokud je zapnutý.
+- Detail: vysvětlující text ve vyhrazeném prostoru vedle hlavních údajů.
+- Ovládání: případný posuvník nebo jiný ovládací prvek v detailu.
+- Konkrétní hodnoty, texty a ovládání jednotlivých oken určuje [Obsah oken](okna.md).
 
 ### Rozložení
 
@@ -13,7 +25,6 @@ history:
 - Fotosyntéza je vlevo dole; vpravo následují shora O₂, CO₂, Cukry a Voda.
 - Střed zůstává volný pro strom.
 - Bloky jsou bez výplně a rámečku; vlevo mají nepravidelný svislý tah.
-- Hodnota s jednotkou je pod nadpisem, přehled vstupů výpočtu pod hodnotou a detail vpravo vedle nich.
 - Do šířky 700 px zůstávají dva pevné sloupce; detaily mají místo pod nadpisem s vlastním posuvem a přehled vstupů je skrytý.
 
 ### Písmo
