@@ -1,6 +1,6 @@
 ---
 history:
-  - thread_id: null
+  - thread_id: 01a18d15-6ca3-7241-81c2-fc807aeadc12
     date: 2026-10-30
     change: Doplněny názvy kapitol webu.
 ---
@@ -108,5 +108,5 @@ history:
 - Odkaz „Napojení“ použij jen u oken skutečně spojených s definovaným elementem; jinak uveď pouze bod linky na stromu.
 - Obecné chování a vzhled sdílej odkazem.
 - Prázdné části nech prázdné.
-- Zachovej uživatelovy úpravy a piš stručně.
+- Zachovej uživatelovy úpravy a piš stručně. 🙂
 
