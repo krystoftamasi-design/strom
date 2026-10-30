@@ -2,6 +2,9 @@
 history:
   - thread_id: 01a18f17-efd7-7a02-8369-186b681bfcc0
     date: 2026-10-31
+    change: Doplněn přesný obsah oken podle záznamů v element_ui_okna_obsah.js.
+  - thread_id: 01a18f17-efd7-7a02-8369-186b681bfcc0
+    date: 2026-10-31
     change: Přesunut vzhled do vzhled_oken.md; ponecháno chování a obsah oken.
   - thread_id: 01a18f17-efd7-7a02-8369-186b681bfcc0
     date: 2026-10-31
@@ -19,43 +22,54 @@ history:
 
 # Okna
 
-## Statická okna
-
-- Okna mají pevnou polohu a rozměry v rozhraní, nezávisle na stromu a kameře.
-- Kliknutí na nadpis zobrazí nebo skryje detail ve vyhrazeném prostoru.
-- Změna hodnot a zobrazení detailu neposouvají bloky ani nemění délku barevného tahu.
-- Okna nemají pohybové animace ani spojnice ke stromu.
-- Při vstupu jsou otevřené detaily Cukrů a Vody; ostatní jsou skryté.
-
 ## Kapitola Fotosyntéza
 
 ### Okna
 
 #### Fotosyntéza
 
-- Hodnota: aktivita v procentech s popiskem „aktivita“.
-- Detail: využití světla k tvorbě cukrů, uvolňování kyslíku a význam cukrů pro růst.
+- Nadpis: `Fotosyntéza`.
+- Téma: světlo; strana: vlevo; hlavní okno.
+- Detailní text: „Listy využívají světlo k tvorbě cukrů z vody a oxidu uhličitého. Při ději se uvolňuje kyslík. Cukry dodávají stromu energii i materiál pro růst.“
+- Hodnota: `activity`, zobrazená v procentech.
+- Vstupy výpočtu: zapnuté.
+- Výsledná hodnota: zapnutá.
+- Výchozí stav detailu: zavřený.
 
 #### O₂
 
-- Detail: uvolňování kyslíku při fotosyntéze.
+- Nadpis: `O₂`.
+- Téma: kyslík; strana: vpravo.
+- Detailní text: „Při ději se uvolňuje kyslík.“
+- Číselná hodnota a vstupy výpočtu: nejsou zapnuté.
 - Související element: [O₂ částice](elementy.md#o₂).
 
 #### CO₂
 
-- Detail: srovnání s předindustriální koncentrací a vliv CO₂ na fotosyntézu.
+- Nadpis: `CO₂`.
+- Téma: CO₂; strana: vpravo.
+- Detailní text: „Oproti předindustriální hodnotě jde přibližně o nárůst 50 %. Vyšší CO₂ může podpořit fotosyntézu.“
+- Číselná hodnota a vstupy výpočtu: nejsou zapnuté.
 - Související element: [CO₂ částice](elementy.md#co₂).
 
 #### Cukry
 
-- Hodnota: tvorba glukózy v g/min.
-- Detail: „Tvorba cukrů ≈ glukóza“.
+- Nadpis: `Cukry`.
+- Téma: cukry; strana: vpravo.
+- Popisek: „Tvorba cukrů ≈ glukóza“.
+- Hodnota: `glucoseGramsPerMinute`, jednotka `g/min`.
+- Vstupy výpočtu: zapnuté.
+- Výsledná hodnota: zapnutá.
+- Výchozí stav detailu: otevřený.
 - Související element: [Glukóza linka](elementy.md#glukóza-linka).
 
 #### Voda
 
-- Ovládání: posuvník přísunu vody.
-- Detail: vliv nedostatku vody na průduchy, přísun CO₂ a fotosyntézu.
+- Nadpis: `Voda`.
+- Téma: voda; strana: vpravo.
+- Detailní text: „Při nedostatku vody se přivírají průduchy. Do listů proniká méně CO₂ a fotosyntéza slábne. Zkuste omezit přítok nebo snížit slunce pod obzor.“
+- Ovládání: posuvník `sliderTreeWater`, popisek `Voda`.
+- Výchozí stav detailu: otevřený.
 - Související element: [Voda linka](elementy.md#voda-linka).
 
 ## Související dokumenty
