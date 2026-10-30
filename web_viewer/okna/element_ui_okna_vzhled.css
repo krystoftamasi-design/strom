@@ -116,6 +116,9 @@ body.scene-night .tree-overlay { --ui-ink: #f0f2e9; }
   font: inherit;
   color: #000 !important;
 }
+body.scene-night .tree-overlay .element-ui-okno .ui-word {
+  color: #f0f2e9 !important;
+}
 .tree-overlay .element-ui-okno .annotation-frame { display: none; }
 .tree-overlay .element-ui-okno .element-ui-edge {
   display: block; position: absolute; top: 0; left: 0; width: 8px; height: 65%;
