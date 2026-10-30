@@ -2,6 +2,9 @@
 history:
   - thread_id: 01a18d15-6ca3-7241-81c2-fc807aeadc12
     date: 2026-10-30
+    change: Zpřesněno přidávání a ověřování historie Markdownu.
+  - thread_id: 01a18d15-6ca3-7241-81c2-fc807aeadc12
+    date: 2026-10-30
     change: Přidáno dohledání ID threadu přes API Codexu.
 ---
 
@@ -35,9 +38,11 @@ history:
 
 - U každého nově vytvořeného nebo upravovaného dokumentu Markdown udržuj historii posledních pěti změn v YAML frontmatteru.
 - Před zápisem změny zavolej API Codexu `list_threads` a podle aktuálního chatu ověř jeho ID; zapiš nalezené `thread_id`, datum a stručný popis.
-- Historii ve frontmatteru aktualizuj při každé změně dokumentu; ponechávej nejvýše pět nejnovějších záznamů.
+- Při každé změně Markdownu přidej nový záznam na začátek `history`; existující záznamy zachovej a nemaž ani nepřepisuj jen proto, že upravuješ tentýž soubor znovu.
+- Po přidání záznamu ponechávej nejvýše pět nejnovějších položek `history` a starší odstraň až z konce seznamu.
 - Použij formát `history` jako seznam položek s poli `thread_id`, `date` a `change`; předchozí frontmatter zachovej a sluč jej bez ztráty ostatních polí.
 - Pokud ID není v prvním výsledku, stránkuj nebo zpřesni hledání `list_threads`; nikdy nevymýšlej `thread_id` ani nezapisuj `null` bez vyčerpání dostupného API hledání.
+- Před dokončením zkontroluj, že existuje nový záznam pro právě provedenou změnu, má správné `thread_id`, datum a popis a že seznam obsahuje nejvýše pět položek.
 
 # Rozdělení dokumentace
 
