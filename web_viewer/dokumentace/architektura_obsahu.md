@@ -2,6 +2,9 @@
 history:
   - thread_id: 01a18f17-efd7-7a02-8369-186b681bfcc0
     date: 2026-10-31
+    change: Přidána k oknům kategorie Vzhled s odkazem na samostatný soubor.
+  - thread_id: 01a18f17-efd7-7a02-8369-186b681bfcc0
+    date: 2026-10-31
     change: Sjednoceno pořadí kapitol s navigací a odstraněny nadbytečné mezery.
   - thread_id: 01a18f17-efd7-7a02-8369-186b681bfcc0
     date: 2026-10-31
@@ -12,9 +15,6 @@ history:
   - thread_id: 01a18d15-6ca3-7241-81c2-fc807aeadc12
     date: 2026-10-30
     change: Změněn smajlík na konci pravidel dokumentu.
-  - thread_id: 01a18d15-6ca3-7241-81c2-fc807aeadc12
-    date: 2026-10-30
-    change: Doplněny názvy kapitol webu.
 ---
 
 # Architektura obsahu
@@ -56,6 +56,10 @@ history:
 - [CO₂](okna.md#co₂)
 - [Cukry](okna.md#cukry)
 - [Voda](okna.md#voda)
+
+### Vzhled
+
+- [Okna](vzhled_oken.md)
 
 ### Ovládací prvky
 
@@ -108,9 +112,9 @@ history:
 - Definice určují požadované chování; stav implementace patří do [Změn](zmeny.md).
 - Pevné rozdělení dokumentů a postup změn určuje [AGENTS.md](../../AGENTS.md).
 - Kapitoly mají úroveň `##`.
-- Pod nimi jsou `### Text`, `### Okna`, `### Ovládací prvky` a `### Elementy`.
+- Pod nimi jsou `### Text`, `### Okna`, `### Vzhled`, `### Ovládací prvky` a `### Elementy`.
 - Uváděj jen krátké klikací názvy nebo značky; u linek přidej slovo „linka“.
-- Podrobnosti patří do `texty.md`, `okna.md`, `prvky.md` a `elementy.md`.
+- Podrobnosti patří do `texty.md`, `okna.md`, `vzhled_oken.md`, `prvky.md` a `elementy.md`.
 - Každý prvek definuj pouze jednou; kapitoly na něj odkazují.
 - Konkrétní definice mají úroveň `####`.
 - Chování oken určuje společná definice [Statická okna](okna.md#statická-okna).

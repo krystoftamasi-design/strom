@@ -2,6 +2,9 @@
 history:
   - thread_id: 01a18f17-efd7-7a02-8369-186b681bfcc0
     date: 2026-10-31
+    change: Odděleny odkazy na obsah a samostatný vzhled oken.
+  - thread_id: 01a18f17-efd7-7a02-8369-186b681bfcc0
+    date: 2026-10-31
     change: Sloučeny technické informace do pořadí definice, hodnoty, kontroly a rozšíření.
   - thread_id: 01a18f17-efd7-7a02-8369-186b681bfcc0
     date: 2026-10-31
@@ -18,7 +21,7 @@ history:
 
 ## Definice
 
-- Požadované chování a vzhled určují [Okna](okna.md).
+- Chování a obsah určují [Okna](okna.md), vizuální pravidla [Vzhled oken](vzhled_oken.md).
 - Cesty ke kódu jsou uvedené od složky `web_viewer`.
 
 ### Obsah

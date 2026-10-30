@@ -2,6 +2,9 @@
 history:
   - thread_id: 01a18f17-efd7-7a02-8369-186b681bfcc0
     date: 2026-10-31
+    change: Doplněno oddělení vzhledu oken do samostatného souboru a kategorie rozcestníku.
+  - thread_id: 01a18f17-efd7-7a02-8369-186b681bfcc0
+    date: 2026-10-31
     change: Upřesněno nahrazování starých popisů a průběžné čištění návaznosti dokumentace.
   - thread_id: 01a18f17-efd7-7a02-8369-186b681bfcc0
     date: 2026-10-31
@@ -57,9 +60,10 @@ history:
 
 Soubory jsou v `web_viewer/dokumentace`.
 
-- `architektura_obsahu.md`: rozcestník; kapitoly → Text, Okna, Ovládací prvky, Elementy; pouze krátké klikací názvy.
+- `architektura_obsahu.md`: rozcestník; kapitoly → Text, Okna, Vzhled, Ovládací prvky, Elementy; pouze krátké klikací názvy.
 - `texty.md`: samostatné nápisy, písmo, poloha a barva.
-- `okna.md`: statická okna rozhraní, pevné rozmístění, obsah, hodnoty a související elementy; bez prostorového ukotvení ke stromu.
+- `okna.md`: chování statických oken, obsah, hodnoty a související elementy.
+- `vzhled_oken.md`: samostatný vzhled oken, rozmístění, písmo a barvy.
 - `prvky.md`: tlačítka a ovládání.
 - `elementy.md`: linky, částice a jejich chování včetně reakcí na okna; bez zdrojových souborů a interních názvů.
 - `zmeny.md`: stav změn a ověření, odkazy na definice.

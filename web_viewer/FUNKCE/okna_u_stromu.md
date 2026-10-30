@@ -2,6 +2,9 @@
 history:
   - thread_id: 01a18f17-efd7-7a02-8369-186b681bfcc0
     date: 2026-10-31
+    change: Přesměrován vzhled oken na samostatný soubor vzhled_oken.md.
+  - thread_id: 01a18f17-efd7-7a02-8369-186b681bfcc0
+    date: 2026-10-31
     change: Aktualizován odkaz na samostatnou kategorii Vzhled oken.
   - thread_id: 01a18f17-efd7-7a02-8369-186b681bfcc0
     date: 2026-10-31
@@ -12,9 +15,6 @@ history:
   - thread_id: 01a18f17-efd7-7a02-8369-186b681bfcc0
     date: 2026-10-31
     change: Sladěn popis fungování a typografie s implementací statických oken.
-  - thread_id: 01a18f17-efd7-7a02-8369-186b681bfcc0
-    date: 2026-10-31
-    change: Nahrazena pohyblivá a roztažitelná okna odkazy na společnou statickou definici.
 ---
 
 # Statická okna
@@ -22,7 +22,7 @@ history:
 ## Popis
 
 - [Chování](../dokumentace/okna.md#statická-okna)
-- [Vzhled](../dokumentace/okna.md#vzhled)
+- [Vzhled](../dokumentace/vzhled_oken.md)
 - [Obsah oken](../dokumentace/okna.md#kapitola-fotosyntéza)
 - [Reakce elementů](../dokumentace/elementy.md)
 
