@@ -2,6 +2,9 @@
 history:
   - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
     date: 2026-10-31
+    change: Vyhrazen samostatný prostor pro tlačítka detailů Transpirace.
+  - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
+    date: 2026-10-31
     change: Vrácena viditelná tlačítka +/− do oken Transpirace.
   - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
     date: 2026-10-31
@@ -12,9 +15,6 @@ history:
   - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
     date: 2026-10-31
     change: Odstraněn Průtok a doplněny vzorce i šablona číselného okna podle Fotosyntézy.
-  - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
-    date: 2026-10-31
-    change: Zpřehledněna Transpirace podle poznatků z uživatelského testu.
 
 ---
 
@@ -25,6 +25,13 @@ history:
 ## Rozpracováno
 
 ## Implementováno
+
+#### Z038 — Prostor pro tlačítka detailů
+
+- Zadání: odstranit překrytí tlačítek a textu v Transpiraci.
+- Výsledek: záhlaví má samostatný pevný sloupec pro +/− a zmenšitelný sloupec pro zalamovaný nadpis; tlačítko zůstává uvnitř záhlaví.
+- Stav: Implementováno.
+- Ověření: kontrola CSS a připravené dokumentace; finální vizuální kontrola uživatelem.
 
 #### Z037 — Viditelné přepínače Transpirace
 

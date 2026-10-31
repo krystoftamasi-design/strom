@@ -208,8 +208,8 @@ body[data-chapter="transpiration"] [data-open-chapter="transpiration"] { text-de
 body.scene-night .transpiration-guide .transpiration-legend { color: #a9baff; }
 
 /* Explicit detail toggle, using the existing accessible button and state. */
-.tree-overlay .element-ui-okno[data-chapter="transpiration"] > header { display: flex; align-items: flex-start; gap: 8px; }
-.tree-overlay .element-ui-okno[data-chapter="transpiration"] > header > :is(h2,h3) { min-width: 0; }
+.tree-overlay .element-ui-okno[data-chapter="transpiration"] > header { display: grid; grid-template-columns: minmax(0, 1fr) 28px; align-items: start; gap: 8px; min-width: 0; }
+.tree-overlay .element-ui-okno[data-chapter="transpiration"] > header > :is(h2,h3) { min-width: 0; white-space: normal; overflow-wrap: anywhere; }
 .tree-overlay .element-ui-okno[data-chapter="transpiration"] .element-ui-trigger {
   position: static; flex: 0 0 28px; width: 28px; height: 28px;
   display: inline-flex; align-items: center; justify-content: center;
