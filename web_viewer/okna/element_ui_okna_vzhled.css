@@ -199,7 +199,7 @@ body[data-chapter="transpiration"] [data-open-chapter="transpiration"] { text-de
 }
 
 /* Longer topic names and mathematical relations wrap inside the shared columns. */
-.tree-overlay .element-ui-okno[data-chapter="transpiration"][data-side="right"] h3 { white-space: normal; }
+.tree-overlay .element-ui-okno[data-chapter="transpiration"][data-side="right"] h3 { white-space: nowrap; }
 .tree-overlay .element-ui-okno[data-chapter="transpiration"] > .ui-window-formula { white-space: normal; }
 @media (max-width: 700px) {
   .tree-overlay .element-ui-okno[data-chapter="transpiration"] > .ui-window-formula { display: block; }
@@ -208,8 +208,8 @@ body[data-chapter="transpiration"] [data-open-chapter="transpiration"] { text-de
 body.scene-night .transpiration-guide .transpiration-legend { color: #a9baff; }
 
 /* Explicit detail toggle, using the existing accessible button and state. */
-.tree-overlay .element-ui-okno[data-chapter="transpiration"] > header { display: grid; grid-template-columns: minmax(0, 1fr) 28px; align-items: start; gap: 8px; min-width: 0; }
-.tree-overlay .element-ui-okno[data-chapter="transpiration"] > header > :is(h2,h3) { min-width: 0; white-space: normal; overflow-wrap: anywhere; }
+.tree-overlay .element-ui-okno[data-chapter="transpiration"] > header { display: grid; grid-template-columns: max-content 28px; align-items: start; gap: 8px; min-width: 0; }
+.tree-overlay .element-ui-okno[data-chapter="transpiration"] > header > :is(h2,h3) { min-width: 0; white-space: nowrap; overflow-wrap: normal; }
 .tree-overlay .element-ui-okno[data-chapter="transpiration"] .element-ui-trigger {
   position: static; flex: 0 0 28px; width: 28px; height: 28px;
   display: inline-flex; align-items: center; justify-content: center;
@@ -224,4 +224,11 @@ body.scene-night .transpiration-guide .transpiration-legend { color: #a9baff; }
 @media (max-width: 700px) {
   .tree-overlay .element-ui-okno[data-chapter="transpiration"][data-window-id="chlazeni"] { top: 46%; }
   .tree-overlay .element-ui-okno[data-chapter="transpiration"][data-window-id="teplota"] { top: 70%; }
+}
+
+.tree-overlay .element-ui-okno[data-chapter="transpiration"][data-side="right"] { grid-template-columns: max-content minmax(0, 1fr); }
+.tree-overlay .element-ui-okno[data-chapter="transpiration"][data-side="right"] h3 { font-size: clamp(20px, 2vw, 38px); }
+@media (max-width: 700px) {
+  .tree-overlay .element-ui-okno[data-chapter="transpiration"] > header { max-width: 100%; overflow-x: auto; }
+  .tree-overlay .element-ui-okno[data-chapter="transpiration"][data-side="right"] h3 { font-size: clamp(16px, 4vw, 28px); }
 }

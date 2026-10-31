@@ -2,6 +2,9 @@
 history:
   - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
     date: 2026-10-31
+    change: Zakázáno zalamování nadpisů oken a upraven prostor záhlaví.
+  - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
+    date: 2026-10-31
     change: Zdokumentována replikovatelnost, rozestupy a prostor ovládání oken.
   - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
     date: 2026-10-31
@@ -12,9 +15,6 @@ history:
   - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
     date: 2026-10-31
     change: Doplněna šablona vzhledu podle Fotosyntézy a vzorce zbývajících oken Transpirace.
-  - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
-    date: 2026-10-31
-    change: Zpřehledněna Transpirace podle poznatků z uživatelského testu.
 
 ---
 
@@ -33,10 +33,10 @@ history:
 
 - Nadpis: název tématu; kliknutí ovládá zobrazení detailu.
 - Hodnota: živé číslo s jednotkou pod nadpisem, pokud ji okno zobrazuje.
-- Transpirace používá stejné rozložení nadpisu, hodnoty a detailu jako Fotosyntéza. Delší názvy témat a skutečné vzorce se zalamují uvnitř společných sloupců; vzorce zůstávají v Transpiraci viditelné i na úzké obrazovce.
+- Transpirace používá stejné rozložení nadpisu, hodnoty a detailu jako Fotosyntéza. Nadpisy se nikdy nezalamují; skutečné vzorce se mohou zalomit uvnitř sloupců; vzorce zůstávají v Transpiraci viditelné i na úzké obrazovce.
 - Vstupy výpočtu: drobný černý nezalamovaný řádek pod hodnotou ve dne; v noci se převrátí na světlou barvu.
 - Detail se zobrazuje napravo od hlavních údajů a sází se od horního okraje okna.
-- Tematická okna obou kapitol mají společnou šířku levého sloupce a jejich detaily začínají na stejné svislici.
+- Fotosyntéza má společný začátek detailů tematických oken; v Transpiraci se šířka prvního sloupce přizpůsobuje nezalomenému nadpisu a tlačítku.
 - Mezi sloupci je mezera 15 px; u dlouhého vzorce je výsledný odstup přibližně 15 px. Krátký vzorec Vody ponechává větší volný prostor.
 - Prostor detailu zabírá výšku řádků nadpisu, hodnoty a vzorce; delší obsah má vlastní posuv.
 - Ovládání: případný posuvník nebo jiný ovládací prvek v detailu.
@@ -50,7 +50,7 @@ history:
 - Rozměry a procentní pozice se vztahují k ploše rozhraní, nikoli ke stromu.
 - Pravá okna Transpirace: levý okraj 68 %, šířka 29 %, horní okraje 28 %, 48 % a 68 %; výška 14 %, nejméně 85 px. Rozteč horních okrajů je 20 % výšky rozhraní, nominální volný odstup 6 %; při uplatnění minimální výšky se zmenšuje.
 - Do šířky 700 px: pravý sloupec začíná na 52 %, má šířku 44 %, horní okraje 22 %, 46 % a 70 % a výšku oken 17 %. Nominální volný odstup je 7 % výšky rozhraní.
-- Při přenosu na jiný počet oken stanov jejich výšky a rozteče společně; mezi koncem obsahu jednoho okna a začátkem dalšího musí zůstat volné místo i při zalomeném nadpisu a otevřeném detailu. Dlouhý detail má vlastní posuv.
+- Při přenosu na jiný počet oken stanov jejich výšky a rozteče společně; mezi koncem obsahu jednoho okna a začátkem dalšího musí zůstat volné místo i při dlouhém nadpisu a otevřeném detailu. Dlouhý detail má vlastní posuv.
 - U pevně umístěných oken vytvářej vnější odstup roztečí pozic; samotný margin bez úpravy sousedních pozic nezaručuje mezeru.
 - Střed zůstává volný pro strom.
 - Bloky jsou bez výplně a rámečku; vlevo mají nepravidelný svislý tah.
@@ -58,10 +58,12 @@ history:
 - Tah Vody se roztahuje podle výšky řádků nadpisu, hodnoty a vzorce místo procentní výšky bloku.
 - Do šířky 700 px zůstávají dva pevné sloupce; detaily mají místo pod nadpisem s vlastním posuvem a přehled vstupů je skrytý.
 
-- Transpirace má vedle nadpisu viditelné kruhové tlačítko +/− pro otevření a zavření detailu. Záhlaví má zmenšitelný sloupec nadpisu a vlastní pevný sloupec tlačítka 28 px s mezerou 8 px; delší nadpis se zalamuje, tlačítko nesmí zasahovat do detailu ani hodnoty. Otevření detailu nemění sílu barevného tahu; samostatná shrnutí a stavové nápisy nejsou součástí okna.
+- Transpirace má vedle nadpisu viditelné kruhové tlačítko +/− pro otevření a zavření detailu. Záhlaví má sloupec podle šířky nezalomeného nadpisu a vlastní pevný sloupec tlačítka 28 px s mezerou 8 px; nadpis zůstává na jednom řádku, tlačítko nesmí zasahovat do detailu ani hodnoty. Otevření detailu nemění sílu barevného tahu; samostatná shrnutí a stavové nápisy nejsou součástí okna.
 - Vlevo nad hlavním oknem je vysvětlení děje a svislé schéma s vodou stoupající od kořenů k listům; nad pravými okny je označení témat a krátká instrukce.
 
 ### Písmo
+
+- Nadpis okna je vždy na jednom řádku. Na úzké obrazovce se zmenší písmo; pokud se záhlaví stále nevejde, má vodorovný posuv bez překrytí tlačítka a detailu.
 
 - Nadpisy používají Nohemi Regular, přibližně 53 px na referenčním plátně.
 - Hlavní okna Fotosyntézy a Transpirace mají dominantní tučný nadpis přibližně 92 px.
@@ -139,7 +141,7 @@ history:
 - Rozestup sloupců: 15 px; tematická okna stejného sloupce mají společný začátek detailů.
 - Zavřený stav: nadpis, hodnota a vzorec zůstávají na místě; detail je skrytý.
 - Otevřený stav: detail se zobrazí ve vyhrazeném prostoru bez posunutí sousedních oken.
-- Ovládání: zvolená varianta — plocha nad nadpisem / viditelné +/− vedle nadpisu; u viditelné varianty určuj vlastní šířku tlačítka a mezeru. Nadpis se zalamuje do zbývající šířky, fokus je viditelný. Konkrétní chování a výchozí stav určuje definice okna.
+- Ovládání: zvolená varianta — plocha nad nadpisem / viditelné +/− vedle nadpisu; u viditelné varianty určuj vlastní šířku tlačítka a mezeru. Nadpis se nikdy nezalamuje; přizpůsob šířku sloupce a velikost písma, při nedostatku místa umožni vodorovný posuv záhlaví. Fokus je viditelný. Konkrétní chování a výchozí stav určuje definice okna.
 - Úzká obrazovka: dva pevné sloupce, menší písmo a detail pod hlavními údaji; Fotosyntéza skrývá přehled vstupů, Transpirace zachovává skutečné vzorce.
 - Responzivní rozložení: mezní šířka obrazovky, pozice a rozměry oken, rozteče, zalamování a posuv dlouhého detailu; zachovej prostor pro tlačítko i otevřený text.
 - Konkrétní nadpis, tag, hodnota, vzorec a detail: odkaz na definici v obsahu oken.

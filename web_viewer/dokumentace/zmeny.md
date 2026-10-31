@@ -2,6 +2,9 @@
 history:
   - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
     date: 2026-10-31
+    change: Zakázáno zalamování nadpisů oken a upraven prostor záhlaví.
+  - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
+    date: 2026-10-31
     change: Zdokumentována replikovatelnost, rozestupy a prostor ovládání oken.
   - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
     date: 2026-10-31
@@ -12,9 +15,6 @@ history:
   - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
     date: 2026-10-31
     change: Vrácena viditelná tlačítka +/− do oken Transpirace.
-  - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
-    date: 2026-10-31
-    change: Sjednocen vzhled a definice oken Transpirace podle Fotosyntézy.
 
 ---
 
@@ -25,6 +25,13 @@ history:
 ## Rozpracováno
 
 ## Implementováno
+
+#### Z041 — Nezalamované nadpisy oken
+
+- Zadání: nadpis okna vždy na jednom řádku.
+- Výsledek: odstraněno zalamování, sloupec Transpirace se přizpůsobuje nadpisu a tlačítku; na úzké obrazovce menší písmo a případný vodorovný posuv záhlaví. Pravidlo přeneseno do šablony vzhledu.
+- Stav: Implementováno.
+- Ověření: kontrola CSS a dokumentace; finální vizuální kontrola uživatelem.
 
 #### Z040 — Replikovatelná specifikace vzhledu oken
 
