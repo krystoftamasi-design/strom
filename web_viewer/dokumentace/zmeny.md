@@ -1,5 +1,8 @@
 ---
 history:
+  - thread_id: 01a19440-f196-71c2-b537-4d16ada46139
+    date: 2026-11-01
+    change: Obnovena verze importu částicového modulu po přidání zvýraznění plynů.
   - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
     date: 2026-11-01
     change: Zavedena jednotná předběžná kontrola vybraných souborů před commitem.
@@ -12,9 +15,6 @@ history:
   - thread_id: 01a19439-ee7f-71f1-af82-4e2ff1146c5f
     date: 2026-11-01
     change: Zjednodušen dokument vzhledu oken bez změny webu.
-  - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
-    date: 2026-11-01
-    change: Upřesněn bezpečný postup commitů a kontrol při souběžné práci.
 
 ---
 
@@ -25,6 +25,13 @@ history:
 ## Rozpracováno
 
 ## Implementováno
+
+#### Z052 — Obnovení importu částicového modulu
+
+- Zadání: opravit načítání webu po commitu `9c80528`.
+- Výsledek: import částicového systému má novou verzi URL, aby prohlížeč pro nové volání zvýraznění nepoužil starý modul z cache.
+- Stav: Implementováno.
+- Ověření: kontrola diffu, existence modulu a metody, syntaxe a předběžná kontrola vybraných souborů; finální kontrola uživatelem. Původní pád v prohlížeči nebyl reprodukován.
 
 #### Z051 — Jednotná kontrola před commitem
 
