@@ -1,5 +1,8 @@
 ---
 history:
+  - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
+    date: 2026-10-31
+    change: Doplněno povinné čtení a ukládání pravidel struktury na konci dokumentů.
   - thread_id: 01a191dc-21ba-7b11-9e58-687e0a2cfbd7
     date: 2026-10-31
     change: Doplněn stručný princip YAGNI pro vývoj podle aktuálních potřeb.
@@ -12,9 +15,6 @@ history:
   - thread_id: 01a18f17-efd7-7a02-8369-186b681bfcc0
     date: 2026-10-31
     change: Upřesněno nahrazování starých popisů a průběžné čištění návaznosti dokumentace.
-  - thread_id: 01a18f17-efd7-7a02-8369-186b681bfcc0
-    date: 2026-10-31
-    change: Doplněna automatická aktualizace související dokumentace a pravidla statických oken.
 ---
 
 # Prohlížeč a kontrola
@@ -43,7 +43,9 @@ history:
 
 # Styl dokumentů
 
-- Před úpravou přečti aktuální dokument a jeho pravidla.
+- Před každou úpravou přečti aktuální dokument včetně pravidel na jeho konci a postupuj podle nich.
+- Pravidla struktury a šablony konkrétního dokumentu ukládej na jeho konec do části „Pravidla struktury“.
+- Konkrétní strukturu určuje tato část; obecné členění níže použij, pokud dokument vlastní strukturu nemá.
 - Piš stručně a bodově: jedna podstatná informace na bod, bez opakování a výplně.
 - Používej krátké názvy, malé podnadpisy a mezery mezi tématy.
 - Struktura: kapitola `##`, oblast `###`, konkrétní položka `####`; bez opakování slova „Okno“.
