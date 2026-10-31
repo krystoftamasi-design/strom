@@ -2,6 +2,9 @@
 history:
   - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
     date: 2026-10-31
+    change: Obarveny tagy přesnými barvami témat z webu.
+  - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
+    date: 2026-10-31
     change: Doplněny tagy oken shodné s tématy a souvisejícími elementy.
   - thread_id: 01a18f17-efd7-7a02-8369-186b681bfcc0
     date: 2026-10-31
@@ -12,9 +15,6 @@ history:
   - thread_id: 01a18f17-efd7-7a02-8369-186b681bfcc0
     date: 2026-10-31
     change: Oddělen vzhled do samostatné kategorie a odstraněno rozmístění z popisů obsahu.
-  - thread_id: 01a18f17-efd7-7a02-8369-186b681bfcc0
-    date: 2026-10-31
-    change: Opraven název konkrétního okna a ověřeny odkazy.
 ---
 
 # Okna
@@ -25,7 +25,7 @@ history:
 
 #### Fotosyntéza
 
-**Tag:** `light`
+**Tag:** <code style="color: #ffcc00;">light</code>
 
 - Nadpis: `Fotosyntéza`.
 - Téma: světlo; strana: vlevo; hlavní okno.
@@ -37,7 +37,7 @@ history:
 
 #### O₂
 
-**Tag:** `oxygen`
+**Tag:** <code style="color: #4fa2da;">oxygen</code>
 
 - Nadpis: `O₂`.
 - Téma: kyslík; strana: vpravo.
@@ -47,7 +47,7 @@ history:
 
 #### CO₂
 
-**Tag:** `co2`
+**Tag:** <code style="color: #ff583c;">co2</code>
 
 - Nadpis: `CO₂`.
 - Téma: CO₂; strana: vpravo.
@@ -57,7 +57,7 @@ history:
 
 #### Cukry
 
-**Tag:** `sugar`
+**Tag:** <code style="color: #d42fd5;">sugar</code>
 
 - Nadpis: `Cukry`.
 - Téma: cukry; strana: vpravo.
@@ -70,7 +70,7 @@ history:
 
 #### Voda
 
-**Tag:** `water`
+**Tag:** <code style="color: #2f49d6;">water</code>
 
 - Nadpis: `Voda`.
 - Téma: voda; strana: vpravo.
