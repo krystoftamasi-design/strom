@@ -2,6 +2,9 @@
 history:
   - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
     date: 2026-10-31
+    change: Zvětšeny a zvýrazněny nadpisy kapitol a nahrazen obsah šablony obecnými položkami.
+  - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
+    date: 2026-10-31
     change: Upravena struktura podle ukázky Fotosyntézy s tučnými názvy kapitol a úplnou šablonou.
   - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
     date: 2026-10-31
@@ -12,14 +15,11 @@ history:
   - thread_id: 01a18f17-efd7-7a02-8369-186b681bfcc0
     date: 2026-10-31
     change: Přidána k oknům kategorie Vzhled s odkazem na samostatný soubor.
-  - thread_id: 01a18f17-efd7-7a02-8369-186b681bfcc0
-    date: 2026-10-31
-    change: Sjednoceno pořadí kapitol s navigací a odstraněny nadbytečné mezery.
 ---
 
 # Architektura obsahu
 
-**ÚVOD**
+# **ÚVOD**
 
 ### Text
 
@@ -27,28 +27,34 @@ history:
 
 ### Okna
 
+### Vzhled
+
 ### Ovládací prvky
 
 - [Kapitoly](prvky.md#kapitoly)
 
 ### Elementy
 
-**OBDOBÍ**
+# **OBDOBÍ**
 
 ### Text
 
 ### Okna
+
+### Vzhled
 
 ### Ovládací prvky
 
 ### Elementy
 
-**FOTOSYNTÉZA**
+# **FOTOSYNTÉZA**
 
 ### Text
+
 - [Datum](texty.md#datum)
 
 ### Okna
+
 - [Fotosyntéza](okna.md#fotosyntéza)
 - [O₂](okna.md#o₂)
 - [CO₂](okna.md#co₂)
@@ -56,45 +62,54 @@ history:
 - [Voda](okna.md#voda)
 
 ### Vzhled
+
 - [Okna](vzhled_oken.md)
 
 ### Ovládací prvky
+
 - [Manager](prvky.md#manager)
 - [Čas](prvky.md#ovládání-času)
 - [Kapitoly](prvky.md#kapitoly)
 
 ### Elementy
+
 - [Voda linka](elementy.md#voda-linka)
 - [Glukóza linka](elementy.md#glukóza-linka)
 - [O₂ částice](elementy.md#o₂)
 - [CO₂ částice](elementy.md#co₂)
 - [Fotony](elementy.md#fotony)
 
-**TRANSPIRACE**
+# **TRANSPIRACE**
 
 ### Text
 
 ### Okna
+
+### Vzhled
 
 ### Ovládací prvky
 
 ### Elementy
 
-**SEMENACE**
+# **SEMENACE**
 
 ### Text
 
 ### Okna
+
+### Vzhled
 
 ### Ovládací prvky
 
 ### Elementy
 
-**KOŘENY**
+# **KOŘENY**
 
 ### Text
 
 ### Okna
+
+### Vzhled
 
 ### Ovládací prvky
 
@@ -106,8 +121,9 @@ history:
 - Popis existujícího webu ověř; změny zapisuj podle zadání uživatele.
 - Definice určují požadované chování; stav implementace patří do [Změn](zmeny.md).
 - Pevné rozdělení dokumentů a postup změn určuje [AGENTS.md](../../AGENTS.md).
-- Název kapitoly piš tučně bez značky nadpisu, například `**FOTOSYNTÉZA**`.
+- Název kapitoly piš velkým tučným nadpisem `# **NÁZEV KAPITOLY**`.
 - Pod nimi jsou `### Text`, `### Okna`, `### Vzhled`, `### Ovládací prvky` a `### Elementy`.
+
 - Uváděj jen krátké klikací názvy nebo značky; u linek přidej slovo „linka“.
 - Podrobnosti patří do `texty.md`, `okna.md`, `vzhled_oken.md`, `prvky.md` a `elementy.md`.
 - Každý prvek definuj pouze jednou; kapitoly na něj odkazují.
@@ -120,30 +136,25 @@ history:
 - Zachovej uživatelovy úpravy a piš stručně. 😊
 
 ```markdown
-**FOTOSYNTÉZA**
+# **NÁZEV KAPITOLY**
 
 ### Text
-- [Datum](texty.md#datum)
+
+- [Název textu](texty.md#kotva)
 
 ### Okna
-- [Fotosyntéza](okna.md#fotosyntéza)
-- [O₂](okna.md#o₂)
-- [CO₂](okna.md#co₂)
-- [Cukry](okna.md#cukry)
-- [Voda](okna.md#voda)
+
+- [Název okna](okna.md#kotva)
 
 ### Vzhled
-- [Okna](vzhled_oken.md)
+
+- [Název vzhledu](vzhled_oken.md#kotva)
 
 ### Ovládací prvky
-- [Manager](prvky.md#manager)
-- [Čas](prvky.md#ovládání-času)
-- [Kapitoly](prvky.md#kapitoly)
+
+- [Název prvku](prvky.md#kotva)
 
 ### Elementy
-- [Voda linka](elementy.md#voda-linka)
-- [Glukóza linka](elementy.md#glukóza-linka)
-- [O₂ částice](elementy.md#o₂)
-- [CO₂ částice](elementy.md#co₂)
-- [Fotony](elementy.md#fotony)
+
+- [Název elementu](elementy.md#kotva)
 ```
