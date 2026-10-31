@@ -1,5 +1,8 @@
 ---
 history:
+  - thread_id: 01a192c9-24b4-7642-a56f-53abd8bf4304
+    date: 2026-10-31
+    change: Změněno zvýraznění linek na zesílení tloušťky s pulzací bez zesvětlení.
   - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
     date: 2026-10-31
     change: Definováno rychlejší noční stahování obou linek za 1,2 sekundy.
@@ -26,7 +29,7 @@ Definice spojení
 
 - Okno: [Voda](okna.md#voda).
 - **Zvýraznění**
-- při otevření okna se modrá linka rozjasní.
+- při otevření okna modrá linka ztloustne a začne pulzovat.
 - Při zavření se vrátí původní vzhled.
 
 **Chování elementu**
@@ -45,7 +48,7 @@ Definice spojení
 
 - Okno: [Cukry](okna.md#cukry).
 - **Zvýraznění**
-- Otevřený detail rozjasní celou fialovou linku v kapitole Fotosyntéza, včetně výchozího otevření.
+- Otevřený detail zesílí tloušťku celé fialové linky v kapitole Fotosyntéza a spustí její pulzaci, včetně výchozího otevření.
 - Při zavření se vrátí původní vzhled.
 - Mimo kapitolu Fotosyntéza se zvýraznění vypne.
 

@@ -1,5 +1,8 @@
 ---
 history:
+  - thread_id: 01a192c9-24b4-7642-a56f-53abd8bf4304
+    date: 2026-10-31
+    change: Upraveno zvýraznění vody a glukózy na pulzující zesílení bez zesvětlení.
   - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
     date: 2026-10-31
     change: Sjednoceny stavy propojení tagy a zvýraznění vody s kódem a zapsány provedené kontroly.
@@ -24,6 +27,12 @@ history:
 ## Rozpracováno
 
 ## Implementováno
+
+#### Z006 — Pulzující zvýraznění linek
+
+- Zadání: [Voda linka](elementy.md#voda-linka), [Glukóza linka](elementy.md#glukóza-linka), zvýraznění zesílením tloušťky a pulzací bez zesvětlení.
+- Stav: Implementováno.
+- Ověření: kontrola shaderu a syntaxe změněného JavaScriptu; finální vizuální kontrola uživatelem.
 
 #### Z004 — Propojení tagy
 
