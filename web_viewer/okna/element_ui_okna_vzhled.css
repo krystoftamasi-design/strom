@@ -198,7 +198,7 @@ body[data-chapter="transpiration"] [data-open-chapter="transpiration"] { text-de
   .transpiration-prompt p { font-size: 10px; }
 }
 
-/* Longer topic names and mathematical relations wrap inside the shared columns. */
+/* Headers stay on one line; mathematical relations may wrap. */
 .tree-overlay .element-ui-okno[data-chapter="transpiration"][data-side="right"] h3 { white-space: nowrap; }
 .tree-overlay .element-ui-okno[data-chapter="transpiration"] > .ui-window-formula { white-space: normal; }
 @media (max-width: 700px) {
@@ -227,8 +227,6 @@ body.scene-night .transpiration-guide .transpiration-legend { color: #a9baff; }
 }
 
 .tree-overlay .element-ui-okno[data-chapter="transpiration"][data-side="right"] { grid-template-columns: max-content minmax(0, 1fr); }
-.tree-overlay .element-ui-okno[data-chapter="transpiration"][data-side="right"] h3 { font-size: clamp(20px, 2vw, 38px); }
 @media (max-width: 700px) {
   .tree-overlay .element-ui-okno[data-chapter="transpiration"] > header { max-width: 100%; overflow-x: auto; }
-  .tree-overlay .element-ui-okno[data-chapter="transpiration"][data-side="right"] h3 { font-size: clamp(16px, 4vw, 28px); }
 }

@@ -1,6 +1,9 @@
 ---
 history:
   - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
+    date: 2026-11-01
+    change: Zachována definovaná velikost nadpisů bez zmenšování podle obsahu.
+  - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
     date: 2026-10-31
     change: Zakázáno zalamování nadpisů oken a upraven prostor záhlaví.
   - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
@@ -12,9 +15,6 @@ history:
   - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
     date: 2026-10-31
     change: Sjednocen vzhled oken Transpirace se společnou šablonou Fotosyntézy.
-  - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
-    date: 2026-10-31
-    change: Doplněna šablona vzhledu podle Fotosyntézy a vzorce zbývajících oken Transpirace.
 
 ---
 
@@ -63,7 +63,7 @@ history:
 
 ### Písmo
 
-- Nadpis okna je vždy na jednom řádku. Na úzké obrazovce se zmenší písmo; pokud se záhlaví stále nevejde, má vodorovný posuv bez překrytí tlačítka a detailu.
+- Nadpis okna je vždy na jednom řádku. Velikost určuje společná typografická škála Fotosyntézy, bez dodatečného zmenšování podle délky názvu; pokud se záhlaví nevejde, má vodorovný posuv bez překrytí tlačítka a detailu.
 
 - Nadpisy používají Nohemi Regular, přibližně 53 px na referenčním plátně.
 - Hlavní okna Fotosyntézy a Transpirace mají dominantní tučný nadpis přibližně 92 px.
@@ -141,8 +141,8 @@ history:
 - Rozestup sloupců: 15 px; tematická okna stejného sloupce mají společný začátek detailů.
 - Zavřený stav: nadpis, hodnota a vzorec zůstávají na místě; detail je skrytý.
 - Otevřený stav: detail se zobrazí ve vyhrazeném prostoru bez posunutí sousedních oken.
-- Ovládání: zvolená varianta — plocha nad nadpisem / viditelné +/− vedle nadpisu; u viditelné varianty určuj vlastní šířku tlačítka a mezeru. Nadpis se nikdy nezalamuje; přizpůsob šířku sloupce a velikost písma, při nedostatku místa umožni vodorovný posuv záhlaví. Fokus je viditelný. Konkrétní chování a výchozí stav určuje definice okna.
-- Úzká obrazovka: dva pevné sloupce, menší písmo a detail pod hlavními údaji; Fotosyntéza skrývá přehled vstupů, Transpirace zachovává skutečné vzorce.
+- Ovládání: zvolená varianta — plocha nad nadpisem / viditelné +/− vedle nadpisu; u viditelné varianty určuj vlastní šířku tlačítka a mezeru. Nadpis se nikdy nezalamuje; zachovej definovanou velikost písma a přizpůsob šířku sloupce, při nedostatku místa umožni vodorovný posuv záhlaví. Fokus je viditelný. Konkrétní chování a výchozí stav určuje definice okna.
+- Úzká obrazovka: dva pevné sloupce, definovaná typografická škála a detail pod hlavními údaji; Fotosyntéza skrývá přehled vstupů, Transpirace zachovává skutečné vzorce.
 - Responzivní rozložení: mezní šířka obrazovky, pozice a rozměry oken, rozteče, zalamování a posuv dlouhého detailu; zachovej prostor pro tlačítko i otevřený text.
 - Konkrétní nadpis, tag, hodnota, vzorec a detail: odkaz na definici v obsahu oken.
 ```

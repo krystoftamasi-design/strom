@@ -1,6 +1,9 @@
 ---
 history:
   - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
+    date: 2026-11-01
+    change: Zachována definovaná velikost nadpisů bez zmenšování podle obsahu.
+  - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
     date: 2026-10-31
     change: Zakázáno zalamování nadpisů oken a upraven prostor záhlaví.
   - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
@@ -12,9 +15,6 @@ history:
   - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
     date: 2026-10-31
     change: Vyhrazen samostatný prostor pro tlačítka detailů Transpirace.
-  - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
-    date: 2026-10-31
-    change: Vrácena viditelná tlačítka +/− do oken Transpirace.
 
 ---
 
@@ -25,6 +25,13 @@ history:
 ## Rozpracováno
 
 ## Implementováno
+
+#### Z042 — Zachování velikosti nadpisů
+
+- Zadání: nezmenšovat nadpis kvůli nezalamování.
+- Výsledek: odstraněny zmenšující výjimky Transpirace; nadpisy používají společnou typografickou škálu Fotosyntézy. Zachován jeden řádek a případný posuv záhlaví. Pravidlo upraveno v definici i šabloně.
+- Stav: Implementováno.
+- Ověření: kontrola odstraněných CSS výjimek a dokumentace; finální vizuální kontrola uživatelem.
 
 #### Z041 — Nezalamované nadpisy oken
 
