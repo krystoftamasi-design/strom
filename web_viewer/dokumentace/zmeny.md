@@ -1,5 +1,8 @@
 ---
 history:
+  - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
+    date: 2026-10-31
+    change: Změněn výstup revize dokumentace na Markdown.
   - thread_id: 01a192c9-24b4-7642-a56f-53abd8bf4304
     date: 2026-10-31
     change: Sladěna dokumentace vzhledu se současným rozložením detailů a tahů oken.
@@ -12,9 +15,7 @@ history:
   - thread_id: 01a192cd-90b3-7e21-8050-fdf9990fe825
     date: 2026-10-31
     change: Doplněny výukové texty do oken Fotosyntéza, Cukry, Voda, CO₂ a O₂.
-  - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
-    date: 2026-10-31
-    change: Zavedena automatická kontrola dokumentace před commitem a revize po pěti commitech.
+
 ---
 
 # Změny
@@ -24,6 +25,13 @@ history:
 ## Rozpracováno
 
 ## Implementováno
+
+#### Z014 — Report revize v Markdownu
+
+- Zadání: [Kontrola dokumentace](kontrola_dokumentace.md).
+- Výsledek: report se ukládá jako `revize_dokumentace.md`.
+- Stav: Implementováno.
+- Ověření: kontrola cest a integrační testy spouštěče.
 
 #### Z013 — Současný vzhled oken
 
@@ -35,7 +43,7 @@ history:
 #### Z012 — Revize bez hodinového čekání
 
 - Zadání: [Revize po pěti commitech](kontrola_dokumentace.md#revize-po-pěti-commitech).
-- Výsledek: pátý commit spustí revizi agentem na pozadí; výsledek je v `old/revize_dokumentace.txt` a hodinová automatizace je pozastavená.
+- Výsledek: pátý commit spustí revizi agentem na pozadí; výsledek je v `old/revize_dokumentace.md` a hodinová automatizace je pozastavená.
 - Stav: Implementováno.
 - Ověření: integrační testy spouštěče a výstupů, ověření neinteraktivního Codex CLI; ruční spuštění vstupní revize.
 

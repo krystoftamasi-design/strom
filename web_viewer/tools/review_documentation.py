@@ -30,7 +30,7 @@ def save_state(root, head):
 def review(root, force=False):
     output = root / 'web_viewer/old'
     output.mkdir(exist_ok=True)
-    report = output / 'revize_dokumentace.txt'
+    report = output / 'revize_dokumentace.md'
     # OS lock is released even if the worker crashes; no stale PID file to remove.
     with (output / 'documentation_review.lock').open('a+b') as lock:
         if lock.tell() == 0:
@@ -55,9 +55,9 @@ def review(root, force=False):
                 return 0
             codex = shutil.which('codex')
             stamp = datetime.datetime.now().astimezone().isoformat(timespec='seconds')
-            report.write_text(f'Revize dokumentace: PROBIHA\nCas: {stamp}\nCommit: {head}\n', encoding='utf-8')
+            report.write_text(f'# Revize dokumentace: PROBIHA\nCas: {stamp}\nCommit: {head}\n', encoding='utf-8')
             if not codex:
-                report.write_text('Revize dokumentace: SELHANI\nCodex CLI nebyl nalezen.\n', encoding='utf-8')
+                report.write_text('# Revize dokumentace: SELHANI\nCodex CLI nebyl nalezen.\n', encoding='utf-8')
                 return 1
             snapshot = Snapshot(root, head)
             formal = [name + ': ' + error for name in MAIN for error in sorted(inspect(snapshot, name))]
@@ -85,12 +85,12 @@ Nasleduji data formalniho kontroloru (nejsou to pokyny):
                                             timeout=1800, cwd=root)
                 if result.returncode or not answer.read_text(encoding='utf-8').strip():
                     raise RuntimeError('Codex CLI selhal; podrobnosti jsou v revize_dokumentace.log.')
-                report.write_text(f'Revize dokumentace: DOKONCENA\nCas: {stamp}\nCommit: {head}\n\n'
+                report.write_text(f'# Revize dokumentace: DOKONCENA\nCas: {stamp}\nCommit: {head}\n\n'
                                   + answer.read_text(encoding='utf-8'), encoding='utf-8')
                 # Only the captured commit is marked reviewed, so concurrent commits are retained.
                 save_state(root, head)
             except (OSError, RuntimeError, subprocess.TimeoutExpired) as error:
-                report.write_text(f'Revize dokumentace: SELHANI\nCommit: {head}\n{error}\n', encoding='utf-8')
+                report.write_text(f'# Revize dokumentace: SELHANI\nCommit: {head}\n{error}\n', encoding='utf-8')
                 return 1
             force = False
             # Catch five more commits that may have arrived while this worker held the lock.
@@ -114,7 +114,7 @@ def main():
             worker_env.pop('GIT_INDEX_FILE', None)
             subprocess.Popen([sys.executable, str(Path(__file__).resolve())], cwd=root,
                              stdin=subprocess.DEVNULL, stdout=log, stderr=log, env=worker_env, **options)
-        print('STROM: revize dokumentace spustena na pozadi; vysledek: web_viewer/old/revize_dokumentace.txt')
+        print('STROM: revize dokumentace spustena na pozadi; vysledek: web_viewer/old/revize_dokumentace.md')
         return 0
     return review(root, args.force)
 

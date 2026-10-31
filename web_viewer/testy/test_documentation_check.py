@@ -132,14 +132,14 @@ class DocumentationChecks(unittest.TestCase):
             return original(command, **kwargs)
         with patch.object(reviewer.shutil, 'which', return_value='fake-codex'), patch.object(reviewer.subprocess, 'run', side_effect=fake_run):
             self.assertEqual(reviewer.review(self.root, force=True), 0)
-        self.assertIn('DOKONCENA', (self.root / 'web_viewer/old/revize_dokumentace.txt').read_text(encoding='utf-8'))
+        self.assertIn('DOKONCENA', (self.root / 'web_viewer/old/revize_dokumentace.md').read_text(encoding='utf-8'))
         self.assertEqual(reviewer.status(self.root)[2], 0)
 
     def test_missing_codex_does_not_advance_baseline(self):
         with patch.object(reviewer.shutil, 'which', return_value=None):
             self.assertEqual(reviewer.review(self.root, force=True), 1)
         self.assertFalse((self.root / 'web_viewer/old/documentation_review_state.json').exists())
-        self.assertIn('SELHANI', (self.root / 'web_viewer/old/revize_dokumentace.txt').read_text(encoding='utf-8'))
+        self.assertIn('SELHANI', (self.root / 'web_viewer/old/revize_dokumentace.md').read_text(encoding='utf-8'))
 
 
 if __name__ == '__main__':

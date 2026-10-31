@@ -2,10 +2,14 @@
 history:
   - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
     date: 2026-10-31
+    change: Změněn výstup revize dokumentace na Markdown.
+  - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
+    date: 2026-10-31
     change: Nahrazen hodinový plán spuštěním revize z post-commit hooku a popsáno umístění reportu.
   - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
     date: 2026-10-31
     change: Popsána kontrola dokumentace před commitem a automatická revize po pěti commitech.
+
 ---
 
 # Kontrola dokumentace
@@ -42,7 +46,7 @@ history:
 - Revize vyžaduje dostupný a přihlášený Codex CLI; používá jeho uložené přihlášení a výchozí model v režimu `read-only`, bez trvalého nového chatu.
 - Počítají se všechny nové commity včetně dokumentace. Při prvním běhu nebo neplatném výchozím bodu proběhne vstupní revize.
 - Průběh je asynchronní: pátý commit spustí revizi hned, dokončení závisí na délce kontroly a dostupnosti služby.
-- Výsledek je v ignorovaném `web_viewer/old/revize_dokumentace.txt`: `PROBIHA`, `DOKONCENA` nebo `SELHANI`, prověřený hash a zpráva agenta.
+- Výsledek je v ignorovaném `web_viewer/old/revize_dokumentace.md`: `PROBIHA`, `DOKONCENA` nebo `SELHANI`, prověřený hash a zpráva agenta.
 - Terminál commitu při spuštění vypíše cestu k reportu; zpráva se automaticky nevkládá do hlavního chatu ani do aplikace.
 - Technický průběh je v `web_viewer/old/revize_dokumentace.log`; report se při další revizi aktualizuje.
 - Agent porovnává přesný zachycený commit a odpovídající definice s kódem, odděluje nové a staré nálezy a nesmí nic opravovat, commitovat ani otevírat prohlížeč.
