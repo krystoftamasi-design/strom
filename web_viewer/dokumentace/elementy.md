@@ -2,6 +2,9 @@
 history:
   - thread_id: 01a192c9-24b4-7642-a56f-53abd8bf4304
     date: 2026-10-31
+    change: Zesíleno pulzující zvýraznění a doplněna putující vlna tloušťky po lince.
+  - thread_id: 01a192c9-24b4-7642-a56f-53abd8bf4304
+    date: 2026-10-31
     change: Změněno zvýraznění linek na zesílení tloušťky s pulzací bez zesvětlení.
   - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
     date: 2026-10-31
@@ -29,7 +32,7 @@ Definice spojení
 
 - Okno: [Voda](okna.md#voda).
 - **Zvýraznění**
-- při otevření okna modrá linka ztloustne a začne pulzovat.
+- při otevření okna modrá linka výrazně ztloustne a po její trase začne putovat pulzující vlna tloušťky.
 - Při zavření se vrátí původní vzhled.
 
 **Chování elementu**
@@ -48,7 +51,7 @@ Definice spojení
 
 - Okno: [Cukry](okna.md#cukry).
 - **Zvýraznění**
-- Otevřený detail zesílí tloušťku celé fialové linky v kapitole Fotosyntéza a spustí její pulzaci, včetně výchozího otevření.
+- Otevřený detail výrazně zesílí tloušťku celé fialové linky v kapitole Fotosyntéza a spustí po její trase putující pulzaci, včetně výchozího otevření.
 - Při zavření se vrátí původní vzhled.
 - Mimo kapitolu Fotosyntéza se zvýraznění vypne.
 
