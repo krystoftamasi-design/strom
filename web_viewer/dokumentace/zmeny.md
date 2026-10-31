@@ -2,6 +2,9 @@
 history:
   - thread_id: 01a192c9-24b4-7642-a56f-53abd8bf4304
     date: 2026-10-31
+    change: Sjednocena a zpomalena animace vody a glukózy podle modelového času.
+  - thread_id: 01a192c9-24b4-7642-a56f-53abd8bf4304
+    date: 2026-10-31
     change: Nastavena jediná stálá rychlost proudění a zvýraznění glukózy.
   - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
     date: 2026-10-31
@@ -12,9 +15,6 @@ history:
   - thread_id: 01a192c9-24b4-7642-a56f-53abd8bf4304
     date: 2026-10-31
     change: Opraveny duplicitní identifikátory a doplněna prevence souběžných kolizí.
-  - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
-    date: 2026-10-31
-    change: Skryto konzolové okno podprocesu automatické revize.
 
 ---
 
@@ -25,6 +25,13 @@ history:
 ## Rozpracováno
 
 ## Implementováno
+
+#### Z023 — Společná pomalejší animace linek
+
+- Zadání: [Společná rychlost linek](elementy.md#společná-rychlost-linek).
+- Výsledek: voda a glukóza sdílí čas a rychlost; animace běží poloviční rychlostí vody a reaguje na pauzu a zrychlení času.
+- Stav: Implementováno.
+- Ověření: syntaxe hlavního modulu a kontrola společných uniformů; finální vizuální kontrola uživatelem.
 
 #### Z022 — Stálá rychlost glukózy
 

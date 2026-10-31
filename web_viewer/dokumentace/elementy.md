@@ -2,6 +2,9 @@
 history:
   - thread_id: 01a192c9-24b4-7642-a56f-53abd8bf4304
     date: 2026-10-31
+    change: Sjednocena pomalejší animace vody a glukózy s reakcí na modelový čas.
+  - thread_id: 01a192c9-24b4-7642-a56f-53abd8bf4304
+    date: 2026-10-31
     change: Nastavena stálá rychlost animace glukózy nezávislá na podmínkách a modelovém čase.
   - thread_id: 01a192c9-24b4-7642-a56f-53abd8bf4304
     date: 2026-10-31
@@ -12,9 +15,6 @@ history:
   - thread_id: 01a192c9-24b4-7642-a56f-53abd8bf4304
     date: 2026-10-31
     change: Změněno zvýraznění linek na zesílení tloušťky s pulzací bez zesvětlení.
-  - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
-    date: 2026-10-31
-    change: Definováno rychlejší noční stahování obou linek za 1,2 sekundy.
 ---
 
 # Elementy
@@ -52,7 +52,7 @@ Definice spojení
 **Chování elementu**
 
 - Fialová linka vede po kmeni a dělí se do dvou kořenů.
-- Proudění a pulzace zvýraznění mají stálou rychlost podle reálného času; odpar, aktivita fotosyntézy, posuvník rychlosti ani pauza a zrychlení modelového času ji nemění.
+- Rychlost animace je společná s vodní linkou podle [Společné rychlosti linek](#společná-rychlost-linek).
 - Je odsazená od modré linky.
 - Končí dřív uvnitř kořenů.
 - Na jaře proudí ze zásob v kořenech a kmeni k novým listům.
@@ -64,6 +64,12 @@ Definice spojení
 
 - Při zastavení fotosyntézy se sluncem na obzoru nebo pod ním se obě linky plně stáhnou za přibližně 1,2 sekundy animace.
 - Ranní rozvinutí a ostatní stahování trvá přibližně 3,6 sekundy animace.
+
+#### Společná rychlost linek
+
+- Voda a glukóza používají stejný čas i rychlost proudění; společná animace je zpomalená na polovinu původní rychlosti vody.
+- Pauza a rychlosti modelového času 1×, 2× a 4× ovlivňují obě linky shodně včetně pulzace zvýraznění.
+- Proudění se řídí společným posuvníkem a odparem; při zastavení fotosyntézy se zastaví.
 
 #### Šířka linek
 
