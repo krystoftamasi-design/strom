@@ -37,9 +37,11 @@ export async function createWaterBrushMaterial(loader, uniforms) {
       uniform float uTime;
       varying float vBrushX;
       varying float vFlowDistance;
+      varying float vSelectionPulse;
       void main() {
-        float selectionWave = 0.5 + 0.5 * sin(uTime * 5.0 - flowDistance * 2.6);
-        float selectedWidth = 1.0 + uSelected * (1.05 + 0.85 * selectionWave);
+        float selectionWave = 0.5 + 0.5 * sin(uTime * 3.2 - flowDistance * 1.7);
+        vSelectionPulse = selectionWave;
+        float selectedWidth = 1.0 + uSelected * (1.8 + 1.8 * selectionWave);
         vec3 scaledPosition = flowCenter + (position - flowCenter) * uWidthScale * selectedWidth;
         vec4 viewPosition = modelViewMatrix * vec4(scaledPosition, 1.0);
         vec3 tangent = mat3(modelViewMatrix) * flowTangent;
@@ -69,6 +71,7 @@ export async function createWaterBrushMaterial(loader, uniforms) {
       uniform float uFlowRevealBottom;
       varying float vBrushX;
       varying float vFlowDistance;
+      varying float vSelectionPulse;
       float brushAlpha(float x, float phase) {
         vec2 uv = uBrushRect.xy + vec2(clamp(x,0.0,1.0), phase) * uBrushRect.zw;
         return texture2D(uBrushMap, uv).a;
@@ -84,7 +87,8 @@ export async function createWaterBrushMaterial(loader, uniforms) {
           1.0 - smoothstep(uFlowCutoff, uFlowCutoff + 0.35, vFlowDistance),
           uFlowRevealBottom
         );
-        float alpha = stroke * uOpacity * remainingFlow;
+        float selectionAlpha = mix(1.0, 0.42 + 0.58 * vSelectionPulse, uSelected);
+        float alpha = stroke * uOpacity * remainingFlow * selectionAlpha;
         if (alpha < 1.0 / 255.0) discard;
         float pulse = sin(vFlowDistance * 3.0 - uTime * 2.2 * uSpeed * uFlowDirection) * 0.5 + 0.5;
         float highlight = pow(pulse, 3.5) * clamp(uGlow, 0.0, 2.5) * 0.55;
