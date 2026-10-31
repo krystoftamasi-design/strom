@@ -2,6 +2,9 @@
 history:
   - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
     date: 2026-10-31
+    change: Zobecněna výjimka z dokumentování drobného vizuálního ladění na všechny části webu.
+  - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
+    date: 2026-10-31
     change: Vyjmuto drobné vizuální ladění z povinné aktualizace obsahové dokumentace a evidence změn.
   - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
     date: 2026-10-31
@@ -12,9 +15,6 @@ history:
   - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
     date: 2026-10-31
     change: Doplněna vlastní pravidla struktury a obecná šablona AGENTS.md.
-  - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
-    date: 2026-10-31
-    change: Zavedena povinná obecná šablona na konci každého upravovaného dokumentu a její průběžná aktualizace.
 ---
 
 # Prohlížeč a kontrola
@@ -63,8 +63,9 @@ history:
 - Zachovej uživatelovy úpravy a nevracej smazaný obsah.
 - Při změně systému automaticky aktualizuj všechny související definice, pravidla a odkazy.
 - Změny funkcí, ovládání, vazeb a definovaného chování aktualizuj současně v příslušné dokumentaci; před dokončením porovnej kód s dokumentací.
-- Drobné vizuální ladění, například sílu zvýraznění, šířku linek, odstíny nebo rozestupy, nezapisuj do obsahové dokumentace ani do `zmeny.md`, pokud nemění definované chování a uživatel zápis výslovně nechce.
-- Změna vyžadující dokumentaci není dokončená bez její odpovídající úpravy; drobné vizuální ladění podle předchozího pravidla může mít samostatný commit kódu.
+- Drobné vizuální ladění libovolné části webu nezapisuj do dokumentace ani do `zmeny.md`, pokud nemění definované chování a uživatel zápis výslovně nechce.
+- Toto pravidlo platí pro všechny elementy, okna, texty, ovládací prvky i scénu; zahrnuje například barvy, velikosti, tloušťky, rozestupy, průhlednost, stíny a intenzitu efektů.
+- Změna vyžadující dokumentaci není dokončená bez její odpovídající úpravy; drobné vizuální ladění podle této výjimky může mít samostatný commit kódu.
 - Překonané popisy nahraď; odstraň duplicity a dodatky porovnávající staré a nové řešení.
 - Uspořádej text do návazného pořadí; v definicích popisuj platné řešení, historii a stav drž odděleně.
 - Nesouvisející dokumenty hromadně nepřepisuj bez zadání.
