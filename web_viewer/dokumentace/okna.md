@@ -1,5 +1,8 @@
 ---
 history:
+  - thread_id: 01a192cd-90b3-7e21-8050-fdf9990fe825
+    date: 2026-10-31
+    change: Doplněny vstupy výpočtu a číselné hodnoty s jednotkami do oken O₂, CO₂ a Voda.
   - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
     date: 2026-10-31
     change: Přesunuto ovládání a uchování stavu Cukrů k oknu a doplněna pravidla struktury.
@@ -12,9 +15,6 @@ history:
   - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
     date: 2026-10-31
     change: Doplněny tagy oken shodné s tématy a souvisejícími elementy.
-  - thread_id: 01a18f17-efd7-7a02-8369-186b681bfcc0
-    date: 2026-10-31
-    change: Doplněn přesný obsah oken podle záznamů v element_ui_okna_obsah.js.
 ---
 
 # Okna
@@ -42,7 +42,9 @@ history:
 - Nadpis: `O₂`.
 - Téma: kyslík; strana: vpravo.
 - Detailní text: „Při ději se uvolňuje kyslík.“
-- Číselná hodnota a vstupy výpočtu: nejsou zapnuté.
+- Vstupy výpočtu: `Světlo × voda × listy × CO₂ × teplota`.
+- Hodnota: produkce O₂ v `g/min`.
+- Výchozí stav detailu: zavřený.
 - Související element: [O₂ částice](elementy.md#o₂).
 
 #### CO₂
@@ -52,7 +54,9 @@ history:
 - Nadpis: `CO₂`.
 - Téma: CO₂; strana: vpravo.
 - Detailní text: „Oproti předindustriální hodnotě jde přibližně o nárůst 50 %. Vyšší CO₂ může podpořit fotosyntézu.“
-- Číselná hodnota a vstupy výpočtu: nejsou zapnuté.
+- Vstup výpočtu: `CO₂`.
+- Hodnota: koncentrace CO₂ v `ppm`.
+- Výchozí stav detailu: zavřený.
 - Související element: [CO₂ částice](elementy.md#co₂).
 
 #### Cukry
@@ -77,6 +81,8 @@ history:
 - Nadpis: `Voda`.
 - Téma: voda; strana: vpravo.
 - Detailní text: „Při nedostatku vody se přivírají průduchy. Do listů proniká méně CO₂ a fotosyntéza slábne. Zkuste omezit přítok nebo snížit slunce pod obzor.“
+- Vstup výpočtu: `voda`.
+- Hodnota: přívod vody ke kořenům v `l/h`.
 - Ovládání: posuvník `sliderTreeWater`, popisek `Voda`.
 - Výchozí stav detailu: otevřený.
 - Související element: [Voda linka](elementy.md#voda-linka).

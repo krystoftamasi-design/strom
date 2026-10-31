@@ -1,6 +1,6 @@
-import { zobrazitHodnotu } from '../okna/element_ui_okna_veliciny.js?v=4';
-import { SEASONS } from '../ekologie/tree_ecology.js?v=active-leaves-1&checks=1';
-import { createTreeAnnotations } from '../okna/tree_annotations.js?v=linked-highlight-1';
+import { zobrazitHodnotu } from '../okna/element_ui_okna_veliciny.js?v=5';
+import { SEASONS } from '../ekologie/tree_ecology.js?v=active-leaves-2&checks=1';
+import { createTreeAnnotations } from '../okna/tree_annotations.js?v=linked-highlight-2';
 
 const chapters = [
   ['intro', 'Úvod'], ['seasons', 'Období'], ['photosynthesis', 'Fotosyntéza'], ['transpiration', 'Transpirace'],

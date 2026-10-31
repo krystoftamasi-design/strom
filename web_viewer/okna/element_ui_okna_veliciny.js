@@ -1,11 +1,14 @@
-import { vzorce } from '../ekologie/tree_ecology_vzorce.js?v=3';
+import { vzorce } from '../ekologie/tree_ecology_vzorce.js?v=4';
 
 // Převod výpočetních názvů na text, barvu, jednotku a formát pro okna.
 export const veliciny = {
+  waterInput: { nazev: 'voda', tema: 'water' },
   light: { nazev: 'Světlo', tema: 'light' },
   hydration: { nazev: 'voda', tema: 'water' },
   activeLeafArea: { nazev: 'listy', tema: 'leaves' },
   co2Response: { nazev: 'CO₂', tema: 'co2' },
+  co2Concentration: { nazev: 'CO₂', tema: 'co2' },
+  oxygenPerGlucose: { nazev: 'O₂/glukóza', tema: 'oxygen', veVzorci: false },
   photosynthesisTemperatureFactor: { nazev: 'teplota', tema: 'temperature' },
   photosynthesisEfficiency: { nazev: 'účinnost', tema: 'light' },
   glucoseConversion: { nazev: 'přepočet', tema: 'sugar', veVzorci: false },
@@ -18,6 +21,21 @@ export const veliciny = {
     nazev: 'Tvorba cukrů', tema: 'sugar',
     jednotka: 'g/min', nasobek: 1, desetinnaMista: 1,
     vystupId: 'ecoGlucose', druh: 'glucose',
+  },
+  waterInputLitresPerHour: {
+    nazev: 'Přívod vody', tema: 'water',
+    jednotka: 'l/h', nasobek: 60, desetinnaMista: 2,
+    vystupId: 'ecoWaterInput', druh: 'water',
+  },
+  co2Ppm: {
+    nazev: 'CO₂', tema: 'co2',
+    jednotka: 'ppm', nasobek: 1, desetinnaMista: 0,
+    vystupId: 'ecoCo2Ppm', druh: 'co2',
+  },
+  oxygenGramsPerMinute: {
+    nazev: 'Tvorba O₂', tema: 'oxygen',
+    jednotka: 'g/min', nasobek: 1, desetinnaMista: 2,
+    vystupId: 'ecoOxygen', druh: 'oxygen',
   },
 };
 

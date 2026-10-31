@@ -1,4 +1,4 @@
-import { vypocitatVzorec } from './tree_ecology_vzorce.js?v=3';
+import { vypocitatVzorec } from './tree_ecology_vzorce.js?v=4';
 
 // One water store for every chapter. Rates use litres/minute of model time.
 // Species-inspired teaching presets, not a calibrated prediction of this tree.
@@ -50,6 +50,9 @@ export class TreeEcology {
     this.sunIntensity = 1;
     this.hourOfDay = 12;
     this.waterInput = 0.1;
+    this.waterInputLitresPerHour = 0;
+    this.co2Concentration = CO2_PPM;
+    this.co2Ppm = CO2_PPM;
     this.inflow = 0;
     this.seasonalWaterLimit = 0;
     this.excessWater = 0;
@@ -75,6 +78,7 @@ export class TreeEcology {
     this.photosyntheticFoliage = 1;
     this.photosynthesisTemperatureFactor = 1;
     this.glucoseGramsPerMinute = 0;
+    this.oxygenGramsPerMinute = 0;
     this.hydration = 1;
   }
 
@@ -129,6 +133,8 @@ export class TreeEcology {
   }
 
   evaluate(minutes) {
+    this.waterInputLitresPerHour = this.waterInput;
+    this.co2Ppm = vypocitatVzorec('co2Ppm', this);
     const season = this.seasonState;
     this.seasonalWaterLimit = this.baseTranspiration * season.waterSupply;
     this.excessWater = Math.max(0, this.waterInput - this.seasonalWaterLimit);
@@ -186,6 +192,7 @@ export class TreeEcology {
     this.activity = vypocitatVzorec('activity', this);
     // 8 µmol CO₂/m²/s, six CO₂ per glucose; show glucose equivalent, not storage.
     this.glucoseGramsPerMinute = vypocitatVzorec('glucoseGramsPerMinute', this);
+    this.oxygenGramsPerMinute = vypocitatVzorec('oxygenGramsPerMinute', this);
     return this;
   }
 

@@ -1,5 +1,8 @@
 ---
 history:
+  - thread_id: 01a192cd-90b3-7e21-8050-fdf9990fe825
+    date: 2026-10-31
+    change: Doplněny vstupy a číselné hodnoty s jednotkami do oken O₂, CO₂ a Voda.
   - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
     date: 2026-10-31
     change: Sjednocena evidence s přijetím bez výhrady bez čekání na schválení.
@@ -12,9 +15,6 @@ history:
   - thread_id: 01a192c9-24b4-7642-a56f-53abd8bf4304
     date: 2026-10-31
     change: Zviditelněna animace zvýraznění jako putující pás tloušťky bez změny barvy.
-  - thread_id: 01a192c9-24b4-7642-a56f-53abd8bf4304
-    date: 2026-10-31
-    change: Zesíleno pulzující zvýraznění linek a doplněna animovaná vlna tloušťky.
 ---
 
 # Změny
@@ -24,6 +24,13 @@ history:
 ## Rozpracováno
 
 ## Implementováno
+
+#### Z007 — Hodnoty a vstupy oken O₂, CO₂ a Voda
+
+- Zadání: [O₂](okna.md#o₂), [CO₂](okna.md#co₂), [Voda](okna.md#voda).
+- Výsledek: O₂ zobrazuje produkci v `g/min`, CO₂ koncentraci v `ppm` a Voda přívod ke kořenům v `l/h`; každé okno zobrazuje své vstupy výpočtu.
+- Stav: Implementováno.
+- Ověření: kontrola syntaxe, validační test oken a kontrola zobrazení v Chromu.
 
 #### Z006 — Pulzující zvýraznění linek
 
