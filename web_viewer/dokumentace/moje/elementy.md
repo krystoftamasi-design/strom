@@ -1,5 +1,8 @@
 ---
 history:
+  - thread_id: 01a1943d-30ff-7d43-bbee-d60f487d7880
+    date: 2026-11-01
+    change: Zvětšeny částice O₂ a CO₂ a doplněno jejich zvýraznění při otevření příslušného okna.
   - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
     date: 2026-10-31
     change: Odstraněn Průtok a doplněny vzorce i šablona číselného okna podle Fotosyntézy.
@@ -12,9 +15,6 @@ history:
   - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
     date: 2026-10-31
     change: Sjednocena struktura Transpirace, její okna a elementy podle vzoru Fotosyntézy.
-  - thread_id: 01a192c9-24b4-7642-a56f-53abd8bf4304
-    date: 2026-10-31
-    change: Přepnutí kapitoly zachovává aktuální stažení linek bez jejich opětovného zobrazení.
 
 ---
 
@@ -75,8 +75,9 @@ Definice spojení
 
 #### Šířka linek
 
-- Voda a glukóza jsou vždy stejně široké.
+
 - Vyšší přísun vody rozšiřuje obě linky.
+- zakladní šířka linek je setjná
 - Při nulovém přísunu zůstávají obě velmi tenké.
 
 ### O₂
@@ -85,11 +86,11 @@ Definice spojení
 Definice spojení
 
 - Okno: [O₂](okna.md#o₂).
-- Reakce na okno: není definovaná.
+- Reakce na okno: při otevření detailu se částice výrazně zvětší.
 
 **Chování elementu**
 
-- Světle modré částice odlétají od listů.
+- Světle modré částice odlétají od listů; běžná velikost je zvětšená a při otevření detailu se dále zvýrazní.
 
 ### CO₂
 
@@ -97,11 +98,11 @@ Definice spojení
 Definice spojení
 
 - Okno: [CO₂](okna.md#co₂).
-- Reakce na okno: není definovaná.
+- Reakce na okno: při otevření detailu se částice výrazně zvětší.
 
 **Chování elementu**
 
-- Červenooranžové částice přicházejí ke koruně.
+- Červenooranžové částice přicházejí ke koruně; běžná velikost je zvětšená a při otevření detailu se dále zvýrazní.
 
 ### Fotony
 

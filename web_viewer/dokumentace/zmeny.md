@@ -1,5 +1,8 @@
 ---
 history:
+  - thread_id: 01a1943d-30ff-7d43-bbee-d60f487d7880
+    date: 2026-11-01
+    change: Zvětšeny částice O₂ a CO₂ a napojeno jejich zvýraznění na otevření příslušného okna.
   - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
     date: 2026-11-01
     change: Odstraněn doplňkový řádek s porovnáním teplot v detailu.
@@ -12,9 +15,6 @@ history:
   - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
     date: 2026-11-01
     change: Zjednodušena komponenta na nezávislý blok údajů a detailu.
-  - thread_id: 01a1942e-d161-7933-b8f7-31bb2827f7a1
-    date: 2026-11-01
-    change: Odstraněna položka Úvod z nabídky a odpovídající část z platné dokumentace.
 
 ---
 
@@ -25,6 +25,13 @@ history:
 ## Rozpracováno
 
 ## Implementováno
+
+#### Z050 — Zvýraznění částic O₂ a CO₂
+
+- Zadání: zvětšit částice O₂ a CO₂ a zviditelnit reakci elementu po kliknutí.
+- Výsledek: částice obou plynů mají větší základní velikost; otevření okna O₂ nebo CO₂ zvýší velikost odpovídajícího proudu přes společné rozhraní částicového systému.
+- Stav: Implementováno.
+- Ověření: kontrola diffu, syntaxe JavaScriptu, test částic a kontrola dokumentace; finální vizuální kontrola uživatelem.
 
 #### Z049 — Zkrácení detailu Teploty
 

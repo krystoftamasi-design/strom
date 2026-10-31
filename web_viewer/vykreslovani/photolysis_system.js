@@ -29,6 +29,7 @@ export class PhotolysisSystem {
     this.getFrontDirection = options.getFrontDirection || (() => this._zAxis);
     this.totalCarbonDioxideEmitted = 0;
     this.totalCarbonDioxideAbsorbed = 0;
+    this.highlightedGases = { oxygen: false, co2: false };
 
     // Callbacks / suppliers
     this.getReactionPoint = options.getReactionPoint || (() => new this.THREE.Vector3(4.33, 17.46, -0.84));
@@ -130,13 +131,21 @@ export class PhotolysisSystem {
     }
   }
 
+  setElementHighlight(tag, active) {
+    if (!(tag in this.highlightedGases)) return;
+    this.highlightedGases[tag] = Boolean(active);
+    const pool = tag === 'oxygen' ? this.bubblePool : this.carbonPool;
+    for (const bubble of pool) if (bubble.active) this._updateGasScale(bubble);
+  }
+
   _updateGasScale(b) {
     // Smooth growth from 2% to full size in 0.22 seconds, then shrink at the end.
     const entrance = Math.min(1, b.age / 0.22);
     const growth = entrance * entrance * (3 - 2 * entrance);
     const exit = Math.max(0, Math.min(1, (b.maxLifetime - b.age) / 0.25));
     const shrink = exit * exit * (3 - 2 * exit);
-    b.mesh.scale.setScalar(b.baseScale * 1.6 * this.bubbleSize * (0.02 + 0.98 * growth) * shrink);
+    const highlight = this.highlightedGases[b.kind] ? 1.72 : 1;
+    b.mesh.scale.setScalar(b.baseScale * 1.6 * this.bubbleSize * highlight * (0.02 + 0.98 * growth) * shrink);
   }
   setBubbleSpawnDistance(distance) {
     if (!Number.isFinite(distance)) return;
@@ -230,7 +239,8 @@ export class PhotolysisSystem {
         velocity: new THREE.Vector3(),
         age: 0.0,
         maxLifetime: 3.5,
-        baseScale: 0.48
+        baseScale: 0.62,
+        kind: 'oxygen'
       });
     }
   }
@@ -254,7 +264,7 @@ export class PhotolysisSystem {
       mesh.renderOrder = 9;
       this.carbonGroup.add(mesh);
       return { mesh, material, active: false, age: 0, maxLifetime: 1,
-        baseScale: 0.48, origin: new THREE.Vector3(), target: new THREE.Vector3() };
+        baseScale: 0.62, kind: 'co2', origin: new THREE.Vector3(), target: new THREE.Vector3() };
     });
   }
 
@@ -272,7 +282,7 @@ export class PhotolysisSystem {
     b.target.copy(rx).addScaledVector(this._vDir, stopDistance);
     b.origin.copy(rx).addScaledVector(this._vDir, stopDistance + travel);
     b.age = 0;
-    b.baseScale = 0.48 + Math.random() * 0.24;
+    b.baseScale = 0.62 + Math.random() * 0.28;
     b.active = true;
     b.mesh.position.copy(b.origin);
     this._updateGasScale(b);
@@ -388,7 +398,7 @@ export class PhotolysisSystem {
 
     b.age = 0.0;
     b.maxLifetime = 3.2 + Math.random() * 0.8; // 3.2 - 4.0 seconds
-    b.baseScale = 0.48 + Math.random() * 0.24; // Natural size variation
+    b.baseScale = 0.62 + Math.random() * 0.28; // Natural size variation
 
     b.material.opacity = 1;
     b.material.rotation = 0;

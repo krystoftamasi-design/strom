@@ -3870,6 +3870,7 @@
     const chapterApp = createChapters({
       setElementHighlight: (tag, active) => {
         if (flowSelections[tag]) flowSelections[tag].value = active ? 1.0 : 0.0;
+        if (photolysisSystem) photolysisSystem.setElementHighlight(tag, active);
       },
       model: ecology,
       createSeasonControl: () => {
