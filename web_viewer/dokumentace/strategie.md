@@ -2,6 +2,9 @@
 history:
   - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
     date: 2026-10-31
+    change: Vymezeny tři prioritní problémy porozumění.
+  - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
+    date: 2026-10-31
     change: Doplněn postup návrhu celé kapitoly podle vzoru a uplatnění v Transpiraci.
   - thread_id: d4bd5380-b7a9-4109-9dcd-32f5819e4b02
     date: 2026-10-31
@@ -9,9 +12,12 @@ history:
   - thread_id: d4bd5380-b7a9-4109-9dcd-32f5819e4b02
     date: 2026-10-31
     change: Definován scénář samostudia, metrika porozumění fotosyntéze do jedné minuty a scénář testu s pěti uživateli.
+
 ---
 
 # Produktová strategie
+
+- Prioritní cíle porozumění: [Problémy k řešení](strategi_problems.md).
 
 ## Hodnota (Value) a scénář
 

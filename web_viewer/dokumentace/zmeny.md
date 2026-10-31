@@ -2,6 +2,9 @@
 history:
   - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
     date: 2026-10-31
+    change: Vymezeny tři prioritní problémy porozumění.
+  - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
+    date: 2026-10-31
     change: Sjednocena struktura Transpirace, její okna a elementy podle vzoru Fotosyntézy.
   - thread_id: 01a192c9-24b4-7642-a56f-53abd8bf4304
     date: 2026-10-31
@@ -12,9 +15,6 @@ history:
   - thread_id: 01a192c9-24b4-7642-a56f-53abd8bf4304
     date: 2026-10-31
     change: Odstraněno kolísání rychlosti linek a ponecháno pouze řízení časem přehrávání.
-  - thread_id: 01a192c9-24b4-7642-a56f-53abd8bf4304
-    date: 2026-10-31
-    change: Sjednocena a zpomalena animace vody a glukózy podle modelového času.
 
 ---
 
@@ -25,6 +25,13 @@ history:
 ## Rozpracováno
 
 ## Implementováno
+
+#### Z028 — Tři prioritní problémy porozumění
+
+- Zadání: [Problémy k řešení](strategi_problems.md).
+- Výsledek: dokument vymezuje tři mylné představy, cíle a ověřovací otázky; samotné problémy zůstávají k řešení.
+- Stav: Implementováno.
+- Ověření: kontrola struktury a místních odkazů.
 
 #### Z027 — Úplná struktura Transpirace podle Fotosyntézy
 
