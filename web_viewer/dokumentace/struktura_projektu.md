@@ -1,5 +1,8 @@
 ---
 history:
+  - thread_id: 01a191dc-21ba-7b11-9e58-687e0a2cfbd7
+    date: 2026-10-31
+    change: Upřesněno verzování assetů a rozsah kořenových pravidel ignorování.
   - thread_id: 01a18f17-efd7-7a02-8369-186b681bfcc0
     date: 2026-10-31
     change: Doplněn samostatný dokument vzhled_oken.md do uspořádání dokumentace.
@@ -48,3 +51,10 @@ Přehled přesunutých souborů je v `presun_souboru.json`.
 Testovací skripty s cestami od kořene projektu se spouštějí ze složky `STROM`.
 Obrázky z kontrol patří do `nahledy`.
 Starší kopie hlavní stránky a pracovní diff jsou ve složce `old`.
+
+## Verzování
+
+- Kořenový `.gitignore` vylučuje závislosti, cache, zálohy, pracovní výstupy a osobní nastavení Obsidianu v celém projektu.
+- `web_viewer/.gitignore` navíc vylučuje dokumentové exporty podle přípony.
+- Obrázky, textury, modely a binární geometrie nejsou plošně ignorované; potřebné assety lze přidat do Gitu.
+- Složky `old`, `nahledy` a `tmp` zůstávají ignorované i pro obrázky a modely.

@@ -1,0 +1,11 @@
+# Generované dokumenty a exporty; Markdown zadání zůstávají verzované.
+*.[pP][dD][fF]
+*.[dD][oO][cC][xX]
+*.[pP][pP][tT][xX]
+*.[xX][lL][sS][xX]
+*.odt
+*.ods
+*.odp
+
+# Obrázky, textury, modely a geometrie se neignorují podle přípony.
+# Pracovní výstupy, zálohy a cache vylučuje kořenový .gitignore.

@@ -1,0 +1,27 @@
+# Závislosti a cache v celém projektu.
+node_modules/
+__pycache__/
+*.pyc
+
+# Pracovní soubory a výsledky kontrol.
+tmp/
+old/
+nahledy/
+output/
+outputs/
+exports/
+generated/
+dist/
+build/
+test-results/
+playwright-report/
+*.log
+*.tmp
+*.bak
+*.blend[0-9]*
+*.pred_rozdelenim.md
+
+# Osobní nastavení a systémové soubory.
+.obsidian/
+.DS_Store
+Thumbs.db
