@@ -66,7 +66,7 @@ body.scene-night .tree-overlay { --ui-ink: #f0f2e9; }
   letter-spacing: -.035em; white-space: nowrap; transition: none;
 }
 .tree-overlay .element-ui-okno[data-window-id="fotosynteza"] h2 {
-  font-size: clamp(40px, 4.57vw, 92px); font-weight: 400;
+  font-size: clamp(40px, 4.57vw, 92px); font-weight: 500;
 }
 .tree-overlay .element-ui-okno .ui-heading-subscript {
   font: inherit; font-size: 60%; line-height: 0;
@@ -126,7 +126,7 @@ body.scene-night .tree-overlay .element-ui-okno .ui-word {
   pointer-events: none; background: var(--ui-topic);
   mask: var(--ui-edge-variant) center / 100% 100% no-repeat;
 }
-.tree-overlay .element-ui-okno[data-window-id="fotosynteza"] .element-ui-edge { height: 85%; width: 12px; }
+.tree-overlay .element-ui-okno[data-window-id="fotosynteza"] .element-ui-edge { height: 100%; width: 12px; }
 .tree-overlay .element-ui-okno .ui-word-light { color: var(--ui-light); }
 .tree-overlay .element-ui-okno .ui-word-water { color: var(--ui-water); }
 .tree-overlay .element-ui-okno .ui-word-temperature { color: var(--ui-temperature); }
