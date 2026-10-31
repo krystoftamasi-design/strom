@@ -2,6 +2,9 @@
 history:
   - thread_id: 01a192cd-90b3-7e21-8050-fdf9990fe825
     date: 2026-10-31
+    change: Doplněny výukové texty do oken Fotosyntéza, Cukry, Voda, CO₂ a O₂.
+  - thread_id: 01a192cd-90b3-7e21-8050-fdf9990fe825
+    date: 2026-10-31
     change: Sjednoceno zobrazení hodnot O₂, CO₂, Vody a Cukrů na jedno desetinné místo.
   - thread_id: 01a192c9-24b4-7642-a56f-53abd8bf4304
     date: 2026-10-31
@@ -12,9 +15,6 @@ history:
   - thread_id: 01a192cd-90b3-7e21-8050-fdf9990fe825
     date: 2026-10-31
     change: Doplněny vstupy výpočtu a číselné hodnoty s jednotkami do oken O₂, CO₂ a Voda.
-  - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
-    date: 2026-10-31
-    change: Přesunuto ovládání a uchování stavu Cukrů k oknu a doplněna pravidla struktury.
 ---
 
 # Okna
@@ -29,7 +29,7 @@ history:
 
 - Nadpis: `Fotosyntéza`.
 - Téma: světlo; strana: vlevo; hlavní okno.
-- Detailní text: „Listy využívají světlo k tvorbě cukrů z vody a oxidu uhličitého. Při ději se uvolňuje kyslík. Cukry dodávají stromu energii i materiál pro růst.“
+- Detailní text: „Listy využívají světlo k tvorbě cukrů z vody a oxidu uhličitého. Při ději se uvolňuje kyslík. Cukry dodávají stromu energii i materiál pro růst. Rychlost procesu závisí na světle, vodě, ploše aktivních listů, CO₂ a teplotě.“
 - Hodnota: `activity`, zobrazená v procentech.
 - Vstupy výpočtu: zapnuté.
 - Výsledná hodnota: zapnutá.
@@ -41,7 +41,7 @@ history:
 
 - Nadpis: `O₂`.
 - Téma: kyslík; strana: vpravo.
-- Detailní text: „Při ději se uvolňuje kyslík.“
+- Detailní text: „Kyslík vzniká při štěpení vody ve světelné fázi a strom ho uvolňuje jako vedlejší produkt. Vyšší světlo a více aktivních listů obvykle zvyšují jeho produkci.“
 - Vstupy výpočtu: `Světlo × voda × listy × CO₂ × teplota`.
 - Hodnota: produkce O₂ v `g/min`, zobrazena na jedno desetinné místo.
 - Výchozí stav detailu: zavřený.
@@ -53,7 +53,7 @@ history:
 
 - Nadpis: `CO₂`.
 - Téma: CO₂; strana: vpravo.
-- Detailní text: „CO₂ se při fotosyntéze spotřebovává jako vstup pro tvorbu cukrů. Zobrazená hodnota je okamžitá spotřeba podle aktivní plochy listů a fotosyntetické účinnosti.“
+- Detailní text: „CO₂ se při fotosyntéze spotřebovává jako vstup pro tvorbu cukrů. Zobrazená hodnota je okamžitá spotřeba podle aktivní plochy listů a fotosyntetické účinnosti. Průduchy regulují jeho příjem podle dostupné vody a podmínek prostředí.“
 - Vstupy výpočtu: `Světlo × voda × listy × CO₂ × teplota`.
 - Hodnota: spotřeba CO₂ v `g/min`, zobrazena na jedno desetinné místo.
 - Výchozí stav detailu: zavřený.
@@ -66,6 +66,7 @@ history:
 - Nadpis: `Cukry`.
 - Téma: cukry; strana: vpravo.
 - Popisek: „Tvorba cukrů ≈ glukóza“.
+- Detailní text: „Fotosyntéza ukládá energii světla do glukózy. Ta slouží jako palivo i stavební materiál pro růst kmene, kořenů a nových listů. Hodnota ukazuje odhad okamžité produkce cukrů.“
 - Hodnota: `glucoseGramsPerMinute`, jednotka `g/min`, jedno desetinné místo.
 - Vstupy výpočtu: zapnuté.
 - Výsledná hodnota: zapnutá.
@@ -80,7 +81,7 @@ history:
 
 - Nadpis: `Voda`.
 - Téma: voda; strana: vpravo.
-- Detailní text: „Při nedostatku vody se přivírají průduchy. Do listů proniká méně CO₂ a fotosyntéza slábne. Zkuste omezit přítok nebo snížit slunce pod obzor.“
+- Detailní text: „Při nedostatku vody se přivírají průduchy. Do listů proniká méně CO₂ a fotosyntéza slábne. Zkuste omezit přítok nebo snížit slunce pod obzor. Voda zároveň ochlazuje korunu odparem a pomáhá udržovat listy zavodněné.“
 - Vstup výpočtu: `voda`.
 - Hodnota: spotřeba vody v `l/h`, zobrazena na jedno desetinné místo.
 - Ovládání: vypnuté; posuvník se v okně nezobrazuje.

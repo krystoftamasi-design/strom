@@ -1,5 +1,8 @@
 ---
 history:
+  - thread_id: 01a192cd-90b3-7e21-8050-fdf9990fe825
+    date: 2026-10-31
+    change: Doplněny výukové texty do oken Fotosyntéza, Cukry, Voda, CO₂ a O₂.
   - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
     date: 2026-10-31
     change: Zavedena automatická kontrola dokumentace před commitem a revize po pěti commitech.
@@ -12,9 +15,6 @@ history:
   - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
     date: 2026-10-31
     change: Rozlišeny produkce a spotřeba hodnot a upraven výpočet CO₂ na skutečnou spotřebu v g/min.
-  - thread_id: 01a192cd-90b3-7e21-8050-fdf9990fe825
-    date: 2026-10-31
-    change: Doplněny vstupy a číselné hodnoty s jednotkami do oken O₂, CO₂ a Voda.
 ---
 
 # Změny
@@ -24,6 +24,13 @@ history:
 ## Rozpracováno
 
 ## Implementováno
+
+#### Z010 — Výukové texty oken
+
+- Zadání: [Fotosyntéza](okna.md#fotosyntéza), [Cukry](okna.md#cukry), [Voda](okna.md#voda), [CO₂](okna.md#co₂), [O₂](okna.md#o₂).
+- Výsledek: okna vysvětlují roli vstupů, produkci cukrů a kyslíku, spotřebu CO₂ a význam vody pro fotosyntézu.
+- Stav: Implementováno.
+- Ověření: kontrola textů proti definici oken, syntaxe a validační test oken.
 
 #### Z010 — Automatická kontrola dokumentace
 
