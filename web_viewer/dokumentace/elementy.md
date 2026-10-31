@@ -2,6 +2,9 @@
 history:
   - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
     date: 2026-10-31
+    change: Upraven zápis tagu a definice spojení vodní linky podle ukázky.
+  - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
+    date: 2026-10-31
     change: Přesunuto pravidlo propojení na konec dokumentu pod definice elementů.
   - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
     date: 2026-10-31
@@ -12,18 +15,17 @@ history:
   - thread_id: 01a18f17-efd7-7a02-8369-186b681bfcc0
     date: 2026-10-31
     change: Odstraněny prázdné body a sjednoceny odkazy na související okna.
-  - thread_id: 01a18f17-efd7-7a02-8369-186b681bfcc0
-    date: 2026-10-31
-    change: Upřesněna významová vazba elementů na statická okna.
 ---
 
 # Elementy
 
 #### Voda linka
 
-**Tag:** `water` · modrá
+**Tag:** `water`
 
-**Spojení**
+*Spojení*
+
+Definice spojení
 
 - Okno: [Voda](okna.md#voda).
 - Zvýraznění: při otevření okna se modrá linka rozjasní.
