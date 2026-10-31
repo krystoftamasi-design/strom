@@ -60,7 +60,6 @@ export async function createWaterBrushMaterial(loader, uniforms) {
       uniform vec4 uBrushRect;
       uniform float uStrokeLength;
       uniform float uTime;
-      uniform float uSpeed;
       uniform float uGlow;
       uniform float uSelected;
       uniform float uOpacity;
@@ -77,7 +76,7 @@ export async function createWaterBrushMaterial(loader, uniforms) {
         return texture2D(uBrushMap, uv).a;
       }
       void main() {
-        float phase = fract(vFlowDistance / (uStrokeLength * 2.0) - uTime * 0.09 * uSpeed * uFlowDirection);
+        float phase = fract(vFlowDistance / (uStrokeLength * 2.0) - uTime * 0.09 * uFlowDirection);
         // Mirrored repetition meets at exactly the same source row at either
         // seam. No end-to-start jump or dim overlapping tip can break the line.
         float joinedPhase = 1.0 - abs(phase * 2.0 - 1.0);
@@ -90,7 +89,7 @@ export async function createWaterBrushMaterial(loader, uniforms) {
         float selectionAlpha = mix(1.0, 0.42 + 0.58 * vSelectionPulse, uSelected);
         float alpha = stroke * uOpacity * remainingFlow * selectionAlpha;
         if (alpha < 1.0 / 255.0) discard;
-        float pulse = sin(vFlowDistance * 3.0 - uTime * 2.2 * uSpeed * uFlowDirection) * 0.5 + 0.5;
+        float pulse = sin(vFlowDistance * 3.0 - uTime * 2.2 * uFlowDirection) * 0.5 + 0.5;
         float highlight = pow(pulse, 3.5) * clamp(uGlow, 0.0, 2.5) * 0.55;
         vec3 color = mix(uColor, uHighlightColor, clamp(highlight, 0.0, 0.8));
         gl_FragColor = vec4(color, alpha);

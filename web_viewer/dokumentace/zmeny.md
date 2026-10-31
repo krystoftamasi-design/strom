@@ -5,6 +5,9 @@ history:
     change: Převedena kapitola Transpirace na společný vzhled oken Fotosyntézy.
   - thread_id: 01a192c9-24b4-7642-a56f-53abd8bf4304
     date: 2026-10-31
+    change: Odstraněno kolísání rychlosti linek a ponecháno pouze řízení časem přehrávání.
+  - thread_id: 01a192c9-24b4-7642-a56f-53abd8bf4304
+    date: 2026-10-31
     change: Sjednocena a zpomalena animace vody a glukózy podle modelového času.
   - thread_id: 01a192c9-24b4-7642-a56f-53abd8bf4304
     date: 2026-10-31
@@ -12,9 +15,6 @@ history:
   - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
     date: 2026-10-31
     change: Omezen obsah reportu revize na doložené neshody.
-  - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
-    date: 2026-10-31
-    change: Zavedeno porovnání definic se skutečným webem v Chromu po deseti commitech.
 
 ---
 
@@ -33,6 +33,12 @@ history:
 - Stav: Implementováno.
 - Ověření: syntaxe JavaScriptu a validační test oken; finální vizuální kontrola uživatelem.
 
+#### Z024 — Plynulé tempo linek
+
+- Zadání: [Společná rychlost linek](elementy.md#společná-rychlost-linek).
+- Výsledek: obě linky používají čas přehrávání bez násobení proměnlivým odparem a bez zrychlení ekologických hodin.
+- Stav: Implementováno.
+- Ověření: kontrola syntaxe; test pauzy a násobičů přehrávání v Chromu.
 
 #### Z023 — Společná pomalejší animace linek
 

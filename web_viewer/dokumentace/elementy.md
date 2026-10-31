@@ -2,6 +2,9 @@
 history:
   - thread_id: 01a192c9-24b4-7642-a56f-53abd8bf4304
     date: 2026-10-31
+    change: Odstraněny skoky rychlosti a navázány obě linky pouze na čas přehrávání.
+  - thread_id: 01a192c9-24b4-7642-a56f-53abd8bf4304
+    date: 2026-10-31
     change: Sjednocena pomalejší animace vody a glukózy s reakcí na modelový čas.
   - thread_id: 01a192c9-24b4-7642-a56f-53abd8bf4304
     date: 2026-10-31
@@ -9,9 +12,6 @@ history:
   - thread_id: 01a192c9-24b4-7642-a56f-53abd8bf4304
     date: 2026-10-31
     change: Zviditelněna putující vlna zvýraznění větším pulzem tloušťky a řízením průhlednosti.
-  - thread_id: 01a192c9-24b4-7642-a56f-53abd8bf4304
-    date: 2026-10-31
-    change: Zesíleno pulzující zvýraznění a doplněna putující vlna tloušťky po lince.
   - thread_id: 01a192c9-24b4-7642-a56f-53abd8bf4304
     date: 2026-10-31
     change: Změněno zvýraznění linek na zesílení tloušťky s pulzací bez zesvětlení.
@@ -67,9 +67,9 @@ Definice spojení
 
 #### Společná rychlost linek
 
-- Voda a glukóza používají stejný čas i rychlost proudění; společná animace je zpomalená na polovinu původní rychlosti vody.
+- Voda a glukóza používají stejný plynulý čas přehrávání s pomalým základním tempem.
 - Pauza a rychlosti modelového času 1×, 2× a 4× ovlivňují obě linky shodně včetně pulzace zvýraznění.
-- Proudění se řídí společným posuvníkem a odparem; při zastavení fotosyntézy se zastaví.
+- Odpar, aktivita fotosyntézy a posuvník proudění rychlost obou linek nemění; zastavení fotosyntézy řídí jejich stahování, nikoli tempo animace.
 
 #### Šířka linek
 
