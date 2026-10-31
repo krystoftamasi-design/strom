@@ -2,6 +2,9 @@
 history:
   - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
     date: 2026-10-31
+    change: Přesunuto ovládání a uchování stavu Cukrů k oknu a doplněna pravidla struktury.
+  - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
+    date: 2026-10-31
     change: Nahrazeny nevykreslené HTML styly tagů barevnými značkami v Markdownu.
   - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
     date: 2026-10-31
@@ -12,9 +15,6 @@ history:
   - thread_id: 01a18f17-efd7-7a02-8369-186b681bfcc0
     date: 2026-10-31
     change: Doplněn přesný obsah oken podle záznamů v element_ui_okna_obsah.js.
-  - thread_id: 01a18f17-efd7-7a02-8369-186b681bfcc0
-    date: 2026-10-31
-    change: Přesunut vzhled do vzhled_oken.md; ponecháno chování a obsah oken.
 ---
 
 # Okna
@@ -66,6 +66,8 @@ history:
 - Vstupy výpočtu: zapnuté.
 - Výsledná hodnota: zapnutá.
 - Výchozí stav detailu: otevřený.
+- Ovládání detailu: kliknutí na nadpis Cukry nebo tlačítko +/− přepne detail.
+- Stav detailu zůstává zachovaný při změně kapitoly.
 - Související element: [Glukóza linka](elementy.md#glukóza-linka).
 
 #### Voda
@@ -86,3 +88,28 @@ history:
 - [Technická architektura](architektura_oken.md)
 - [Stav změn](zmeny.md)
 - [Obsah](architektura_obsahu.md)
+
+## Pravidla struktury
+
+- Kapitola má úroveň `##`, oblast `###` a konkrétní okno `####`.
+- U okna uváděj tag a stručné body s obsahem, hodnotami, ovládáním a stavem detailu.
+- Ovládání okna a uchování stavu popisuj zde; reakci souvisejícího elementu definuj pouze v `elementy.md` a odkaž na ni.
+- Uváděj pouze položky, které se daného okna týkají.
+- Odkazy na související dokumenty ponechávej před těmito pravidly.
+
+```markdown
+## Kapitola Název
+
+### Okna
+
+#### Název okna
+
+**Tag:** 🔵 `tag`
+
+- Nadpis: `Název`.
+- Obsah: popis obsahu okna.
+- Hodnota: veličina a jednotka.
+- Ovládání detailu: způsob otevření a zavření.
+- Výchozí stav detailu: otevřený nebo zavřený.
+- Související element: [Název](elementy.md#kotva).
+```

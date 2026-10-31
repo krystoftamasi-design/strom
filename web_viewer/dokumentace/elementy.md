@@ -2,6 +2,9 @@
 history:
   - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
     date: 2026-10-31
+    change: Upřesněno oddělení reakce elementu od ovládání a stavu okna.
+  - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
+    date: 2026-10-31
     change: Nahrazeny nevykreslené HTML styly tagů barevnými značkami v Markdownu.
   - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
     date: 2026-10-31
@@ -12,9 +15,6 @@ history:
   - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
     date: 2026-10-31
     change: Upraven zápis tagu a definice spojení vodní linky podle ukázky.
-  - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
-    date: 2026-10-31
-    change: Přesunuto pravidlo propojení na konec dokumentu pod definice elementů.
 ---
 
 # Elementy
@@ -43,11 +43,10 @@ Definice spojení
 Definice spojení
 
 - Okno: [Cukry](okna.md#cukry).
-- Akce: kliknutí na nadpis Cukry nebo tlačítko +/− přepne detail.
 - **Zvýraznění**
 - Otevřený detail rozjasní celou fialovou linku v kapitole Fotosyntéza, včetně výchozího otevření.
 - Při zavření se vrátí původní vzhled.
-- Mimo kapitolu Fotosyntéza se zvýraznění vypne; stav detailu zůstává zachovaný.
+- Mimo kapitolu Fotosyntéza se zvýraznění vypne.
 
 **Chování elementu**
 
@@ -109,6 +108,9 @@ Definice spojení
 - Tag určuje vazbu, část „Definice spojení“ určuje její chování.
 - Samotná shoda barvy ani výskyt barevného tagu ve vzorci nespouští zvýraznění.
 - Reakce na okno se popisuje pouze u elementu; okno na něj odkazuje.
+- Do „Definice spojení“ patří jen související okno a reakce elementu na jeho stav.
+- Kliknutí, tlačítka, přepínání detailu a uchování jeho stavu popisuj v `okna.md`, nikoli u elementu.
+- Vlastní vzhled, trasa a proudění patří do „Chování elementu“.
 
 ### Pravidla struktury
 
