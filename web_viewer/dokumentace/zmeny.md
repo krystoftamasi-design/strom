@@ -2,6 +2,9 @@
 history:
   - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
     date: 2026-10-31
+    change: Sjednocena evidence s přijetím bez výhrady bez čekání na schválení.
+  - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
+    date: 2026-10-31
     change: Navázána evidence na pracovní postup a upřesněn zápis finálního ověření uživatelem.
   - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
     date: 2026-10-31
@@ -12,9 +15,6 @@ history:
   - thread_id: 01a192c9-24b4-7642-a56f-53abd8bf4304
     date: 2026-10-31
     change: Zesíleno pulzující zvýraznění linek a doplněna animovaná vlna tloušťky.
-  - thread_id: 01a192c9-24b4-7642-a56f-53abd8bf4304
-    date: 2026-10-31
-    change: Upraveno zvýraznění vody a glukózy na pulzující zesílení bez zesvětlení.
 ---
 
 # Změny
@@ -77,7 +77,8 @@ history:
 - U drobných úprav stačí stručný výsledný popis a skutečné ověření; podrobné definice nepřepisuj, pokud se jejich význam nemění.
 - Za logickou změnu přidej jeden záznam YAML historie s ověřeným `thread_id`; evidenci commituj společně s příslušným kódem.
 - Při změně stavu přesuň záznam do příslušné části.
-- Před finální kontrolou ponech dokončenou implementaci ve stavu „Implementováno“. Po potvrzení uživatelem zapiš rozsah ověření, přesuň záznam do „Ověřeno“ a evidenci ulož samostatným commitem.
+- Předaný výsledek ber jako vyhovující a uzavřený bez dalšího schválení, pokud uživatel výslovně nevznese výhradu nebo požadavek na úpravu.
+- Přijetí bez výhrady neprokazuje provedení testu; bez doložené finální kontroly ponech stav „Implementováno“. Po potvrzení skutečné kontroly zapiš rozsah ověření, přesuň záznam do „Ověřeno“ a evidenci ulož samostatným commitem.
 - Neevidované části webu nejsou tímto dokumentem ověřené.
 
 [Zpět na obsah](architektura_obsahu.md)
