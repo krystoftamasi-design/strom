@@ -1,6 +1,10 @@
 // Obsah oken: jeden záznam pro každé okno, bez vykreslování a výpočtů.
 // ID určuje pevnou pozici v UI; téma odkazuje na barvy v CSS.
 export const oknaPodleKapitol = {
+  transpiration: [
+    { id: 'transpirace', nadpis: 'Transpirace', tema: 'water', strana: 'left', hlavni: true },
+    { id: 'odpar', nadpis: 'Odpar z listů', tema: 'temperature', strana: 'right' },
+  ],
   photosynthesis: [
     {
       id: 'fotosynteza',

@@ -1,5 +1,8 @@
 ---
 history:
+  - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
+    date: 2026-10-31
+    change: Převedena kapitola Transpirace na společný vzhled oken Fotosyntézy.
   - thread_id: 01a192cd-90b3-7e21-8050-fdf9990fe825
     date: 2026-10-31
     change: Zkráceny texty oken Fotosyntéza, Cukry, Voda, CO₂ a O₂ na jeden odstavec.
@@ -12,9 +15,7 @@ history:
   - thread_id: 01a192c9-24b4-7642-a56f-53abd8bf4304
     date: 2026-10-31
     change: Odstraněn posuvník z okna Voda; dokumentace uvádí, že ovládání je vypnuté.
-  - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
-    date: 2026-10-31
-    change: Rozlišeny produkce a spotřeba hodnot; CO₂ změněno z koncentrace na spotřebu v g/min a Voda na spotřebu v l/h.
+
 ---
 
 # Okna
@@ -87,6 +88,31 @@ history:
 - Ovládání: vypnuté; posuvník se v okně nezobrazuje.
 - Výchozí stav detailu: otevřený.
 - Související element: [Voda linka](elementy.md#voda-linka).
+
+## Kapitola Transpirace
+
+### Okna
+
+#### Transpirace
+
+**Tag:** 🔵 `water`
+
+- Nadpis: `Transpirace`; hlavní okno vlevo dole.
+- Detail popisuje příjem vody kořeny, cestu xylémem do listů a odpařování průduchy; průtok je odhad celkové spotřeby ze zásoby, nikoli okamžitý příjem kořeny.
+- Cesta vody: Kořeny → Xylém → Listy → pára.
+- Hodnoty pod nadpisem: příjem vody, průtok vody stromem a odpařená voda v `l/h`.
+- Ovládání detailu: kliknutí na nadpis přepne detail; výchozí stav je zavřený a při změně kapitoly zůstává zachovaný.
+- Přepnutí detailu nemění hodnoty ani výpočty; zvýraznění linky se v této kapitole nepřepíná.
+
+#### Odpar z listů
+
+**Tag:** 🌡️ `temperature`
+
+- Nadpis: `Odpar z listů`; okno vpravo.
+- Hodnota pod nadpisem: chladicí výkon v `kW` se dvěma desetinnými místy.
+- Detail obsahuje rozdíl teplot u koruny a mimo strom ve `°C`, vliv světla a nedostatku vody, noční chování koruny a omezení příjmu sezónním maximem kořenů.
+- Vysvětlení zachovává původ odhadu z normálů ČHMÚ 1991–2020 a rozlišení výukového modelu od měření či předpovědi; výkon není změna teploty.
+- Ovládání detailu: kliknutí na nadpis přepne detail; výchozí stav je zavřený a při změně kapitoly zůstává zachovaný.
 
 ## Související dokumenty
 

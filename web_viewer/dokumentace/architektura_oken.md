@@ -2,6 +2,9 @@
 history:
   - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
     date: 2026-10-31
+    change: Převedena kapitola Transpirace na společný vzhled oken Fotosyntézy.
+  - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
+    date: 2026-10-31
     change: Aktualizováno napojení zvýraznění podle tagů a okamžité změny stavu detailu.
   - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
     date: 2026-10-31
@@ -12,9 +15,7 @@ history:
   - thread_id: 01a18f17-efd7-7a02-8369-186b681bfcc0
     date: 2026-10-31
     change: Sloučeny technické informace do pořadí definice, hodnoty, kontroly a rozšíření.
-  - thread_id: 01a18f17-efd7-7a02-8369-186b681bfcc0
-    date: 2026-10-31
-    change: Aktualizován technický přehled podle implementovaných statických oken.
+
 ---
 
 # Architektura oken
@@ -26,14 +27,16 @@ history:
 
 ### Obsah
 
-- `okna/element_ui_okna_obsah.js` obsahuje záznamy v seznamu `photosynthesis`.
+- `okna/element_ui_okna_obsah.js` obsahuje záznamy v seznamech `photosynthesis` a `transpiration`.
 - Záznam určuje ID, nadpis, téma, stranu, text, výpočet, ovládání a výchozí otevření detailu.
 - `zobrazitVzorec` a `zobrazitHodnotu` zapínají přehled vstupů a výslednou hodnotu.
+
+- Obsah Transpirace a její živé výstupy zůstávají v `kapitoly/chapters.js`; `tree_annotations.js` je přesouvá do společných stylovaných oken podle metadat `transpiration`.
 
 ### Rozložení
 
 - `okna/tree_annotations.js` vytváří bloky, přepíná detaily a přebírá ovládací prvky s jejich událostmi.
-- `okna/element_ui_okna_vzhled.css` určuje pevné pozice podle ID, rozměry, písmo a barvy.
+- `okna/element_ui_okna_vzhled.css` určuje pevné pozice podle ID a společného příznaku hlavního okna, rozměry, písmo a barvy.
 - `okna/tree_annotations.css` obsahuje společný základ bloků kapitol.
 - Rozložení pracuje v souřadnicích rozhraní; aktualizace za snímek obsluhuje ovládání období a synchronizaci zvýraznění s aktivní kapitolou.
 - `kapitoly/chapters.js` určuje pořadí a přepínání kapitol; `kapitoly/chapters.css` vzhled navigace.

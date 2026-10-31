@@ -2,6 +2,9 @@
 history:
   - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
     date: 2026-10-31
+    change: Převedena kapitola Transpirace na společný vzhled oken Fotosyntézy.
+  - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
+    date: 2026-10-31
     change: Zvětšeny a zvýrazněny nadpisy kapitol a nahrazen obsah šablony obecnými položkami.
   - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
     date: 2026-10-31
@@ -12,9 +15,7 @@ history:
   - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
     date: 2026-10-31
     change: Upřesněna úroveň nadpisů elementů odkazem na jejich vlastní pravidla.
-  - thread_id: 01a18f17-efd7-7a02-8369-186b681bfcc0
-    date: 2026-10-31
-    change: Přidána k oknům kategorie Vzhled s odkazem na samostatný soubor.
+
 ---
 
 # Architektura obsahu
@@ -83,11 +84,22 @@ history:
 
 ### Text
 
+- [Datum](texty.md#datum)
+
 ### Okna
+
+- [Transpirace](okna.md#transpirace)
+- [Odpar z listů](okna.md#odpar-z-listů)
 
 ### Vzhled
 
+- [Okna](vzhled_oken.md)
+
 ### Ovládací prvky
+
+- [Manager](prvky.md#manager)
+- [Čas](prvky.md#ovládání-času)
+- [Kapitoly](prvky.md#kapitoly)
 
 ### Elementy
 

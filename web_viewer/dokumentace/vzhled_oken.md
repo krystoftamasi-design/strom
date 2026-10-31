@@ -1,5 +1,8 @@
 ---
 history:
+  - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
+    date: 2026-10-31
+    change: Převedena kapitola Transpirace na společný vzhled oken Fotosyntézy.
   - thread_id: 01a192c9-24b4-7642-a56f-53abd8bf4304
     date: 2026-10-31
     change: Sladěno rozložení detailů, rozestupy a délky tahů se současným CSS.
@@ -12,9 +15,7 @@ history:
   - thread_id: 01a192c9-24b4-7642-a56f-53abd8bf4304
     date: 2026-10-31
     change: Sjednocena výška barevných svislých tahů s výškou každého okna.
-  - thread_id: 01a18f17-efd7-7a02-8369-186b681bfcc0
-    date: 2026-10-31
-    change: Nastaven nezalamovaný řádek vstupů výpočtu.
+
 ---
 
 # Vzhled oken
@@ -24,7 +25,7 @@ history:
 - Kliknutí na nadpis zobrazí nebo skryje detail ve vyhrazeném prostoru.
 - Změna hodnot a zobrazení detailu neposouvají polohu oken.
 - Okna nemají pohybové animace ani spojnice ke stromu.
-- Při vstupu jsou otevřené detaily Cukrů a Vody; ostatní jsou skryté.
+- V kapitole Fotosyntéza jsou výchozí detaily Cukrů a Vody otevřené; v Transpiraci jsou oba detaily zavřené.
 
 ### Obecný obsah
 
@@ -42,6 +43,7 @@ history:
 
 - Podklad: [Untitled.svg](../web_assets/ui_from_af/Untitled.svg), plátno přibližně 2020 × 1143.
 - Fotosyntéza je vlevo dole; vpravo následují shora O₂, CO₂, Cukry a Voda.
+- Transpirace používá stejné hlavní okno vlevo dole jako Fotosyntéza; Odpar z listů je vpravo ve vyšším bloku s vlastním posuvem dlouhého detailu.
 - Střed zůstává volný pro strom.
 - Bloky jsou bez výplně a rámečku; vlevo mají nepravidelný svislý tah.
 - Svislé tahy začínají u horního okraje okna; O₂, CO₂ a Cukry používají 65 % výšky svého bloku, Fotosyntéza 100 %.
@@ -51,7 +53,7 @@ history:
 ### Písmo
 
 - Nadpisy používají Nohemi Regular, přibližně 53 px na referenčním plátně.
-- Fotosyntéza má dominantní tučný nadpis přibližně 92 px.
+- Hlavní okna Fotosyntézy a Transpirace mají dominantní tučný nadpis přibližně 92 px.
 - Popisky, jednotky a detaily používají Satoshi Light.
 - Přehled vstupů používá drobné písmo Satoshi Medium; názvy vstupů jsou ve dne černé a v noci světlé.
 - Hodnoty používají Nohemi a barvu příslušného tématu.

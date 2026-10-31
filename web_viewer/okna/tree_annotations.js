@@ -78,6 +78,7 @@ export function createTreeAnnotations({ shell, model, createSeasonControl, setEl
     if (definition) {
       panel.dataset.windowId = definition.id;
       panel.dataset.topic = definition.tema || 'neutral';
+      panel.dataset.mainWindow = String(Boolean(definition.hlavni));
     }
     const header = document.createElement('header');
     const h = heading || document.createElement('h3');
@@ -118,7 +119,7 @@ export function createTreeAnnotations({ shell, model, createSeasonControl, setEl
     let expanded = false;
     function expand(open) {
       expanded = open;
-      if (definition) {
+      if (definition && article.dataset.chapter === 'photosynthesis') {
         linkedWindows.set(definition.tema, { chapter: article.dataset.chapter, open });
         setElementHighlight(definition.tema, activeChapter === article.dataset.chapter && open);
       }
@@ -214,7 +215,7 @@ export function createTreeAnnotations({ shell, model, createSeasonControl, setEl
     const metric = id => article.querySelector(`#${id}`)?.closest('.chapter-metric');
     const detail = article.querySelector('details');
     const definitions = oknaPodleKapitol[article.dataset.chapter];
-    if (definitions) {
+    if (definitions && article.dataset.chapter !== 'transpiration') {
       for (const definition of Array.isArray(definitions) ? definitions : []) {
         if (!kontrola.neplatnaOkna.has(definition)) configuredCard(article, definition);
       }
@@ -231,8 +232,8 @@ export function createTreeAnnotations({ shell, model, createSeasonControl, setEl
     } else if (article.dataset.chapter === 'transpiration') {
       const route = article.querySelector('.water-route');
       const temperature = article.querySelector('.chapter-temperature');
-      card(article, 'water', 'left', 'Transpirace', [eyebrow, tags, paragraphs[1], route, metric('ecoTranspirationInflow'), metric('ecoTreeWaterFlow'), metric('ecoTranspiration')], heading);
-      card(article, 'evaporation', 'right', 'Odpar z listů', [metric('ecoCooling'), temperature, paragraphs[2], paragraphs[3]]);
+      card(article, 'water', 'left', 'Transpirace', [eyebrow, tags, paragraphs[1], route, metric('ecoTranspirationInflow'), metric('ecoTreeWaterFlow'), metric('ecoTranspiration')], heading, definitions[0]);
+      card(article, 'evaporation', 'right', 'Odpar z listů', [metric('ecoCooling'), temperature, paragraphs[2], paragraphs[3]], null, definitions[1]);
     } else if (article.dataset.chapter === 'roots') {
       const tipHeading = article.querySelector('h3');
       detail.insertBefore(article.querySelector('.root-diagram'), detail.querySelector('p'));

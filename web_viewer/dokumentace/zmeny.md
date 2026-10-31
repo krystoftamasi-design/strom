@@ -1,5 +1,8 @@
 ---
 history:
+  - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
+    date: 2026-10-31
+    change: Převedena kapitola Transpirace na společný vzhled oken Fotosyntézy.
   - thread_id: 01a192c9-24b4-7642-a56f-53abd8bf4304
     date: 2026-10-31
     change: Sjednocena a zpomalena animace vody a glukózy podle modelového času.
@@ -12,9 +15,6 @@ history:
   - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
     date: 2026-10-31
     change: Zavedeno porovnání definic se skutečným webem v Chromu po deseti commitech.
-  - thread_id: 01a192c9-24b4-7642-a56f-53abd8bf4304
-    date: 2026-10-31
-    change: Opraveny duplicitní identifikátory a doplněna prevence souběžných kolizí.
 
 ---
 
@@ -25,6 +25,14 @@ history:
 ## Rozpracováno
 
 ## Implementováno
+
+#### Z025 — Transpirace ve stylu Fotosyntézy
+
+- Zadání: [Transpirace](okna.md#transpirace), [Vzhled oken](vzhled_oken.md).
+- Výsledek: společný vzhled hlavního okna a Odparu z listů, barevné tahy a pevné sloupce; zachovány původní texty, živé hodnoty a výpočty. Doplněny definice a rozcestník.
+- Stav: Implementováno.
+- Ověření: syntaxe JavaScriptu a validační test oken; finální vizuální kontrola uživatelem.
+
 
 #### Z023 — Společná pomalejší animace linek
 
