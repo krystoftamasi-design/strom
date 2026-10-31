@@ -84,7 +84,7 @@ body.scene-night .tree-overlay { --ui-ink: #f0f2e9; }
 .tree-overlay .element-ui-okno.collapsed .annotation-reveal {
   position: absolute; left: calc(27% + 30px); right: 0; top: 4px; bottom: 0;
 }
-.tree-overlay .element-ui-okno[data-window-id="fotosynteza"] .annotation-reveal { left: calc(58% + 25px); }
+.tree-overlay .element-ui-okno[data-window-id="fotosynteza"] .annotation-reveal { left: calc(58% + 25px); top: -92px; }
 .tree-overlay .element-ui-okno .annotation-reveal-inner { height: 100%; overflow: auto; }
 .tree-overlay .element-ui-okno .annotation-body { padding: 0; max-height: 100%; }
 .tree-overlay .element-ui-okno .annotation-body p,
