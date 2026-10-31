@@ -2,6 +2,9 @@
 history:
   - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
     date: 2026-10-31
+    change: Sjednoceny stavy propojení tagy a zvýraznění vody s kódem a zapsány provedené kontroly.
+  - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
+    date: 2026-10-31
     change: Zapsána implementace rychlejšího nočního stahování linek a doplněna šablona evidence.
   - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
     date: 2026-10-31
@@ -12,31 +15,29 @@ history:
   - thread_id: 01a18f17-efd7-7a02-8369-186b681bfcc0
     date: 2026-10-31
     change: Přesměrován vzhled oken na samostatný soubor vzhled_oken.md.
-  - thread_id: 01a18f17-efd7-7a02-8369-186b681bfcc0
-    date: 2026-10-31
-    change: Aktualizován odkaz na samostatnou kategorii Vzhled oken.
 ---
 
 # Změny
 
 ## Čeká
 
+## Rozpracováno
+
+## Implementováno
+
 #### Z004 — Propojení tagy
 
 - Zadání: [Pravidlo propojení](elementy.md#pravidlo-propojení), společný tag okna a elementu.
-- Stav: Čeká.
-- Ověření: témata v kódu určují barvy; zvýraznění glukózy je dosud navázané na ID `cukry`, nikoli na společný tag.
-- Dokumentace: sjednocené tagy a členění definic; kód v tomto kroku nezměněn.
+- Stav: Implementováno.
+- Ověření: kontrola napojení `tema` → `setElementHighlight` → materiály linek v kódu; syntaxe a `test_ui_okna_kontrola.mjs` prošly.
+- Přepnutí zvýraznění probíhá přímo při změně otevření detailu; aktualizace kapitoly zachovává jeho soulad s viditelností okna.
+- Vizuální a funkční ověření: finální kontrola uživatelem.
 
 #### Z001 — Voda
 
 - Zadání: [Voda linka](elementy.md#voda-linka), zvýraznění při otevření okna Voda a návrat při zavření.
-- Stav: Čeká.
-- Ověření: neprovedeno.
-
-## Rozpracováno
-
-## Implementováno
+- Stav: Implementováno.
+- Ověření: kontrola vazby tagu `water` na uniform materiálu v kódu; finální kontrola uživatelem.
 
 #### Z005 — Noční stahování linek
 

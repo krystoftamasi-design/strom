@@ -61,6 +61,7 @@ function createElementUiOkno({ panel, body, reveal, toggle }) {
 // Original content and controls are moved, so live outputs and handlers survive.
 export function createTreeAnnotations({ shell, model, createSeasonControl, setElementHighlight = () => {} }) {
   const linkedWindows = new Map();
+  let activeChapter = null;
   const content = shell.querySelector('.chapter-content');
   const kontrola = zkontrolovatOkna({
     okna: oknaPodleKapitol,
@@ -117,7 +118,10 @@ export function createTreeAnnotations({ shell, model, createSeasonControl, setEl
     let expanded = false;
     function expand(open) {
       expanded = open;
-      if (definition) linkedWindows.set(definition.tema, { chapter: article.dataset.chapter, open });
+      if (definition) {
+        linkedWindows.set(definition.tema, { chapter: article.dataset.chapter, open });
+        setElementHighlight(definition.tema, activeChapter === article.dataset.chapter && open);
+      }
       body.inert = !open;
       body.setAttribute('aria-hidden', String(!open));
       panel.classList.toggle('collapsed', !open);
@@ -263,6 +267,7 @@ export function createTreeAnnotations({ shell, model, createSeasonControl, setEl
 
   return {
     update(chapter, playbackDelta = 0) {
+      activeChapter = chapter;
       for (const [tag, state] of linkedWindows) {
         setElementHighlight(tag, state.chapter === chapter && state.open);
       }

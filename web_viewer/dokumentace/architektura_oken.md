@@ -2,6 +2,9 @@
 history:
   - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
     date: 2026-10-31
+    change: Aktualizováno napojení zvýraznění podle tagů a okamžité změny stavu detailu.
+  - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
+    date: 2026-10-31
     change: Popsáno propojení detailu Cukry se zvýrazněním glukózové linky.
   - thread_id: 01a18f17-efd7-7a02-8369-186b681bfcc0
     date: 2026-10-31
@@ -12,9 +15,6 @@ history:
   - thread_id: 01a18f17-efd7-7a02-8369-186b681bfcc0
     date: 2026-10-31
     change: Aktualizován technický přehled podle implementovaných statických oken.
-  - thread_id: 01a18f17-efd7-7a02-8369-186b681bfcc0
-    date: 2026-10-31
-    change: Odstraněna koncová mezera při kontrole dokumentu.
 ---
 
 # Architektura oken
@@ -35,15 +35,16 @@ history:
 - `okna/tree_annotations.js` vytváří bloky, přepíná detaily a přebírá ovládací prvky s jejich událostmi.
 - `okna/element_ui_okna_vzhled.css` určuje pevné pozice podle ID, rozměry, písmo a barvy.
 - `okna/tree_annotations.css` obsahuje společný základ bloků kapitol.
-- Rozložení pracuje v souřadnicích rozhraní; aktualizace za snímek obsluhuje pouze ovládání období.
+- Rozložení pracuje v souřadnicích rozhraní; aktualizace za snímek obsluhuje ovládání období a synchronizaci zvýraznění s aktivní kapitolou.
 - `kapitoly/chapters.js` určuje pořadí a přepínání kapitol; `kapitoly/chapters.css` vzhled navigace.
 
 ### Zvýraznění elementů
 
-- `okna/tree_annotations.js` předává otevření detailu Cukry přes `setSugarHighlight` v `kapitoly/chapters.js`.
-- `index.html` sdílí uniform `uSelected` mezi materiály glukózové linky; `vykreslovani/water_brush.js` podle něj zesvětlí barvu.
+- `okna/tree_annotations.js` předává tag tématu a stav otevření přes `setElementHighlight` v `kapitoly/chapters.js`.
+- Změna detailu přepíná zvýraznění přímo v obsluze události; aktivní kapitola omezuje zvýraznění na viditelná okna.
+- `index.html` mapuje tagy `water` a `sugar` na samostatné uniformy `uSelected` materiálů linek; vykreslení obsluhuje `vykreslovani/water_brush.js`.
 - Zvýraznění je aktivní jen v kapitole Fotosyntéza; zavření detailu obnoví běžnou barvu.
-- Chování určuje [Glukóza linka](elementy.md#glukóza-linka).
+- Chování určují [Voda linka](elementy.md#voda-linka) a [Glukóza linka](elementy.md#glukóza-linka).
 
 ## Hodnoty
 
@@ -76,3 +77,19 @@ history:
 - Nová veličina potřebuje skutečný zdroj hodnoty a záznam v převodníku.
 
 [Stav implementace](zmeny.md#z003--ui-podle-svg) · [Obsah](architektura_obsahu.md)
+
+## Pravidla struktury
+
+- Technické oblasti mají nadpis `##`, jejich části `###`.
+- Popisuj platné napojení modulů stručnými body; uživatelské chování sdílej odkazem na definici.
+- Výsledky ověření a stav implementace eviduj v `zmeny.md`.
+- Tuto část se šablonou ponechávej na konci.
+
+```markdown
+## Název oblasti
+
+### Název části
+
+- `cesta/modul.js` zajišťuje danou odpovědnost.
+- Chování určuje [Definice](soubor.md#kotva).
+```
