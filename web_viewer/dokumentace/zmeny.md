@@ -2,6 +2,9 @@
 history:
   - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
     date: 2026-10-31
+    change: Zapsána implementace rychlejšího nočního stahování linek a doplněna šablona evidence.
+  - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
+    date: 2026-10-31
     change: Zapsána čekající implementace propojení oken a elementů společnými tagy.
   - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
     date: 2026-10-31
@@ -12,9 +15,6 @@ history:
   - thread_id: 01a18f17-efd7-7a02-8369-186b681bfcc0
     date: 2026-10-31
     change: Aktualizován odkaz na samostatnou kategorii Vzhled oken.
-  - thread_id: 01a18f17-efd7-7a02-8369-186b681bfcc0
-    date: 2026-10-31
-    change: Zkrácena evidence na zadání, stav a ověření bez opakování definic.
 ---
 
 # Změny
@@ -37,6 +37,12 @@ history:
 ## Rozpracováno
 
 ## Implementováno
+
+#### Z005 — Noční stahování linek
+
+- Zadání: [Společné stahování linek](elementy.md#společné-stahování-linek).
+- Stav: Implementováno.
+- Ověření: kontrola syntaxe hlavního modulu a diffu; finální vizuální kontrola uživatelem.
 
 #### Z002 — Glukóza
 
@@ -64,3 +70,20 @@ history:
 - Neevidované části webu nejsou tímto dokumentem ověřené.
 
 [Zpět na obsah](architektura_obsahu.md)
+
+## Pravidla struktury
+
+- Změny seskupuj podle stavu v kapitolách `##`; jednotlivé záznamy mají nadpis `####` se stálým ID a názvem.
+- U záznamu uváděj odkaz na zadání, stav a skutečné ověření; případná omezení uveď samostatně.
+- Význam stavů a přesuny záznamů určují pravidla evidence výše.
+- Tuto část s obecnou šablonou ponechávej na konci dokumentu.
+
+```markdown
+## Název stavu
+
+#### ZXXX — Název změny
+
+- Zadání: [Definice](soubor.md#kotva).
+- Stav: odpovídající stav.
+- Ověření: provedená kontrola nebo finální kontrola uživatelem.
+```

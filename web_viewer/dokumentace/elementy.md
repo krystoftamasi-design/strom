@@ -2,6 +2,9 @@
 history:
   - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
     date: 2026-10-31
+    change: Definováno rychlejší noční stahování obou linek za 1,2 sekundy.
+  - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
+    date: 2026-10-31
     change: Zobecněna šablona a pravidla spojení pro libovolný definovaný typ reakce.
   - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
     date: 2026-10-31
@@ -12,9 +15,6 @@ history:
   - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
     date: 2026-10-31
     change: Obarveny tagy přesnými barvami témat z webu.
-  - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
-    date: 2026-10-31
-    change: Sjednocena struktura všech elementů a přidána závazná šablona na konec dokumentu.
 ---
 
 # Elementy
@@ -35,6 +35,7 @@ Definice spojení
 - Při fotosyntéze proudí nahoru.
 - Při červenání prvního listu se stahuje od kořenů k listům.
 - Při vstupu do kapitoly je hned celá viditelná.
+- Rychlost nočního stahování určuje [Společné stahování linek](#společné-stahování-linek).
 
 
 ### Glukóza linka
@@ -56,6 +57,12 @@ Definice spojení
 - Na jaře proudí ze zásob v kořenech a kmeni k novým listům.
 - V létě proudí z listů do kmene a kořenů.
 - Stahování se řídí vlastní délkou trasy.
+- Rychlost nočního stahování určuje [Společné stahování linek](#společné-stahování-linek).
+
+#### Společné stahování linek
+
+- Při zastavení fotosyntézy se sluncem na obzoru nebo pod ním se obě linky plně stáhnou za přibližně 1,2 sekundy animace.
+- Ranní rozvinutí a ostatní stahování trvá přibližně 3,6 sekundy animace.
 
 #### Šířka linek
 

@@ -3077,7 +3077,8 @@
       sapLeafRedWasStarted = leavesStartedTurningRed;
       // The first leaf's red color transition starts the root-to-crown retraction.
       const target = ecology.activity > 0.0001 && !sapLeafRedRetractionActive ? 0 : 1;
-      const step = delta / 3.6;
+      const nightRetraction = target === 1 && sunElevationDeg <= 0;
+      const step = delta / (nightRetraction ? 1.2 : 3.6);
       sapFlowRetraction += THREE.MathUtils.clamp(target - sapFlowRetraction, -step, step);
       const revealingFromBottom = target === 0;
       sapUniforms.uFlowRevealBottom.value = revealingFromBottom ? 1 : 0;
