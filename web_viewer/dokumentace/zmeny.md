@@ -2,6 +2,9 @@
 history:
   - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
     date: 2026-11-01
+    change: Odstraněn vliv skrytého detailu na výšku řádků oken.
+  - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
+    date: 2026-11-01
     change: Sjednoceny společné části oken a datové varianty jejich vzhledu.
   - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
     date: 2026-11-01
@@ -12,9 +15,6 @@ history:
   - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
     date: 2026-10-31
     change: Zdokumentována replikovatelnost, rozestupy a prostor ovládání oken.
-  - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
-    date: 2026-10-31
-    change: Zvětšeny svislé rozestupy oken Transpirace.
 
 ---
 
@@ -25,6 +25,13 @@ history:
 ## Rozpracováno
 
 ## Implementováno
+
+#### Z044 — Kompaktní zavřené okno
+
+- Zadání: roztažené řádky okna Teplota.
+- Výsledek: skrytý detail se neúčastní výpočtu výšky řádků společné komponenty; nadpis, hodnota a vzorec nejsou roztahovány dlouhým skrytým textem.
+- Stav: Implementováno.
+- Ověření: kontrola CSS a dokumentace; finální vizuální kontrola uživatelem.
 
 #### Z043 — Společné části komponenty okna
 
