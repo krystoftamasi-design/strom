@@ -82,9 +82,11 @@ body.scene-night .tree-overlay { --ui-ink: #f0f2e9; }
 .tree-overlay.ui-test-black-window-titles .element-ui-okno > header > :is(h2,h3) { color: var(--ui-ink); }
 .tree-overlay .element-ui-okno .annotation-reveal,
 .tree-overlay .element-ui-okno.collapsed .annotation-reveal {
-  position: absolute; left: calc(50% + 30px); right: 0; top: 4px; bottom: 0;
+  position: relative; left: auto; right: auto; top: auto; bottom: auto;
+  grid-column: 1 / -1; grid-row: 4; margin-top: 8px;
+  min-height: 0; max-height: 55px; overflow: auto;
 }
-.tree-overlay .element-ui-okno[data-window-id="fotosynteza"] .annotation-reveal { left: calc(58% + 25px); top: 4px; }
+.tree-overlay .element-ui-okno[data-window-id="fotosynteza"] .annotation-reveal { left: auto; top: auto; max-height: 70px; }
 .tree-overlay .element-ui-okno .annotation-reveal-inner { height: 100%; overflow: auto; }
 .tree-overlay .element-ui-okno .annotation-body { padding: 0; max-height: 100%; }
 .tree-overlay .element-ui-okno .annotation-body p,
