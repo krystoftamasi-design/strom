@@ -2,6 +2,9 @@
 history:
   - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
     date: 2026-10-31
+    change: Zapsán úplný šestikrokový pracovní postup včetně evidence po finální kontrole uživatelem.
+  - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
+    date: 2026-10-31
     change: Zavedena stručná evidence i drobných vizuálních úprav a společný commit kódu s evidencí.
   - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
     date: 2026-10-31
@@ -12,9 +15,6 @@ history:
   - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
     date: 2026-10-31
     change: Vyjmuto drobné vizuální ladění z povinné aktualizace obsahové dokumentace a evidence změn.
-  - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
-    date: 2026-10-31
-    change: Doplněn jednoduchý postup ručního a automatického spuštění webu v Chromu.
 ---
 
 # Prohlížeč a kontrola
@@ -110,6 +110,15 @@ Soubory jsou v `web_viewer/dokumentace`.
 - V závěru uváděj jen provedené úpravy a kontroly doložené diffem a výsledky nástrojů; vynechané nebo zablokované kroky pojmenuj.
 - Uveď skutečné ověření nebo „finální kontrola uživatelem“; neevidované neznamená hotové.
 - Zachovej historii změn.
+
+## Pracovní postup
+
+1. **Zadání:** přečti související definice a evidenci, najdi odpovídající kód a rozliš vizuální ladění od změny funkce.
+2. **Úprava:** proveď zadání; související pokusy při ladění ber jako jednu rozpracovanou logickou změnu, dokud není výsledná úprava připravená k předání.
+3. **Průběžné kontroly:** zkontroluj diff, správnost zápisu, odkazy a shodu s definicemi; podle změny proveď vhodné testy. Kontrolu syntaxe nevydávej za vizuální nebo funkční ověření.
+4. **Evidence výsledku:** do `zmeny.md` zapiš konečný výsledek, stav a skutečné ověření. Přidej jednu YAML položku za logickou změnu každého upraveného dokumentu. Podrobné definice uprav jen tam, kde by výsledku odporovaly.
+5. **Společný commit:** kód a odpovídající evidenci ulož společně po dokončení logické změny; jednotlivé pokusy necommituj. Commit potvrzuje uloženou implementaci, nikoli schválení vzhledu uživatelem.
+6. **Finální kontrola uživatelem:** po předání ponech změnu jako „Implementováno“. Po výslovném potvrzení správnosti výsledku uživatelem ji přesuň do „Ověřeno“, zapiš rozsah potvrzení a aktualizaci evidence ulož dalším commitem. Po požadavku na opravu zopakuj úpravu, kontroly, evidenci a commit; dřívější ověření nepovažuj za ověření opravené verze.
 
 # Commity
 

@@ -2,6 +2,9 @@
 history:
   - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
     date: 2026-10-31
+    change: Navázána evidence na pracovní postup a upřesněn zápis finálního ověření uživatelem.
+  - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
+    date: 2026-10-31
     change: Doplněna evidence drobného vizuálního ladění po dokončených logických změnách.
   - thread_id: 01a192c9-24b4-7642-a56f-53abd8bf4304
     date: 2026-10-31
@@ -12,9 +15,6 @@ history:
   - thread_id: 01a192c9-24b4-7642-a56f-53abd8bf4304
     date: 2026-10-31
     change: Upraveno zvýraznění vody a glukózy na pulzující zesílení bez zesvětlení.
-  - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
-    date: 2026-10-31
-    change: Sjednoceny stavy propojení tagy a zvýraznění vody s kódem a zapsány provedené kontroly.
 ---
 
 # Změny
@@ -71,12 +71,13 @@ history:
 
 ## Pravidla evidence
 
-- Postup a význam stavů určuje [AGENTS.md](../../AGENTS.md#změny).
+- Postup dokončení určuje [Pracovní postup](../../AGENTS.md#pracovní-postup), význam stavů [Změny](../../AGENTS.md#změny).
 - Každá změna má stálé ID, odkaz na zadání, stav a výsledek ověření.
 - Eviduj i drobné vizuální ladění celého webu; související pokusy sluč do jedné dokončené logické změny.
 - U drobných úprav stačí stručný výsledný popis a skutečné ověření; podrobné definice nepřepisuj, pokud se jejich význam nemění.
 - Za logickou změnu přidej jeden záznam YAML historie s ověřeným `thread_id`; evidenci commituj společně s příslušným kódem.
 - Při změně stavu přesuň záznam do příslušné části.
+- Před finální kontrolou ponech dokončenou implementaci ve stavu „Implementováno“. Po potvrzení uživatelem zapiš rozsah ověření, přesuň záznam do „Ověřeno“ a evidenci ulož samostatným commitem.
 - Neevidované části webu nejsou tímto dokumentem ověřené.
 
 [Zpět na obsah](architektura_obsahu.md)
