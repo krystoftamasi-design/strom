@@ -2,6 +2,9 @@
 history:
   - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
     date: 2026-10-31
+    change: Vrácena viditelná tlačítka +/− do oken Transpirace.
+  - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
+    date: 2026-10-31
     change: Sjednocen vzhled a definice oken Transpirace podle Fotosyntézy.
   - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
     date: 2026-10-31
@@ -12,9 +15,6 @@ history:
   - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
     date: 2026-10-31
     change: Zpřehledněna Transpirace podle poznatků z uživatelského testu.
-  - thread_id: 01a192c9-24b4-7642-a56f-53abd8bf4304
-    date: 2026-10-31
-    change: Roztříděna dokumentace a opraveny cesty podle účelu souborů.
 
 ---
 
@@ -25,6 +25,13 @@ history:
 ## Rozpracováno
 
 ## Implementováno
+
+#### Z037 — Viditelné přepínače Transpirace
+
+- Zadání: tlačítko + vedle nadpisů oken Transpirace.
+- Výsledek: stávající přepínače detailů jsou viditelné jako +/−; rozložení a obsah oken zachovány.
+- Stav: Implementováno.
+- Ověření: validační test oken a kontrola připravené dokumentace; finální vizuální kontrola uživatelem.
 
 #### Z036 — Okna Transpirace podle šablony Fotosyntézy
 

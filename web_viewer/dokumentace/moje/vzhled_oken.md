@@ -2,6 +2,9 @@
 history:
   - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
     date: 2026-10-31
+    change: Vrácena viditelná tlačítka +/− do oken Transpirace.
+  - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
+    date: 2026-10-31
     change: Sjednocen vzhled oken Transpirace se společnou šablonou Fotosyntézy.
   - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
     date: 2026-10-31
@@ -12,9 +15,6 @@ history:
   - thread_id: 01a192c9-24b4-7642-a56f-53abd8bf4304
     date: 2026-10-31
     change: Roztříděna dokumentace a opraveny cesty podle účelu souborů.
-  - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
-    date: 2026-10-31
-    change: Sjednocena struktura Transpirace, její okna a elementy podle vzoru Fotosyntézy.
 
 ---
 
@@ -51,7 +51,7 @@ history:
 - Tah Vody se roztahuje podle výšky řádků nadpisu, hodnoty a vzorce místo procentní výšky bloku.
 - Do šířky 700 px zůstávají dva pevné sloupce; detaily mají místo pod nadpisem s vlastním posuvem a přehled vstupů je skrytý.
 
-- Transpirace přebírá ovládací plochu nad nadpisem z Fotosyntézy. Otevření detailu nemění sílu barevného tahu; samostatná shrnutí a stavové nápisy nejsou součástí okna.
+- Transpirace má vedle nadpisu viditelné kruhové tlačítko +/− pro otevření a zavření detailu. Otevření detailu nemění sílu barevného tahu; samostatná shrnutí a stavové nápisy nejsou součástí okna.
 - Vlevo nad hlavním oknem je vysvětlení děje a svislé schéma s vodou stoupající od kořenů k listům; nad pravými okny je označení témat a krátká instrukce.
 
 ### Písmo
