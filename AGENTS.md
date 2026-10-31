@@ -2,6 +2,9 @@
 history:
   - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
     date: 2026-10-31
+    change: Zavedeno opakované čtení aktuálních pravidel před úkolem, před commitem a při souběžných změnách.
+  - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
+    date: 2026-10-31
     change: Upraven bod 6 na přijetí výsledku bez výhrady a odděleno přijetí od skutečného ověření.
   - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
     date: 2026-10-31
@@ -12,10 +15,13 @@ history:
   - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
     date: 2026-10-31
     change: Upřesněno dokončení implementace podle dokumentace, doložení výsledků a řešení oprávnění ke commitu.
-  - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
-    date: 2026-10-31
-    change: Zobecněna výjimka z dokumentování drobného vizuálního ladění na všechny části webu.
 ---
+
+# Aktuálnost pravidel
+
+- Před každým novým úkolem včetně navazující drobné úpravy znovu přečti celý aktuální `AGENTS.md` z disku; nespoléhej na pravidla zapamatovaná ze začátku chatu.
+- Znovu jej načti před každým commitem a ověř proti němu připravený diff, evidenci a YAML historii.
+- Pokud uživatel oznámí změnu pravidel nebo zjistíš souběžné úpravy jiného chatu, načti aktuální pravidla a dotčené dokumenty před pokračováním v úpravách.
 
 # Prohlížeč a kontrola
 
@@ -113,7 +119,7 @@ Soubory jsou v `web_viewer/dokumentace`.
 
 ## Pracovní postup
 
-1. **Zadání:** přečti související definice a evidenci, najdi odpovídající kód a rozliš vizuální ladění od změny funkce.
+1. **Zadání:** znovu načti aktuální `AGENTS.md` podle části „Aktuálnost pravidel“, přečti související definice a evidenci, najdi odpovídající kód a rozliš vizuální ladění od změny funkce.
 2. **Úprava:** proveď zadání; související pokusy při ladění ber jako jednu rozpracovanou logickou změnu, dokud není výsledná úprava připravená k předání.
 3. **Průběžné kontroly:** zkontroluj diff, správnost zápisu, odkazy a shodu s definicemi; podle změny proveď vhodné testy. Kontrolu syntaxe nevydávej za vizuální nebo funkční ověření.
 4. **Evidence výsledku:** do `zmeny.md` zapiš konečný výsledek, stav a skutečné ověření. Přidej jednu YAML položku za logickou změnu každého upraveného dokumentu. Podrobné definice uprav jen tam, kde by výsledku odporovaly.
@@ -123,7 +129,7 @@ Soubory jsou v `web_viewer/dokumentace`.
 # Commity
 
 - Po každé dokončené logické změně vytvoř lokální commit s krátkým popisem.
-- Před commitem zkontroluj diff a zahrň jen změny daného úkolu; cizí úpravy vynech.
+- Před commitem znovu přečti aktuální `AGENTS.md`, zkontroluj diff a zahrň jen změny daného úkolu; cizí úpravy vynech.
 - Rozpracované kroky necommituj jednotlivě; commit neznamená ověření funkčnosti.
 - Při chybě oprávnění k zápisu do `.git` použij dostupný schvalovací postup pro tentýž lokální commit; neměň oprávnění ani nemaž zámky jako náhradu. Pokud schválení není dostupné nebo je zamítnuté, oznam konkrétní blokaci.
 - Úspěšný commit potvrď výsledkem Gitu a jeho hashem; samotný pokus není vytvořený commit.
