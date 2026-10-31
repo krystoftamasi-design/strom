@@ -2,6 +2,9 @@
 history:
   - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
     date: 2026-10-31
+    change: Doplněn jednoduchý postup ručního a automatického spuštění webu v Chromu.
+  - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
+    date: 2026-10-31
     change: Odstraněna obecná struktura nadpisů a upřesněna historie, výjimka pro tagy a rozsah kontrol.
   - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
     date: 2026-10-31
@@ -12,9 +15,6 @@ history:
   - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
     date: 2026-10-31
     change: Doplněno povinné čtení a ukládání pravidel struktury na konci dokumentů.
-  - thread_id: 01a191dc-21ba-7b11-9e58-687e0a2cfbd7
-    date: 2026-10-31
-    change: Doplněn stručný princip YAGNI pro vývoj podle aktuálních potřeb.
 ---
 
 # Prohlížeč a kontrola
@@ -30,6 +30,15 @@ history:
 - Nepřidávej funkce, abstrakce ani optimalizace pro hypotetické budoucí potřeby.
 - Vol nejjednodušší řešení, které splňuje požadavky a zůstává srozumitelné a udržovatelné.
 - Řešení rozšiřuj postupně podle skutečných potřeb a zpětné vazby; výkon optimalizuj na základě měření.
+
+# Spuštění webu
+
+- Nejjednodušší ruční spuštění: z kořene projektu spusť `spustit_strom_web.bat`; `web_viewer/spustit_web_viewer.bat` volá stejný spouštěč.
+- Stránku otevírej v Google Chrome na `http://localhost:8080/web_viewer/index.html`.
+- Před spuštěním ověř, zda zde už běží tento projekt; existující server znovu použij.
+- Při automatickém spuštění spusť z kořene projektu `python -m http.server 8080 --bind 127.0.0.1` na pozadí se skrytým oknem a URL otevři v Chromu.
+- Server musí obsluhovat kořen projektu, aby fungovaly i podklady mimo `web_viewer`; stránku neotevírej přes `file://`.
+- Je-li port obsazený jinou službou, nezastavuj ji; použij volný port a uprav URL.
 
 # Struktura souborů
 
