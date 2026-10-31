@@ -1,5 +1,8 @@
 ---
 history:
+  - thread_id: 01a192c9-24b4-7642-a56f-53abd8bf4304
+    date: 2026-10-31
+    change: Roztříděna dokumentace a opraveny cesty podle účelu souborů.
   - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
     date: 2026-10-31
     change: Vymezeny tři prioritní problémy porozumění.
@@ -12,7 +15,6 @@ history:
   - thread_id: d4bd5380-b7a9-4109-9dcd-32f5819e4b02
     date: 2026-10-31
     change: Definován scénář samostudia, metrika porozumění fotosyntéze do jedné minuty a scénář testu s pěti uživateli.
-
 ---
 
 # Produktová strategie
@@ -46,7 +48,7 @@ Podle českých didaktických výzkumů na ZŠ a SŠ (např. *Brčáková 2022*,
 
 ## Metrika úspěchu
 
-- Cíl porozumění (Time-to-Value ≤ 60 s): po 1 minutě volného prozkoumání kapitoly [Fotosyntéza](architektura_obsahu.md#fotosyntéza) student bez nápovědy vyjmenuje klíčové prvky děje (světlo, voda, CO₂, O₂, cukry) a správně vysvětlí alespoň jednu přímou souvislost mezi nimi (např. že z vody a CO₂ za světla vznikají cukry a uvolňuje se O₂, nebo že cévní linka vede vodu/cukry mezi kořeny a korunou).
+- Cíl porozumění (Time-to-Value ≤ 60 s): po 1 minutě volného prozkoumání kapitoly [Fotosyntéza](../architektura_obsahu.md#fotosyntéza) student bez nápovědy vyjmenuje klíčové prvky děje (světlo, voda, CO₂, O₂, cukry) a správně vysvětlí alespoň jednu přímou souvislost mezi nimi (např. že z vody a CO₂ za světla vznikají cukry a uvolňuje se O₂, nebo že cévní linka vede vodu/cukry mezi kořeny a korunou).
 - Práh úspěchu: alespoň 4 z 5 testovaných studentů (80 %) splní úkol do 60 sekund.
 
 ## Rychlý test (5 uživatelů)
@@ -68,7 +70,7 @@ Podle českých didaktických výzkumů na ZŠ a SŠ (např. *Brčáková 2022*,
 - Propojení okna a elementu definuj společným tagem a konkrétní reakcí. Barva sama vazbu nezakládá; několik oken se stejným tagem musí spolupracovat.
 - Rozděl dokumentaci podle účelu: rozcestník, obsah oken, vzhled, ovládání a elementy. Každou definici napiš jednou, ostatní místa na ni odkazují.
 - Implementuj pomocí společných komponent vzoru, odstraň překonané souběžné bloky a ověř zachování výpočtů, jednotek a podstatných informací.
-- Proveď průběžné kontroly, zapiš skutečné ověření a ulož společný commit podle [Pracovního postupu](../../AGENTS.md#pracovní-postup). Vizuální test a test porozumění nezaměňuj za kontrolu syntaxe.
+- Proveď průběžné kontroly, zapiš skutečné ověření a ulož společný commit podle [Pracovního postupu](../../../AGENTS.md#pracovní-postup). Vizuální test a test porozumění nezaměňuj za kontrolu syntaxe.
 
 ## Uplatnění v Transpiraci
 

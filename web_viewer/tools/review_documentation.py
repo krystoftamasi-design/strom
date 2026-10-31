@@ -123,8 +123,9 @@ Nic neupravuj, necommituj, nespoustej prohlizec ani externi MCP akce. Vysledek v
 Precti aktualni AGENTS.md a vyjimku tohoto zadani respektuj: pouze revize, zadne zmeny ani evidence v dokumentech.
 Posuzuj presny commit {head}, rozsah {span}. Pro obsah souboru pouzivej git show {head}:cesta,
 ne rozpracovane soubory jinych chatu. Zmeny prozkoumej pres git log a git diff pro tento rozsah.
-Vzdy projdi vsechny hlavni obsahove definice pres architektura_obsahu.md, okna.md, vzhled_oken.md,
-texty.md, prvky.md a elementy.md, nejen zmenene soubory. Dokumentace je zdroj pozadavku;
+Vzdy projdi web_viewer/dokumentace/architektura_obsahu.md a hlavni definice ve slozce
+web_viewer/dokumentace/moje: okna.md, vzhled_oken.md, texty.md, prvky.md a elementy.md,
+nejen zmenene soubory. Dokumentace je zdroj pozadavku;
 nesoulad s webem hlas jako problem implementace, dokumentaci sam neupravuj.
 V zaverecne odpovedi vypis POUZE DOLOZENE NESHODY. Nevypisuj tabulky shod,
 neoverene oblasti, podezreni, popis postupu ani seznam uspesnych kontrol.

@@ -1,5 +1,8 @@
 ---
 history:
+  - thread_id: 01a192c9-24b4-7642-a56f-53abd8bf4304
+    date: 2026-10-31
+    change: Roztříděna dokumentace a opraveny cesty podle účelu souborů.
   - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
     date: 2026-10-31
     change: Sjednocena struktura Transpirace, její okna a elementy podle vzoru Fotosyntézy.
@@ -12,10 +15,6 @@ history:
   - thread_id: 01a192c9-24b4-7642-a56f-53abd8bf4304
     date: 2026-10-31
     change: Sjednocena pomalejší animace vody a glukózy s reakcí na modelový čas.
-  - thread_id: 01a192c9-24b4-7642-a56f-53abd8bf4304
-    date: 2026-10-31
-    change: Nastavena stálá rychlost animace glukózy nezávislá na podmínkách a modelovém čase.
-
 ---
 
 # Elementy
@@ -167,4 +166,4 @@ Definice spojení
 - Další chování elementu.
 ```
 
-[Zpět na obsah](architektura_obsahu.md)
+[Zpět na obsah](../architektura_obsahu.md)

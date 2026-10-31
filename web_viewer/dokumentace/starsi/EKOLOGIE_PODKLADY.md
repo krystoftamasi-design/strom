@@ -1,3 +1,10 @@
+---
+history:
+  - thread_id: 01a192c9-24b4-7642-a56f-53abd8bf4304
+    date: 2026-10-31
+    change: Roztříděna dokumentace a opraveny cesty podle účelu souborů.
+
+---
 # Podklady pro zjednodušenou ekologii buku
 
 Prověřeno 24. 10. 2026 podle výzkumu buku lesního. Jde o posouzení parametrů,
@@ -112,3 +119,24 @@ Podklady:
 - Univerzita Hradec Králové: podzimní barvy buku zahrnují žlutou, červenou
   a tmavě hnědou; červenání proto není samostatný univerzální termín.
   https://zelen-mesta.uhk.cz/buk-lesni-fagus-sylvatica/
+
+## Pravidla struktury
+
+- Zachovej hlavní nadpis `#` a tematické části `##`; podrobnosti mají úroveň `###` až `####`.
+- Historii udržuj ve frontmatteru a tuto část ponechávej na konci.
+
+```markdown
+# Název dokumentu
+
+## Název tématu
+
+- Informace k tématu.
+
+### Název části
+
+- Podrobnost.
+
+## Pravidla struktury
+
+- Pravidlo členění.
+```

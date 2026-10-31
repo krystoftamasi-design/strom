@@ -2,6 +2,9 @@
 history:
   - thread_id: 01a192c9-24b4-7642-a56f-53abd8bf4304
     date: 2026-10-31
+    change: Roztříděna dokumentace a opraveny cesty podle účelu souborů.
+  - thread_id: 01a192c9-24b4-7642-a56f-53abd8bf4304
+    date: 2026-10-31
     change: Odděleny tři překonané dokumenty do pracovního archivu.
   - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
     date: 2026-10-31
@@ -12,10 +15,6 @@ history:
   - thread_id: d4bd5380-b7a9-4109-9dcd-32f5819e4b02
     date: 2026-10-31
     change: Doplněn soubor produktové strategie a testovací metriky.
-  - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
-    date: 2026-10-31
-    change: Zavedeno porovnání definic se skutečným webem v Chromu po deseti commitech.
-
 ---
 
 # Uspořádání projektu
@@ -41,19 +40,23 @@ Přesun souboru vyžaduje opravu jeho importů a odkazů na assety.
 ## Dokumentace
 
 - `FUNKCE` obsahuje krátké popisy chování pro uživatele.
-- `dokumentace` obsahuje technickou architekturu a odborné podklady.
+- `dokumentace/moje` obsahuje tvoje definice obsahu a vzhledu, strategii a uživatelské testy.
+- `dokumentace/system` obsahuje technickou architekturu oken a postup automatických kontrol pro práci agenta.
+- `dokumentace/starsi` obsahuje původní implementační, časové a ekologické podklady a mapu dřívějšího přesunu souborů; nejde o aktuální definice vzhledu.
+- V kořeni `dokumentace` zůstává rozcestník, tento přehled a evidence `zmeny.md`.
+- Stáří původních podkladů je určené podle obsahu; Git je převzal hromadně 31. 10. 2026 a neprokazuje jejich přesné datum vzniku.
 - `README.md` slouží jako hlavní rozcestník.
 - `old/dokumentace` uchovává překonané podklady mimo aktivní dokumentaci: zálohu rozcestníku před rozdělením, starší technický přehled a původní popis barevného posunu a vody.
 - Archiv je ignorovaný Gitem; původní verzované dokumenty lze obnovit také z historie repozitáře. Relativní odkazy archivních kopií odpovídají jejich původnímu umístění.
 
 Popis každé funkce patří do vlastního souboru.
-Obsah a chování oken jsou v `okna.md`, jejich vzhled v `vzhled_oken.md`.
-Technické podrobnosti o oknech jsou v `architektura_oken.md`.
-Celkovou architekturu popisuje `ARCHITEKTURA_IMPLEMENTACE.md`.
-Produktovou strategii a metriky popisuje [Strategie](strategie.md).
-Prioritní problémy porozumění vymezuje [Problémy k řešení](strategi_problems.md).
-Záznamy uživatelského ověřování jsou v [Testech](tests.md).
-Přehled přesunutých souborů je v `presun_souboru.json`.
+Obsah a chování oken jsou v `moje/okna.md`, jejich vzhled v `moje/vzhled_oken.md`.
+Technické podrobnosti o oknech jsou v `system/architektura_oken.md`.
+Původní architekturu popisuje `starsi/ARCHITEKTURA_IMPLEMENTACE.md`.
+Produktovou strategii a metriky popisuje [Strategie](moje/strategie.md).
+Prioritní problémy porozumění vymezuje [Problémy k řešení](moje/strategi_problems.md).
+Záznamy uživatelského ověřování jsou v [Testech](moje/tests.md).
+Přehled původních přesunů souborů je v `starsi/presun_souboru.json`.
 
 ## Podklady a nástroje
 
@@ -64,7 +67,7 @@ Přehled přesunutých souborů je v `presun_souboru.json`.
 - `tools/review_browser.mjs` získává pozorování kapitol a oken v Google Chromu; snímky a data jsou v `old/browser_review_<hash>`.
 - `old/revize_dokumentace.md` obsahuje poslední pracovní report; stav a logy revize zůstávají v ignorovaném `old`.
 - `testy/test_documentation_check.py` ověřuje kontrolor v dočasných repozitářích.
-- [Kontrola dokumentace](kontrola_dokumentace.md) popisuje instalaci, rozsah a pravidelnou revizi.
+- [Kontrola dokumentace](system/kontrola_dokumentace.md) popisuje instalaci, rozsah a pravidelnou revizi.
 - `testy` obsahuje existující testovací skripty.
 - `nahledy` obsahuje uložené obrázky z dřívějších kontrol.
 - `old` obsahuje staré verze a pracovní výstupy.

@@ -1,3 +1,10 @@
+---
+history:
+  - thread_id: 01a192c9-24b4-7642-a56f-53abd8bf4304
+    date: 2026-10-31
+    change: Roztříděna dokumentace a opraveny cesty podle účelu souborů.
+
+---
 # Čas a období v projektu STROM
 
 Tento soubor popisuje nastavení času, denního cyklu, noci a ročních období ve webovém vieweru.
@@ -65,3 +72,24 @@ const nightSpeed = isNight ? (chapterApp.introduction ? 0.6 : 12) : 1;
 
 Při budoucí změně rychlostí se má aktualizovat také část **Historie změn** v tomto souboru.
 
+
+## Pravidla struktury
+
+- Zachovej hlavní nadpis `#` a tematické části `##`; podrobnosti mají úroveň `###` až `####`.
+- Historii udržuj ve frontmatteru a tuto část ponechávej na konci.
+
+```markdown
+# Název dokumentu
+
+## Název tématu
+
+- Informace k tématu.
+
+### Název části
+
+- Podrobnost.
+
+## Pravidla struktury
+
+- Pravidlo členění.
+```

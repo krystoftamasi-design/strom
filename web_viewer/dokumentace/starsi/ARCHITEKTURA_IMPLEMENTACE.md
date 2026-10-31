@@ -1,3 +1,10 @@
+---
+history:
+  - thread_id: 01a192c9-24b4-7642-a56f-53abd8bf4304
+    date: 2026-10-31
+    change: Roztříděna dokumentace a opraveny cesty podle účelu souborů.
+
+---
 # Architektura ve stávajícím prohlížeči
 
 Vstup zůstává `index.html`. Jeden načtený strom, jeden renderer a jedna animační smyčka. Kapitoly Úvod, Fotosyntéza, Transpirace, Kořeny a Semenace mění obsah a zvýrazněný děj. Informace jsou přichycené k bodům koruny, kmene a kořenů pomocí projekce z 3D scény a spojovacích linek. Delší texty se rozbalují přímo u příslušného místa. Přítok, zásoba, období a nastavení slunce se sdílejí. Technické ovladače zůstávají pod tlačítkem Nastavení; jejich dosavadní profil `strom.settings.v1` se dál načítá a ukládá.
@@ -64,3 +71,24 @@ Výška nad obzorem plynule mění přímé světlo, fotosyntézu a odpar. Pozad
 ## Kontrola
 
 `node web_viewer/testy/test_tree_ecology.mjs` ověřuje bilanci, meze zásoby, sucho a zotavení, noc, zimní potřebu vody, jednotky chlazení a stabilitu mezi snímkovými frekvencemi. Kontrola rozhraní probíhá v Google Chrome. Původní soubory před změnou jsou v `qa_architektura/pred_upravou_20261024`.
+
+## Pravidla struktury
+
+- Zachovej hlavní nadpis `#` a tematické části `##`; podrobnosti mají úroveň `###` až `####`.
+- Historii udržuj ve frontmatteru a tuto část ponechávej na konci.
+
+```markdown
+# Název dokumentu
+
+## Název tématu
+
+- Informace k tématu.
+
+### Název části
+
+- Podrobnost.
+
+## Pravidla struktury
+
+- Pravidlo členění.
+```

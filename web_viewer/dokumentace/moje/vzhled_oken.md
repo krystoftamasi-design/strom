@@ -1,5 +1,8 @@
 ---
 history:
+  - thread_id: 01a192c9-24b4-7642-a56f-53abd8bf4304
+    date: 2026-10-31
+    change: Roztříděna dokumentace a opraveny cesty podle účelu souborů.
   - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
     date: 2026-10-31
     change: Sjednocena struktura Transpirace, její okna a elementy podle vzoru Fotosyntézy.
@@ -12,10 +15,6 @@ history:
   - thread_id: 01a192c9-24b4-7642-a56f-53abd8bf4304
     date: 2026-10-31
     change: Detailní text se při rozkliknutí drží ve vyhrazeném prostoru bez překrytí sousedních oken.
-  - thread_id: 01a192c9-24b4-7642-a56f-53abd8bf4304
-    date: 2026-10-31
-    change: "Opravena délka tahů: běžná okna končí u obsahu, Fotosyntéza používá delší tah kvůli velkému obsahu."
-
 ---
 
 # Vzhled oken
@@ -41,7 +40,7 @@ history:
 
 ### Rozložení
 
-- Podklad: [Untitled.svg](../web_assets/ui_from_af/Untitled.svg), plátno přibližně 2020 × 1143.
+- Podklad: [Untitled.svg](../../web_assets/ui_from_af/Untitled.svg), plátno přibližně 2020 × 1143.
 - Fotosyntéza je vlevo dole; vpravo následují shora O₂, CO₂, Cukry a Voda.
 - Transpirace používá stejné hlavní okno vlevo dole jako Fotosyntéza; vpravo jsou shora Příjem vody, Průtok, Chlazení a Teplota. Každé má jednu hodnotu a vlastní detail ve společných sloupcích.
 - Střed zůstává volný pro strom.
@@ -66,7 +65,7 @@ history:
 - Voda je modrá, kyslík světle modrý a CO₂ červenooranžový.
 - Cukry jsou fialové, listy zelené, kořeny hnědé a teplota růžovočervená.
 
-[Obsah oken](okna.md) · [Obsah](architektura_obsahu.md)
+[Obsah oken](okna.md) · [Obsah](../architektura_obsahu.md)
 
 ## Pravidla struktury
 
@@ -98,7 +97,7 @@ history:
 
 - Barevné pravidlo.
 
-[Související dokument](soubor.md)
+[Související dokument](../soubor.md)
 
 ## Pravidla struktury
 

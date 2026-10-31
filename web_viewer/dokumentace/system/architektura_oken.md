@@ -1,5 +1,8 @@
 ---
 history:
+  - thread_id: 01a192c9-24b4-7642-a56f-53abd8bf4304
+    date: 2026-10-31
+    change: Roztříděna dokumentace a opraveny cesty podle účelu souborů.
   - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
     date: 2026-10-31
     change: Sjednocena struktura Transpirace, její okna a elementy podle vzoru Fotosyntézy.
@@ -12,17 +15,13 @@ history:
   - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
     date: 2026-10-31
     change: Popsáno propojení detailu Cukry se zvýrazněním glukózové linky.
-  - thread_id: 01a18f17-efd7-7a02-8369-186b681bfcc0
-    date: 2026-10-31
-    change: Odděleny odkazy na obsah a samostatný vzhled oken.
-
 ---
 
 # Architektura oken
 
 ## Definice
 
-- Chování a obsah určují [Okna](okna.md), vizuální pravidla [Vzhled oken](vzhled_oken.md).
+- Chování a obsah určují [Okna](../moje/okna.md), vizuální pravidla [Vzhled oken](../moje/vzhled_oken.md).
 - Cesty ke kódu jsou uvedené od složky `web_viewer`.
 
 ### Obsah
@@ -48,7 +47,7 @@ history:
 - Změna detailu přepíná zvýraznění přímo v obsluze události; aktivní kapitola omezuje zvýraznění na viditelná okna.
 - `index.html` mapuje tagy `water` a `sugar` na samostatné uniformy `uSelected` materiálů linek; vykreslení obsluhuje `vykreslovani/water_brush.js`.
 - Zvýraznění se agreguje podle tagu pouze z oken aktivní kapitoly; více otevřených oken se stejným tagem se nepřepisuje. Voda reaguje také v Transpiraci, glukóza zůstává u Fotosyntézy.
-- Chování určují [Voda linka](elementy.md#voda-linka) a [Glukóza linka](elementy.md#glukóza-linka).
+- Chování určují [Voda linka](../moje/elementy.md#voda-linka) a [Glukóza linka](../moje/elementy.md#glukóza-linka).
 
 ## Hodnoty
 
@@ -80,7 +79,7 @@ history:
 - Nové okno potřebuje záznam v kapitole a pevnou pozici v CSS.
 - Nová veličina potřebuje skutečný zdroj hodnoty a záznam v převodníku.
 
-[Stav implementace](zmeny.md#z003--ui-podle-svg) · [Obsah](architektura_obsahu.md)
+[Stav implementace](../zmeny.md#z003--ui-podle-svg) · [Obsah](../architektura_obsahu.md)
 
 ## Pravidla struktury
 
@@ -95,5 +94,5 @@ history:
 ### Název části
 
 - `cesta/modul.js` zajišťuje danou odpovědnost.
-- Chování určuje [Definice](soubor.md#kotva).
+- Chování určuje [Definice](../soubor.md#kotva).
 ```

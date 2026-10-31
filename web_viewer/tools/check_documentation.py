@@ -16,8 +16,8 @@ except ImportError:
 DOCS = 'web_viewer/dokumentace/'
 EVIDENCE = DOCS + 'zmeny.md'
 MAIN = ['AGENTS.md'] + [DOCS + name + '.md' for name in (
-    'architektura_obsahu', 'okna', 'vzhled_oken', 'texty', 'prvky',
-    'elementy', 'architektura_oken', 'struktura_projektu', 'zmeny', 'kontrola_dokumentace')]
+    'architektura_obsahu', 'moje/okna', 'moje/vzhled_oken', 'moje/texty', 'moje/prvky',
+    'moje/elementy', 'system/architektura_oken', 'struktura_projektu', 'zmeny', 'system/kontrola_dokumentace')]
 
 
 class UniqueLoader(yaml.SafeLoader):

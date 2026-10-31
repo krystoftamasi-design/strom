@@ -1,5 +1,8 @@
 ---
 history:
+  - thread_id: 01a192c9-24b4-7642-a56f-53abd8bf4304
+    date: 2026-10-31
+    change: Roztříděna dokumentace a opraveny cesty podle účelu souborů.
   - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
     date: 2026-10-31
     change: Sjednocena struktura Transpirace, její okna a elementy podle vzoru Fotosyntézy.
@@ -12,10 +15,6 @@ history:
   - thread_id: 01a192c9-24b4-7642-a56f-53abd8bf4304
     date: 2026-10-31
     change: Doplněn postup přidělování jedinečných ID změn při souběžné práci.
-  - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
-    date: 2026-10-31
-    change: Změněn výstup revize dokumentace na Markdown.
-
 ---
 
 # Aktuálnost pravidel
@@ -105,6 +104,10 @@ history:
 
 Soubory jsou v `web_viewer/dokumentace`.
 
+- Uživatelské definice a podklady hledej ve složce `moje`; technickou architekturu a automatické kontroly ve složce `system`.
+- Složka `starsi` obsahuje původní podklady; neber je jako platné definice vzhledu. Přesné rozdělení určuje [Struktura projektu](web_viewer/dokumentace/struktura_projektu.md).
+- Rozcestník `architektura_obsahu.md`, přehled `struktura_projektu.md` a evidence `zmeny.md` zůstávají v kořeni dokumentace; názvy níže označují soubory v příslušných složkách.
+
 - `architektura_obsahu.md`: rozcestník; kapitoly → Text, Okna, Vzhled, Ovládací prvky, Elementy; pouze krátké klikací názvy.
 - `texty.md`: samostatné nápisy, písmo, poloha a barva.
 - `okna.md`: chování statických oken, obsah, hodnoty a související elementy.
@@ -143,7 +146,7 @@ Soubory jsou v `web_viewer/dokumentace`.
 
 ## Automatické kontroly
 
-- Před každým commitem spouští Git kontrolu připraveného obsahu podle [Kontroly dokumentace](web_viewer/dokumentace/kontrola_dokumentace.md).
+- Před každým commitem spouští Git kontrolu připraveného obsahu podle [Kontroly dokumentace](web_viewer/dokumentace/system/kontrola_dokumentace.md).
 - Nové formální chyby nebo změnu webu bez připravené evidence oprav před commitem; dřívější nálezy nejsou důkazem správnosti a zůstávají předmětem úplné revize.
 - Revizi po deseti nových commitech spouští lokální `post-commit` hook na pozadí; report je v `web_viewer/old/revize_dokumentace.md`.
 - Dokumentaci považuj při revizi za zdroj požadavků; porovnej ji s pozorováním webu v Chromu a kódem, do reportu vypisuj pouze doložené neshody; neověřenost sama není neshoda.

@@ -1,5 +1,8 @@
 ---
 history:
+  - thread_id: 01a192c9-24b4-7642-a56f-53abd8bf4304
+    date: 2026-10-31
+    change: Roztříděna dokumentace a opraveny cesty podle účelu souborů.
   - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
     date: 2026-10-31
     change: Přesunut záznam uživatelského testu do samostatného tests.md.
@@ -9,7 +12,6 @@ history:
   - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
     date: 2026-10-31
     change: Vymezeny tři prioritní problémy porozumění.
-
 ---
 
 # Problémy k řešení
@@ -35,7 +37,7 @@ history:
 ```markdown
 ## Mýty a porozumění
 
-- **Název mýtu:** cíl. Ověření: „Otázka?“ Viz [Obsah](soubor.md#kotva).
+- **Název mýtu:** cíl. Ověření: „Otázka?“ Viz [Obsah](../soubor.md#kotva).
 - Stav témat: stav řešení.
 
 [Poznatky z testování](tests.md)

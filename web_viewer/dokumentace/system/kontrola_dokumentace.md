@@ -1,5 +1,8 @@
 ---
 history:
+  - thread_id: 01a192c9-24b4-7642-a56f-53abd8bf4304
+    date: 2026-10-31
+    change: Roztříděna dokumentace a opraveny cesty podle účelu souborů.
   - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
     date: 2026-10-31
     change: Omezen obsah reportu revize na doložené neshody.
@@ -12,10 +15,6 @@ history:
   - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
     date: 2026-10-31
     change: Změněn výstup revize dokumentace na Markdown.
-  - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
-    date: 2026-10-31
-    change: Nahrazen hodinový plán spuštěním revize z post-commit hooku a popsáno umístění reportu.
-
 ---
 
 # Kontrola dokumentace
@@ -71,7 +70,7 @@ history:
 ## Pravidla struktury
 
 - Oblasti kontroly mají nadpis `##`, postupy a omezení popisuj stručnými odrážkami.
-- Příkazy uváděj od kořene projektu; pravidla pracovního postupu odkazuj na [AGENTS.md](../../AGENTS.md).
+- Příkazy uváděj od kořene projektu; pravidla pracovního postupu odkazuj na [AGENTS.md](../../../AGENTS.md).
 - Tuto část a obecnou šablonu ponechávej na konci.
 
 ```markdown

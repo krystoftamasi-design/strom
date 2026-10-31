@@ -1,5 +1,8 @@
 ---
 history:
+  - thread_id: 01a192c9-24b4-7642-a56f-53abd8bf4304
+    date: 2026-10-31
+    change: Roztříděna dokumentace a opraveny cesty podle účelu souborů.
   - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
     date: 2026-10-31
     change: Sjednocena struktura Transpirace, její okna a elementy podle vzoru Fotosyntézy.
@@ -12,10 +15,6 @@ history:
   - thread_id: 01a192cd-90b3-7e21-8050-fdf9990fe825
     date: 2026-10-31
     change: Doplněny výukové texty do oken Fotosyntéza, Cukry, Voda, CO₂ a O₂.
-  - thread_id: 01a192cd-90b3-7e21-8050-fdf9990fe825
-    date: 2026-10-31
-    change: Sjednoceno zobrazení hodnot O₂, CO₂, Vody a Cukrů na jedno desetinné místo.
-
 ---
 
 # Okna
@@ -140,9 +139,9 @@ history:
 
 - [Vzhled oken](vzhled_oken.md)
 
-- [Technická architektura](architektura_oken.md)
-- [Stav změn](zmeny.md)
-- [Obsah](architektura_obsahu.md)
+- [Technická architektura](../system/architektura_oken.md)
+- [Stav změn](../zmeny.md)
+- [Obsah](../architektura_obsahu.md)
 
 ## Pravidla struktury
 

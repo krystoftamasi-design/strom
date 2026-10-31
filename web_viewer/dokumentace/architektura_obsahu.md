@@ -1,5 +1,8 @@
 ---
 history:
+  - thread_id: 01a192c9-24b4-7642-a56f-53abd8bf4304
+    date: 2026-10-31
+    change: Roztříděna dokumentace a opraveny cesty podle účelu souborů.
   - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
     date: 2026-10-31
     change: Sjednocena struktura Transpirace, její okna a elementy podle vzoru Fotosyntézy.
@@ -12,10 +15,6 @@ history:
   - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
     date: 2026-10-31
     change: Upravena struktura podle ukázky Fotosyntézy s tučnými názvy kapitol a úplnou šablonou.
-  - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
-    date: 2026-10-31
-    change: Sjednocena pravidla struktury na konci rozcestníku a doplněna šablona kapitoly.
-
 ---
 
 # Architektura obsahu
@@ -24,7 +23,7 @@ history:
 
 ### Text
 
-- [Strom](texty.md#strom)
+- [Strom](moje/texty.md#strom)
 
 ### Okna
 
@@ -32,7 +31,7 @@ history:
 
 ### Ovládací prvky
 
-- [Kapitoly](prvky.md#kapitoly)
+- [Kapitoly](moje/prvky.md#kapitoly)
 
 ### Elementy
 
@@ -52,62 +51,62 @@ history:
 
 ### Text
 
-- [Datum](texty.md#datum)
+- [Datum](moje/texty.md#datum)
 
 ### Okna
 
-- [Fotosyntéza](okna.md#fotosyntéza)
-- [O₂](okna.md#o₂)
-- [CO₂](okna.md#co₂)
-- [Cukry](okna.md#cukry)
-- [Voda](okna.md#voda)
+- [Fotosyntéza](moje/okna.md#fotosyntéza)
+- [O₂](moje/okna.md#o₂)
+- [CO₂](moje/okna.md#co₂)
+- [Cukry](moje/okna.md#cukry)
+- [Voda](moje/okna.md#voda)
 
 ### Vzhled
 
-- [Okna](vzhled_oken.md)
+- [Okna](moje/vzhled_oken.md)
 
 ### Ovládací prvky
 
-- [Manager](prvky.md#manager)
-- [Čas](prvky.md#ovládání-času)
-- [Kapitoly](prvky.md#kapitoly)
+- [Manager](moje/prvky.md#manager)
+- [Čas](moje/prvky.md#ovládání-času)
+- [Kapitoly](moje/prvky.md#kapitoly)
 
 ### Elementy
 
-- [Voda linka](elementy.md#voda-linka)
-- [Glukóza linka](elementy.md#glukóza-linka)
-- [O₂ částice](elementy.md#o₂)
-- [CO₂ částice](elementy.md#co₂)
-- [Fotony](elementy.md#fotony)
+- [Voda linka](moje/elementy.md#voda-linka)
+- [Glukóza linka](moje/elementy.md#glukóza-linka)
+- [O₂ částice](moje/elementy.md#o₂)
+- [CO₂ částice](moje/elementy.md#co₂)
+- [Fotony](moje/elementy.md#fotony)
 
 # **TRANSPIRACE**
 
 ### Text
 
-- [Datum](texty.md#datum)
+- [Datum](moje/texty.md#datum)
 
 ### Okna
 
-- [Transpirace](okna.md#transpirace)
-- [Příjem vody](okna.md#příjem-vody)
-- [Průtok](okna.md#průtok)
-- [Chlazení](okna.md#chlazení)
-- [Teplota](okna.md#teplota)
+- [Transpirace](moje/okna.md#transpirace)
+- [Příjem vody](moje/okna.md#příjem-vody)
+- [Průtok](moje/okna.md#průtok)
+- [Chlazení](moje/okna.md#chlazení)
+- [Teplota](moje/okna.md#teplota)
 
 ### Vzhled
 
-- [Okna](vzhled_oken.md)
+- [Okna](moje/vzhled_oken.md)
 
 ### Ovládací prvky
 
-- [Manager](prvky.md#manager)
-- [Čas](prvky.md#ovládání-času)
-- [Kapitoly](prvky.md#kapitoly)
+- [Manager](moje/prvky.md#manager)
+- [Čas](moje/prvky.md#ovládání-času)
+- [Kapitoly](moje/prvky.md#kapitoly)
 
 ### Elementy
 
-- [Voda linka](elementy.md#voda-linka)
-- [Cesta vody](elementy.md#cesta-vody)
+- [Voda linka](moje/elementy.md#voda-linka)
+- [Cesta vody](moje/elementy.md#cesta-vody)
 
 # **SEMENACE**
 
@@ -145,8 +144,8 @@ history:
 - Uváděj jen krátké klikací názvy nebo značky; u linek přidej slovo „linka“.
 - Podrobnosti patří do `texty.md`, `okna.md`, `vzhled_oken.md`, `prvky.md` a `elementy.md`.
 - Každý prvek definuj pouze jednou; kapitoly na něj odkazují.
-- Konkrétní definice mají úroveň `####`; elementy používají `###` podle [pravidel struktury](elementy.md#pravidla-struktury).
-- Chování oken určuje společná definice [Statická okna](okna.md#statická-okna).
+- Konkrétní definice mají úroveň `####`; elementy používají `###` podle [pravidel struktury](moje/elementy.md#pravidla-struktury).
+- Chování oken určuje společná definice [Statická okna](moje/vzhled_oken.md#statická-okna).
 - Elementy jsou konkrétní prvky děje, například vodní a glukózová linka; ne obecné části scény jako strom, listy nebo slunce.
 - U oken odkazuj na související element; body připojení a spojnice ke stromu se nepoužívají.
 - Obecné chování a vzhled sdílej odkazem.
@@ -158,21 +157,21 @@ history:
 
 ### Text
 
-- [Název textu](texty.md#kotva)
+- [Název textu](moje/texty.md#kotva)
 
 ### Okna
 
-- [Název okna](okna.md#kotva)
+- [Název okna](moje/okna.md#kotva)
 
 ### Vzhled
 
-- [Název vzhledu](vzhled_oken.md#kotva)
+- [Název vzhledu](moje/vzhled_oken.md#kotva)
 
 ### Ovládací prvky
 
-- [Název prvku](prvky.md#kotva)
+- [Název prvku](moje/prvky.md#kotva)
 
 ### Elementy
 
-- [Název elementu](elementy.md#kotva)
+- [Název elementu](moje/elementy.md#kotva)
 ```
