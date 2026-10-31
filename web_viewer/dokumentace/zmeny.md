@@ -1,5 +1,8 @@
 ---
 history:
+  - thread_id: 01a19445-cca8-7da2-a034-14d5bea3af17
+    date: 2026-11-01
+    change: Zjednodušen průvodce Transpirací na jedinou větu o tahu vody odparem v listech.
   - thread_id: 01a19440-f196-71c2-b537-4d16ada46139
     date: 2026-11-01
     change: Obnovena verze importu částicového modulu po přidání zvýraznění plynů.
@@ -12,9 +15,6 @@ history:
   - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
     date: 2026-11-01
     change: Odstraněn doplňkový řádek s porovnáním teplot v detailu.
-  - thread_id: 01a19439-ee7f-71f1-af82-4e2ff1146c5f
-    date: 2026-11-01
-    change: Zjednodušen dokument vzhledu oken bez změny webu.
 
 ---
 
@@ -25,6 +25,13 @@ history:
 ## Rozpracováno
 
 ## Implementováno
+
+#### Z053 — Jednoduchý text průvodce Transpirací
+
+- Zadání: [Co žáci nechápou a proč nestačí učebnice či video](moje/strategie.md#co-žáci-nechápou-a-proč-nestačí-učebnice-či-video).
+- Výsledek: průvodce Transpirací zobrazuje pouze větu „Odpar v listech táhne vodu vzhůru.“; doplňkové popisky, kroky, legendu a nápovědu jsem odstranil.
+- Stav: Implementováno.
+- Ověření: kontrola diffu, syntaxe JavaScriptu, kontrola YAML historie a předběžná kontrola vybraných souborů; finální vizuální kontrola uživatelem.
 
 #### Z052 — Obnovení importu částicového modulu
 

@@ -225,32 +225,10 @@ export function createTreeAnnotations({ shell, model, createSeasonControl, setEl
       const guide = document.createElement('section');
       guide.className = 'transpiration-guide';
       guide.setAttribute('aria-label', 'Jak funguje transpirace');
-      const eyebrow = document.createElement('p');
-      eyebrow.className = 'transpiration-eyebrow';
-      eyebrow.textContent = pruvodceTranspiraci.kapitola;
       const title = document.createElement('h2');
       title.textContent = pruvodceTranspiraci.nadpis;
-      const description = document.createElement('p');
-      description.textContent = pruvodceTranspiraci.vysvetleni;
-      const route = document.createElement('ol');
-      route.className = 'transpiration-steps';
-      for (const text of pruvodceTranspiraci.cesta) {
-        const step = document.createElement('li');
-        step.textContent = text;
-        route.append(step);
-      }
-      const legend = document.createElement('p');
-      legend.className = 'transpiration-legend';
-      legend.textContent = pruvodceTranspiraci.legenda;
-      guide.append(eyebrow, title, description, route, legend);
-      const prompt = document.createElement('section');
-      prompt.className = 'transpiration-prompt';
-      const label = document.createElement('h2');
-      label.textContent = pruvodceTranspiraci.temata;
-      const hint = document.createElement('p');
-      hint.textContent = pruvodceTranspiraci.ovladani;
-      prompt.append(label, hint);
-      article.append(guide, prompt);
+      guide.append(title);
+      article.append(guide);
     }
     const heading = article.querySelector('h2');
     const paragraphs = [...article.querySelectorAll(':scope > p')];

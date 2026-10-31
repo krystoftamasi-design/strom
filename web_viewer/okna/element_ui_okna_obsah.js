@@ -84,11 +84,5 @@ export const oknaPodleKapitol = {
 };
 
 export const pruvodceTranspiraci = {
-  kapitola: 'Právě prohlížíš · Transpirace',
   nadpis: 'Odpar v listech táhne vodu vzhůru.',
-  vysvetleni: 'Kořeny vodu přijímají. Xylém ji vede do listů, kde se odpařuje a spotřebovává teplo.',
-  cesta: ['Kořeny · příjem', 'Kmen · voda vzhůru', 'Listy · odpar a chlazení'],
-  legenda: 'Modrá linka ve stromu = cesta vody',
-  temata: 'Prozkoumej prvky transpirace',
-  ovladani: 'Klikni na nadpis okna. Otevřeš vysvětlení; vodní témata zvýrazní modrou linku.',
 };

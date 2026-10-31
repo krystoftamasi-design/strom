@@ -1,5 +1,8 @@
 ---
 history:
+  - thread_id: 01a19445-cca8-7da2-a034-14d5bea3af17
+    date: 2026-11-01
+    change: Zjednodušen průvodce Transpirací na jedinou větu o tahu vody odparem v listech.
   - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
     date: 2026-10-31
     change: Upravena instrukce Transpirace pro společné ovládání přes nadpis okna.
@@ -30,11 +33,7 @@ history:
 
 #### Průvodce Transpirací
 
-- Vlevo nad hlavním oknem: „Právě prohlížíš · Transpirace“ a „Odpar v listech táhne vodu vzhůru.“
-- Vysvětlení: „Kořeny vodu přijímají. Xylém ji vede do listů, kde se odpařuje a spotřebovává teplo.“
-- Legenda: „Modrá linka ve stromu = cesta vody“; schéma určuje [Cesta vody](elementy.md#cesta-vody).
-- Nad pravými okny: „Prozkoumej prvky transpirace“ a „Klikni na nadpis okna. Otevřeš vysvětlení; vodní témata zvýrazní modrou linku.“
-- Texty používají společné písmo rozhraní, ve dne jsou tmavé a v noci světlé; modrá legenda zachovává čitelnost v noci.
+- Průvodce obsahuje pouze text „Odpar v listech táhne vodu vzhůru.“.
 
 [Zpět na obsah](../architektura_obsahu.md)
 
