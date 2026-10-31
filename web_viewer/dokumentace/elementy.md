@@ -2,6 +2,9 @@
 history:
   - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
     date: 2026-10-31
+    change: Zobecněna šablona a pravidla spojení pro libovolný definovaný typ reakce.
+  - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
+    date: 2026-10-31
     change: Upřesněno oddělení reakce elementu od ovládání a stavu okna.
   - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
     date: 2026-10-31
@@ -12,9 +15,6 @@ history:
   - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
     date: 2026-10-31
     change: Sjednocena struktura všech elementů a přidána závazná šablona na konec dokumentu.
-  - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
-    date: 2026-10-31
-    change: Upraven zápis tagu a definice spojení vodní linky podle ukázky.
 ---
 
 # Elementy
@@ -69,8 +69,7 @@ Definice spojení
 Definice spojení
 
 - Okno: [O₂](okna.md#o₂).
-- **Zvýraznění**
-- Není definované.
+- Reakce na okno: není definovaná.
 
 **Chování elementu**
 
@@ -82,8 +81,7 @@ Definice spojení
 Definice spojení
 
 - Okno: [CO₂](okna.md#co₂).
-- **Zvýraznění**
-- Není definované.
+- Reakce na okno: není definovaná.
 
 **Chování elementu**
 
@@ -95,8 +93,7 @@ Definice spojení
 Definice spojení
 
 - Okno: nepřiřazené.
-- **Zvýraznění**
-- Není definované.
+- Reakce na okno: není definovaná.
 
 **Chování elementu**
 
@@ -119,7 +116,8 @@ Definice spojení
 - Název elementu má úroveň `###`.
 - Před názvem tagu použij barevnou značku tématu: 🔵 `water`, 🟣 `sugar`, 🔹 `oxygen`, 🔶 `co2`, 🟡 `light`.
 - Používej běžný Markdown bez HTML stylů; značky rozlišují témata, nereprodukují přesné odstíny webu.
-- Pokud tag, okno nebo zvýraznění nejsou určené, výslovně to uveď; vazbu nevymýšlej.
+- Pokud tag, okno nebo reakce nejsou určené, výslovně to uveď; vazbu nevymýšlej.
+- Typ reakce v definici spojení pojmenuj podle zadání; zvýraznění není povinné. Uváděj jen podmínky a reakce, které jsou definované.
 - Společná pravidla, například šířku linek, popisuj samostatně bez šablony elementu.
 
 ```markdown
@@ -129,9 +127,9 @@ Definice spojení
 Definice spojení
 
 - Okno: [Název](okna.md#kotva).
-- **Zvýraznění**
-- Chování při otevření okna.
-- Chování při zavření okna.
+- **Název reakce**
+- Podmínka a odpovídající reakce elementu.
+- Další definovaná podmínka a reakce.
 
 **Chování elementu**
 
