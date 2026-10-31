@@ -1,8 +1,8 @@
 import assert from 'node:assert/strict';
 import { TreeEcology } from '../ekologie/tree_ecology.js';
 import { vzorce, vypocitatVzorec } from '../ekologie/tree_ecology_vzorce.js?v=5';
-import { veliciny, vstupyVzorce, zobrazitHodnotu } from '../okna/element_ui_okna_veliciny.js?v=8';
-import { zkontrolovatOkna } from '../okna/element_ui_okna_kontrola.js?v=static-ui-3';
+import { veliciny, vstupyVzorce, zobrazitHodnotu } from '../okna/element_ui_okna_veliciny.js?v=transpiration-cache-1';
+import { zkontrolovatOkna } from '../okna/element_ui_okna_kontrola.js?v=transpiration-cache-1';
 import { oknaPodleKapitol } from '../okna/element_ui_okna_obsah.js';
 
 const model = new TreeEcology();

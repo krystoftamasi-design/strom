@@ -2,6 +2,9 @@
 history:
   - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
     date: 2026-10-31
+    change: Opraven pád vykreslování při chybějícím výstupu a obnovení modulů po změně oken.
+  - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
+    date: 2026-10-31
     change: Odstraněn Průtok a doplněny vzorce i šablona číselného okna podle Fotosyntézy.
   - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
     date: 2026-10-31
@@ -12,9 +15,6 @@ history:
   - thread_id: 01a192c9-24b4-7642-a56f-53abd8bf4304
     date: 2026-10-31
     change: Archivovány tři překonané dokumenty a upraven rozcestník i přehled struktury.
-  - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
-    date: 2026-10-31
-    change: Přesunut záznam uživatelského testu do samostatného tests.md.
 
 ---
 
@@ -25,6 +25,14 @@ history:
 ## Rozpracováno
 
 ## Implementováno
+
+#### Z035 — Obnovení stromu po změně oken
+
+- Zadání: odstranění zmizení stromu ve všech kapitolách.
+- Výsledek: ošetřen chybějící výstup při aktualizaci hodnot a obnoveny verze navazujících modulů; starší záznamy oken z cache už nepřerušují vykreslování.
+- Stav: Implementováno.
+- Vizuální ověření: strom a živé hodnoty potvrzeny agentem v otevřeném Chromu uživatele.
+- Ověření: před opravou opakovaný pád `out()` u chybějícího `ecoCanopyTemperatureDifference`; po opravě viditelný strom v Úvodu a Transpiraci, živé hodnoty a žádná nová chyba tohoto pádu. Syntaxe a validační test oken prošly.
 
 #### Z034 — Zjednodušení Transpirace a vzorce oken
 

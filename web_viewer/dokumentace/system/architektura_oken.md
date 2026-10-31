@@ -2,6 +2,9 @@
 history:
   - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
     date: 2026-10-31
+    change: Opraven pád vykreslování při chybějícím výstupu a obnovení modulů po změně oken.
+  - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
+    date: 2026-10-31
     change: Odstraněn Průtok a doplněny vzorce i šablona číselného okna podle Fotosyntézy.
   - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
     date: 2026-10-31
@@ -12,9 +15,6 @@ history:
   - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
     date: 2026-10-31
     change: Sjednocena struktura Transpirace, její okna a elementy podle vzoru Fotosyntézy.
-  - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
-    date: 2026-10-31
-    change: Převedena kapitola Transpirace na společný vzhled oken Fotosyntézy.
 
 ---
 
@@ -71,6 +71,9 @@ history:
 - `photosynthesisEfficiency` zahrnuje světlo, vodu, CO₂ a teplotu.
 
 ## Kontroly
+
+- Aktualizace hodnot v `kapitoly/chapters.js` přeskočí chybějící výstup; jeho absence nesmí přerušit vykreslování scény.
+- Při změně struktury oken obnov verze importů navazujících modulů od `index.html` po definice, převodník a validátor, aby se nekombinovaly staré a nové záznamy z cache.
 
 - `okna/element_ui_okna_kontrola.js` při načtení ověřuje záznamy oken, jedinečná ID, ovladače a definice výpočtů.
 - Každý vstup musí mít číselný zdroj, popisek a platné téma; kontrola zachytí kruhové odkazy.

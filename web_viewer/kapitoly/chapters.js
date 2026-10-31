@@ -1,6 +1,6 @@
-import { zobrazitHodnotu } from '../okna/element_ui_okna_veliciny.js?v=8';
+import { zobrazitHodnotu } from '../okna/element_ui_okna_veliciny.js?v=transpiration-cache-1';
 import { SEASONS } from '../ekologie/tree_ecology.js?v=active-leaves-3&checks=1';
-import { createTreeAnnotations } from '../okna/tree_annotations.js?v=linked-highlight-3';
+import { createTreeAnnotations } from '../okna/tree_annotations.js?v=transpiration-cache-1';
 
 const chapters = [
   ['intro', 'Úvod'], ['seasons', 'Období'], ['photosynthesis', 'Fotosyntéza'], ['transpiration', 'Transpirace'],
@@ -261,7 +261,10 @@ export function createChapters({ model, applySeason, setSun, setAzimuth, setVisu
   const fmt = (n, digits = 1) => n.toLocaleString('cs-CZ', { maximumFractionDigits: digits });
   const hourly = ratePerMinute => fmt(ratePerMinute * 60, 2);
   function render() {
-    const out = (id, text) => { document.getElementById(id).textContent = text; };
+    const out = (id, text) => {
+      const output = document.getElementById(id);
+      if (output) output.textContent = text;
+    };
     const season = SEASONS[model.season];
     out('ecoSeasonLabel', season.label);
     out('periodSeason', season.label);
