@@ -1,5 +1,8 @@
 ---
 history:
+  - thread_id: 01a192c9-24b4-7642-a56f-53abd8bf4304
+    date: 2026-10-31
+    change: Odstraněn odkaz na archivovaný starší technický přehled.
   - thread_id: 01a191dc-21ba-7b11-9e58-687e0a2cfbd7
     date: 2026-10-31
     change: Doplněny požadavky na klonování, spuštění a omezení existujících testů.
@@ -36,7 +39,6 @@ Projekt spustíš souborem `spustit_web_viewer.bat`.
 - [Přehled celého projektu](dokumentace/struktura_projektu.md)
 - [Architektura aplikace](dokumentace/ARCHITEKTURA_IMPLEMENTACE.md)
 - [Ekologické podklady](dokumentace/EKOLOGIE_PODKLADY.md)
-- [Starší technický přehled](dokumentace/technicky_prehled.md)
 
 ## Spuštění z klonu
 
@@ -51,3 +53,37 @@ Projekt spustíš souborem `spustit_web_viewer.bat`.
 - Některé skripty obsahují původní absolutní cestu k lokálním závislostem, používají Edge nebo porovnávají nyní odlišné vstupní HTML; před použitím potřebují samostatnou úpravu.
 - Kalibrační podklad `old/leaf_light_calibration.json` je verzovaný jednotlivě; ostatní pracovní výstupy v `old` zůstávají ignorované.
 - V rámci přidání souborů do Gitu se funkční ani prohlížečové testy nespouštěly; finální kontrola uživatelem.
+
+## Pravidla struktury
+
+- Název dokumentu má úroveň `#`, oblasti přehledu `##`.
+- Řaď přehled složek, odkazy na dokumenty, spuštění a testy.
+- Historii udržuj ve frontmatteru a tuto část ponechávej na konci.
+
+```markdown
+# Název projektu
+
+Krátký popis vstupu a spuštění.
+
+## Kde co najdeš
+
+| Složka | Obsah |
+| --- | --- |
+| `cesta` | Účel. |
+
+## Dokumenty
+
+- [Název](soubor.md)
+
+## Spuštění z klonu
+
+- Pokyn ke spuštění.
+
+## Existující testy
+
+- Rozsah a omezení testů.
+
+## Pravidla struktury
+
+- Pravidlo členění.
+```

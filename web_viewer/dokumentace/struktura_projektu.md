@@ -1,5 +1,8 @@
 ---
 history:
+  - thread_id: 01a192c9-24b4-7642-a56f-53abd8bf4304
+    date: 2026-10-31
+    change: Odděleny tři překonané dokumenty do pracovního archivu.
   - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
     date: 2026-10-31
     change: Přesunut záznam uživatelského testu do samostatného tests.md.
@@ -12,9 +15,6 @@ history:
   - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
     date: 2026-10-31
     change: Zavedeno porovnání definic se skutečným webem v Chromu po deseti commitech.
-  - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
-    date: 2026-10-31
-    change: Změněn výstup revize dokumentace na Markdown.
 
 ---
 
@@ -43,6 +43,8 @@ Přesun souboru vyžaduje opravu jeho importů a odkazů na assety.
 - `FUNKCE` obsahuje krátké popisy chování pro uživatele.
 - `dokumentace` obsahuje technickou architekturu a odborné podklady.
 - `README.md` slouží jako hlavní rozcestník.
+- `old/dokumentace` uchovává překonané podklady mimo aktivní dokumentaci: zálohu rozcestníku před rozdělením, starší technický přehled a původní popis barevného posunu a vody.
+- Archiv je ignorovaný Gitem; původní verzované dokumenty lze obnovit také z historie repozitáře. Relativní odkazy archivních kopií odpovídají jejich původnímu umístění.
 
 Popis každé funkce patří do vlastního souboru.
 Obsah a chování oken jsou v `okna.md`, jejich vzhled v `vzhled_oken.md`.

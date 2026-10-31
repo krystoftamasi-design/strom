@@ -1,5 +1,8 @@
 ---
 history:
+  - thread_id: 01a192c9-24b4-7642-a56f-53abd8bf4304
+    date: 2026-10-31
+    change: Archivovány tři překonané dokumenty a upraven rozcestník i přehled struktury.
   - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
     date: 2026-10-31
     change: Přesunut záznam uživatelského testu do samostatného tests.md.
@@ -12,9 +15,6 @@ history:
   - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
     date: 2026-10-31
     change: Sjednocena struktura Transpirace, její okna a elementy podle vzoru Fotosyntézy.
-  - thread_id: 01a192c9-24b4-7642-a56f-53abd8bf4304
-    date: 2026-10-31
-    change: Odstraněn reset délky linek při přepnutí kapitoly.
 
 ---
 
@@ -25,6 +25,13 @@ history:
 ## Rozpracováno
 
 ## Implementováno
+
+#### Z031 — Úklid dokumentace
+
+- Zadání: [Uspořádání dokumentace](struktura_projektu.md#dokumentace).
+- Výsledek: záloha rozcestníku před rozdělením, starší technický přehled a původní popis barevného posunu a vody přesunuty do `old/dokumentace`; odstraněn odkaz ze vstupního README.
+- Stav: Implementováno.
+- Ověření: kontrola odkazů na přesunuté soubory a zachování archivních kopií.
 
 #### Z030 — Samostatné záznamy uživatelských testů
 
