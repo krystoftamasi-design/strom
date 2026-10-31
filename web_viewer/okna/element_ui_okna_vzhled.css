@@ -44,7 +44,7 @@ body.scene-night .tree-overlay { --ui-ink: #f0f2e9; }
   --ui-topic: var(--ui-ink);
   box-sizing: border-box; width: 29%; height: 14%; min-height: 85px;
   display: grid; grid-template-columns: max-content minmax(0, 1fr);
-  grid-template-rows: min-content min-content min-content;
+  grid-template-rows: minmax(0, 1fr);
   column-gap: var(--ui-column-gap); align-content: start; padding: 0 0 0 20px;
   color: var(--ui-ink); background: none; border: 0; border-radius: 0;
   font: var(--ui-text-style); text-align: left; box-shadow: none; backdrop-filter: none;
@@ -66,8 +66,8 @@ body.scene-night .tree-overlay { --ui-ink: #f0f2e9; }
 .tree-overlay .element-ui-okno:is([data-window-id="co2"], [data-window-id="chlazeni"]) { top: 42%; }
 .tree-overlay .element-ui-okno:is([data-window-id="cukry"], [data-window-id="teplota"]) { top: 58%; }
 .tree-overlay .element-ui-okno[data-window-id="voda"] { top: 74%; height: 18%; }
-.tree-overlay .element-ui-okno > header {
-  grid-column: 1; grid-row: 1; min-height: 0; padding: 0;
+.tree-overlay .element-ui-okno .element-ui-readout > header {
+  min-height: 0; padding: 0;
   justify-content: flex-start; border: 0;
 }
 .tree-overlay .element-ui-okno h2,
@@ -90,11 +90,11 @@ body.scene-night .tree-overlay { --ui-ink: #f0f2e9; }
 }
 .tree-overlay .element-ui-trigger:hover { background: none; }
 .tree-overlay .element-ui-trigger:focus-visible { outline: 2px solid var(--ui-topic); outline-offset: 4px; }
-.tree-overlay.ui-test-black-window-titles .element-ui-okno > header > :is(h2,h3) { color: var(--ui-ink); }
+.tree-overlay.ui-test-black-window-titles .element-ui-okno .element-ui-readout > header > :is(h2,h3) { color: var(--ui-ink); }
 .tree-overlay .element-ui-okno .annotation-reveal,
 .tree-overlay .element-ui-okno.collapsed .annotation-reveal {
   position: relative; left: auto; right: auto; top: auto; bottom: auto;
-  grid-column: 2; grid-row: 1 / 4; margin: 0;
+  grid-column: 2; grid-row: 1; height: 100%; margin: 0;
   align-self: stretch; min-width: 0; min-height: 0; overflow: auto;
 }
 .tree-overlay .element-ui-okno[data-main-window="true"] .annotation-reveal { left: auto; top: auto; }
@@ -105,7 +105,7 @@ body.scene-night .tree-overlay { --ui-ink: #f0f2e9; }
   margin: 0 0 8px; color: var(--ui-ink); font: var(--ui-text-style);
 }
 .tree-overlay .element-ui-okno .annotation-body > :last-child { margin-bottom: 0; }
-.tree-overlay .element-ui-values { grid-column: 1; grid-row: 2; padding: 0; }
+.tree-overlay .element-ui-values { padding: 0; }
 .tree-overlay .element-ui-values:empty { display: none; }
 .tree-overlay .element-ui-values .chapter-metric {
   display: flex; flex-direction: row; align-items: baseline; gap: 5px;
@@ -122,8 +122,8 @@ body.scene-night .tree-overlay { --ui-ink: #f0f2e9; }
 .tree-overlay .element-ui-okno[data-main-window="true"] .element-ui-values { padding-top: 12px; }
 .tree-overlay .element-ui-okno[data-main-window="true"] :is(strong,output) { font-size: var(--ui-main-value-size); }
 .tree-overlay .element-ui-okno[data-main-window="true"] .element-ui-unit { margin-left: 0; color: inherit; font: inherit; }
-.tree-overlay .element-ui-okno > .ui-window-formula {
-  grid-column: 1; grid-row: 3; margin: 3px 0 0;
+.tree-overlay .element-ui-okno .element-ui-readout > .ui-window-formula {
+  margin: 3px 0 0;
   font: 500 var(--ui-formula-size)/1.25 var(--ui-font-text); color: var(--ui-ink);
   white-space: nowrap;
 }
@@ -142,8 +142,7 @@ body.scene-night .tree-overlay .element-ui-okno .ui-word {
 }
 .tree-overlay .element-ui-okno[data-main-window="true"] .element-ui-edge { height: 100%; width: 12px; }
 .tree-overlay .element-ui-okno[data-window-id="voda"] .element-ui-edge {
-  position: relative; grid-column: 1; grid-row: 1 / 4;
-  left: -20px; height: auto; align-self: stretch;
+  height: 100%;
 }
 .tree-overlay .element-ui-okno .ui-word-light { color: var(--ui-light); }
 .tree-overlay .element-ui-okno .ui-word-water { color: var(--ui-water); }
@@ -172,7 +171,7 @@ body.scene-night .tree-overlay .element-ui-okno .ui-word {
   .tree-overlay .element-ui-okno[data-main-window="true"] h2 { font-size: var(--ui-main-heading-size); }
   .tree-overlay .element-ui-okno .annotation-reveal,
   .tree-overlay .element-ui-okno[data-main-window="true"] .annotation-reveal { left: 12px; top: 65px; }
-  .tree-overlay .element-ui-okno > .ui-window-formula { display: none; }
+  .tree-overlay .element-ui-okno .element-ui-readout > .ui-window-formula { display: none; }
   .tree-overlay .element-ui-okno[data-main-window="true"] .element-ui-values { padding-top: 6px; }
   .tree-overlay .element-ui-okno[data-main-window="true"] :is(strong,output) { font-size: var(--ui-main-value-size); }
   .tree-overlay .element-ui-values .chapter-metric { flex-wrap: wrap; gap: 2px; }
@@ -206,16 +205,16 @@ body[data-chapter="transpiration"] [data-open-chapter="transpiration"] { text-de
 }
 
 /* Headers stay on one line; mathematical relations may wrap. */
-.tree-overlay .element-ui-okno[data-formula-kind="equation"] > .ui-window-formula { white-space: normal; }
+.tree-overlay .element-ui-okno[data-formula-kind="equation"] .element-ui-readout > .ui-window-formula { white-space: normal; }
 @media (max-width: 700px) {
-  .tree-overlay .element-ui-okno[data-formula-kind="equation"] > .ui-window-formula { display: block; }
+  .tree-overlay .element-ui-okno[data-formula-kind="equation"] .element-ui-readout > .ui-window-formula { display: block; }
 }
 
 body.scene-night .transpiration-guide .transpiration-legend { color: #a9baff; }
 
 /* Explicit detail toggle, using the existing accessible button and state. */
-.tree-overlay .element-ui-okno[data-toggle-visible="true"] > header { display: grid; grid-template-columns: max-content var(--ui-toggle-size); align-items: start; gap: var(--ui-toggle-gap); min-width: 0; }
-.tree-overlay .element-ui-okno[data-toggle-visible="true"] > header > :is(h2,h3) { min-width: 0; white-space: nowrap; overflow-wrap: normal; }
+.tree-overlay .element-ui-okno[data-toggle-visible="true"] .element-ui-readout > header { display: grid; grid-template-columns: max-content var(--ui-toggle-size); align-items: start; gap: var(--ui-toggle-gap); min-width: 0; }
+.tree-overlay .element-ui-okno[data-toggle-visible="true"] .element-ui-readout > header > :is(h2,h3) { min-width: 0; white-space: nowrap; overflow-wrap: normal; }
 .tree-overlay .element-ui-okno[data-toggle-visible="true"] .element-ui-trigger {
   position: static; flex: 0 0 var(--ui-toggle-size); width: var(--ui-toggle-size); height: var(--ui-toggle-size);
   display: inline-flex; align-items: center; justify-content: center;
@@ -234,8 +233,16 @@ body.scene-night .transpiration-guide .transpiration-legend { color: #a9baff; }
 
 .tree-overlay .element-ui-okno[data-toggle-visible="true"][data-side="right"] { grid-template-columns: max-content minmax(0, 1fr); }
 @media (max-width: 700px) {
-  .tree-overlay .element-ui-okno[data-toggle-visible="true"] > header { max-width: 100%; overflow-x: auto; }
+  .tree-overlay .element-ui-okno[data-toggle-visible="true"] .element-ui-readout > header { max-width: 100%; overflow-x: auto; }
 }
 
-/* Hidden details must not contribute their intrinsic height to grid rows. */
+/* Collapsing only changes the detail, never the readout. */
 .tree-overlay .element-ui-okno.collapsed .annotation-reveal { display: none; }
+
+.tree-overlay .element-ui-readout { grid-column: 1; grid-row: 1; display: flex; flex-direction: column; align-self: start; min-width: 0; max-height: 100%; overflow: auto; }
+@media (max-width: 700px) {
+  .tree-overlay .element-ui-okno { display: flex; flex-direction: column; }
+  .tree-overlay .element-ui-readout { flex: 0 0 auto; max-width: 100%; }
+  .tree-overlay .element-ui-okno .annotation-reveal,
+  .tree-overlay .element-ui-okno[data-main-window="true"] .annotation-reveal { left: auto; top: auto; flex: 1 1 auto; height: auto; margin-top: 8px; }
+}

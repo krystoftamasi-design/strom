@@ -2,6 +2,9 @@
 history:
   - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
     date: 2026-11-01
+    change: Zjednodušena komponenta na nezávislý blok údajů a detailu.
+  - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
+    date: 2026-11-01
     change: Sjednoceny společné části oken a datové varianty jejich vzhledu.
   - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
     date: 2026-11-01
@@ -12,9 +15,6 @@ history:
   - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
     date: 2026-10-31
     change: Zdokumentována replikovatelnost, rozestupy a prostor ovládání oken.
-  - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
-    date: 2026-10-31
-    change: Vrácena viditelná tlačítka +/− do oken Transpirace.
 
 ---
 
@@ -41,7 +41,7 @@ history:
 - Detail se zobrazuje napravo od hlavních údajů a sází se od horního okraje okna.
 - Fotosyntéza má společný začátek detailů tematických oken; v Transpiraci se šířka prvního sloupce přizpůsobuje nezalomenému nadpisu a tlačítku.
 - Mezi sloupci je mezera 15 px; u dlouhého vzorce je výsledný odstup přibližně 15 px. Krátký vzorec Vody ponechává větší volný prostor.
-- Prostor detailu zabírá výšku řádků nadpisu, hodnoty a vzorce; delší obsah má vlastní posuv.
+- Údaje tvoří samostatný svislý blok nadpis → hodnota → vzorec. Detail má nezávislý prostor vpravo a vlastní posuv; jeho délka ani otevření nesmí měnit rozestupy údajů.
 - Ovládání: případný posuvník nebo jiný ovládací prvek v detailu.
 - Konkrétní hodnoty, texty a ovládání jednotlivých oken určuje [Obsah oken](okna.md).
 
@@ -144,7 +144,7 @@ history:
 - Detail: druhý sloupec napravo, zarovnaný k hornímu okraji okna, Satoshi Light; dlouhý text má vlastní posuv.
 - Rozestup sloupců: 15 px; tematická okna stejného sloupce mají společný začátek detailů.
 - Zavřený stav: nadpis, hodnota a vzorec zůstávají na místě; detail je skrytý.
-- Otevřený stav: detail se zobrazí ve vyhrazeném prostoru bez posunutí sousedních oken.
+- Otevřený stav: detail se zobrazí v nezávislém prostoru bez posunu nadpisu, hodnoty, vzorce i sousedních oken.
 - Ovládání: zvolená varianta — plocha nad nadpisem / viditelné +/− vedle nadpisu; u viditelné varianty určuj vlastní šířku tlačítka a mezeru. Nadpis se nikdy nezalamuje; zachovej definovanou velikost písma a přizpůsob šířku sloupce, při nedostatku místa umožni vodorovný posuv záhlaví. Fokus je viditelný. Konkrétní chování a výchozí stav určuje definice okna.
 - Úzká obrazovka: dva pevné sloupce, definovaná typografická škála a detail pod hlavními údaji; Fotosyntéza skrývá přehled vstupů, Transpirace zachovává skutečné vzorce.
 - Responzivní rozložení: mezní šířka obrazovky, pozice a rozměry oken, rozteče, zalamování a posuv dlouhého detailu; zachovej prostor pro tlačítko i otevřený text.

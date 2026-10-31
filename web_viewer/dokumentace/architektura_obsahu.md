@@ -1,5 +1,8 @@
 ---
 history:
+  - thread_id: 01a1942e-d161-7933-b8f7-31bb2827f7a1
+    date: 2026-11-01
+    change: Odstraněna kapitola Úvod z rozcestníku, protože není položkou nabídky.
   - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
     date: 2026-10-31
     change: Odstraněn Průtok a doplněny vzorce i šablona číselného okna podle Fotosyntézy.
@@ -12,29 +15,9 @@ history:
   - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
     date: 2026-10-31
     change: Sjednocena struktura Transpirace, její okna a elementy podle vzoru Fotosyntézy.
-  - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
-    date: 2026-10-31
-    change: Převedena kapitola Transpirace na společný vzhled oken Fotosyntézy.
-
 ---
 
 # Architektura obsahu
-
-# **ÚVOD**
-
-### Text
-
-- [Strom](moje/texty.md#strom)
-
-### Okna
-
-### Vzhled
-
-### Ovládací prvky
-
-- [Kapitoly](moje/prvky.md#kapitoly)
-
-### Elementy
 
 # **OBDOBÍ**
 

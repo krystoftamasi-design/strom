@@ -2,6 +2,9 @@
 history:
   - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
     date: 2026-11-01
+    change: Zjednodušena komponenta na nezávislý blok údajů a detailu.
+  - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
+    date: 2026-11-01
     change: Sjednoceny společné části oken a datové varianty jejich vzhledu.
   - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
     date: 2026-10-31
@@ -12,9 +15,6 @@ history:
   - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
     date: 2026-10-31
     change: Zpřehledněna Transpirace podle poznatků z uživatelského testu.
-  - thread_id: 01a192c9-24b4-7642-a56f-53abd8bf4304
-    date: 2026-10-31
-    change: Roztříděna dokumentace a opraveny cesty podle účelu souborů.
 
 ---
 
@@ -36,6 +36,8 @@ history:
 - Průvodce kapitoly zobrazuje stálé schéma cesty vody; Teplota zapíná živé porovnání teplot v detailu.
 
 ### Rozložení
+
+- Komponenta má dva nezávislé bloky: `.element-ui-readout` skládá nadpis, hodnotu a vzorec pod sebe pomocí flexu; `.annotation-reveal` obsahuje pouze detail ve druhém sloupci s omezenou výškou a posuvem. Detail nesdílí řádky s údaji a nemění jejich rozestupy. Na úzké obrazovce je detail pod blokem údajů.
 
 - Okno je společná komponenta vytvářená `configuredCard` a `createElementUiOkno`; nadpis, hodnota, vzorec a detail mají jednu strukturu a společné styly pro všechny záznamy Fotosyntézy a Transpirace.
 - Typografii a odstupy upravuj v `okna/element_ui_okna_vzhled.css`: `--ui-heading-size`, `--ui-main-heading-size`, `--ui-value-size`, `--ui-main-value-size`, `--ui-formula-size`, `--ui-column-gap`, `--ui-toggle-size` a `--ui-toggle-gap`. Změna sdílené proměnné platí pro všechna okna příslušné role; úzká obrazovka používá společnou sadu hodnot.

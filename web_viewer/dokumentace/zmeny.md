@@ -2,6 +2,12 @@
 history:
   - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
     date: 2026-11-01
+    change: Zjednodušena komponenta na nezávislý blok údajů a detailu.
+  - thread_id: 01a1942e-d161-7933-b8f7-31bb2827f7a1
+    date: 2026-11-01
+    change: Odstraněna položka Úvod z nabídky a odpovídající část z platné dokumentace.
+  - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
+    date: 2026-11-01
     change: Odstraněn vliv skrytého detailu na výšku řádků oken.
   - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
     date: 2026-11-01
@@ -9,12 +15,6 @@ history:
   - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
     date: 2026-11-01
     change: Zachována definovaná velikost nadpisů bez zmenšování podle obsahu.
-  - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
-    date: 2026-10-31
-    change: Zakázáno zalamování nadpisů oken a upraven prostor záhlaví.
-  - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
-    date: 2026-10-31
-    change: Zdokumentována replikovatelnost, rozestupy a prostor ovládání oken.
 
 ---
 
@@ -25,6 +25,20 @@ history:
 ## Rozpracováno
 
 ## Implementováno
+
+#### Z046 — Jednoduché okno bez posunů údajů
+
+- Zadání: zjednodušit komponentu a odstranit posun hodnoty a vzorce po otevření textu.
+- Výsledek: jeden svislý blok nadpisu, hodnoty a vzorce; druhý nezávislý blok detailu s posuvem. Odstraněno sdílení tří řádků mezi údaji a detailem.
+- Stav: Implementováno.
+- Ověření: syntaxe a validační test oken; v Chromu otevření a zavření Teploty zachovává polohy údajů vůči oknu 0 / 40,9 / 65,9 px. Finální kontrola ostatních oken uživatelem.
+
+#### Z045 — Odstranění Úvodu z nabídky
+
+- Zadání: odstranit Úvod z nabídky a dokumentace, protože uživatel nepoznal, že se v této kapitole nachází.
+- Výsledek: položka Úvod není v nabídce; výchozí úvodní animace zůstává zachovaná. Z rozcestníku a definice pořadí navigace byla odstraněna samostatná položka Úvod.
+- Stav: Implementováno.
+- Ověření: kontrola diffu, syntaxe JavaScriptu, vyhledání zbývajících odkazů na položku nabídky a kontrola YAML historie; finální kontrola uživatelem.
 
 #### Z044 — Kompaktní zavřené okno
 

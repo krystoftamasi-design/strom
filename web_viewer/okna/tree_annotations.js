@@ -1,6 +1,6 @@
-import { oknaPodleKapitol, pruvodceTranspiraci } from './element_ui_okna_obsah.js?v=shared-window-parts-1';
-import { veliciny, vstupyVzorce, ohlasitChybuOken } from './element_ui_okna_veliciny.js?v=shared-window-parts-1';
-import { zkontrolovatOkna } from './element_ui_okna_kontrola.js?v=shared-window-parts-1';
+import { oknaPodleKapitol, pruvodceTranspiraci } from './element_ui_okna_obsah.js?v=simple-window-1';
+import { veliciny, vstupyVzorce, ohlasitChybuOken } from './element_ui_okna_veliciny.js?v=simple-window-1';
+import { zkontrolovatOkna } from './element_ui_okna_kontrola.js?v=simple-window-1';
 
 // Original embedded assets from ui_new.svg, at their exported stroke widths.
 const strokes = {
@@ -42,10 +42,14 @@ function createElementUiOkno({ panel, body, reveal, toggle }) {
       node.replaceWith(unit);
     }
   }
-  // Metrics and formula stay in the fixed left column; details occupy the right.
+  // Two independent blocks: readout and scrollable detail.
+  const readout = document.createElement('div');
+  readout.className = 'element-ui-readout';
+  const header = panel.querySelector(':scope > header');
   const formula = body.querySelector('.ui-window-formula');
-  panel.insertBefore(footer, reveal);
-  if (formula) panel.insertBefore(formula, reveal);
+  readout.append(header, footer);
+  if (formula) readout.append(formula);
+  panel.insertBefore(readout, reveal);
   const edge = panel.querySelector('.annotation-frame-left');
   for (const frame of panel.querySelectorAll('.annotation-frame')) if (frame !== edge) frame.remove();
   edge.classList.add('element-ui-edge');

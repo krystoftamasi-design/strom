@@ -1,5 +1,5 @@
 import { vzorce, konstanty } from '../ekologie/tree_ecology_vzorce.js?v=5';
-import { veliciny, vstupyVzorce } from './element_ui_okna_veliciny.js?v=shared-window-parts-1';
+import { veliciny, vstupyVzorce } from './element_ui_okna_veliciny.js?v=simple-window-1';
 
 const temata = new Set(['neutral', 'light', 'water', 'leaves', 'co2', 'temperature', 'sugar', 'oxygen', 'roots']);
 const ma = (objekt, klic) => objekt != null && Object.hasOwn(objekt, klic);

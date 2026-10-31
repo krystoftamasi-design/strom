@@ -1,5 +1,8 @@
 ---
 history:
+  - thread_id: 01a1942e-d161-7933-b8f7-31bb2827f7a1
+    date: 2026-11-01
+    change: Odstraněn Úvod z pořadí položek navigace.
   - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
     date: 2026-10-31
     change: Zpřehledněna Transpirace podle poznatků z uživatelského testu.
@@ -17,7 +20,7 @@ history:
 #### Kapitoly
 
 - Vodorovná textová navigace v horní pravé části podle [Untitled.svg](../../web_assets/ui_from_af/Untitled.svg).
-- Pořadí: Úvod, Období, Fotosyntéza, Transpirace, Semenace, Kořeny.
+- Pořadí: Období, Fotosyntéza, Transpirace, Semenace, Kořeny.
 - Aktivní Transpirace je navíc podtržená a její průvodce výslovně pojmenovává aktuální kapitolu.
 - Aktivní kapitola je zvýrazněna tučným písmem; položky nemají viditelnou výplň ani rámeček.
 - Písmo: Satoshi; v podkladu přibližně 21 px.
