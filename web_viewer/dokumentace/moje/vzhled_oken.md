@@ -2,6 +2,9 @@
 history:
   - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
     date: 2026-11-01
+    change: Sjednoceny společné části oken a datové varianty jejich vzhledu.
+  - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
+    date: 2026-11-01
     change: Zachována definovaná velikost nadpisů bez zmenšování podle obsahu.
   - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
     date: 2026-10-31
@@ -12,9 +15,6 @@ history:
   - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
     date: 2026-10-31
     change: Vrácena viditelná tlačítka +/− do oken Transpirace.
-  - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
-    date: 2026-10-31
-    change: Sjednocen vzhled oken Transpirace se společnou šablonou Fotosyntézy.
 
 ---
 
@@ -30,6 +30,9 @@ history:
 - V kapitole Fotosyntéza jsou výchozí detaily Cukrů a Vody otevřené; v Transpiraci jsou všechny detaily výchozím stavem zavřené.
 
 ### Obecný obsah
+
+- Okno se skládá ze společných částí: nadpis, hodnota s jednotkou, vzorec a detail. Obsah se předává jako údaje jednotlivého okna; změna společného stylu části platí pro všechna okna stejné role.
+- Hlavní a tematické okno mají vlastní sdílenou velikost nadpisu a hodnoty; obsah kapitoly nesmí tyto velikosti přepisovat. Pozice a zvolená varianta přepínače se mohou lišit.
 
 - Nadpis: název tématu; kliknutí ovládá zobrazení detailu.
 - Hodnota: živé číslo s jednotkou pod nadpisem, pokud ji okno zobrazuje.
@@ -128,6 +131,7 @@ history:
 ```markdown
 #### Název okna
 
+- Skladba: sdílený nadpis, hodnota, vzorec a detail; předávej jen obsah a schválené varianty.
 - Role: hlavní okno procesu / tematické okno.
 - Umístění: role a strana; levý a horní okraj v procentech plochy rozhraní.
 - Rozměry: šířka, výška a minimální výška.

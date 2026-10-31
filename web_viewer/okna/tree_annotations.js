@@ -1,6 +1,6 @@
-import { oknaPodleKapitol, pruvodceTranspiraci } from './element_ui_okna_obsah.js?v=transpiration-template-1';
-import { veliciny, vstupyVzorce, ohlasitChybuOken } from './element_ui_okna_veliciny.js?v=transpiration-template-1';
-import { zkontrolovatOkna } from './element_ui_okna_kontrola.js?v=transpiration-template-1';
+import { oknaPodleKapitol, pruvodceTranspiraci } from './element_ui_okna_obsah.js?v=shared-window-parts-1';
+import { veliciny, vstupyVzorce, ohlasitChybuOken } from './element_ui_okna_veliciny.js?v=shared-window-parts-1';
+import { zkontrolovatOkna } from './element_ui_okna_kontrola.js?v=shared-window-parts-1';
 
 // Original embedded assets from ui_new.svg, at their exported stroke widths.
 const strokes = {
@@ -85,6 +85,8 @@ export function createTreeAnnotations({ shell, model, createSeasonControl, setEl
       panel.dataset.windowId = definition.id;
       panel.dataset.topic = definition.tema || 'neutral';
       panel.dataset.mainWindow = String(Boolean(definition.hlavni));
+      panel.dataset.toggleVisible = String(Boolean(definition.viditelnyPrepinac));
+      panel.dataset.formulaKind = definition.vzorecText ? 'equation' : 'inputs';
     }
     const header = document.createElement('header');
     const h = heading || document.createElement('h3');

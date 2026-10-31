@@ -1,6 +1,9 @@
 ---
 history:
   - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
+    date: 2026-11-01
+    change: Sjednoceny společné části oken a datové varianty jejich vzhledu.
+  - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
     date: 2026-10-31
     change: Opraven pád vykreslování při chybějícím výstupu a obnovení modulů po změně oken.
   - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
@@ -12,9 +15,6 @@ history:
   - thread_id: 01a192c9-24b4-7642-a56f-53abd8bf4304
     date: 2026-10-31
     change: Roztříděna dokumentace a opraveny cesty podle účelu souborů.
-  - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
-    date: 2026-10-31
-    change: Sjednocena struktura Transpirace, její okna a elementy podle vzoru Fotosyntézy.
 
 ---
 
@@ -28,7 +28,7 @@ history:
 ### Obsah
 
 - `okna/element_ui_okna_obsah.js` obsahuje záznamy v seznamech `photosynthesis` a `transpiration`.
-- `pruvodceTranspiraci` ve stejném obsahovém modulu drží viditelné vysvětlení, názvy kroků, legendu a instrukci; `shrnuti` v záznamu okna se vykresluje mimo skrývaný detail.
+- `pruvodceTranspiraci` ve stejném obsahovém modulu drží viditelné vysvětlení, názvy kroků, legendu a instrukci.
 - Záznam určuje ID, nadpis, téma, stranu, text, výpočet, ovládání a výchozí otevření detailu.
 - `zobrazitVzorec` a `zobrazitHodnotu` zapínají přehled vstupů a výslednou hodnotu.
 
@@ -36,6 +36,13 @@ history:
 - Průvodce kapitoly zobrazuje stálé schéma cesty vody; Teplota zapíná živé porovnání teplot v detailu.
 
 ### Rozložení
+
+- Okno je společná komponenta vytvářená `configuredCard` a `createElementUiOkno`; nadpis, hodnota, vzorec a detail mají jednu strukturu a společné styly pro všechny záznamy Fotosyntézy a Transpirace.
+- Typografii a odstupy upravuj v `okna/element_ui_okna_vzhled.css`: `--ui-heading-size`, `--ui-main-heading-size`, `--ui-value-size`, `--ui-main-value-size`, `--ui-formula-size`, `--ui-column-gap`, `--ui-toggle-size` a `--ui-toggle-gap`. Změna sdílené proměnné platí pro všechna okna příslušné role; úzká obrazovka používá společnou sadu hodnot.
+- `viditelnyPrepinac: true` v záznamu zapíná variantu +/−; bez něj zůstává plocha nad nadpisem. CSS používá `data-toggle-visible`, nikoli název kapitoly.
+- `vzorecText` volí variantu skutečné rovnice přes `data-formula-kind="equation"`; ta umožňuje zalomení a viditelnost na úzké obrazovce. Přehled vstupů používá stejnou část komponenty s variantou `inputs`.
+- Použití: do seznamu kapitoly přidej záznam `{ id, nadpis, tema, strana, vypocet, zobrazitVzorec, zobrazitHodnotu, text }`; volitelně `hlavni`, `otevrene`, `vzorecText` a `viditelnyPrepinac`. Téma určuje barvu, převodník jednotku a formát hodnoty. Pozice patří do rozložení kapitoly, velikost nadpisu do společného stylu.
+- Přenos vyžaduje renderer, společné CSS, převodník veličin a validátor; renderer přijímá model a callback zvýraznění. Průvodce a pozice konkrétní kapitoly nejsou přenositelnou částí okna.
 
 - `okna/tree_annotations.js` vytváří bloky, přepíná detaily a přebírá ovládací prvky s jejich událostmi.
 - `okna/element_ui_okna_vzhled.css` určuje pevné pozice podle ID a společného příznaku hlavního okna, rozměry, písmo a barvy.

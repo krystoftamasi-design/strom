@@ -1,5 +1,5 @@
 import { vzorce, konstanty } from '../ekologie/tree_ecology_vzorce.js?v=5';
-import { veliciny, vstupyVzorce } from './element_ui_okna_veliciny.js?v=transpiration-template-1';
+import { veliciny, vstupyVzorce } from './element_ui_okna_veliciny.js?v=shared-window-parts-1';
 
 const temata = new Set(['neutral', 'light', 'water', 'leaves', 'co2', 'temperature', 'sugar', 'oxygen', 'roots']);
 const ma = (objekt, klic) => objekt != null && Object.hasOwn(objekt, klic);
@@ -89,7 +89,7 @@ export function zkontrolovatOkna({ okna, model, body, najitOvladani }) {
       if (!temata.has(okno.tema ?? 'neutral')) chyba(`neplatné téma „${okno.tema}“.`);
       if (okno.bod !== undefined && !ma(body, okno.bod)) chyba(`neexistuje bod stromu „${okno.bod}“.`);
       if (okno.text !== undefined && (!Array.isArray(okno.text) || !okno.text.every(v => typeof v === 'string'))) chyba('text musí být seznam odstavců.');
-      for (const pole of ['hlavni', 'otevrene', 'zobrazitVzorec', 'zobrazitHodnotu']) {
+      for (const pole of ['viditelnyPrepinac', 'hlavni', 'otevrene', 'zobrazitVzorec', 'zobrazitHodnotu']) {
         if (okno[pole] !== undefined && typeof okno[pole] !== 'boolean') chyba(`pole „${pole}“ musí být true nebo false.`);
       }
       if (okno.vypocet !== undefined || okno.zobrazitVzorec || okno.zobrazitHodnotu) {

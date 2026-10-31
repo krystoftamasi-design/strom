@@ -2,6 +2,9 @@
 history:
   - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
     date: 2026-11-01
+    change: Sjednoceny společné části oken a datové varianty jejich vzhledu.
+  - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
+    date: 2026-11-01
     change: Zachována definovaná velikost nadpisů bez zmenšování podle obsahu.
   - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
     date: 2026-10-31
@@ -12,9 +15,6 @@ history:
   - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
     date: 2026-10-31
     change: Zvětšeny svislé rozestupy oken Transpirace.
-  - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
-    date: 2026-10-31
-    change: Vyhrazen samostatný prostor pro tlačítka detailů Transpirace.
 
 ---
 
@@ -25,6 +25,13 @@ history:
 ## Rozpracováno
 
 ## Implementováno
+
+#### Z043 — Společné části komponenty okna
+
+- Zadání: společný nadpis, hodnota, vzorec a předávaný obsah.
+- Výsledek: centralizovány velikosti a odstupy; viditelný přepínač a skutečná rovnice jsou datové varianty místo stylových vazeb na kapitolu. Zachován společný renderer a doplněn postup použití v [architektuře](system/architektura_oken.md#rozložení).
+- Stav: Implementováno.
+- Ověření: syntaxe a validační test oken; kontrola dokumentace; finální vizuální kontrola uživatelem.
 
 #### Z042 — Zachování velikosti nadpisů
 

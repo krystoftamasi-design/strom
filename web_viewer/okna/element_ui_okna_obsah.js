@@ -2,16 +2,16 @@
 // ID určuje pevnou pozici v UI; téma odkazuje na barvy v CSS.
 export const oknaPodleKapitol = {
   transpiration: [
-    { id: 'transpirace', nadpis: 'Transpirace', tema: 'water', strana: 'left', hlavni: true,
+    { id: 'transpirace', nadpis: 'Transpirace', tema: 'water', viditelnyPrepinac: true, strana: 'left', hlavni: true,
       vypocet: 'transpiration', zobrazitVzorec: true, vzorecText: 'min(základ × listy × světlo × voda; spotřeba)', zobrazitHodnotu: true,
       text: ['Voda se odpařuje převážně průduchy listů. Odpar pomáhá táhnout vodu od kořenů a spotřebovává teplo. Za světla bývá vyšší; nedostatek vody vede k omezení ztrát průduchy.'] },
-    { id: 'prijem-vody', nadpis: 'Příjem vody', tema: 'water', strana: 'right',
+    { id: 'prijem-vody', nadpis: 'Příjem vody', tema: 'water', viditelnyPrepinac: true, strana: 'right',
       vypocet: 'inflow', zobrazitVzorec: true, vzorecText: 'min(přísun; limit kořenů)', zobrazitHodnotu: true,
       text: ['Kořeny doplňují zásobu vody ve stromu. Příjem omezuje dostupná voda a sezónní maximum kořenů; nemusí být stejný jako okamžitý odpar.'] },
-    { id: 'chlazeni', nadpis: 'Chlazení', tema: 'temperature', strana: 'right',
+    { id: 'chlazeni', nadpis: 'Chlazení', tema: 'temperature', viditelnyPrepinac: true, strana: 'right',
       vypocet: 'coolingKW', zobrazitVzorec: true, vzorecText: 'odpar × 2450 / 3600', zobrazitHodnotu: true,
       text: ['Odpařování vody spotřebovává teplo. Chladicí výkon je fyzikální odhad, nikoli změna teploty; při omezení odparu klesá.'] },
-    { id: 'teplota', nadpis: 'Teplota', tema: 'temperature', strana: 'right',
+    { id: 'teplota', nadpis: 'Teplota', tema: 'temperature', viditelnyPrepinac: true, strana: 'right',
       vypocet: 'temperatureNearCanopy', zobrazitVzorec: true, vzorecText: 'okolí − ochlazení + noční efekt', zobrazitHodnotu: true, teplotniPorovnani: true,
       text: ['Ve dne odpar ochlazuje okolí koruny; v noci olistěná koruna omezuje vyzařování tepla a u ní může být mírně tepleji. Základem jsou normály ČHMÚ 1991–2020. Denní kolísání a teplá či chladná období jsou výukový odhad, nikoli měření nebo předpověď počasí.'] },
   ],
