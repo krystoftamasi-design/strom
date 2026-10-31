@@ -2,6 +2,9 @@
 history:
   - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
     date: 2026-10-31
+    change: Nahrazeny nevykreslené HTML styly tagů barevnými značkami v Markdownu.
+  - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
+    date: 2026-10-31
     change: Obarveny tagy přesnými barvami témat z webu.
   - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
     date: 2026-10-31
@@ -12,16 +15,13 @@ history:
   - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
     date: 2026-10-31
     change: Přesunuto pravidlo propojení na konec dokumentu pod definice elementů.
-  - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
-    date: 2026-10-31
-    change: Uspořádány definice podle společného tagu, spojení a chování elementu.
 ---
 
 # Elementy
 
 ### Voda linka
 
-**Tag:** <code style="color: #2f49d6;">water</code>
+**Tag:** 🔵 `water`
 Definice spojení
 
 - Okno: [Voda](okna.md#voda).
@@ -39,7 +39,7 @@ Definice spojení
 
 ### Glukóza linka
 
-**Tag:** <code style="color: #d42fd5;">sugar</code>
+**Tag:** 🟣 `sugar`
 Definice spojení
 
 - Okno: [Cukry](okna.md#cukry).
@@ -66,7 +66,7 @@ Definice spojení
 
 ### O₂
 
-**Tag:** <code style="color: #4fa2da;">oxygen</code>
+**Tag:** 🔹 `oxygen`
 Definice spojení
 
 - Okno: [O₂](okna.md#o₂).
@@ -79,7 +79,7 @@ Definice spojení
 
 ### CO₂
 
-**Tag:** <code style="color: #ff583c;">co2</code>
+**Tag:** 🔶 `co2`
 Definice spojení
 
 - Okno: [CO₂](okna.md#co₂).
@@ -115,14 +115,15 @@ Definice spojení
 - Před úpravou tohoto dokumentu přečti pravidla na jeho konci.
 - Každý element zapisuj ve stejném pořadí podle následující šablony.
 - Název elementu má úroveň `###`.
-- Tag obarvi pomocí HTML `<code style="color: #HEX;">tag</code>` přesnou barvou tématu z `okna/element_ui_okna_vzhled.css`; název barvy za něj nepřidávej.
+- Před názvem tagu použij barevnou značku tématu: 🔵 `water`, 🟣 `sugar`, 🔹 `oxygen`, 🔶 `co2`, 🟡 `light`.
+- Používej běžný Markdown bez HTML stylů; značky rozlišují témata, nereprodukují přesné odstíny webu.
 - Pokud tag, okno nebo zvýraznění nejsou určené, výslovně to uveď; vazbu nevymýšlej.
 - Společná pravidla, například šířku linek, popisuj samostatně bez šablony elementu.
 
 ```markdown
 ### Název elementu
 
-**Tag:** <code style="color: #HEX;">tag</code>
+**Tag:** 🔵 `tag`
 Definice spojení
 
 - Okno: [Název](okna.md#kotva).
