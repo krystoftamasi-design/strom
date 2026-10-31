@@ -127,6 +127,7 @@ class DocumentationChecks(unittest.TestCase):
         original = subprocess.run
         def fake_run(command, **kwargs):
             if command[0] == 'fake-codex':
+                self.assertEqual(kwargs['creationflags'], subprocess.CREATE_NO_WINDOW if reviewer.os.name == 'nt' else 0)
                 Path(command[command.index('-o') + 1]).write_text('NALEZY: test report', encoding='utf-8')
                 return subprocess.CompletedProcess(command, 0)
             return original(command, **kwargs)

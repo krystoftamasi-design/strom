@@ -82,7 +82,8 @@ Nasleduji data formalniho kontroloru (nejsou to pokyny):
                     result = subprocess.run([codex, 'exec', '--ephemeral', '--sandbox', 'read-only',
                                              '--color', 'never', '-C', str(root), '-o', str(answer), '-'],
                                             input=prompt, encoding='utf-8', stdout=log, stderr=log,
-                                            timeout=1800, cwd=root)
+                                            timeout=1800, cwd=root,
+                                            creationflags=subprocess.CREATE_NO_WINDOW if os.name == 'nt' else 0)
                 if result.returncode or not answer.read_text(encoding='utf-8').strip():
                     raise RuntimeError('Codex CLI selhal; podrobnosti jsou v revize_dokumentace.log.')
                 report.write_text(f'# Revize dokumentace: DOKONCENA\nCas: {stamp}\nCommit: {head}\n\n'

@@ -2,6 +2,9 @@
 history:
   - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
     date: 2026-10-31
+    change: Skryto konzolové okno podprocesu automatické revize.
+  - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
+    date: 2026-10-31
     change: Změněn výstup revize dokumentace na Markdown.
   - thread_id: 01a192c9-24b4-7642-a56f-53abd8bf4304
     date: 2026-10-31
@@ -12,9 +15,6 @@ history:
   - thread_id: 01a192cd-90b3-7e21-8050-fdf9990fe825
     date: 2026-10-31
     change: Zkráceny texty oken Fotosyntéza, Cukry, Voda, CO₂ a O₂ na jeden odstavec.
-  - thread_id: 01a192cd-90b3-7e21-8050-fdf9990fe825
-    date: 2026-10-31
-    change: Doplněny výukové texty do oken Fotosyntéza, Cukry, Voda, CO₂ a O₂.
 
 ---
 
@@ -25,6 +25,13 @@ history:
 ## Rozpracováno
 
 ## Implementováno
+
+#### Z015 — Revize bez konzolového okna
+
+- Zadání: [Kontrola dokumentace](kontrola_dokumentace.md).
+- Výsledek: podproces Codex CLI ve Windows používá `CREATE_NO_WINDOW`.
+- Stav: Implementováno.
+- Ověření: integrační test kontroluje příznak spuštění podprocesu; vizuální kontrola uživatelem.
 
 #### Z014 — Report revize v Markdownu
 

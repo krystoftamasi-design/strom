@@ -2,6 +2,9 @@
 history:
   - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
     date: 2026-10-31
+    change: Skryto konzolové okno podprocesu automatické revize.
+  - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
+    date: 2026-10-31
     change: Změněn výstup revize dokumentace na Markdown.
   - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
     date: 2026-10-31
@@ -45,6 +48,7 @@ history:
 - Existující Git LFS hook zůstává zachovaný; zdroj sloučeného hooku je `tools/post-commit`. V novém klonu ho nainstaluj nebo sluč s existujícím hookem.
 - Revize vyžaduje dostupný a přihlášený Codex CLI; používá jeho uložené přihlášení a výchozí model v režimu `read-only`, bez trvalého nového chatu.
 - Počítají se všechny nové commity včetně dokumentace. Při prvním běhu nebo neplatném výchozím bodu proběhne vstupní revize.
+- Ve Windows se Codex CLI spouští s `CREATE_NO_WINDOW`, aby revize neotevírala konzolové okno.
 - Průběh je asynchronní: pátý commit spustí revizi hned, dokončení závisí na délce kontroly a dostupnosti služby.
 - Výsledek je v ignorovaném `web_viewer/old/revize_dokumentace.md`: `PROBIHA`, `DOKONCENA` nebo `SELHANI`, prověřený hash a zpráva agenta.
 - Terminál commitu při spuštění vypíše cestu k reportu; zpráva se automaticky nevkládá do hlavního chatu ani do aplikace.
