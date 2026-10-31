@@ -1,5 +1,8 @@
 ---
 history:
+  - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
+    date: 2026-10-31
+    change: Sjednocena struktura Transpirace, její okna a elementy podle vzoru Fotosyntézy.
   - thread_id: 01a192c9-24b4-7642-a56f-53abd8bf4304
     date: 2026-10-31
     change: Přepnutí kapitoly zachovává aktuální stažení linek bez jejich opětovného zobrazení.
@@ -12,9 +15,7 @@ history:
   - thread_id: 01a192c9-24b4-7642-a56f-53abd8bf4304
     date: 2026-10-31
     change: Nastavena stálá rychlost animace glukózy nezávislá na podmínkách a modelovém čase.
-  - thread_id: 01a192c9-24b4-7642-a56f-53abd8bf4304
-    date: 2026-10-31
-    change: Změněno zvýraznění linek na zesílení tloušťky s pulzací bez zesvětlení.
+
 ---
 
 # Elementy
@@ -24,10 +25,10 @@ history:
 **Tag:** 🔵 `water`
 Definice spojení
 
-- Okno: [Voda](okna.md#voda).
+- Okna: [Voda](okna.md#voda) ve Fotosyntéze; [Transpirace](okna.md#transpirace), [Příjem vody](okna.md#příjem-vody) a [Průtok](okna.md#průtok) v Transpiraci.
 - **Zvýraznění**
 - při otevření okna modrá linka výrazně ztloustne a po její trase začne putovat pulzující vlna tloušťky.
-- Při zavření se vrátí původní vzhled.
+- Zvýraznění trvá, dokud je v aktivní kapitole otevřen alespoň jeden související detail; po zavření všech se vrátí původní vzhled.
 
 **Chování elementu**
 
@@ -113,6 +114,20 @@ Definice spojení
 **Chování elementu**
 
 - Žluté částice putují od slunce k listům.
+
+### Cesta vody
+
+**Tag:** 🔵 `water`
+Definice spojení
+
+- Okno: [Průtok](okna.md#průtok).
+- **Viditelnost**
+- Schéma se zobrazuje v otevřeném detailu Průtoku a při zavření se skryje.
+
+**Chování elementu**
+
+- Textové schéma Kořeny → Xylém → Listy → pára ukazuje cestu vody.
+- Je statické; šipky neudávají rychlost ani měřený průtok.
 
 ### Pravidlo propojení
 

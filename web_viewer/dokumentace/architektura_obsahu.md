@@ -2,6 +2,9 @@
 history:
   - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
     date: 2026-10-31
+    change: Sjednocena struktura Transpirace, její okna a elementy podle vzoru Fotosyntézy.
+  - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
+    date: 2026-10-31
     change: Převedena kapitola Transpirace na společný vzhled oken Fotosyntézy.
   - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
     date: 2026-10-31
@@ -12,9 +15,6 @@ history:
   - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
     date: 2026-10-31
     change: Sjednocena pravidla struktury na konci rozcestníku a doplněna šablona kapitoly.
-  - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
-    date: 2026-10-31
-    change: Upřesněna úroveň nadpisů elementů odkazem na jejich vlastní pravidla.
 
 ---
 
@@ -89,7 +89,10 @@ history:
 ### Okna
 
 - [Transpirace](okna.md#transpirace)
-- [Odpar z listů](okna.md#odpar-z-listů)
+- [Příjem vody](okna.md#příjem-vody)
+- [Průtok](okna.md#průtok)
+- [Chlazení](okna.md#chlazení)
+- [Teplota](okna.md#teplota)
 
 ### Vzhled
 
@@ -102,6 +105,9 @@ history:
 - [Kapitoly](prvky.md#kapitoly)
 
 ### Elementy
+
+- [Voda linka](elementy.md#voda-linka)
+- [Cesta vody](elementy.md#cesta-vody)
 
 # **SEMENACE**
 

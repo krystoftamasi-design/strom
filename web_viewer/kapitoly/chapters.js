@@ -51,16 +51,7 @@ export function createChapters({ model, applySeason, setSun, setAzimuth, setVisu
         <p class="chapter-note">Dole můžete den pozastavit nebo zrychlit na 2× a 4×. Při ruční změně výšky či směru slunce se denní cyklus vypne; znovu jej zapnete přepínačem výše.</p>
       </article>
       <article data-chapter="photosynthesis" hidden></article>
-      <article data-chapter="transpiration" hidden>
-        <p class="chapter-eyebrow">03 / Cesta vody</p><h2>Transpirace</h2>
-        <div class="chapter-tags"><span>Voda</span><span>Buk lesní</span></div>
-        <p>Voda proudí od kořenů xylémem do listů. Odtud se odpařuje převážně průduchy. Odpar pomáhá táhnout vodu stromem a spotřebovává teplo. Zobrazený průtok je odhad toku ze zásoby vody ke koruně, včetně odparu a drobných ostatních ztrát. Příjem kořeny může současně doplňovat zásobu.</p>
-        <div class="water-route" aria-label="Cesta vody"><span>Kořeny</span><i>↑</i><span>Xylém</span><i>↑</i><span>Listy → pára</span></div>
-        <div class="chapter-metrics">${metric('Příjem vody', 'ecoTranspirationInflow', ' l/h')}${metric('Průtok vody stromem ≈', 'ecoTreeWaterFlow', ' l/h')}${metric('Odpařená voda', 'ecoTranspiration', ' l/h')}${metric('Chladicí výkon ≈', 'ecoCooling', ' kW')}</div>
-        <div class="chapter-temperature" aria-label="Rozdíl teploty koruny a okolí"><strong><output id="ecoCanopyTemperatureDifference">—</output></strong></div>
-        <p>Za světla bývá odpar vyšší. Při nedostatku vody průduchy omezují její ztráty a současně klesá chladicí účinek. V noci olistěná koruna omezuje vyzařování tepla, takže vzduch u ní může být mírně teplejší než mimo strom. Zobrazený příjem vody nepřekročí sezónní maximum kořenů.</p>
-        <p class="chapter-note">Měsíční základ vychází z celostátních normálů ČHMÚ 1991–2020. Denní kolísání i několikadenní teplá a chladná období jsou výukový odhad; v létě mohou vznikat dny nad 30 °C. Odpar vody odhad ochlazuje. Nejde o předpověď počasí ani měření skutečné teploty okolí. Chladicí výkon je samostatný fyzikální odhad ve wattech, ne vypočítaná změna teploty.</p>
-      </article>
+      <article data-chapter="transpiration" hidden></article>
       <article data-chapter="roots" hidden>
         <p class="chapter-eyebrow">04 / Pod povrchem</p><h2>Kořeny</h2>
         <div class="chapter-tags"><span>Buk lesní</span><span>Kořenové špičky</span></div>

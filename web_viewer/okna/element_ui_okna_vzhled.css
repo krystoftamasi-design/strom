@@ -48,20 +48,17 @@ body.scene-night .tree-overlay { --ui-ink: #f0f2e9; }
 .tree-overlay .element-ui-okno[data-topic="co2"] { --ui-topic: var(--ui-co2); }
 .tree-overlay .element-ui-okno[data-topic="sugar"] { --ui-topic: var(--ui-sugar); }
 .tree-overlay .element-ui-okno[data-topic="light"] { --ui-topic: var(--ui-light); }
-.tree-overlay .element-ui-okno:is([data-window-id="kyslik"], [data-window-id="co2"], [data-window-id="cukry"], [data-window-id="voda"]) {
+.tree-overlay .element-ui-okno:is([data-window-id="kyslik"], [data-window-id="co2"], [data-window-id="cukry"], [data-window-id="voda"], [data-window-id="prijem-vody"], [data-window-id="prutok"], [data-window-id="chlazeni"], [data-window-id="teplota"]) {
   grid-template-columns: calc(16.5 * var(--ui-formula-size)) minmax(0, 1fr);
 }
 .tree-overlay .element-ui-okno[data-main-window="true"] {
   left: 6%; top: 65%; width: 55%; height: 21%; min-height: 140px;
   grid-template-columns: max-content minmax(0, 1fr);
 }
-.tree-overlay .element-ui-okno[data-window-id="odpar"] { top: 35%; height: 32%; }
-.tree-overlay .element-ui-okno[data-window-id="transpirace"] .chapter-metric { flex-wrap: wrap; }
-.tree-overlay .element-ui-okno[data-window-id="transpirace"] .element-ui-values :is(strong,output) { font-size: clamp(20px, 1.15vw, 26px); }
-.tree-overlay .element-ui-okno[data-window-id="kyslik"] { top: 28%; }
-.tree-overlay .element-ui-okno[data-window-id="co2"] { top: 42%; }
-.tree-overlay .element-ui-okno[data-window-id="cukry"] { top: 58%; }
-.tree-overlay .element-ui-okno[data-window-id="voda"] { top: 74%; height: 18%; }
+.tree-overlay .element-ui-okno:is([data-window-id="kyslik"], [data-window-id="prijem-vody"]) { top: 28%; }
+.tree-overlay .element-ui-okno:is([data-window-id="co2"], [data-window-id="prutok"]) { top: 42%; }
+.tree-overlay .element-ui-okno:is([data-window-id="cukry"], [data-window-id="chlazeni"]) { top: 58%; }
+.tree-overlay .element-ui-okno:is([data-window-id="voda"], [data-window-id="teplota"]) { top: 74%; height: 18%; }
 .tree-overlay .element-ui-okno > header {
   grid-column: 1; grid-row: 1; min-height: 0; padding: 0;
   justify-content: flex-start; border: 0;
@@ -160,10 +157,10 @@ body.scene-night .tree-overlay .element-ui-okno .ui-word {
   .tree-overlay .tree-annotation[data-side="right"] { left: 52%; width: 44%; }
   .tree-overlay .element-ui-okno { display: block; padding-left: 12px; width: 44%; height: 17%; min-height: 0; }
   .tree-overlay .element-ui-okno[data-main-window="true"] { left: 4%; top: 65%; width: 44%; height: 24%; min-height: 0; }
-  .tree-overlay .element-ui-okno[data-window-id="kyslik"] { top: 22%; }
-  .tree-overlay .element-ui-okno[data-window-id="co2"] { top: 40%; }
-  .tree-overlay .element-ui-okno[data-window-id="cukry"] { top: 58%; }
-  .tree-overlay .element-ui-okno[data-window-id="voda"] { top: 76%; height: 20%; }
+  .tree-overlay .element-ui-okno:is([data-window-id="kyslik"], [data-window-id="prijem-vody"]) { top: 22%; }
+  .tree-overlay .element-ui-okno:is([data-window-id="co2"], [data-window-id="prutok"]) { top: 40%; }
+  .tree-overlay .element-ui-okno:is([data-window-id="cukry"], [data-window-id="chlazeni"]) { top: 58%; }
+  .tree-overlay .element-ui-okno:is([data-window-id="voda"], [data-window-id="teplota"]) { top: 76%; height: 20%; }
   .tree-overlay .element-ui-okno h3 { font-size: clamp(22px, 5vw, 32px); }
   .tree-overlay .element-ui-okno[data-main-window="true"] h2 { font-size: clamp(18px, 4.5vw, 31px); }
   .tree-overlay .element-ui-okno .annotation-reveal,
@@ -175,3 +172,5 @@ body.scene-night .tree-overlay .element-ui-okno .ui-word {
   .tree-overlay .element-ui-okno .element-ui-edge { width: 5px; }
   .tree-overlay .element-ui-okno[data-main-window="true"] .element-ui-edge { width: 6px; }
 }
+
+.tree-overlay .element-ui-okno[data-chapter="transpiration"][data-side="right"] { grid-template-columns: calc(27 * var(--ui-formula-size)) minmax(0, 1fr); }

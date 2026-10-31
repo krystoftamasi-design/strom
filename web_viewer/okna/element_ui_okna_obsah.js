@@ -2,8 +2,21 @@
 // ID určuje pevnou pozici v UI; téma odkazuje na barvy v CSS.
 export const oknaPodleKapitol = {
   transpiration: [
-    { id: 'transpirace', nadpis: 'Transpirace', tema: 'water', strana: 'left', hlavni: true },
-    { id: 'odpar', nadpis: 'Odpar z listů', tema: 'temperature', strana: 'right' },
+    { id: 'transpirace', nadpis: 'Transpirace', tema: 'water', strana: 'left', hlavni: true,
+      vypocet: 'transpiration', zobrazitHodnotu: true,
+      text: ['Voda se odpařuje převážně průduchy listů. Odpar pomáhá táhnout vodu od kořenů a spotřebovává teplo. Za světla bývá vyšší; nedostatek vody vede k omezení ztrát průduchy.'] },
+    { id: 'prijem-vody', nadpis: 'Příjem vody', tema: 'water', strana: 'right', otevrene: true,
+      vypocet: 'inflow', zobrazitHodnotu: true,
+      text: ['Kořeny doplňují zásobu vody ve stromu. Příjem omezuje dostupná voda a sezónní maximum kořenů; nemusí být stejný jako okamžitý odpar.'] },
+    { id: 'prutok', nadpis: 'Průtok', tema: 'water', strana: 'right', otevrene: true,
+      vypocet: 'consumption', zobrazitHodnotu: true, cestaVody: true,
+      text: ['Voda proudí xylémem do koruny. Zobrazený průtok je odhad spotřeby ze zásoby vody, zahrnující odpar i drobné ostatní ztráty.'] },
+    { id: 'chlazeni', nadpis: 'Chlazení', tema: 'temperature', strana: 'right',
+      vypocet: 'coolingKW', zobrazitHodnotu: true,
+      text: ['Odpařování vody spotřebovává teplo. Chladicí výkon je fyzikální odhad, nikoli změna teploty; při omezení odparu klesá.'] },
+    { id: 'teplota', nadpis: 'Teplota', tema: 'temperature', strana: 'right',
+      vypocet: 'temperatureNearCanopy', zobrazitHodnotu: true, teplotniPorovnani: true,
+      text: ['Ve dne odpar ochlazuje okolí koruny; v noci olistěná koruna omezuje vyzařování tepla a u ní může být mírně tepleji. Základem jsou normály ČHMÚ 1991–2020. Denní kolísání a teplá či chladná období jsou výukový odhad, nikoli měření nebo předpověď počasí.'] },
   ],
   photosynthesis: [
     {

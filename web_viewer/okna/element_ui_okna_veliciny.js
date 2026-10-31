@@ -2,6 +2,12 @@ import { vzorce } from '../ekologie/tree_ecology_vzorce.js?v=5';
 
 // Převod výpočetních názvů na text, barvu, jednotku a formát pro okna.
 export const veliciny = {
+  transpiration: { nazev: 'Odpařená voda', tema: 'water', jednotka: 'l/h', nasobek: 60, desetinnaMista: 1, vystupId: 'ecoTranspiration', popisHodnoty: 'odpar' },
+  inflow: { nazev: 'Příjem vody', tema: 'water', jednotka: 'l/h', nasobek: 60, desetinnaMista: 1, vystupId: 'ecoTranspirationInflow', popisHodnoty: 'příjem' },
+  consumption: { nazev: 'Průtok', tema: 'water', jednotka: 'l/h', nasobek: 60, desetinnaMista: 1, vystupId: 'ecoTreeWaterFlow', popisHodnoty: 'průtok ≈' },
+  coolingKW: { nazev: 'Chladicí výkon', tema: 'temperature', jednotka: 'kW', desetinnaMista: 2, vystupId: 'ecoCooling', popisHodnoty: 'výkon ≈' },
+  temperatureNearCanopy: { nazev: 'U koruny', tema: 'temperature', jednotka: '°C', desetinnaMista: 1, popisHodnoty: 'u koruny' },
+  ambientTemperature: { nazev: 'Mimo strom', tema: 'temperature', jednotka: '°C', desetinnaMista: 1 },
   waterConsumption: { nazev: 'voda', tema: 'water' },
   light: { nazev: 'Světlo', tema: 'light' },
   hydration: { nazev: 'voda', tema: 'water' },

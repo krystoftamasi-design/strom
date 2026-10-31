@@ -2,6 +2,9 @@
 history:
   - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
     date: 2026-10-31
+    change: Sjednocena struktura Transpirace, její okna a elementy podle vzoru Fotosyntézy.
+  - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
+    date: 2026-10-31
     change: Převedena kapitola Transpirace na společný vzhled oken Fotosyntézy.
   - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
     date: 2026-10-31
@@ -12,9 +15,6 @@ history:
   - thread_id: 01a18f17-efd7-7a02-8369-186b681bfcc0
     date: 2026-10-31
     change: Odděleny odkazy na obsah a samostatný vzhled oken.
-  - thread_id: 01a18f17-efd7-7a02-8369-186b681bfcc0
-    date: 2026-10-31
-    change: Sloučeny technické informace do pořadí definice, hodnoty, kontroly a rozšíření.
 
 ---
 
@@ -31,7 +31,8 @@ history:
 - Záznam určuje ID, nadpis, téma, stranu, text, výpočet, ovládání a výchozí otevření detailu.
 - `zobrazitVzorec` a `zobrazitHodnotu` zapínají přehled vstupů a výslednou hodnotu.
 
-- Obsah Transpirace a její živé výstupy zůstávají v `kapitoly/chapters.js`; `tree_annotations.js` je přesouvá do společných stylovaných oken podle metadat `transpiration`.
+- Obsah obou kapitol vytváří stejný `configuredCard` z definic; `kapitoly/chapters.js` aktualizuje živé výstupy. Transpirace nemá vlastní HTML bloky oken.
+- Záznam Průtoku zapíná schéma cesty vody; Teplota zapíná živé porovnání teplot v detailu.
 
 ### Rozložení
 
@@ -46,7 +47,7 @@ history:
 - `okna/tree_annotations.js` předává tag tématu a stav otevření přes `setElementHighlight` v `kapitoly/chapters.js`.
 - Změna detailu přepíná zvýraznění přímo v obsluze události; aktivní kapitola omezuje zvýraznění na viditelná okna.
 - `index.html` mapuje tagy `water` a `sugar` na samostatné uniformy `uSelected` materiálů linek; vykreslení obsluhuje `vykreslovani/water_brush.js`.
-- Zvýraznění je aktivní jen v kapitole Fotosyntéza; zavření detailu obnoví běžnou barvu.
+- Zvýraznění se agreguje podle tagu pouze z oken aktivní kapitoly; více otevřených oken se stejným tagem se nepřepisuje. Voda reaguje také v Transpiraci, glukóza zůstává u Fotosyntézy.
 - Chování určují [Voda linka](elementy.md#voda-linka) a [Glukóza linka](elementy.md#glukóza-linka).
 
 ## Hodnoty

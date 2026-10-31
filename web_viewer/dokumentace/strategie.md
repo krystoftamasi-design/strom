@@ -1,5 +1,8 @@
 ---
 history:
+  - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
+    date: 2026-10-31
+    change: Doplněn postup návrhu celé kapitoly podle vzoru a uplatnění v Transpiraci.
   - thread_id: d4bd5380-b7a9-4109-9dcd-32f5819e4b02
     date: 2026-10-31
     change: Doplněna hodnota produktu, cílové prostředí na počítači a žákovské miskoncepce fotosyntézy a transpirace z českých výzkumů.
@@ -48,6 +51,27 @@ Podle českých didaktických výzkumů na ZŠ a SŠ (např. *Brčáková 2022*,
   1. „Které látky nebo prvky se tu fotosyntézy účastní?“
   2. „Jak spolu v tom stromu souvisí alespoň dva z nich?“
 - Zapiš pouze: splnil / nesplnil a kde se zasekl.
+
+## Postup návrhu kapitoly podle vzoru
+
+- Začni cílem porozumění: jednou větou popiš vztah, který má student po prozkoumání vysvětlit. Podle něj vyber obsah; počet oken nepřebírej mechanicky.
+- Projdi vzorovou kapitolu v rozcestníku, definicích i implementaci. Převezmi hierarchii hlavního procesu a samostatných témat, skladbu hodnot a detailů, ovládání i vizuální jazyk.
+- Hlavní okno pojmenuj podle procesu, ukaž jednu hlavní veličinu a krátké vysvětlení. Do tematických oken rozděl příčiny, vstupy a důsledky; každé musí přispívat k cíli porozumění.
+- U každého tématu urči měřenou či modelovanou veličinu, jednotku, stručný detail a výchozí otevření. Nezaměňuj vstup, tok, zásobu a výsledek.
+- Element vybírej podle děje: trasa ukazuje cestu látky, částice směr přenosu, schéma souvislost. Sdílej existující elementy; nový přidej jen s jasným vysvětlujícím účelem a implementovaným chováním.
+- Propojení okna a elementu definuj společným tagem a konkrétní reakcí. Barva sama vazbu nezakládá; několik oken se stejným tagem musí spolupracovat.
+- Rozděl dokumentaci podle účelu: rozcestník, obsah oken, vzhled, ovládání a elementy. Každou definici napiš jednou, ostatní místa na ni odkazují.
+- Implementuj pomocí společných komponent vzoru, odstraň překonané souběžné bloky a ověř zachování výpočtů, jednotek a podstatných informací.
+- Proveď průběžné kontroly, zapiš skutečné ověření a ulož společný commit podle [Pracovního postupu](../../AGENTS.md#pracovní-postup). Vizuální test a test porozumění nezaměňuj za kontrolu syntaxe.
+
+## Uplatnění v Transpiraci
+
+- Cíl: student vysvětlí, že odpar v listech pomáhá táhnout vodu od kořenů a spotřebovává teplo; strom nepumpuje vodu jako srdce.
+- Hlavní proces: [Transpirace](okna.md#transpirace) s odparem v litrech za hodinu.
+- Tematická okna: [Příjem vody](okna.md#příjem-vody), [Průtok](okna.md#průtok), [Chlazení](okna.md#chlazení), [Teplota](okna.md#teplota). Rozlišují příjem kořeny, spotřebu ze zásoby, energetický výkon a teplotní důsledek.
+- Elementy: [Voda linka](elementy.md#voda-linka) ukazuje prostorovou trasu a reaguje na související vodní okna; [Cesta vody](elementy.md#cesta-vody) vysvětluje pořadí míst ve schématu Průtoku. Další dekorativní efekty nejsou cílem kapitoly.
+- Při samostudiu má student nejprve vidět proces a trasu vody; po rozkliknutí zjistí rozdíl mezi průtokem a příjmem a mezi výkonem chlazení a teplotou.
+- Navržený test porozumění: po minutě se zeptej „Co táhne vodu od kořenů k listům?“ a „Proč odpar strom ochlazuje?“. Práh navrhni stejně jako u Fotosyntézy: správné vysvětlení obou souvislostí u alespoň 4 z 5 studentů. Výsledek tohoto testu dosud není doložený.
 
 ## Pravidla struktury
 

@@ -2,6 +2,9 @@
 history:
   - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
     date: 2026-10-31
+    change: Sjednocena struktura Transpirace, její okna a elementy podle vzoru Fotosyntézy.
+  - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
+    date: 2026-10-31
     change: Omezen obsah reportu revize na doložené neshody.
   - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
     date: 2026-10-31
@@ -12,9 +15,6 @@ history:
   - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
     date: 2026-10-31
     change: Změněn výstup revize dokumentace na Markdown.
-  - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
-    date: 2026-10-31
-    change: Napojena pravidelná revize na dokončené commity a doplněna cesta k reportu.
 
 ---
 
@@ -59,6 +59,15 @@ history:
 - Při přesunu nebo přejmenování oprav importy, odkazy a cesty k assetům.
 - Při změně uspořádání aktualizuj `struktura_projektu.md`.
 - Bez zadání nepřesouvej ani nemaž nesouvisející soubory.
+
+# Převod podle vzoru
+
+- Při zadání „do stylu“ nebo „podle“ jiné kapitoly převezmi vedle vzhledu také strukturu obsahu, hierarchii hlavního procesu a tematických oken, skladbu hodnot a detailů i systém definic a vazeb v dokumentaci.
+- Nejprve porovnej vzorovou a cílovou kapitolu v rozcestníku, definicích i kódu; obsah cílové kapitoly rozděl podle významu do odpovídajících témat.
+- Zachovej platné výpočty a podstatné informace; opakující se vysvětlení sluč a dlouhý obsah rozděl mezi příslušná témata.
+- Posuď pro cílový děj také texty, ovládání a elementy; existující prvky sdílej odkazem a jejich vazby popiš jednou. Funkce bez opory v zadání nevymýšlej.
+- Použij společné komponenty a definice vzoru; odstraň překonanou souběžnou implementaci cílové kapitoly.
+- Výslovné omezení uživatele na vzhled respektuj; jinak nepovažuj pouhé přestylování původních bloků za dokončený převod.
 
 # Styl dokumentů
 

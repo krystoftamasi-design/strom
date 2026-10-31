@@ -62,6 +62,12 @@ function createElementUiOkno({ panel, body, reveal, toggle }) {
 export function createTreeAnnotations({ shell, model, createSeasonControl, setElementHighlight = () => {} }) {
   const linkedWindows = new Map();
   let activeChapter = null;
+  function syncHighlights() {
+    const states = [...linkedWindows.values()];
+    for (const tag of new Set(states.map(state => state.tag))) {
+      setElementHighlight(tag, states.some(state => state.tag === tag && state.chapter === activeChapter && state.open));
+    }
+  }
   const content = shell.querySelector('.chapter-content');
   const kontrola = zkontrolovatOkna({
     okna: oknaPodleKapitol,
@@ -119,9 +125,9 @@ export function createTreeAnnotations({ shell, model, createSeasonControl, setEl
     let expanded = false;
     function expand(open) {
       expanded = open;
-      if (definition && article.dataset.chapter === 'photosynthesis') {
-        linkedWindows.set(definition.tema, { chapter: article.dataset.chapter, open });
-        setElementHighlight(definition.tema, activeChapter === article.dataset.chapter && open);
+      if (definition) {
+        linkedWindows.set(panel, { tag: definition.tema, chapter: article.dataset.chapter, open });
+        syncHighlights();
       }
       body.inert = !open;
       body.setAttribute('aria-hidden', String(!open));
@@ -193,6 +199,26 @@ export function createTreeAnnotations({ shell, model, createSeasonControl, setEl
       if (label) label.textContent = definition.ovladani.popis;
       nodes.push(control);
     }
+    if (definition.cestaVody) {
+      const route = document.createElement('div');
+      route.className = 'water-route';
+      route.setAttribute('aria-label', 'Cesta vody');
+      route.textContent = 'Kořeny → Xylém → Listy → pára';
+      nodes.push(route);
+    }
+    if (definition.teplotniPorovnani) {
+      const comparison = document.createElement('p');
+      comparison.append('Mimo strom: ');
+      const ambient = document.createElement('output');
+      ambient.dataset.zivaVelicina = 'ambientTemperature';
+      ambient.textContent = '—';
+      comparison.append(ambient, ' °C · rozdíl u koruny: ');
+      const difference = document.createElement('output');
+      difference.id = 'ecoCanopyTemperatureDifference';
+      difference.textContent = '—';
+      comparison.append(difference);
+      nodes.push(comparison);
+    }
     if (definition.odkaz) {
       const link = document.createElement('a');
       link.className = 'chapter-link';
@@ -215,7 +241,7 @@ export function createTreeAnnotations({ shell, model, createSeasonControl, setEl
     const metric = id => article.querySelector(`#${id}`)?.closest('.chapter-metric');
     const detail = article.querySelector('details');
     const definitions = oknaPodleKapitol[article.dataset.chapter];
-    if (definitions && article.dataset.chapter !== 'transpiration') {
+    if (definitions) {
       for (const definition of Array.isArray(definitions) ? definitions : []) {
         if (!kontrola.neplatnaOkna.has(definition)) configuredCard(article, definition);
       }
@@ -229,11 +255,6 @@ export function createTreeAnnotations({ shell, model, createSeasonControl, setEl
       card(article, 'leaves', 'right', 'Denní čas', [paragraphs[3],
         article.querySelector('.period-hours'), article.querySelector('.period-day-cycle'),
         article.querySelector('#periodDayPlayback'), paragraphs[4]]);
-    } else if (article.dataset.chapter === 'transpiration') {
-      const route = article.querySelector('.water-route');
-      const temperature = article.querySelector('.chapter-temperature');
-      card(article, 'water', 'left', 'Transpirace', [eyebrow, tags, paragraphs[1], route, metric('ecoTranspirationInflow'), metric('ecoTreeWaterFlow'), metric('ecoTranspiration')], heading, definitions[0]);
-      card(article, 'evaporation', 'right', 'Odpar z listů', [metric('ecoCooling'), temperature, paragraphs[2], paragraphs[3]], null, definitions[1]);
     } else if (article.dataset.chapter === 'roots') {
       const tipHeading = article.querySelector('h3');
       detail.insertBefore(article.querySelector('.root-diagram'), detail.querySelector('p'));
@@ -269,9 +290,7 @@ export function createTreeAnnotations({ shell, model, createSeasonControl, setEl
   return {
     update(chapter, playbackDelta = 0) {
       activeChapter = chapter;
-      for (const [tag, state] of linkedWindows) {
-        setElementHighlight(tag, state.chapter === chapter && state.open);
-      }
+      syncHighlights();
       seasonRow.hidden = chapter === 'intro';
       seasonControl.update(chapter, playbackDelta);
     }

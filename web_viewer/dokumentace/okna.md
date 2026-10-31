@@ -2,6 +2,9 @@
 history:
   - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
     date: 2026-10-31
+    change: Sjednocena struktura Transpirace, její okna a elementy podle vzoru Fotosyntézy.
+  - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
+    date: 2026-10-31
     change: Převedena kapitola Transpirace na společný vzhled oken Fotosyntézy.
   - thread_id: 01a192cd-90b3-7e21-8050-fdf9990fe825
     date: 2026-10-31
@@ -12,9 +15,6 @@ history:
   - thread_id: 01a192cd-90b3-7e21-8050-fdf9990fe825
     date: 2026-10-31
     change: Sjednoceno zobrazení hodnot O₂, CO₂, Vody a Cukrů na jedno desetinné místo.
-  - thread_id: 01a192c9-24b4-7642-a56f-53abd8bf4304
-    date: 2026-10-31
-    change: Odstraněn posuvník z okna Voda; dokumentace uvádí, že ovládání je vypnuté.
 
 ---
 
@@ -93,26 +93,48 @@ history:
 
 ### Okna
 
+- Každé okno má jednu hlavní veličinu, stručný vlastní detail a samostatný stav otevření; stav se zachovává při změně kapitoly.
+- Kliknutí na nadpis přepne detail. Výchozí detaily Příjmu vody a Průtoku jsou otevřené, ostatní zavřené.
+
 #### Transpirace
 
 **Tag:** 🔵 `water`
 
-- Nadpis: `Transpirace`; hlavní okno vlevo dole.
-- Detail popisuje příjem vody kořeny, cestu xylémem do listů a odpařování průduchy; průtok je odhad celkové spotřeby ze zásoby, nikoli okamžitý příjem kořeny.
-- Cesta vody: Kořeny → Xylém → Listy → pára.
-- Hodnoty pod nadpisem: příjem vody, průtok vody stromem a odpařená voda v `l/h`.
-- Ovládání detailu: kliknutí na nadpis přepne detail; výchozí stav je zavřený a při změně kapitoly zůstává zachovaný.
-- Přepnutí detailu nemění hodnoty ani výpočty; zvýraznění linky se v této kapitole nepřepíná.
+- Hlavní okno vlevo dole; hodnota: odpařená voda v `l/h`, jedno desetinné místo.
+- Detail: odpařování převážně průduchy táhne vodu od kořenů a spotřebovává teplo; za světla bývá vyšší, nedostatek vody vede k omezení ztrát průduchy.
+- Související element: [Voda linka](elementy.md#voda-linka).
 
-#### Odpar z listů
+#### Příjem vody
+
+**Tag:** 🔵 `water`
+
+- Okno vpravo nahoře; hodnota: příjem kořeny v `l/h`, jedno desetinné místo.
+- Detail: kořeny doplňují zásobu vody; příjem omezuje dostupnost vody a sezónní maximum, nemusí odpovídat okamžitému odparu.
+- Související element: [Voda linka](elementy.md#voda-linka).
+
+#### Průtok
+
+**Tag:** 🔵 `water`
+
+- Druhé okno vpravo; hodnota: odhad toku ze zásoby do koruny v `l/h`, jedno desetinné místo.
+- Detail: xylém vede vodu do koruny; průtok zahrnuje odpar i drobné ostatní ztráty.
+- Související elementy: [Voda linka](elementy.md#voda-linka), [Cesta vody](elementy.md#cesta-vody).
+
+#### Chlazení
 
 **Tag:** 🌡️ `temperature`
 
-- Nadpis: `Odpar z listů`; okno vpravo.
-- Hodnota pod nadpisem: chladicí výkon v `kW` se dvěma desetinnými místy.
-- Detail obsahuje rozdíl teplot u koruny a mimo strom ve `°C`, vliv světla a nedostatku vody, noční chování koruny a omezení příjmu sezónním maximem kořenů.
-- Vysvětlení zachovává původ odhadu z normálů ČHMÚ 1991–2020 a rozlišení výukového modelu od měření či předpovědi; výkon není změna teploty.
-- Ovládání detailu: kliknutí na nadpis přepne detail; výchozí stav je zavřený a při změně kapitoly zůstává zachovaný.
+- Třetí okno vpravo; hodnota: chladicí výkon v `kW`, dvě desetinná místa.
+- Detail: odpařování spotřebovává teplo; výkon klesá při omezení odparu a není změnou teploty.
+
+#### Teplota
+
+**Tag:** 🌡️ `temperature`
+
+- Čtvrté okno vpravo; hodnota: teplota u koruny ve `°C`, jedno desetinné místo.
+- Detail obsahuje živou teplotu mimo strom a podepsaný rozdíl teplot u koruny a mimo strom.
+- Vysvětlení: denní ochlazování odparem, noční omezení vyzařování olistěnou korunou a možný mírně teplejší vzduch u ní.
+- Základem jsou normály ČHMÚ 1991–2020; kolísání a teplá či chladná období jsou výukový odhad, nikoli měření nebo předpověď počasí.
 
 ## Související dokumenty
 

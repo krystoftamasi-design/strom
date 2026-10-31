@@ -1,5 +1,8 @@
 ---
 history:
+  - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
+    date: 2026-10-31
+    change: Sjednocena struktura Transpirace, její okna a elementy podle vzoru Fotosyntézy.
   - thread_id: 01a192c9-24b4-7642-a56f-53abd8bf4304
     date: 2026-10-31
     change: Odstraněn reset délky linek při přepnutí kapitoly.
@@ -12,9 +15,6 @@ history:
   - thread_id: 01a192c9-24b4-7642-a56f-53abd8bf4304
     date: 2026-10-31
     change: Sjednocena a zpomalena animace vody a glukózy podle modelového času.
-  - thread_id: 01a192c9-24b4-7642-a56f-53abd8bf4304
-    date: 2026-10-31
-    change: Nastavena jediná stálá rychlost proudění a zvýraznění glukózy.
 
 ---
 
@@ -25,6 +25,13 @@ history:
 ## Rozpracováno
 
 ## Implementováno
+
+#### Z027 — Úplná struktura Transpirace podle Fotosyntézy
+
+- Zadání: [Transpirace](okna.md#transpirace), [Převod podle vzoru](../../AGENTS.md#převod-podle-vzoru).
+- Výsledek: hlavní proces a čtyři tematická okna se samostatnými hodnotami a detaily, společné definice i vykreslení, vazba na vodní linku a schéma cesty vody. Doplněno pravidlo pro budoucí převody a [postup ve strategii](strategie.md#postup-návrhu-kapitoly-podle-vzoru).
+- Stav: Implementováno.
+- Ověření: syntaxe a validační test oken; finální vizuální a funkční kontrola uživatelem.
 
 #### Z026 — Zachování linek při přepnutí kapitoly
 

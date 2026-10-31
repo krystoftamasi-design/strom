@@ -2,6 +2,9 @@
 history:
   - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
     date: 2026-10-31
+    change: Sjednocena struktura Transpirace, její okna a elementy podle vzoru Fotosyntézy.
+  - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
+    date: 2026-10-31
     change: Převedena kapitola Transpirace na společný vzhled oken Fotosyntézy.
   - thread_id: 01a192c9-24b4-7642-a56f-53abd8bf4304
     date: 2026-10-31
@@ -12,9 +15,6 @@ history:
   - thread_id: 01a192c9-24b4-7642-a56f-53abd8bf4304
     date: 2026-10-31
     change: "Opravena délka tahů: běžná okna končí u obsahu, Fotosyntéza používá delší tah kvůli velkému obsahu."
-  - thread_id: 01a192c9-24b4-7642-a56f-53abd8bf4304
-    date: 2026-10-31
-    change: Sjednocena výška barevných svislých tahů s výškou každého okna.
 
 ---
 
@@ -25,7 +25,7 @@ history:
 - Kliknutí na nadpis zobrazí nebo skryje detail ve vyhrazeném prostoru.
 - Změna hodnot a zobrazení detailu neposouvají polohu oken.
 - Okna nemají pohybové animace ani spojnice ke stromu.
-- V kapitole Fotosyntéza jsou výchozí detaily Cukrů a Vody otevřené; v Transpiraci jsou oba detaily zavřené.
+- V kapitole Fotosyntéza jsou výchozí detaily Cukrů a Vody otevřené; v Transpiraci jsou otevřené detaily Příjmu vody a Průtoku, ostatní jsou zavřené.
 
 ### Obecný obsah
 
@@ -43,7 +43,7 @@ history:
 
 - Podklad: [Untitled.svg](../web_assets/ui_from_af/Untitled.svg), plátno přibližně 2020 × 1143.
 - Fotosyntéza je vlevo dole; vpravo následují shora O₂, CO₂, Cukry a Voda.
-- Transpirace používá stejné hlavní okno vlevo dole jako Fotosyntéza; Odpar z listů je vpravo ve vyšším bloku s vlastním posuvem dlouhého detailu.
+- Transpirace používá stejné hlavní okno vlevo dole jako Fotosyntéza; vpravo jsou shora Příjem vody, Průtok, Chlazení a Teplota. Každé má jednu hodnotu a vlastní detail ve společných sloupcích.
 - Střed zůstává volný pro strom.
 - Bloky jsou bez výplně a rámečku; vlevo mají nepravidelný svislý tah.
 - Svislé tahy začínají u horního okraje okna; O₂, CO₂ a Cukry používají 65 % výšky svého bloku, Fotosyntéza 100 %.
