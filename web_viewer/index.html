@@ -1666,6 +1666,7 @@
 
     // Jednoduchá čistá barva pulzující s bílou (bez 3D stínování a bez fresnelu)
     const flowSelections = { water: { value: 0.0 }, sugar: { value: 0.0 } };
+    const sugarAnimationTime = { value: 0 };
     const sapUniforms = {
       uTime: { value: 0 },
       uSpeed: { value: 1.0 },
@@ -2288,8 +2289,8 @@
         glucoseMaxDistance = Math.max(glucoseMaxDistance, flowStart + greenCurve.getLength());
         const material = sapMaterial.clone();
         material.uniforms.uSelected = flowSelections.sugar;
-        material.uniforms.uTime = sapUniforms.uTime;
-        material.uniforms.uSpeed = sapUniforms.uSpeed;
+        material.uniforms.uTime = sugarAnimationTime;
+        material.uniforms.uSpeed = { value: 1.0 };
         material.uniforms.uGlow = sapUniforms.uGlow;
         material.uniforms.uOpacity = sapUniforms.uOpacity;
         // Spring reserves move upward into newly forming leaves; in summer
@@ -4087,6 +4088,7 @@
       updateSapRetraction(delta);
       if (playbackDelta > 0) updateSeasonalLeaves(playbackDelta);
       if (typeof sapUniforms !== 'undefined') sapUniforms.uTime.value = ecology.elapsedMinutes / 10;
+      sugarAnimationTime.value = now * 0.001;
       updateDayNightScene(now);
       if (playbackDelta > 0 && typeof leafControls !== 'undefined' && typeof shaderUniforms !== 'undefined') {
         const leavesAnimating = leafControls.updateLeafFall(

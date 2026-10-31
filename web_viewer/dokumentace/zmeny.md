@@ -1,5 +1,8 @@
 ---
 history:
+  - thread_id: 01a192c9-24b4-7642-a56f-53abd8bf4304
+    date: 2026-10-31
+    change: Nastavena jediná stálá rychlost proudění a zvýraznění glukózy.
   - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
     date: 2026-10-31
     change: Omezen obsah reportu revize na doložené neshody.
@@ -12,9 +15,6 @@ history:
   - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
     date: 2026-10-31
     change: Skryto konzolové okno podprocesu automatické revize.
-  - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
-    date: 2026-10-31
-    change: Změněn výstup revize dokumentace na Markdown.
 
 ---
 
@@ -25,6 +25,13 @@ history:
 ## Rozpracováno
 
 ## Implementováno
+
+#### Z022 — Stálá rychlost glukózy
+
+- Zadání: [Glukóza linka](elementy.md#glukóza-linka).
+- Výsledek: animace glukózy používá vlastní reálný čas a pevnou rychlost 1× místo dynamické rychlosti vody a modelových hodin.
+- Stav: Implementováno.
+- Ověření: kontrola syntaxe hlavního modulu a vazeb uniformů; finální vizuální kontrola uživatelem.
 
 #### Z021 — Report pouze s neshodami
 

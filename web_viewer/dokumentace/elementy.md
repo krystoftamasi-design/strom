@@ -2,6 +2,9 @@
 history:
   - thread_id: 01a192c9-24b4-7642-a56f-53abd8bf4304
     date: 2026-10-31
+    change: Nastavena stálá rychlost animace glukózy nezávislá na podmínkách a modelovém čase.
+  - thread_id: 01a192c9-24b4-7642-a56f-53abd8bf4304
+    date: 2026-10-31
     change: Zviditelněna putující vlna zvýraznění větším pulzem tloušťky a řízením průhlednosti.
   - thread_id: 01a192c9-24b4-7642-a56f-53abd8bf4304
     date: 2026-10-31
@@ -12,18 +15,6 @@ history:
   - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
     date: 2026-10-31
     change: Definováno rychlejší noční stahování obou linek za 1,2 sekundy.
-  - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
-    date: 2026-10-31
-    change: Zobecněna šablona a pravidla spojení pro libovolný definovaný typ reakce.
-  - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
-    date: 2026-10-31
-    change: Upřesněno oddělení reakce elementu od ovládání a stavu okna.
-  - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
-    date: 2026-10-31
-    change: Nahrazeny nevykreslené HTML styly tagů barevnými značkami v Markdownu.
-  - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
-    date: 2026-10-31
-    change: Obarveny tagy přesnými barvami témat z webu.
 ---
 
 # Elementy
@@ -61,6 +52,7 @@ Definice spojení
 **Chování elementu**
 
 - Fialová linka vede po kmeni a dělí se do dvou kořenů.
+- Proudění a pulzace zvýraznění mají stálou rychlost podle reálného času; odpar, aktivita fotosyntézy, posuvník rychlosti ani pauza a zrychlení modelového času ji nemění.
 - Je odsazená od modré linky.
 - Končí dřív uvnitř kořenů.
 - Na jaře proudí ze zásob v kořenech a kmeni k novým listům.
