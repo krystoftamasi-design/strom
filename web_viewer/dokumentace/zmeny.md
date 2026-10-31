@@ -2,6 +2,9 @@
 history:
   - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
     date: 2026-10-31
+    change: Přesunut záznam uživatelského testu do samostatného tests.md.
+  - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
+    date: 2026-10-31
     change: Doplněn neformální test s mámou a mýty zkráceny do jedné kapitoly.
   - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
     date: 2026-10-31
@@ -12,9 +15,6 @@ history:
   - thread_id: 01a192c9-24b4-7642-a56f-53abd8bf4304
     date: 2026-10-31
     change: Odstraněn reset délky linek při přepnutí kapitoly.
-  - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
-    date: 2026-10-31
-    change: Převedena kapitola Transpirace na společný vzhled oken Fotosyntézy.
 
 ---
 
@@ -25,6 +25,13 @@ history:
 ## Rozpracováno
 
 ## Implementováno
+
+#### Z030 — Samostatné záznamy uživatelských testů
+
+- Zadání: [Testy](tests.md).
+- Výsledek: test s mámou přesunut beze změny pozorování do `tests.md`; u strategických problémů zůstaly mýty a odkaz.
+- Stav: Implementováno.
+- Ověření: porovnání přesunutého textu s původním záznamem, kontrola odkazů a struktury.
 
 #### Z029 — Poznatky z neformálního testu
 

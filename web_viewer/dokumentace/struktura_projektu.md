@@ -2,6 +2,9 @@
 history:
   - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
     date: 2026-10-31
+    change: Přesunut záznam uživatelského testu do samostatného tests.md.
+  - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
+    date: 2026-10-31
     change: Vymezeny tři prioritní problémy porozumění.
   - thread_id: d4bd5380-b7a9-4109-9dcd-32f5819e4b02
     date: 2026-10-31
@@ -12,9 +15,6 @@ history:
   - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
     date: 2026-10-31
     change: Změněn výstup revize dokumentace na Markdown.
-  - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
-    date: 2026-10-31
-    change: Doplněn spouštěč revize po commitu a umístění výsledného reportu.
 
 ---
 
@@ -50,6 +50,7 @@ Technické podrobnosti o oknech jsou v `architektura_oken.md`.
 Celkovou architekturu popisuje `ARCHITEKTURA_IMPLEMENTACE.md`.
 Produktovou strategii a metriky popisuje [Strategie](strategie.md).
 Prioritní problémy porozumění vymezuje [Problémy k řešení](strategi_problems.md).
+Záznamy uživatelského ověřování jsou v [Testech](tests.md).
 Přehled přesunutých souborů je v `presun_souboru.json`.
 
 ## Podklady a nástroje
