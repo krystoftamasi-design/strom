@@ -122,7 +122,7 @@ body.scene-night .tree-overlay .element-ui-okno .ui-word {
 }
 .tree-overlay .element-ui-okno .annotation-frame { display: none; }
 .tree-overlay .element-ui-okno .element-ui-edge {
-  display: block; position: absolute; top: 0; left: 0; width: 8px; height: 65%;
+  display: block; position: absolute; top: 0; left: 0; width: 8px; height: 100%;
   pointer-events: none; background: var(--ui-topic);
   mask: var(--ui-edge-variant) center / 100% 100% no-repeat;
 }

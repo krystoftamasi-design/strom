@@ -1,5 +1,8 @@
 ---
 history:
+  - thread_id: 01a192c9-24b4-7642-a56f-53abd8bf4304
+    date: 2026-10-31
+    change: Sjednocena výška barevných svislých tahů s výškou každého okna.
   - thread_id: 01a18f17-efd7-7a02-8369-186b681bfcc0
     date: 2026-10-31
     change: Nastaven nezalamovaný řádek vstupů výpočtu.
@@ -38,6 +41,7 @@ history:
 - Fotosyntéza je vlevo dole; vpravo následují shora O₂, CO₂, Cukry a Voda.
 - Střed zůstává volný pro strom.
 - Bloky jsou bez výplně a rámečku; vlevo mají nepravidelný svislý tah.
+- Barevný svislý tah každého okna začíná u horního okraje a končí u jeho dolního okraje; délka se řídí výškou okna.
 - Do šířky 700 px zůstávají dva pevné sloupce; detaily mají místo pod nadpisem s vlastním posuvem a přehled vstupů je skrytý.
 
 ### Písmo
