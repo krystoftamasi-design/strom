@@ -1,5 +1,8 @@
 ---
 history:
+  - thread_id: 01a192c9-24b4-7642-a56f-53abd8bf4304
+    date: 2026-10-31
+    change: Odstraněn posuvník z okna Voda; dokumentace uvádí, že ovládání je vypnuté.
   - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
     date: 2026-10-31
     change: Rozlišeny produkce a spotřeba hodnot; CO₂ změněno z koncentrace na spotřebu v g/min a Voda na spotřebu v l/h.
@@ -83,7 +86,7 @@ history:
 - Detailní text: „Při nedostatku vody se přivírají průduchy. Do listů proniká méně CO₂ a fotosyntéza slábne. Zkuste omezit přítok nebo snížit slunce pod obzor.“
 - Vstup výpočtu: `voda`.
 - Hodnota: spotřeba vody v `l/h`.
-- Ovládání: posuvník `sliderTreeWater`, popisek `Voda`.
+- Ovládání: vypnuté; posuvník se v okně nezobrazuje.
 - Výchozí stav detailu: otevřený.
 - Související element: [Voda linka](elementy.md#voda-linka).
 

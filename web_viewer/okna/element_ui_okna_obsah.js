@@ -38,7 +38,6 @@ export const oknaPodleKapitol = {
       text: [
         'Při nedostatku vody se přivírají průduchy. Do listů proniká méně CO₂ a fotosyntéza slábne. Zkuste omezit přítok nebo snížit slunce pod obzor.',
       ],
-      ovladani: { id: 'sliderTreeWater', popis: 'Voda' },
     },
     {
       id: 'co2',

@@ -1,5 +1,8 @@
 ---
 history:
+  - thread_id: 01a192c9-24b4-7642-a56f-53abd8bf4304
+    date: 2026-10-31
+    change: Upraveno umístění rozbaleného textu a vypnuto ovládání Vody v okně.
   - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
     date: 2026-10-31
     change: Rozlišeny produkce a spotřeba hodnot a upraven výpočet CO₂ na skutečnou spotřebu v g/min.
@@ -24,6 +27,12 @@ history:
 ## Rozpracováno
 
 ## Implementováno
+
+#### Z009 — Detail bez překrytí a vypnuté ovládání Vody
+
+- Zadání: [Voda](okna.md#voda), [Vzhled oken](vzhled_oken.md#obecný-obsah).
+- Stav: Implementováno.
+- Ověření: kontrola změněného JavaScriptu a CSS; finální vizuální kontrola uživatelem.
 
 #### Z007 — Hodnoty a vstupy oken O₂, CO₂ a Voda
 

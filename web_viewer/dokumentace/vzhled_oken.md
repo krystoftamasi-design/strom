@@ -2,6 +2,9 @@
 history:
   - thread_id: 01a192c9-24b4-7642-a56f-53abd8bf4304
     date: 2026-10-31
+    change: Detailní text se při rozkliknutí drží ve vyhrazeném prostoru bez překrytí sousedních oken.
+  - thread_id: 01a192c9-24b4-7642-a56f-53abd8bf4304
+    date: 2026-10-31
     change: Opravena délka tahů: běžná okna končí u obsahu, Fotosyntéza používá delší tah kvůli velkému obsahu.
   - thread_id: 01a192c9-24b4-7642-a56f-53abd8bf4304
     date: 2026-10-31
@@ -34,7 +37,7 @@ history:
 - Nadpis: název tématu; kliknutí ovládá zobrazení detailu.
 - Hodnota: živé číslo s jednotkou pod nadpisem, pokud ji okno zobrazuje.
 - Vstupy výpočtu: drobný černý nezalamovaný řádek pod hodnotou ve dne; v noci se převrátí na světlou barvu.
-- Detail: vysvětlující text ve vyhrazeném prostoru vedle hlavních údajů.
+- Detail: vysvětlující text ve vyhrazeném prostoru vedle hlavních údajů; při rozkliknutí nepřekrývá sousední okna.
 - Ovládání: případný posuvník nebo jiný ovládací prvek v detailu.
 - Konkrétní hodnoty, texty a ovládání jednotlivých oken určuje [Obsah oken](okna.md).
 
