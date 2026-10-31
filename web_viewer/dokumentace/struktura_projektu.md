@@ -2,6 +2,9 @@
 history:
   - thread_id: 01a191dc-21ba-7b11-9e58-687e0a2cfbd7
     date: 2026-10-31
+    change: Doplněn rozsah verzovaného webu, externí podklady a Git LFS.
+  - thread_id: 01a191dc-21ba-7b11-9e58-687e0a2cfbd7
+    date: 2026-10-31
     change: Upřesněno verzování assetů a rozsah kořenových pravidel ignorování.
   - thread_id: 01a18f17-efd7-7a02-8369-186b681bfcc0
     date: 2026-10-31
@@ -58,3 +61,9 @@ Starší kopie hlavní stránky a pracovní diff jsou ve složce `old`.
 - `web_viewer/.gitignore` navíc vylučuje dokumentové exporty podle přípony.
 - Obrázky, textury, modely a binární geometrie nejsou plošně ignorované; potřebné assety lze přidat do Gitu.
 - Složky `old`, `nahledy` a `tmp` zůstávají ignorované i pro obrázky a modely.
+
+- Git obsahuje web, dokumentaci, testy, nástroje a jejich podklady; nepoužitý model `strom_web_decimated.glb` se nepřidává.
+- Kořenová `.gitattributes` ukládá GLB, binární geometrii a velké procedurální textury z `web_assets` přes Git LFS.
+- Kořenový `spustit_strom_web.bat` a použité podklady ve složce `obrazky` jsou součástí verzovaného webu.
+- Výjimkou z pracovního archivu je jednotlivě verzovaný podklad `old/leaf_light_calibration.json` pro existující test.
+- Požadavky na spuštění a omezení starších testů uvádí [README](../README.md).

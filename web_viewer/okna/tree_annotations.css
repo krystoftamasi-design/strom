@@ -1,0 +1,145 @@
+/* Shared visual system for the windows around the tree. */
+:root {
+  --window-ink: #11120f;
+  --window-muted: #41483f;
+  --window-line: #171813;
+  --window-blue: #1677d2;
+  --window-yellow: #e0a900;
+  --window-gap: 18px;
+  --window-title: 29px;
+  --window-body: 17px;
+}
+/* The former chapter sidebar is now a transparent layer anchored to the tree. */
+.has-chapters .chapter-panel.tree-overlay,
+body[data-chapter="intro"] .chapter-panel.tree-overlay {
+  position: absolute; inset: 0; width: 100%; height: 100%; max-height: none;
+  border: 0; border-radius: 0; background: none; backdrop-filter: none;
+  box-shadow: none; overflow: hidden; pointer-events: none; display: block;
+}
+.tree-overlay .chapter-content { position: absolute; inset: 0; padding: 0; overflow: visible; max-height: none; pointer-events: none; }
+.tree-connectors { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; pointer-events: none; }
+.tree-connectors path { fill: none; stroke: #4d644c; stroke-opacity: .7; stroke-width: 1; }
+.tree-connectors circle { fill: #c5dda4; stroke: #3a5638; stroke-width: 1.5; }
+.tree-annotation { position: absolute; left: 0; top: 0; width: 220px; border: 1px solid #ffffff22;
+  border-radius: 13px; background: rgba(20, 29, 25, .94); backdrop-filter: blur(12px);
+  box-shadow: 0 5px 20px #17251b16; pointer-events: auto; will-change: transform; }
+.tree-annotation > header { display: flex; align-items: center; justify-content: space-between; gap: 6px; padding: 9px 11px; }
+.tree-overlay .tree-annotation h2, .tree-overlay .tree-annotation h3 { font: 650 16px/1.25 'Satoshi', sans-serif; margin: 0; letter-spacing: -.025em; }
+.annotation-toggle { border: 0; border-radius: 50%; background: #ffffff0c; color: #c5dda4; width: 22px; height: 22px; flex-shrink: 0; font-size: 18px; cursor: pointer; }
+.annotation-toggle:hover { background: #ffffff20; }
+.annotation-body { max-height: min(40vh, 340px); padding: 0 11px 10px; overflow-y: auto; scrollbar-width: thin; scrollbar-color: #76866b transparent; }
+.annotation-reveal { display: grid; grid-template-rows: 1fr; opacity: 1; transition: grid-template-rows 260ms ease, opacity 180ms ease; }
+.annotation-reveal-inner { min-height: 0; overflow: hidden; }
+.tree-annotation.collapsed .annotation-reveal { grid-template-rows: 0fr; opacity: 0; pointer-events: none; }
+.tree-annotation > header { min-height: 38px; }
+.tree-annotation:not([data-chapter="photosynthesis"]) > header { border-bottom: 1px solid #ffffff18; }
+.tree-annotation:not([data-chapter="photosynthesis"]) .annotation-body { padding-top: var(--window-gap); }
+.tree-annotation:not([data-chapter="photosynthesis"]) .annotation-body p { color: #c8d0c3; }
+.tree-annotation:not([data-chapter="photosynthesis"]) .annotation-body strong,
+.tree-annotation:not([data-chapter="photosynthesis"]) .annotation-body output { color: #d9eabd; }
+.tree-overlay .annotation-body p { font-size: 12px; line-height: 1.45; margin-bottom: 7px; }
+.tree-overlay .annotation-body > :last-child { margin-bottom: 0; }
+.tree-overlay .annotation-body .chapter-eyebrow { font-size: 9px; margin: 0 0 9px; }
+.tree-overlay .annotation-body .chapter-note { font-size: 10px; color: #b0bfaa; }
+.tree-overlay .annotation-body .shared-water { display: block; margin: 8px 0 0; padding: 0; background: none; border: 0; }
+.tree-overlay .annotation-body .shared-water .slider-label { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; margin-bottom: 5px; color: #c1cbbf; font-size: 11px; }
+.tree-overlay .annotation-body .shared-water .slider-val { color: #b7d19b; font-weight: 650; }
+.tree-overlay .annotation-body .shared-water input[type="range"] { width: 100%; }
+.tree-overlay .chapter-tags { margin-bottom: 12px; }
+.tree-overlay .chapter-tags span { font-size: 9px; padding: 3px 6px; }
+.tree-overlay .chapter-metric { margin: 6px 0; padding: 8px; gap: 3px; }
+.tree-overlay .chapter-metric output { font-size: 23px; }
+.tree-overlay .chapter-temperature { padding: 8px; margin-bottom: 8px; }
+.tree-overlay .chapter-equation { margin-top: 12px; padding: 10px; font-size: 11px; }
+.tree-overlay .water-route { font-size: 10px; padding: 6px 0; margin-bottom: 4px; }
+.tree-overlay .chapter-secondary { font-size: 11px; padding: 10px; }
+.tree-overlay details { padding-top: 8px; margin-top: 11px; }
+.tree-overlay details p { font-size: 11px; }
+.tree-overlay .chapter-link { font-size: 11px; margin-top: 7px; }
+.period-readout { display: flex; flex-direction: column; gap: 3px; padding: 9px; margin: 7px 0 11px; border: 1px solid #c5dda438; border-radius: 8px; background: #c5dda40b; }
+.period-readout span { color: #aebda8; font-size: 10px; }
+.period-readout strong { color: #d9eabd; font: 600 14px 'Satoshi', sans-serif; }
+.period-choice-row { display: grid; gap: 4px; margin: 9px 0; }
+.period-seasons { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+.period-hours { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.period-choice-row button, .period-playback { min-width: 0; border: 1px solid #84957466; border-radius: 7px; background: #c5dda412; color: #d8e5ca; cursor: pointer; font: 500 10px 'Nohemi', sans-serif; }
+.period-choice-row button { padding: 8px 2px; }
+.period-choice-row button[aria-pressed="true"] { background: #c5dda4; border-color: #c5dda4; color: #17251b; }
+.period-playback { display: block; width: 100%; padding: 8px; margin: 9px 0 2px; text-align: center; }
+.period-day-cycle { display: flex; align-items: center; gap: 6px; margin: 10px 0 3px; color: #c1cbbf; font-size: 10px; cursor: pointer; }
+.period-day-cycle input { accent-color: #b5cfa3; }
+.period-choice-row button:hover, .period-playback:hover { border-color: #c5dda4; }
+.tree-overlay .seed-cycle { margin: 10px 0; }
+.tree-overlay .seed-cycle:not(.all-seasons) > li:not(.current) { display: none; }
+.tree-overlay .seed-cycle li { padding: 10px; }
+.tree-overlay .seed-cycle span { font-size: 11px; }
+.tree-overlay [data-chapter="intro"] .tree-annotation { width: clamp(260px, 18vw, 320px); }
+.tree-overlay [data-chapter="intro"] .annotation-body { max-height: calc(100vh - 200px); }
+.tree-overlay [data-chapter="intro"] .intro-title {
+  position: absolute; left: 8vw; top: 50vh; margin: 0; transform: translateY(-50%);
+  font: 500 clamp(64px, 9vw, 150px)/1 'Nohemi', sans-serif;
+  color: var(--window-ink); letter-spacing: -.04em;
+}
+body.scene-night .tree-overlay [data-chapter="intro"] .intro-title { color: #f0f2e9; }
+.tree-overlay [data-chapter="intro"] .intro-season { margin-top: 18px; }
+.tree-overlay .chapter-shared { position: absolute; left: 20px; bottom: 20px; width: 244px;
+  max-height: min(43vh, 330px); padding: 12px; pointer-events: auto; border: 1px solid #ffffff20;
+  border-radius: 14px; background: rgba(20, 29, 25, .94); backdrop-filter: blur(12px); }
+.tree-overlay .shared-heading { margin-bottom: 8px; }
+.tree-overlay .shared-heading { display: flex; align-items: center; }
+.shared-toggle { border: 0; border-radius: 50%; background: #ffffff0c; color: #c5dda4; width: 22px; height: 22px; flex: 0 0 auto; font-size: 18px; cursor: pointer; }
+.shared-toggle:hover { background: #ffffff20; }
+.chapter-shared.collapsed .shared-body { display: none; }
+.tree-overlay .season-date-card { position: absolute; top: 32px; left: 32px; z-index: 2; display: flex; align-items: baseline; gap: 11px; padding: 0; border: 0; border-radius: 0; background: transparent; color: #252b25; font: 400 14px 'Satoshi', sans-serif; pointer-events: none; }
+.tree-overlay .season-date-card[hidden] { display: none; }
+.tree-overlay .season-date-card output { color: inherit; font: 500 17px 'Satoshi', sans-serif; }
+body.scene-night .tree-overlay .season-date-card { color: #f0f2e9; }
+.tree-overlay .temperature-comparison { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; margin-bottom: 8px; }
+.tree-overlay .temperature-comparison > div { min-width: 0; padding: 7px; border: 1px solid #ffffff20; border-radius: 8px; }
+.tree-overlay .temperature-comparison span { display: block; color: #b0bfaa; font-size: 10px; line-height: 1.25; }
+.tree-overlay .temperature-comparison strong { display: block; color: #d9eabd; font: 600 15px 'Satoshi', sans-serif; white-space: nowrap; }
+.tree-overlay .temperature-comparison output { font: inherit; }
+.tree-overlay .chapter-shared .chapter-note { font-size: 10px; margin-top: 9px; }
+.tree-overlay .chapter-shared .slider-label { font-size: 11px; }
+.tree-overlay .chapter-shared .reserve-heading { margin-top: 9px; }
+.has-chapters .hud-bottom { left: auto; right: 20px; bottom: 14px; }
+
+.tree-overlay .season-ring-accessible {
+  position: absolute; width: 1px; height: 1px; padding: 0; margin: 0;
+  overflow: hidden; clip-path: inset(50%); white-space: nowrap;
+}
+.tree-overlay .season-ring-accessible:focus-within {
+  left: 50%; bottom: 16px; transform: translateX(-50%); width: auto; height: auto;
+  clip-path: none; overflow: visible; pointer-events: auto; display: flex; gap: 5px;
+  padding: 8px; border-radius: 12px; background: #1c2a22;
+}
+.season-clock { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin: 10px 0 14px; }
+.season-clock output { color: #d9e6cb; font: 500 12px 'Satoshi', sans-serif; }
+.season-clock button { border: 1px solid #81956a66; border-radius: 7px; padding: 6px 8px; background: #c5dda412; color: #c5dda4; font: 400 10px 'Nohemi', sans-serif; cursor: pointer; }
+.season-clock button:focus-visible { outline: 2px solid #c5dda4; outline-offset: 2px; }
+
+/* Photosynthesis windows are styled in element_ui_okna_vzhled.css. */
+@media (max-width: 1050px) and (min-width: 701px) { .tree-annotation { width: 205px; } .tree-overlay .chapter-shared { width: 224px; left: 12px; bottom: 12px; } }
+@media (max-width: 700px) {
+  .tree-annotation { width: min(185px, calc(50vw - 18px)); border-radius: 10px; }
+  .tree-overlay [data-chapter="seasons"] .tree-annotation { width: min(165px, calc(50vw - 22px)); }
+  .tree-overlay [data-chapter="seasons"] .period-seasons { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .tree-annotation > header { padding: 9px; }
+  .tree-overlay .tree-annotation h2, .tree-overlay .tree-annotation h3 { font-size: 12px; }
+  .annotation-toggle { width: 22px; height: 22px; }
+  .annotation-body { padding: 0 10px 10px; max-height: 30vh; }
+  .tree-overlay .annotation-body p { font-size: 11px; }
+  .tree-overlay [data-chapter="intro"] .tree-annotation { width: min(270px, calc(100vw - 36px)); }
+  .tree-overlay [data-chapter="intro"] .annotation-body { max-height: 25vh; }
+  .tree-overlay .chapter-shared { left: 10px; bottom: 82px; width: 160px; padding: 11px; max-height: 185px; }
+  .tree-overlay .shared-heading { display: block; }
+  .tree-overlay .shared-heading { position: relative; padding-right: 28px; }
+  .tree-overlay .shared-toggle { position: absolute; right: 0; top: 0; }
+  .tree-overlay .season-date-card { top: 22px; left: 22px; padding: 0; }
+  .tree-overlay .shared-heading h3 { font-size: 12px; margin-bottom: 4px; }
+  .tree-overlay .temperature-comparison { gap: 4px; }
+  .tree-overlay .temperature-comparison > div { padding: 5px; }
+  .tree-overlay .temperature-comparison strong { font-size: 12px; }
+  .tree-overlay .reserve-heading, .tree-overlay .chapter-shared .slider-label { font-size: 10px; }
+  .has-chapters .hud-bottom { left: 10px; right: auto; top: 74px; bottom: auto; }
+}

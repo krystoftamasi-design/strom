@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="cs">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#dee0d2">
+  <title>Uvnitř listu — živá fotosyntéza</title>
+  <link rel="stylesheet" href="./kapitoly/fotosynteza.css">
+  <script src="./kapitoly/fotosynteza.js" defer></script>
+</head>
+<body>
+  <header class="top">
+    <a class="back" href="./index.html"><span aria-hidden="true">↖</span> Zpět ke stromu</a>
+    <span class="edition">ŽIVOT STROMU <i></i> 01 / UVNITŘ LISTU</span>
+    <button id="reset" class="text-button">Začít znovu ↺</button>
+  </header>
+  <main>
+    <section class="intro">
+      <div><p class="eyebrow">MALÝ SVĚT. VELKÁ PROMĚNA.</p><h1>Jak se světlo<br>promění v <em>život.</em></h1></div>
+      <p class="intro-copy">Vstup do chloroplastu. Dvě propojené části jedné dílny mění energii slunce a uhlík ze vzduchu v materiál pro růst stromu.</p>
+    </section>
+    <div class="workspace">
+      <section class="scene-card" aria-label="Animované schéma fotosyntézy">
+        <div class="scene-top"><span><i class="live-dot"></i> CHLOROPLAST / ZVĚTŠENÝ POHLED</span><span id="running-label">Dílna pracuje</span></div>
+        <div class="diagram" id="diagram">
+          <canvas id="diagram-canvas" aria-hidden="true"></canvas>
+          <div class="diagram-caption sunlight">SVĚTLO<span>energie ze slunce</span></div>
+          <div class="diagram-caption water">H₂O<span>voda z kořenů</span></div>
+          <div class="diagram-caption carbon">CO₂<span>uhlík ze vzduchu</span></div>
+          <button class="hotspot station" data-step="0"><small>01 / THYLAKOIDY</small><strong data-story="Nabíjecí stanice" data-biology="Světelné reakce">Nabíjecí stanice</strong><span>světlo → chemická energie</span></button>
+          <button class="hotspot delivery" data-step="1"><small>02 / PŘENOS</small><strong>ATP + NADPH</strong><span data-story="energie + elektrony pro dílnu" data-biology="přenos energie a redukční síly">energie + elektrony pro dílnu</span></button>
+          <button class="hotspot workshop" data-step="2"><small>03 / STROMA</small><strong data-story="Cukerná dílna" data-biology="Calvinův cyklus">Cukerná dílna</strong><span>Calvinův cyklus</span></button>
+          <button class="hotspot return" data-step="3"><small>04 / ZPÁTEČNÍ CESTA</small><strong>ADP + Pᵢ · NADP⁺</strong><span>znovu do oběhu</span></button>
+          <div class="diagram-caption oxygen">O₂<span>kyslík z vody</span></div>
+          <div class="diagram-caption sugar">G3P <span>stavební dílek pro sacharidy</span></div>
+          <div class="stroma-label">STROMA · VNITŘNÍ PROSTOR CHLOROPLASTU</div>
+        </div>
+        <div class="playback">
+          <button id="play" aria-pressed="false">Ⅱ Pozastavit</button>
+          <label for="speed">Tempo <input id="speed" type="range" min="0.5" max="2" value="1" step="0.25"><output id="speed-value" for="speed">1×</output></label>
+          <span class="hint">Dotkni se části schématu a prozkoumej ji.</span>
+        </div>
+      </section>
+      <aside class="story-panel">
+        <div class="story-toolbar"><span>PRŮVODCE</span><div class="segmented" aria-label="Způsob vysvětlení"><button id="story-mode" aria-pressed="true">Přirovnání</button><button id="biology-mode" aria-pressed="false">Biologie</button></div></div>
+        <nav class="steps" aria-label="Kroky fotosyntézy"><button data-step="0" aria-label="1. Světelné reakce">01</button><button data-step="1" aria-label="2. Přenos energie">02</button><button data-step="2" aria-label="3. Calvinův cyklus">03</button><button data-step="3" aria-label="4. Recyklace přenašečů">04</button></nav>
+        <div id="story-content" aria-live="polite"><p id="step-kicker" class="eyebrow"></p><h2 id="step-title"></h2><p id="step-body"></p><div class="takeaway"><span>ZAPAMATUJ SI</span><p id="step-takeaway"></p></div></div>
+        <div class="step-footer"><span id="step-count">01 / 04</span><button id="next">Další krok ↗</button></div>
+      </aside>
+    </div>
+    <section class="experiment" aria-labelledby="experiment-title">
+      <div class="experiment-intro"><p class="eyebrow">CO SE STANE, KDYŽ…</p><h2 id="experiment-title">Vezmi dílně jednu surovinu.</h2><p>Vypni přívod a sleduj, co se změní.</p></div>
+      <div class="switches"><button id="light" class="resource-toggle" aria-pressed="true"><span class="resource-icon">☀</span><span>Světlo<small id="light-state">zapnuto</small></span><span class="switch-track"></span></button><button id="co2" class="resource-toggle" aria-pressed="true"><span class="resource-icon co2-icon">CO₂</span><span>Přísun CO₂<small id="co2-state">zapnuto</small></span><span class="switch-track"></span></button></div>
+      <div class="experiment-result"><div class="reserve-label"><span>Zásoba ATP a NADPH</span><span id="reserve-label">dostupná</span></div><meter id="reserve" min="0" max="1" value="0.65" aria-label="Ilustrační zásoba ATP a NADPH"></meter><p id="result" role="status"></p></div>
+    </section>
+    <section class="insights" aria-label="Dvě důležité souvislosti">
+      <article><span class="insight-number">A</span><div><h3>Strom přibývá i ze vzduchu.</h3><p>Uhlík v cukrech pochází z CO₂. Cukry pak slouží jako zdroj energie i materiál, například pro celulózu ve dřevě.</p></div></article>
+      <article><span class="insight-number">B</span><div><h3>„Temnostní“ neznamená noční.</h3><p>Calvinův cyklus nepoužívá světlo přímo. Potřebuje ale ATP a NADPH ze světelných reakcí a souvisí i s regulací závislou na světle.</p></div></article>
+    </section>
+  </main>
+  <footer><span>Malovaný model fotosyntézy · pohyb a zásoby jsou názorné, nikoli měřená kinetika.</span><a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC5264509/" target="_blank" rel="noopener noreferrer">Biologické souvislosti ↗</a></footer>
+</body>
+</html>
