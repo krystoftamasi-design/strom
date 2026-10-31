@@ -2,6 +2,9 @@
 history:
   - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
     date: 2026-10-31
+    change: Omezen obsah reportu revize na doložené neshody.
+  - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
+    date: 2026-10-31
     change: Zavedeno porovnání definic se skutečným webem v Chromu po deseti commitech.
   - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
     date: 2026-10-31
@@ -12,9 +15,6 @@ history:
   - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
     date: 2026-10-31
     change: Nahrazen hodinový plán spuštěním revize z post-commit hooku a popsáno umístění reportu.
-  - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
-    date: 2026-10-31
-    change: Popsána kontrola dokumentace před commitem a automatická revize po deseti commitech.
 
 ---
 
@@ -59,8 +59,8 @@ history:
 - Agent porovnává přesný zachycený commit a odpovídající definice s kódem, odděluje nové a staré nálezy a nesmí nic opravovat ani commitovat. Podklady z prohlížeče získává samostatný sběr v Google Chromu.
 - `tools/review_browser.mjs` spustí skutečný Google Chrome bez okna, projde kapitoly, zachytí texty a okna, přepne detaily a uloží snímky i chyby.
 - Web obsluhuje dočasný server z přesného Git commitu na volném místním portu; u LFS ověřuje hash dostupného podkladu. Server i Chrome se po sběru ukončí.
-- Agent vždy porovnává všechny hlavní obsahové definice jako zdroj požadavků, nejen změněné soubory. Report obsahuje požadavek, skutečnost, důkaz a SHODA / NESHODA / NEOVĚŘENO.
-- Snímky a JSON jsou v `old/browser_review_<hash>`; samotné otevření webu neprokazuje správnost animací ani všech interakcí. Chybějící pokrytí a selhání Chromu musí být uvedeno v reportu.
+- Agent vždy porovnává všechny hlavní obsahové definice jako zdroj požadavků, nejen změněné soubory. Report vypisuje pouze doložené neshody: odkaz na definici, očekávání, skutečnost a důkaz. Shody, neověřené položky a popis průběhu vynechává; bez nálezu uvede pouze „Žádná doložená neshoda“.
+- Snímky a JSON jsou v `old/browser_review_<hash>`; samotné otevření webu neprokazuje správnost animací ani všech interakcí. Chybějící pokrytí není neshoda; technické podklady zůstávají v JSON a logu. Stav selhání samotného spouštěče zůstává viditelný.
 - Vyžaduje Node.js, Google Chrome a Playwright z existujícího lokálního runtime Codexu; jiný prohlížeč se nepoužije.
 - Pracovní změny ostatních chatů se nehodnotí jako součást prověřeného commitu.
 - Souběžné revize chrání systémový zámek; pokud během revize přibude dalších deset commitů, pracovní proces provede další revizi.

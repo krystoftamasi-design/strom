@@ -2,6 +2,9 @@
 history:
   - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
     date: 2026-10-31
+    change: Omezen obsah reportu revize na doložené neshody.
+  - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
+    date: 2026-10-31
     change: Zavedeno porovnání definic se skutečným webem v Chromu po deseti commitech.
   - thread_id: 01a192c9-24b4-7642-a56f-53abd8bf4304
     date: 2026-10-31
@@ -12,9 +15,6 @@ history:
   - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
     date: 2026-10-31
     change: Změněn výstup revize dokumentace na Markdown.
-  - thread_id: 01a192c9-24b4-7642-a56f-53abd8bf4304
-    date: 2026-10-31
-    change: Sladěna dokumentace vzhledu se současným rozložením detailů a tahů oken.
 
 ---
 
@@ -26,10 +26,17 @@ history:
 
 ## Implementováno
 
+#### Z021 — Report pouze s neshodami
+
+- Zadání: [Kontrola dokumentace](kontrola_dokumentace.md).
+- Výsledek: report vypisuje jen doložené neshody, bez shod a neověřených položek; upraven i existující report.
+- Stav: Implementováno.
+- Ověření: kontrola výsledného diffu, syntaxe spouštěče a formátu zkráceného reportu.
+
 #### Z020 — Shoda dokumentace s webem po deseti commitech
 
 - Zadání: [Revize po deseti commitech](kontrola_dokumentace.md#revize-po-deseti-commitech).
-- Výsledek: revize porovnává všechny obsahové definice s kódem a pozorováním skutečného Google Chromu; hlásí neshody a neověřené oblasti bez oprav.
+- Výsledek: revize porovnává všechny obsahové definice s kódem a pozorováním skutečného Google Chromu; hlásí doložené neshody bez oprav.
 - Stav: Implementováno.
 - Ověření: integrační testy spouštěče a ruční kontrola sběru v Chromu; úplnost všech scénářů není zaručena.
 

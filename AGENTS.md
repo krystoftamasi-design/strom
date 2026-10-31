@@ -2,6 +2,9 @@
 history:
   - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
     date: 2026-10-31
+    change: Omezen obsah reportu revize na doložené neshody.
+  - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
+    date: 2026-10-31
     change: Zavedeno porovnání definic se skutečným webem v Chromu po deseti commitech.
   - thread_id: 01a192c9-24b4-7642-a56f-53abd8bf4304
     date: 2026-10-31
@@ -12,9 +15,6 @@ history:
   - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
     date: 2026-10-31
     change: Napojena pravidelná revize na dokončené commity a doplněna cesta k reportu.
-  - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
-    date: 2026-10-31
-    change: Doplněna automatická kontrola připraveného commitu a pravidelná revize dokumentace.
 
 ---
 
@@ -137,7 +137,7 @@ Soubory jsou v `web_viewer/dokumentace`.
 - Před každým commitem spouští Git kontrolu připraveného obsahu podle [Kontroly dokumentace](web_viewer/dokumentace/kontrola_dokumentace.md).
 - Nové formální chyby nebo změnu webu bez připravené evidence oprav před commitem; dřívější nálezy nejsou důkazem správnosti a zůstávají předmětem úplné revize.
 - Revizi po deseti nových commitech spouští lokální `post-commit` hook na pozadí; report je v `web_viewer/old/revize_dokumentace.md`.
-- Dokumentaci považuj při revizi za zdroj požadavků; porovnej ji s pozorováním webu v Chromu a kódem, neověřené oblasti výslovně označ.
+- Dokumentaci považuj při revizi za zdroj požadavků; porovnej ji s pozorováním webu v Chromu a kódem, do reportu vypisuj pouze doložené neshody; neověřenost sama není neshoda.
 - Revize je pouze kontrolní; kód a dokumenty sama neopravuje. Její výsledek rozlišuj od finálního testování webu.
 
 # Commity
