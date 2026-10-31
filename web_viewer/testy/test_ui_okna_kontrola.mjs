@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import { TreeEcology } from '../ekologie/tree_ecology.js';
 import { vzorce, vypocitatVzorec } from '../ekologie/tree_ecology_vzorce.js?v=5';
-import { veliciny, vstupyVzorce, zobrazitHodnotu } from '../okna/element_ui_okna_veliciny.js?v=6';
+import { veliciny, vstupyVzorce, zobrazitHodnotu } from '../okna/element_ui_okna_veliciny.js?v=8';
 import { zkontrolovatOkna } from '../okna/element_ui_okna_kontrola.js?v=static-ui-3';
 import { oknaPodleKapitol } from '../okna/element_ui_okna_obsah.js';
 
@@ -58,7 +58,8 @@ assert.deepEqual(zkontrolovatOkna({ ...nastaveni, body: undefined }).chyby, [], 
 const legacyWindow = { ...oknaPodleKapitol.photosynthesis[0], bod: 'missingAnchor' };
 assert(zkontrolovatOkna({ ...nastaveni, okna: { photosynthesis: [legacyWindow] }, body: {} }).neplatnaOkna.has(legacyWindow),
   'An explicitly configured legacy anchor must still be valid');
-assert(zkontrolovatOkna({ ...nastaveni, najitOvladani: () => null }).chyby.some(chyba => chyba.includes('sliderTreeWater')));
+assert.deepEqual(zkontrolovatOkna({ ...nastaveni, najitOvladani: () => null }).chyby, [],
+  'Windows without controls remain valid');
 
 const zpravy = [];
 const puvodniError = console.error;
@@ -70,6 +71,7 @@ try {
   assert.equal(zpravy.length, 1, 'Repeated display errors must only be reported once');
   assert.equal(zobrazitHodnotu('unknown', model), '—');
   assert.equal(zobrazitHodnotu('activity', { activity: 0.53 }), '53');
+  assert.equal(zobrazitHodnotu('glucoseGramsPerMinute', { glucoseGramsPerMinute: 0 }), '0,0');
   assert.equal(zobrazitHodnotu('glucoseGramsPerMinute', { glucoseGramsPerMinute: 3.2 }), '3,2');
   assert(Number.isNaN(vypocitatVzorec('missingFormula', model)));
   assert(Number.isNaN(vypocitatVzorec('activity', { ...model, hydration: Infinity })));

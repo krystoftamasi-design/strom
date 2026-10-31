@@ -1,4 +1,4 @@
-import { zobrazitHodnotu } from '../okna/element_ui_okna_veliciny.js?v=6';
+import { zobrazitHodnotu } from '../okna/element_ui_okna_veliciny.js?v=8';
 import { SEASONS } from '../ekologie/tree_ecology.js?v=active-leaves-3&checks=1';
 import { createTreeAnnotations } from '../okna/tree_annotations.js?v=linked-highlight-3';
 

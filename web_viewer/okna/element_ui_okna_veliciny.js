@@ -24,17 +24,17 @@ export const veliciny = {
   },
   waterConsumptionLitresPerHour: {
     nazev: 'Spotřeba vody', tema: 'water',
-    jednotka: 'l/h', nasobek: 60, desetinnaMista: 2,
+    jednotka: 'l/h', nasobek: 60, desetinnaMista: 1,
     vystupId: 'ecoWaterConsumption', popisHodnoty: 'spotřeba', druh: 'water',
   },
   co2GramsPerMinute: {
     nazev: 'Spotřeba CO₂', tema: 'co2',
-    jednotka: 'g/min', nasobek: 1, desetinnaMista: 3,
+    jednotka: 'g/min', nasobek: 1, desetinnaMista: 1,
     vystupId: 'ecoCo2Consumption', popisHodnoty: 'spotřeba', druh: 'co2',
   },
   oxygenGramsPerMinute: {
     nazev: 'Tvorba O₂', tema: 'oxygen',
-    jednotka: 'g/min', nasobek: 1, desetinnaMista: 2,
+    jednotka: 'g/min', nasobek: 1, desetinnaMista: 1,
     vystupId: 'ecoOxygen', popisHodnoty: 'produkce', druh: 'oxygen',
   },
 };
@@ -74,5 +74,8 @@ export function zobrazitHodnotu(nazev, model) {
     ohlasitChybuOken(`Veličina „${nazev}“ má neplatnou hodnotu nebo formát; zobrazuje se —.`);
     return '—';
   }
-  return (hodnota * nasobek).toLocaleString('cs-CZ', { maximumFractionDigits: mista });
+  return (hodnota * nasobek).toLocaleString('cs-CZ', {
+    minimumFractionDigits: mista,
+    maximumFractionDigits: mista,
+  });
 }

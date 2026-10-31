@@ -1,5 +1,8 @@
 ---
 history:
+  - thread_id: 01a192cd-90b3-7e21-8050-fdf9990fe825
+    date: 2026-10-31
+    change: Sjednoceno zobrazení hodnot O₂, CO₂, Vody a Cukrů na jedno desetinné místo.
   - thread_id: 01a192c9-24b4-7642-a56f-53abd8bf4304
     date: 2026-10-31
     change: Upraveno umístění rozbaleného textu a vypnuto ovládání Vody v okně.
@@ -12,12 +15,6 @@ history:
   - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
     date: 2026-10-31
     change: Sjednocena evidence s přijetím bez výhrady bez čekání na schválení.
-  - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
-    date: 2026-10-31
-    change: Navázána evidence na pracovní postup a upřesněn zápis finálního ověření uživatelem.
-  - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
-    date: 2026-10-31
-    change: Doplněna evidence drobného vizuálního ladění po dokončených logických změnách.
 ---
 
 # Změny
@@ -27,6 +24,13 @@ history:
 ## Rozpracováno
 
 ## Implementováno
+
+#### Z009 — Jedno desetinné místo hodnot
+
+- Zadání: [O₂](okna.md#o₂), [CO₂](okna.md#co₂), [Cukry](okna.md#cukry), [Voda](okna.md#voda).
+- Výsledek: hodnoty produkce a spotřeby se zobrazují s jedním desetinným místem.
+- Stav: Implementováno.
+- Ověření: kontrola formátování hodnot, validační test oken a kontrola zobrazení v Chromu.
 
 #### Z009 — Detail bez překrytí a vypnuté ovládání Vody
 

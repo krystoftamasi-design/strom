@@ -1,5 +1,8 @@
 ---
 history:
+  - thread_id: 01a192cd-90b3-7e21-8050-fdf9990fe825
+    date: 2026-10-31
+    change: Sjednoceno zobrazení hodnot O₂, CO₂, Vody a Cukrů na jedno desetinné místo.
   - thread_id: 01a192c9-24b4-7642-a56f-53abd8bf4304
     date: 2026-10-31
     change: Odstraněn posuvník z okna Voda; dokumentace uvádí, že ovládání je vypnuté.
@@ -12,12 +15,6 @@ history:
   - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
     date: 2026-10-31
     change: Přesunuto ovládání a uchování stavu Cukrů k oknu a doplněna pravidla struktury.
-  - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
-    date: 2026-10-31
-    change: Nahrazeny nevykreslené HTML styly tagů barevnými značkami v Markdownu.
-  - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
-    date: 2026-10-31
-    change: Obarveny tagy přesnými barvami témat z webu.
 ---
 
 # Okna
@@ -46,7 +43,7 @@ history:
 - Téma: kyslík; strana: vpravo.
 - Detailní text: „Při ději se uvolňuje kyslík.“
 - Vstupy výpočtu: `Světlo × voda × listy × CO₂ × teplota`.
-- Hodnota: produkce O₂ v `g/min`.
+- Hodnota: produkce O₂ v `g/min`, zobrazena na jedno desetinné místo.
 - Výchozí stav detailu: zavřený.
 - Související element: [O₂ částice](elementy.md#o₂).
 
@@ -58,7 +55,7 @@ history:
 - Téma: CO₂; strana: vpravo.
 - Detailní text: „CO₂ se při fotosyntéze spotřebovává jako vstup pro tvorbu cukrů. Zobrazená hodnota je okamžitá spotřeba podle aktivní plochy listů a fotosyntetické účinnosti.“
 - Vstupy výpočtu: `Světlo × voda × listy × CO₂ × teplota`.
-- Hodnota: spotřeba CO₂ v `g/min`.
+- Hodnota: spotřeba CO₂ v `g/min`, zobrazena na jedno desetinné místo.
 - Výchozí stav detailu: zavřený.
 - Související element: [CO₂ částice](elementy.md#co₂).
 
@@ -69,7 +66,7 @@ history:
 - Nadpis: `Cukry`.
 - Téma: cukry; strana: vpravo.
 - Popisek: „Tvorba cukrů ≈ glukóza“.
-- Hodnota: `glucoseGramsPerMinute`, jednotka `g/min`.
+- Hodnota: `glucoseGramsPerMinute`, jednotka `g/min`, jedno desetinné místo.
 - Vstupy výpočtu: zapnuté.
 - Výsledná hodnota: zapnutá.
 - Výchozí stav detailu: otevřený.
@@ -85,7 +82,7 @@ history:
 - Téma: voda; strana: vpravo.
 - Detailní text: „Při nedostatku vody se přivírají průduchy. Do listů proniká méně CO₂ a fotosyntéza slábne. Zkuste omezit přítok nebo snížit slunce pod obzor.“
 - Vstup výpočtu: `voda`.
-- Hodnota: spotřeba vody v `l/h`.
+- Hodnota: spotřeba vody v `l/h`, zobrazena na jedno desetinné místo.
 - Ovládání: vypnuté; posuvník se v okně nezobrazuje.
 - Výchozí stav detailu: otevřený.
 - Související element: [Voda linka](elementy.md#voda-linka).
