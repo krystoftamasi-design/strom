@@ -2,6 +2,9 @@
 history:
   - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
     date: 2026-10-31
+    change: Doplněn neformální test s mámou a mýty zkráceny do jedné kapitoly.
+  - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
+    date: 2026-10-31
     change: Vymezeny tři prioritní problémy porozumění.
   - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
     date: 2026-10-31
@@ -12,9 +15,6 @@ history:
   - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
     date: 2026-10-31
     change: Převedena kapitola Transpirace na společný vzhled oken Fotosyntézy.
-  - thread_id: 01a192c9-24b4-7642-a56f-53abd8bf4304
-    date: 2026-10-31
-    change: Odstraněno kolísání rychlosti linek a ponecháno pouze řízení časem přehrávání.
 
 ---
 
@@ -25,6 +25,13 @@ history:
 ## Rozpracováno
 
 ## Implementováno
+
+#### Z029 — Poznatky z neformálního testu
+
+- Zadání: [Problémy k řešení](strategi_problems.md).
+- Výsledek: zapsán test s mámou včetně fungujícího Období; odděleny návrhy od pozorování a mýty zkráceny do jedné kapitoly.
+- Stav: Implementováno.
+- Ověření: porovnání se zprávou uživatele, kontrola členění a odkazů; nejde o nový test webu ani ověření cílové skupiny.
 
 #### Z028 — Tři prioritní problémy porozumění
 

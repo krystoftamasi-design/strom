@@ -2,51 +2,77 @@
 history:
   - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
     date: 2026-10-31
+    change: Doplněn neformální test s mámou a mýty zkráceny do jedné kapitoly.
+  - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
+    date: 2026-10-31
     change: Vymezeny tři prioritní problémy porozumění.
 ---
 
 # Problémy k řešení
 
-- Prioritní problémy pro návrh webu podle [Strategie](strategie.md).
-- Vyřešení musí potvrdit ověření porozumění u studentů; samotná implementace nestačí.
+- Podklady pro návrh webu podle [Strategie](strategie.md); samotné změny webu se řeší samostatně.
 
-## Mýtus „strom jí hlínu kořeny“
+## Mýty a porozumění
 
-- Mylná představa: hmota stromu pochází z hlíny přijímané kořeny.
-- Cíl porozumění: student vysvětlí, že uhlík pro tvorbu organických látek získává strom z CO₂ ve vzduchu; kořeny přijímají vodu a minerální živiny.
-- Otázka pro ověření: „Odkud strom získává uhlík, ze kterého tvoří dřevo?“
-- Související obsah: [CO₂](okna.md#co₂), [Cukry](okna.md#cukry), [Voda](okna.md#voda).
-- Stav: K řešení.
+- **„Strom jí hlínu kořeny“:** vysvětlit, že uhlík pro růst pochází z CO₂ ve vzduchu; kořeny přijímají vodu a minerální živiny. Ověření: „Odkud strom získává uhlík pro tvorbu dřeva?“ Viz [CO₂](okna.md#co₂) a [Cukry](okna.md#cukry).
+- **Tah vody a transpirace:** vysvětlit, že odpar v listech pomáhá táhnout vodu xylémem od kořenů a spotřebovává teplo. Ověření: „Co táhne vodu nahoru a proč odpar ochlazuje?“ Viz [Transpirace](okna.md#transpirace).
+- **„Kyslík pro lidi“:** vysvětlit, že strom fotosyntézou vytváří cukry pro vlastní růst a získávání energie; kyslík se přitom uvolňuje. Ověření: „Co fotosyntéza přináší samotnému stromu?“ Viz [Fotosyntéza](okna.md#fotosyntéza).
+- Stav všech tří témat: K řešení; vyřešení musí potvrdit ověření porozumění u studentů.
 
-## Nepochopení tahu vody a transpirace
+## Test s mámou — 31. 10. 2026
 
-- Mylná představa: odpar je jen usychání listu nebo strom pumpuje vodu od kořenů jako srdce.
-- Cíl porozumění: student vysvětlí, že odpařování v listech pomáhá táhnout vodu xylémem od kořenů a spotřebovává teplo; rozliší příjem vody, průtok a odpar.
-- Otázka pro ověření: „Co táhne vodu od kořenů k listům a proč odpar ochlazuje?“
-- Související obsah: [Transpirace](okna.md#transpirace), [Průtok](okna.md#průtok), [Voda linka](elementy.md#voda-linka).
-- Stav: K řešení.
+- Kontext: jeden neformální test s mámou, popsaný autorem projektu; nejde o test na cílové skupině studentů ani o splnění testu s pěti uživateli.
+- Zjištění jsou podněty pro další návrh a ověření; neprokazují četnost problémů u všech uživatelů.
 
-## Mýtus „kyslík pro lidi“
+### Pozorované potíže
 
-- Mylná představa: hlavním smyslem fotosyntézy je vyrábět kyslík pro lidi a zvířata.
-- Cíl porozumění: student vysvětlí, že strom vytváří cukry pro vlastní růst a získávání energie; kyslík se při fotosyntéze uvolňuje.
-- Otázka pro ověření: „Co fotosyntéza přináší samotnému stromu?“
-- Související obsah: [Fotosyntéza](okna.md#fotosyntéza), [Cukry](okna.md#cukry), [O₂](okna.md#o₂).
-- Stav: K řešení.
+- **Úvod:** klikala na Úvod a nepoznala, že už v této kapitole je.
+- **Částice O₂ a CO₂:** byly příliš malé.
+- **Detaily oken:** nepoznala, že názvy oken fungují jako tlačítka a po kliknutí zobrazí další text.
+- **Zvýraznění:** zvýraznění souvisejících elementů si málo všimla.
+- **Spojení s dějem:** nepochopila vazbu oken na elementy ani to, že představují prvky fotosyntézy; chtěla text, který je takto pojmenuje.
+
+### Co fungovalo
+
+- Pochopila fungování a ovládání Období; kruh fungoval srozumitelně.
+
+### Podněty k řešení a ověření
+
+- Zřetelněji ukázat aktuální kapitolu, zejména Úvod při prvním otevření.
+- Prověřit větší částice O₂ a CO₂ a viditelnější reakci elementu po kliknutí.
+- Naznačit klikatelnost názvů oken a přítomnost vysvětlujícího textu.
+- Doplnit srozumitelné označení prvků fotosyntézy a vysvětlení jejich vazby na okna.
+- Zvážit mírné zvětšení ovládání Období; jde o námět, nikoli pozorované selhání kruhu.
+- Stav podnětů: K řešení. Při dalším testu sledovat rozpoznání aktuální kapitoly, samostatné otevření detailu a přiřazení elementu k tématu.
 
 ## Pravidla struktury
 
-- Problémy mají nadpis `##` a body ve stejném pořadí jako šablona.
-- Konkrétní funkce webu definuj v obsahové dokumentaci a odkazuj na ně.
-- Vyřešení podlož ověřením porozumění u studentů.
+- Mýty seskup do jedné kapitoly `##`; každý shrň jedním bodem s cílem, ověřovací otázkou a odkazem na obsah. Společný stav uveď jednou.
+- Test má nadpis `##` s datem, kontext a omezení; oddíly `###` oddělují pozorované potíže, co fungovalo a podněty k řešení.
+- Pozorování odděluj od návrhů; jeden test neprokazuje četnost potíží v cílové skupině.
+- Vyřešení podlož novým ověřením, nikoli samotnou implementací.
 - Historii udržuj ve frontmatteru; pravidla a šablonu ponechávej na konci.
 
 ```markdown
-## Název problému
+## Mýty a porozumění
 
-- Mylná představa: nesprávné vysvětlení.
-- Cíl porozumění: co má student pochopit.
-- Otázka pro ověření: „Otázka?“
-- Související obsah: [Název](soubor.md#kotva).
-- Stav: stav řešení.
+- **Název mýtu:** cíl. Ověření: „Otázka?“ Viz [Obsah](soubor.md#kotva).
+- Stav témat: stav řešení.
+
+## Název testu — datum
+
+- Kontext: účastníci, zdroj pozorování a omezení závěrů.
+
+### Pozorované potíže
+
+- Pozorování.
+
+### Co fungovalo
+
+- Pozorování.
+
+### Podněty k řešení a ověření
+
+- Návrh a způsob dalšího ověření.
+- Stav podnětů: stav řešení.
 ```
