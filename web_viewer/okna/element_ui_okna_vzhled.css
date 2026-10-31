@@ -36,7 +36,7 @@ body.scene-night .tree-overlay { --ui-ink: #f0f2e9; }
 .tree-overlay .element-ui-okno {
   --ui-topic: var(--ui-ink);
   box-sizing: border-box; width: 29%; height: 14%; min-height: 85px;
-  display: grid; grid-template-columns: minmax(0, 27%) minmax(0, 1fr);
+  display: grid; grid-template-columns: minmax(0, 50%) minmax(0, 1fr);
   grid-template-rows: min-content min-content min-content;
   column-gap: 15px; align-content: start; padding: 0 0 0 20px;
   color: var(--ui-ink); background: none; border: 0; border-radius: 0;
@@ -82,7 +82,7 @@ body.scene-night .tree-overlay { --ui-ink: #f0f2e9; }
 .tree-overlay.ui-test-black-window-titles .element-ui-okno > header > :is(h2,h3) { color: var(--ui-ink); }
 .tree-overlay .element-ui-okno .annotation-reveal,
 .tree-overlay .element-ui-okno.collapsed .annotation-reveal {
-  position: absolute; left: calc(27% + 30px); right: 0; top: 4px; bottom: 0;
+  position: absolute; left: calc(50% + 30px); right: 0; top: 4px; bottom: 0;
 }
 .tree-overlay .element-ui-okno[data-window-id="fotosynteza"] .annotation-reveal { left: calc(58% + 25px); top: 4px; }
 .tree-overlay .element-ui-okno .annotation-reveal-inner { height: 100%; overflow: auto; }
