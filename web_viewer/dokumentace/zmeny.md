@@ -1,5 +1,8 @@
 ---
 history:
+  - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
+    date: 2026-10-31
+    change: Napojena revize dokumentace na každý pátý commit a určeno umístění výsledku.
   - thread_id: 01a192cd-90b3-7e21-8050-fdf9990fe825
     date: 2026-10-31
     change: Zkráceny texty oken Fotosyntéza, Cukry, Voda, CO₂ a O₂ na jeden odstavec.
@@ -12,9 +15,6 @@ history:
   - thread_id: 01a192cd-90b3-7e21-8050-fdf9990fe825
     date: 2026-10-31
     change: Sjednoceno zobrazení hodnot O₂, CO₂, Vody a Cukrů na jedno desetinné místo.
-  - thread_id: 01a192c9-24b4-7642-a56f-53abd8bf4304
-    date: 2026-10-31
-    change: Upraveno umístění rozbaleného textu a vypnuto ovládání Vody v okně.
 ---
 
 # Změny
@@ -24,6 +24,13 @@ history:
 ## Rozpracováno
 
 ## Implementováno
+
+#### Z012 — Revize bez hodinového čekání
+
+- Zadání: [Revize po pěti commitech](kontrola_dokumentace.md#revize-po-pěti-commitech).
+- Výsledek: pátý commit spustí revizi agentem na pozadí; výsledek je v `old/revize_dokumentace.txt` a hodinová automatizace je pozastavená.
+- Stav: Implementováno.
+- Ověření: integrační testy spouštěče a výstupů, ověření neinteraktivního Codex CLI; ruční spuštění vstupní revize.
 
 #### Z011 — Zkrácené texty oken
 
@@ -42,7 +49,7 @@ history:
 #### Z010 — Automatická kontrola dokumentace
 
 - Zadání: [Kontrola dokumentace](kontrola_dokumentace.md).
-- Výsledek: kontrolor připraveného commitu, lokální hook a hodinová automatizace s revizí po pěti nových commitech.
+- Výsledek: kontrolor připraveného commitu a lokální hook; spouštění revizí určuje [Revize po pěti commitech](kontrola_dokumentace.md#revize-po-pěti-commitech).
 - Stav: Implementováno.
 - Ověření: integrační testy kontroloru v dočasných repozitářích; úplná kontrola hlásí existující nálezy, první pravidelná revize čeká na spuštění.
 

@@ -2,6 +2,9 @@
 history:
   - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
     date: 2026-10-31
+    change: Nahrazen hodinový plán spuštěním revize z post-commit hooku a popsáno umístění reportu.
+  - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
+    date: 2026-10-31
     change: Popsána kontrola dokumentace před commitem a automatická revize po pěti commitech.
 ---
 
@@ -34,15 +37,20 @@ history:
 
 ## Revize po pěti commitech
 
-- Automatizace „Revize dokumentace STROM po 5 commitech“ každou hodinu ověří počet nových commitů; nejde o okamžitou událost při pátém commitu.
-- `--review-status` vrací aktuální commit, poslední prověřený commit, počet nových commitů a příznak `review_due`.
-- Při prvním běhu nebo neplatném výchozím bodu proběhne vstupní revize; další revize nastane po alespoň pěti nových commitech.
-- Agent spustí úplnou kontrolu, projde nové commity a porovná související definice s kódem: rozpory, duplicity, zastaralé popisy, evidenci a doložení ověření.
-- Zpráva obsahuje „bez nálezu“ nebo konkrétní problémy s odkazy; pokud revize není splatná, automatizace zůstává potichu.
-- Revize nic neopravuje ani necommituje. Jediný pracovní zápis je stav v ignorovaném `web_viewer/old/documentation_review_state.json`.
-- Po dokončené revizi se stav uloží příkazem `python web_viewer/tools/check_documentation.py --review-complete HEAD_SHA` s přesným prověřeným hashem; při změně `HEAD` příkaz stav neuloží.
-- Problémy mohou být oznámeny i při úspěšně dokončené revizi; neúspěšně provedená revize se za dokončenou nepovažuje.
-- Spuštění závisí na dostupnosti lokální automatizace a projektu; „bez nálezu“ není záruka bezchybnosti ani finální test webu.
+- Lokální Git `post-commit` hook po každém dokončeném commitu spočítá nové commity a při alespoň pěti spustí `tools/review_documentation.py --kick` na pozadí, bez hodinového čekání.
+- Existující Git LFS hook zůstává zachovaný; zdroj sloučeného hooku je `tools/post-commit`. V novém klonu ho nainstaluj nebo sluč s existujícím hookem.
+- Revize vyžaduje dostupný a přihlášený Codex CLI; používá jeho uložené přihlášení a výchozí model v režimu `read-only`, bez trvalého nového chatu.
+- Počítají se všechny nové commity včetně dokumentace. Při prvním běhu nebo neplatném výchozím bodu proběhne vstupní revize.
+- Průběh je asynchronní: pátý commit spustí revizi hned, dokončení závisí na délce kontroly a dostupnosti služby.
+- Výsledek je v ignorovaném `web_viewer/old/revize_dokumentace.txt`: `PROBIHA`, `DOKONCENA` nebo `SELHANI`, prověřený hash a zpráva agenta.
+- Terminál commitu při spuštění vypíše cestu k reportu; zpráva se automaticky nevkládá do hlavního chatu ani do aplikace.
+- Technický průběh je v `web_viewer/old/revize_dokumentace.log`; report se při další revizi aktualizuje.
+- Agent porovnává přesný zachycený commit a odpovídající definice s kódem, odděluje nové a staré nálezy a nesmí nic opravovat, commitovat ani otevírat prohlížeč.
+- Pracovní změny ostatních chatů se nehodnotí jako součást prověřeného commitu.
+- Souběžné revize chrání systémový zámek; pokud během revize přibude dalších pět commitů, pracovní proces provede další revizi.
+- Po úspěšné revizi se uloží jen prověřený hash do `web_viewer/old/documentation_review_state.json`; při selhání se výchozí bod neposouvá a další commit revizi zkusí znovu.
+- Ruční spuštění úplné revize: `python web_viewer/tools/review_documentation.py --force`.
+- Původní hodinová automatizace je pozastavená. „Bez nálezu“ není záruka bezchybnosti ani finální test webu.
 
 ## Pravidla struktury
 

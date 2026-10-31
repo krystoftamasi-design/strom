@@ -2,6 +2,9 @@
 history:
   - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
     date: 2026-10-31
+    change: Doplněn spouštěč revize po commitu a umístění výsledného reportu.
+  - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
+    date: 2026-10-31
     change: Doplněno umístění kontroloru dokumentace, hooku, testů a pracovního stavu revize.
   - thread_id: 01a191dc-21ba-7b11-9e58-687e0a2cfbd7
     date: 2026-10-31
@@ -50,7 +53,9 @@ Přehled přesunutých souborů je v `presun_souboru.json`.
 
 - `web_assets` obsahuje modely, textury, písma a knihovny.
 - `tools` obsahuje pomocné nástroje.
-- `tools/check_documentation.py` kontroluje dokumentaci a eviduje interval revizí; `tools/pre-commit` je zdroj lokálního Git hooku.
+- `tools/check_documentation.py` kontroluje dokumentaci; `tools/pre-commit` je zdroj kontroly před commitem.
+- `tools/review_documentation.py` spouští revizi po pěti commitech; `tools/post-commit` ji propojuje s Gitem a zachovává Git LFS.
+- `old/revize_dokumentace.txt` obsahuje poslední pracovní report; stav a logy revize zůstávají v ignorovaném `old`.
 - `testy/test_documentation_check.py` ověřuje kontrolor v dočasných repozitářích.
 - [Kontrola dokumentace](kontrola_dokumentace.md) popisuje instalaci, rozsah a pravidelnou revizi.
 - `testy` obsahuje existující testovací skripty.

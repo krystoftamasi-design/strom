@@ -2,6 +2,9 @@
 history:
   - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
     date: 2026-10-31
+    change: Napojena pravidelná revize na dokončené commity a doplněna cesta k reportu.
+  - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
+    date: 2026-10-31
     change: Doplněna automatická kontrola připraveného commitu a pravidelná revize dokumentace.
   - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
     date: 2026-10-31
@@ -12,9 +15,6 @@ history:
   - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
     date: 2026-10-31
     change: Upraven bod 6 na přijetí výsledku bez výhrady a odděleno přijetí od skutečného ověření.
-  - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
-    date: 2026-10-31
-    change: Zapsán úplný šestikrokový pracovní postup včetně evidence po finální kontrole uživatelem.
 ---
 
 # Aktuálnost pravidel
@@ -132,7 +132,8 @@ Soubory jsou v `web_viewer/dokumentace`.
 
 - Před každým commitem spouští Git kontrolu připraveného obsahu podle [Kontroly dokumentace](web_viewer/dokumentace/kontrola_dokumentace.md).
 - Nové formální chyby nebo změnu webu bez připravené evidence oprav před commitem; dřívější nálezy nejsou důkazem správnosti a zůstávají předmětem úplné revize.
-- Revize po pěti nových commitech je pouze kontrolní; kód a dokumenty sama neopravuje. Její výsledek rozlišuj od finálního testování webu.
+- Revizi po pěti nových commitech spouští lokální `post-commit` hook na pozadí; report je v `web_viewer/old/revize_dokumentace.txt`.
+- Revize je pouze kontrolní; kód a dokumenty sama neopravuje. Její výsledek rozlišuj od finálního testování webu.
 
 # Commity
 

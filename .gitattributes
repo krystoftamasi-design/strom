@@ -2,3 +2,4 @@ web_viewer/web_assets/*.glb filter=lfs diff=lfs merge=lfs -text
 web_viewer/web_assets/*.bin filter=lfs diff=lfs merge=lfs -text
 web_viewer/web_assets/leaf_procedural_*.png filter=lfs diff=lfs merge=lfs -text
 web_viewer/tools/pre-commit text eol=lf
+web_viewer/tools/post-commit text eol=lf

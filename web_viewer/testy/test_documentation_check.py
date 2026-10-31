@@ -3,12 +3,16 @@ import importlib.util
 import subprocess
 import tempfile
 import unittest
+from unittest.mock import patch
+import sys
 from pathlib import Path
 
 SCRIPT = Path(__file__).resolve().parents[1] / 'tools/check_documentation.py'
 spec = importlib.util.spec_from_file_location('documentation_check', SCRIPT)
 check = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(check)
+sys.path.insert(0, str(SCRIPT.parent))
+import review_documentation as reviewer
 VALID = '''---
 history:
   - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
@@ -111,6 +115,31 @@ class DocumentationChecks(unittest.TestCase):
         result = subprocess.run(['python', str(SCRIPT), '--review-status'], cwd=self.root, capture_output=True)
         self.assertIn(b'"new_commits": 5', result.stdout)
         self.assertIn(b'"review_due": true', result.stdout)
+
+    def test_review_waits_for_five_commits(self):
+        head = self.git('rev-parse', 'HEAD').decode().strip()
+        (self.root / 'web_viewer/old').mkdir()
+        reviewer.save_state(self.root, head)
+        with patch.object(reviewer.shutil, 'which', side_effect=AssertionError('must not launch Codex')):
+            self.assertEqual(reviewer.review(self.root), 0)
+
+    def test_successful_review_writes_report_and_advances_baseline(self):
+        original = subprocess.run
+        def fake_run(command, **kwargs):
+            if command[0] == 'fake-codex':
+                Path(command[command.index('-o') + 1]).write_text('NALEZY: test report', encoding='utf-8')
+                return subprocess.CompletedProcess(command, 0)
+            return original(command, **kwargs)
+        with patch.object(reviewer.shutil, 'which', return_value='fake-codex'), patch.object(reviewer.subprocess, 'run', side_effect=fake_run):
+            self.assertEqual(reviewer.review(self.root, force=True), 0)
+        self.assertIn('DOKONCENA', (self.root / 'web_viewer/old/revize_dokumentace.txt').read_text(encoding='utf-8'))
+        self.assertEqual(reviewer.status(self.root)[2], 0)
+
+    def test_missing_codex_does_not_advance_baseline(self):
+        with patch.object(reviewer.shutil, 'which', return_value=None):
+            self.assertEqual(reviewer.review(self.root, force=True), 1)
+        self.assertFalse((self.root / 'web_viewer/old/documentation_review_state.json').exists())
+        self.assertIn('SELHANI', (self.root / 'web_viewer/old/revize_dokumentace.txt').read_text(encoding='utf-8'))
 
 
 if __name__ == '__main__':
