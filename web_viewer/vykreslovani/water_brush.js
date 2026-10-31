@@ -41,7 +41,7 @@ export async function createWaterBrushMaterial(loader, uniforms) {
       void main() {
         float selectionWave = 0.5 + 0.5 * sin(uTime * 3.2 - flowDistance * 1.7);
         vSelectionPulse = selectionWave;
-        float selectedWidth = 1.0 + uSelected * (1.8 + 0.6 * selectionWave);
+        float selectedWidth = 1.0 + uSelected * (2.6 + 0.6 * selectionWave);
         vec3 scaledPosition = flowCenter + (position - flowCenter) * uWidthScale * selectedWidth;
         vec4 viewPosition = modelViewMatrix * vec4(scaledPosition, 1.0);
         vec3 tangent = mat3(modelViewMatrix) * flowTangent;
