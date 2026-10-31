@@ -1,4 +1,4 @@
-import { oknaPodleKapitol } from './element_ui_okna_obsah.js?v=static-ui-4';
+import { oknaPodleKapitol, pruvodceTranspiraci } from './element_ui_okna_obsah.js?v=static-ui-4';
 import { veliciny, vstupyVzorce, ohlasitChybuOken } from './element_ui_okna_veliciny.js?v=8';
 import { zkontrolovatOkna } from './element_ui_okna_kontrola.js?v=static-ui-3';
 
@@ -122,6 +122,16 @@ export function createTreeAnnotations({ shell, model, createSeasonControl, setEl
     body.append(...nodes.filter(Boolean));
     panel.append(header, reveal);
     if (definition) createElementUiOkno({ panel, body, reveal, toggle });
+    let connection = null;
+    if (article.dataset.chapter === 'transpiration') {
+      const summary = document.createElement('p');
+      summary.className = 'transpiration-summary';
+      summary.textContent = definition.shrnuti;
+      panel.append(summary);
+      connection = document.createElement('p');
+      connection.className = 'transpiration-connection';
+      panel.append(connection);
+    }
     let expanded = false;
     function expand(open) {
       expanded = open;
@@ -134,9 +144,12 @@ export function createTreeAnnotations({ shell, model, createSeasonControl, setEl
       panel.classList.toggle('collapsed', !open);
       toggle.textContent = open ? '−' : '+';
       toggle.setAttribute('aria-expanded', String(open));
+      if (connection) connection.textContent = open
+        ? definition.tema === 'water' ? '↗ Sleduj zvýraznění modré linky' : 'Otevřené vysvětlení'
+        : 'Otevřít vysvětlení +';
     }
     toggle.addEventListener('click', () => expand(!expanded));
-    if (definition && ['water', 'sugar'].includes(definition.tema)) h.addEventListener('click', () => expand(!expanded));
+    if (definition && (article.dataset.chapter === 'transpiration' || ['water', 'sugar'].includes(definition.tema))) h.addEventListener('click', () => expand(!expanded));
     expand(definition ? Boolean(definition.otevrene) : article.dataset.chapter === 'intro' || article.dataset.chapter === 'seasons');
     header.append(h, toggle);
     article.append(panel);
@@ -234,6 +247,37 @@ export function createTreeAnnotations({ shell, model, createSeasonControl, setEl
   }
 
   for (const article of content.querySelectorAll('article[data-chapter]')) {
+    if (article.dataset.chapter === 'transpiration') {
+      const guide = document.createElement('section');
+      guide.className = 'transpiration-guide';
+      guide.setAttribute('aria-label', 'Jak funguje transpirace');
+      const eyebrow = document.createElement('p');
+      eyebrow.className = 'transpiration-eyebrow';
+      eyebrow.textContent = pruvodceTranspiraci.kapitola;
+      const title = document.createElement('h2');
+      title.textContent = pruvodceTranspiraci.nadpis;
+      const description = document.createElement('p');
+      description.textContent = pruvodceTranspiraci.vysvetleni;
+      const route = document.createElement('ol');
+      route.className = 'transpiration-steps';
+      for (const text of pruvodceTranspiraci.cesta) {
+        const step = document.createElement('li');
+        step.textContent = text;
+        route.append(step);
+      }
+      const legend = document.createElement('p');
+      legend.className = 'transpiration-legend';
+      legend.textContent = pruvodceTranspiraci.legenda;
+      guide.append(eyebrow, title, description, route, legend);
+      const prompt = document.createElement('section');
+      prompt.className = 'transpiration-prompt';
+      const label = document.createElement('h2');
+      label.textContent = pruvodceTranspiraci.temata;
+      const hint = document.createElement('p');
+      hint.textContent = pruvodceTranspiraci.ovladani;
+      prompt.append(label, hint);
+      article.append(guide, prompt);
+    }
     const heading = article.querySelector('h2');
     const paragraphs = [...article.querySelectorAll(':scope > p')];
     const eyebrow = article.querySelector('.chapter-eyebrow');
@@ -274,7 +318,7 @@ export function createTreeAnnotations({ shell, model, createSeasonControl, setEl
     // Only empty wrappers can be discarded; live outputs must remain in the DOM.
     const mainBody = article.querySelector('.annotation-body');
     for (const node of [...article.children]) {
-      if (node.classList.contains('tree-annotation')) continue;
+      if (node.classList.contains('tree-annotation') || node.classList.contains('transpiration-guide') || node.classList.contains('transpiration-prompt')) continue;
       if (node.classList.contains('chapter-metrics') && !node.children.length) node.remove();
       else if (mainBody) mainBody.append(node);
     }

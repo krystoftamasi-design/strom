@@ -1,11 +1,15 @@
 ---
 history:
+  - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
+    date: 2026-10-31
+    change: Zpřehledněna Transpirace podle poznatků z uživatelského testu.
   - thread_id: 01a192c9-24b4-7642-a56f-53abd8bf4304
     date: 2026-10-31
     change: Roztříděna dokumentace a opraveny cesty podle účelu souborů.
   - thread_id: 01a18f17-efd7-7a02-8369-186b681bfcc0
     date: 2026-10-31
     change: Popsána vodorovná navigace a pořadí kapitol podle UI podkladu.
+
 ---
 
 # Prvky
@@ -14,6 +18,7 @@ history:
 
 - Vodorovná textová navigace v horní pravé části podle [Untitled.svg](../../web_assets/ui_from_af/Untitled.svg).
 - Pořadí: Úvod, Období, Fotosyntéza, Transpirace, Semenace, Kořeny.
+- Aktivní Transpirace je navíc podtržená a její průvodce výslovně pojmenovává aktuální kapitolu.
 - Aktivní kapitola je zvýrazněna tučným písmem; položky nemají viditelnou výplň ani rámeček.
 - Písmo: Satoshi; v podkladu přibližně 21 px.
 - Kliknutí přepne příslušnou kapitolu.

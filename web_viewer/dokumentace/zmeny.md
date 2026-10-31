@@ -1,5 +1,8 @@
 ---
 history:
+  - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
+    date: 2026-10-31
+    change: Zpřehledněna Transpirace podle poznatků z uživatelského testu.
   - thread_id: 01a192c9-24b4-7642-a56f-53abd8bf4304
     date: 2026-10-31
     change: Roztříděna dokumentace a opraveny cesty podle účelu souborů.
@@ -12,9 +15,7 @@ history:
   - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
     date: 2026-10-31
     change: Doplněn neformální test s mámou a mýty zkráceny do jedné kapitoly.
-  - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
-    date: 2026-10-31
-    change: Vymezeny tři prioritní problémy porozumění.
+
 ---
 
 # Změny
@@ -24,6 +25,13 @@ history:
 ## Rozpracováno
 
 ## Implementováno
+
+#### Z033 — Srozumitelný vstup do Transpirace
+
+- Zadání: [Průvodce Transpirací](moje/texty.md#průvodce-transpirací), [poznatky z testu](moje/tests.md).
+- Výsledek: viditelné vysvětlení děje a cesty vody, označení prvků, stručná shrnutí mimo detaily a viditelná tlačítka +/−; otevřená vodní témata odkazují na zvýraznění linky. Fotosyntéza používá původní vzhled.
+- Stav: Implementováno.
+- Ověření: syntaxe, validační test oken a průběžná kontrola v Google Chromu při 1440 × 1000 — pět oken, shrnutí, kliknutí a absence běhových chyb; finální kontrola uživatelem a test porozumění zbývají.
 
 #### Z032 — Rozdělení dokumentace do složek
 

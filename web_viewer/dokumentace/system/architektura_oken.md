@@ -1,5 +1,8 @@
 ---
 history:
+  - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
+    date: 2026-10-31
+    change: Zpřehledněna Transpirace podle poznatků z uživatelského testu.
   - thread_id: 01a192c9-24b4-7642-a56f-53abd8bf4304
     date: 2026-10-31
     change: Roztříděna dokumentace a opraveny cesty podle účelu souborů.
@@ -12,9 +15,7 @@ history:
   - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
     date: 2026-10-31
     change: Aktualizováno napojení zvýraznění podle tagů a okamžité změny stavu detailu.
-  - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
-    date: 2026-10-31
-    change: Popsáno propojení detailu Cukry se zvýrazněním glukózové linky.
+
 ---
 
 # Architektura oken
@@ -27,6 +28,7 @@ history:
 ### Obsah
 
 - `okna/element_ui_okna_obsah.js` obsahuje záznamy v seznamech `photosynthesis` a `transpiration`.
+- `pruvodceTranspiraci` ve stejném obsahovém modulu drží viditelné vysvětlení, názvy kroků, legendu a instrukci; `shrnuti` v záznamu okna se vykresluje mimo skrývaný detail.
 - Záznam určuje ID, nadpis, téma, stranu, text, výpočet, ovládání a výchozí otevření detailu.
 - `zobrazitVzorec` a `zobrazitHodnotu` zapínají přehled vstupů a výslednou hodnotu.
 

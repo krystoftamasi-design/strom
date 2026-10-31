@@ -1,5 +1,8 @@
 ---
 history:
+  - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
+    date: 2026-10-31
+    change: Zpřehledněna Transpirace podle poznatků z uživatelského testu.
   - thread_id: 01a192c9-24b4-7642-a56f-53abd8bf4304
     date: 2026-10-31
     change: Roztříděna dokumentace a opraveny cesty podle účelu souborů.
@@ -12,9 +15,7 @@ history:
   - thread_id: 01a192c9-24b4-7642-a56f-53abd8bf4304
     date: 2026-10-31
     change: Sladěno rozložení detailů, rozestupy a délky tahů se současným CSS.
-  - thread_id: 01a192c9-24b4-7642-a56f-53abd8bf4304
-    date: 2026-10-31
-    change: Detailní text se při rozkliknutí drží ve vyhrazeném prostoru bez překrytí sousedních oken.
+
 ---
 
 # Vzhled oken
@@ -24,7 +25,7 @@ history:
 - Kliknutí na nadpis zobrazí nebo skryje detail ve vyhrazeném prostoru.
 - Změna hodnot a zobrazení detailu neposouvají polohu oken.
 - Okna nemají pohybové animace ani spojnice ke stromu.
-- V kapitole Fotosyntéza jsou výchozí detaily Cukrů a Vody otevřené; v Transpiraci jsou otevřené detaily Příjmu vody a Průtoku, ostatní jsou zavřené.
+- V kapitole Fotosyntéza jsou výchozí detaily Cukrů a Vody otevřené; v Transpiraci jsou všechny detaily výchozím stavem zavřené a základní vysvětlení zůstávají viditelná.
 
 ### Obecný obsah
 
@@ -48,6 +49,9 @@ history:
 - Svislé tahy začínají u horního okraje okna; O₂, CO₂ a Cukry používají 65 % výšky svého bloku, Fotosyntéza 100 %.
 - Tah Vody se roztahuje podle výšky řádků nadpisu, hodnoty a vzorce místo procentní výšky bloku.
 - Do šířky 700 px zůstávají dva pevné sloupce; detaily mají místo pod nadpisem s vlastním posuvem a přehled vstupů je skrytý.
+
+- V Transpiraci jsou tlačítka +/− viditelná v kruhu vedle nadpisu; otevřený blok má silnější svislý tah a slovní potvrzení otevření.
+- Vlevo nad hlavním oknem je vysvětlení děje a svislé schéma s vodou stoupající od kořenů k listům; nad pravými okny je označení témat a krátká instrukce.
 
 ### Písmo
 

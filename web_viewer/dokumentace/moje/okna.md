@@ -1,5 +1,8 @@
 ---
 history:
+  - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
+    date: 2026-10-31
+    change: Zpřehledněna Transpirace podle poznatků z uživatelského testu.
   - thread_id: 01a192c9-24b4-7642-a56f-53abd8bf4304
     date: 2026-10-31
     change: Roztříděna dokumentace a opraveny cesty podle účelu souborů.
@@ -12,9 +15,7 @@ history:
   - thread_id: 01a192cd-90b3-7e21-8050-fdf9990fe825
     date: 2026-10-31
     change: Zkráceny texty oken Fotosyntéza, Cukry, Voda, CO₂ a O₂ na jeden odstavec.
-  - thread_id: 01a192cd-90b3-7e21-8050-fdf9990fe825
-    date: 2026-10-31
-    change: Doplněny výukové texty do oken Fotosyntéza, Cukry, Voda, CO₂ a O₂.
+
 ---
 
 # Okna
@@ -93,7 +94,10 @@ history:
 ### Okna
 
 - Každé okno má jednu hlavní veličinu, stručný vlastní detail a samostatný stav otevření; stav se zachovává při změně kapitoly.
-- Kliknutí na nadpis přepne detail. Výchozí detaily Příjmu vody a Průtoku jsou otevřené, ostatní zavřené.
+- Kliknutí na nadpis nebo viditelné tlačítko +/− přepne detail; všech pět detailů je výchozím stavem zavřených.
+- Krátká shrnutí jsou viditelná i při zavřeném detailu: Transpirace vysvětluje tah odparem, Příjem vody doplňování vody kořeny, Průtok modrou linku v xylému, Chlazení spotřebu tepla a Teplota srovnání u koruny a mimo strom.
+- Zavřené okno nabízí „Otevřít vysvětlení +“; otevřené vodní téma odkazuje na zvýraznění modré linky. Teplotní témata označují otevřené vysvětlení bez tvrzení o prostorovém zvýraznění.
+- Průvodní texty určuje [Průvodce Transpirací](texty.md#průvodce-transpirací).
 
 #### Transpirace
 

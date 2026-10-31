@@ -1,5 +1,8 @@
 ---
 history:
+  - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
+    date: 2026-10-31
+    change: Zpřehledněna Transpirace podle poznatků z uživatelského testu.
   - thread_id: 01a192c9-24b4-7642-a56f-53abd8bf4304
     date: 2026-10-31
     change: Roztříděna dokumentace a opraveny cesty podle účelu souborů.
@@ -12,9 +15,7 @@ history:
   - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
     date: 2026-10-31
     change: Zvětšeny a zvýrazněny nadpisy kapitol a nahrazen obsah šablony obecnými položkami.
-  - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
-    date: 2026-10-31
-    change: Upravena struktura podle ukázky Fotosyntézy s tučnými názvy kapitol a úplnou šablonou.
+
 ---
 
 # Architektura obsahu
@@ -84,6 +85,7 @@ history:
 ### Text
 
 - [Datum](moje/texty.md#datum)
+- [Průvodce Transpirací](moje/texty.md#průvodce-transpirací)
 
 ### Okna
 
