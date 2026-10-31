@@ -1,5 +1,8 @@
 ---
 history:
+  - thread_id: 01a19424-3d45-7e81-9ea4-3cd6ef98d1fa
+    date: 2026-10-31
+    change: Zrušeno automatické spouštění revize webu po commitech.
   - thread_id: 01a192c9-24b4-7642-a56f-53abd8bf4304
     date: 2026-10-31
     change: Roztříděna dokumentace a opraveny cesty podle účelu souborů.
@@ -12,9 +15,6 @@ history:
   - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
     date: 2026-10-31
     change: Skryto konzolové okno podprocesu automatické revize.
-  - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
-    date: 2026-10-31
-    change: Změněn výstup revize dokumentace na Markdown.
 ---
 
 # Kontrola dokumentace
@@ -46,14 +46,15 @@ history:
 
 ## Revize po deseti commitech
 
-- Lokální Git `post-commit` hook po každém dokončeném commitu spočítá nové commity a při alespoň deseti spustí `tools/review_documentation.py --kick` na pozadí, bez hodinového čekání.
-- Existující Git LFS hook zůstává zachovaný; zdroj sloučeného hooku je `tools/post-commit`. V novém klonu ho nainstaluj nebo sluč s existujícím hookem.
+- Automatické spouštění po deseti commitech je vypnuté; nadpis zůstává kvůli odkazům z historie změn.
+
+- Revizi spouštěj pouze na výslovné vyžádání uživatele příkazem uvedeným níže; po commitech ani pravidelně se nespouští.
+- Lokální Git `post-commit` hook zachovává pouze Git LFS; zdroj je `web_viewer/tools/post-commit`. Při instalaci zachovej ostatní vlastní hooky a nepřidávej automatické volání revize.
 - Revize vyžaduje dostupný a přihlášený Codex CLI; používá jeho uložené přihlášení a výchozí model v režimu `read-only`, bez trvalého nového chatu.
-- Počítají se všechny nové commity včetně dokumentace. Při prvním běhu nebo neplatném výchozím bodu proběhne vstupní revize.
 - Ve Windows se Codex CLI spouští s `CREATE_NO_WINDOW`, aby revize neotevírala konzolové okno.
-- Průběh je asynchronní: desátý commit spustí revizi hned, dokončení závisí na délce kontroly a dostupnosti služby.
+- Délka ručně vyžádané revize závisí na rozsahu kontroly a dostupnosti služby.
 - Výsledek je v ignorovaném `web_viewer/old/revize_dokumentace.md`: `PROBIHA`, `DOKONCENA` nebo `SELHANI`, prověřený hash a zpráva agenta.
-- Terminál commitu při spuštění vypíše cestu k reportu; zpráva se automaticky nevkládá do hlavního chatu ani do aplikace.
+- Výsledek čti v reportu; zpráva se automaticky nevkládá do hlavního chatu ani do aplikace.
 - Technický průběh je v `web_viewer/old/revize_dokumentace.log`; report se při další revizi aktualizuje.
 - Agent porovnává přesný zachycený commit a odpovídající definice s kódem, odděluje nové a staré nálezy a nesmí nic opravovat ani commitovat. Podklady z prohlížeče získává samostatný sběr v Google Chromu.
 - `tools/review_browser.mjs` spustí skutečný Google Chrome bez okna, projde kapitoly, zachytí texty a okna, přepne detaily a uloží snímky i chyby.
@@ -62,8 +63,8 @@ history:
 - Snímky a JSON jsou v `old/browser_review_<hash>`; samotné otevření webu neprokazuje správnost animací ani všech interakcí. Chybějící pokrytí není neshoda; technické podklady zůstávají v JSON a logu. Stav selhání samotného spouštěče zůstává viditelný.
 - Vyžaduje Node.js, Google Chrome a Playwright z existujícího lokálního runtime Codexu; jiný prohlížeč se nepoužije.
 - Pracovní změny ostatních chatů se nehodnotí jako součást prověřeného commitu.
-- Souběžné revize chrání systémový zámek; pokud během revize přibude dalších deset commitů, pracovní proces provede další revizi.
-- Po úspěšné revizi se uloží jen prověřený hash do `web_viewer/old/documentation_review_state.json`; při selhání se výchozí bod neposouvá a další commit revizi zkusí znovu.
+- Souběžné revize chrání systémový zámek; během vyžádaného běhu může pracovní proces zahrnout další mezitím přidané commity.
+- Po úspěšné revizi se uloží prověřený hash do `web_viewer/old/documentation_review_state.json`; při selhání se výchozí bod neposouvá. Další spuštění vyžaduje nový pokyn uživatele.
 - Ruční spuštění úplné revize: `python web_viewer/tools/review_documentation.py --force`.
 - Původní hodinová automatizace je pozastavená. „Bez nálezu“ není záruka bezchybnosti ani finální test webu.
 
