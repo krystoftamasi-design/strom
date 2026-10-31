@@ -1,5 +1,8 @@
 ---
 history:
+  - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
+    date: 2026-10-31
+    change: Doplněna evidence drobného vizuálního ladění po dokončených logických změnách.
   - thread_id: 01a192c9-24b4-7642-a56f-53abd8bf4304
     date: 2026-10-31
     change: Zviditelněna animace zvýraznění jako putující pás tloušťky bez změny barvy.
@@ -12,18 +15,6 @@ history:
   - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
     date: 2026-10-31
     change: Sjednoceny stavy propojení tagy a zvýraznění vody s kódem a zapsány provedené kontroly.
-  - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
-    date: 2026-10-31
-    change: Zapsána implementace rychlejšího nočního stahování linek a doplněna šablona evidence.
-  - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
-    date: 2026-10-31
-    change: Zapsána čekající implementace propojení oken a elementů společnými tagy.
-  - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
-    date: 2026-10-31
-    change: "Implementována Z002: zvýraznění glukózy podle otevření detailu Cukry."
-  - thread_id: 01a18f17-efd7-7a02-8369-186b681bfcc0
-    date: 2026-10-31
-    change: Přesměrován vzhled oken na samostatný soubor vzhled_oken.md.
 ---
 
 # Změny
@@ -82,6 +73,9 @@ history:
 
 - Postup a význam stavů určuje [AGENTS.md](../../AGENTS.md#změny).
 - Každá změna má stálé ID, odkaz na zadání, stav a výsledek ověření.
+- Eviduj i drobné vizuální ladění celého webu; související pokusy sluč do jedné dokončené logické změny.
+- U drobných úprav stačí stručný výsledný popis a skutečné ověření; podrobné definice nepřepisuj, pokud se jejich význam nemění.
+- Za logickou změnu přidej jeden záznam YAML historie s ověřeným `thread_id`; evidenci commituj společně s příslušným kódem.
 - Při změně stavu přesuň záznam do příslušné části.
 - Neevidované části webu nejsou tímto dokumentem ověřené.
 
@@ -91,6 +85,7 @@ history:
 
 - Změny seskupuj podle stavu v kapitolách `##`; jednotlivé záznamy mají nadpis `####` se stálým ID a názvem.
 - U záznamu uváděj odkaz na zadání, stav a skutečné ověření; případná omezení uveď samostatně.
+- U vizuálního ladění přidej stručný bod „Výsledek“ s konečnou úpravou; mezikroky do šablony nepatří.
 - Význam stavů a přesuny záznamů určují pravidla evidence výše.
 - Tuto část s obecnou šablonou ponechávej na konci dokumentu.
 
@@ -100,6 +95,7 @@ history:
 #### ZXXX — Název změny
 
 - Zadání: [Definice](soubor.md#kotva).
+- Výsledek: stručný popis výsledné úpravy.
 - Stav: odpovídající stav.
 - Ověření: provedená kontrola nebo finální kontrola uživatelem.
 ```

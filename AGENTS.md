@@ -2,6 +2,9 @@
 history:
   - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
     date: 2026-10-31
+    change: Zavedena stručná evidence i drobných vizuálních úprav a společný commit kódu s evidencí.
+  - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
+    date: 2026-10-31
     change: Upřesněno dokončení implementace podle dokumentace, doložení výsledků a řešení oprávnění ke commitu.
   - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
     date: 2026-10-31
@@ -12,9 +15,6 @@ history:
   - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
     date: 2026-10-31
     change: Doplněn jednoduchý postup ručního a automatického spuštění webu v Chromu.
-  - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
-    date: 2026-10-31
-    change: Odstraněna obecná struktura nadpisů a upřesněna historie, výjimka pro tagy a rozsah kontrol.
 ---
 
 # Prohlížeč a kontrola
@@ -63,9 +63,11 @@ history:
 - Zachovej uživatelovy úpravy a nevracej smazaný obsah.
 - Při změně systému automaticky aktualizuj všechny související definice, pravidla a odkazy.
 - Změny funkcí, ovládání, vazeb a definovaného chování aktualizuj současně v příslušné dokumentaci; před dokončením porovnej kód s dokumentací.
-- Drobné vizuální ladění libovolné části webu nezapisuj do dokumentace ani do `zmeny.md`, pokud nemění definované chování a uživatel zápis výslovně nechce.
-- Toto pravidlo platí pro všechny elementy, okna, texty, ovládací prvky i scénu; zahrnuje například barvy, velikosti, tloušťky, rozestupy, průhlednost, stíny a intenzitu efektů.
-- Změna vyžadující dokumentaci není dokončená bez její odpovídající úpravy; drobné vizuální ladění podle této výjimky může mít samostatný commit kódu.
+- Každou dokončenou logickou změnu webu, včetně drobného vizuálního ladění, stručně zapiš do `zmeny.md` s výsledkem a skutečným ověřením.
+- Související pokusy při ladění sluč do jednoho záznamu popisujícího výslednou úpravu; jednotlivé mezikroky neeviduj samostatně.
+- Toto pravidlo platí pro všechny elementy, okna, texty, ovládací prvky i scénu; zahrnuje například barvy, řezy písma, velikosti, tloušťky, rozestupy, průhlednost, stíny a intenzitu efektů.
+- Kvůli drobnému vizuálnímu ladění nepřepisuj podrobné definice, pokud nemění jejich význam; stručný záznam v `zmeny.md` je povinný.
+- Kód a odpovídající evidenci včetně YAML historie ulož společně do jednoho lokálního commitu za dokončenou logickou změnu.
 - Překonané popisy nahraď; odstraň duplicity a dodatky porovnávající staré a nové řešení.
 - Uspořádej text do návazného pořadí; v definicích popisuj platné řešení, historii a stav drž odděleně.
 - Nesouvisející dokumenty hromadně nepřepisuj bez zadání.
@@ -104,7 +106,7 @@ Soubory jsou v `web_viewer/dokumentace`.
 - Kód měň na pokyn uživatele; samotné uložení dokumentu implementaci nespouští.
 - Stavy: Čeká → Rozpracováno → Implementováno → Ověřeno; nejasnosti „K upřesnění“.
 - Při implementaci již popsané funkce ponech platné definice a aktualizuj její stav a skutečné ověření v `zmeny.md`; existující definice nenahrazuje evidenci dokončení.
-- Před závěrečnou odpovědí porovnej diff s evidencí a ověř YAML historii každého změněného dokumentu. Výjimku pro vizuální ladění nebo výslovný zákaz změn dokumentace respektuj.
+- Před závěrečnou odpovědí porovnej diff s evidencí a ověř YAML historii každého změněného dokumentu. Výslovný zákaz změn dokumentace respektuj.
 - V závěru uváděj jen provedené úpravy a kontroly doložené diffem a výsledky nástrojů; vynechané nebo zablokované kroky pojmenuj.
 - Uveď skutečné ověření nebo „finální kontrola uživatelem“; neevidované neznamená hotové.
 - Zachovej historii změn.
