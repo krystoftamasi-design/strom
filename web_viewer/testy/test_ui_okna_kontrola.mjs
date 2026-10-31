@@ -78,4 +78,10 @@ try {
 } finally { console.error = puvodniError; }
 
 assert.deepEqual(zkontrolovatOkna(nastaveni).chyby, [], 'Checks must not mutate valid definitions');
+const invalidTextFormula = { ...oknaPodleKapitol.transpiration[0], vzorecText: '' };
+assert(zkontrolovatOkna({ ...nastaveni, okna: { transpiration: [invalidTextFormula] } }).neplatnaOkna.has(invalidTextFormula),
+  'An empty displayed formula must be rejected');
+assert(oknaPodleKapitol.transpiration.every(okno => okno.zobrazitVzorec && okno.vzorecText),
+  'Every numeric transpiration window must display its actual relation');
+assert(!oknaPodleKapitol.transpiration.some(okno => okno.id === 'prutok'), 'Removed flow window must stay absent');
 console.log('PASS: startup definitions, cycles, missing sources/labels/colors, duplicate IDs, controls and invalid numbers.');

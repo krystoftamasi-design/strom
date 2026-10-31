@@ -1,5 +1,8 @@
 ---
 history:
+  - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
+    date: 2026-10-31
+    change: Odstraněn Průtok a doplněny vzorce i šablona číselného okna podle Fotosyntézy.
   - thread_id: 01a192c9-24b4-7642-a56f-53abd8bf4304
     date: 2026-10-31
     change: Roztříděna dokumentace a opraveny cesty podle účelu souborů.
@@ -12,9 +15,7 @@ history:
   - thread_id: d4bd5380-b7a9-4109-9dcd-32f5819e4b02
     date: 2026-10-31
     change: Doplněna hodnota produktu, cílové prostředí na počítači a žákovské miskoncepce fotosyntézy a transpirace z českých výzkumů.
-  - thread_id: d4bd5380-b7a9-4109-9dcd-32f5819e4b02
-    date: 2026-10-31
-    change: Definován scénář samostudia, metrika porozumění fotosyntéze do jedné minuty a scénář testu s pěti uživateli.
+
 ---
 
 # Produktová strategie
@@ -76,9 +77,9 @@ Podle českých didaktických výzkumů na ZŠ a SŠ (např. *Brčáková 2022*,
 
 - Cíl: student vysvětlí, že odpar v listech pomáhá táhnout vodu od kořenů a spotřebovává teplo; strom nepumpuje vodu jako srdce.
 - Hlavní proces: [Transpirace](okna.md#transpirace) s odparem v litrech za hodinu.
-- Tematická okna: [Příjem vody](okna.md#příjem-vody), [Průtok](okna.md#průtok), [Chlazení](okna.md#chlazení), [Teplota](okna.md#teplota). Rozlišují příjem kořeny, spotřebu ze zásoby, energetický výkon a teplotní důsledek.
-- Elementy: [Voda linka](elementy.md#voda-linka) ukazuje prostorovou trasu a reaguje na související vodní okna; [Cesta vody](elementy.md#cesta-vody) vysvětluje pořadí míst ve schématu Průtoku. Další dekorativní efekty nejsou cílem kapitoly.
-- Při samostudiu má student nejprve vidět proces a trasu vody; po rozkliknutí zjistí rozdíl mezi průtokem a příjmem a mezi výkonem chlazení a teplotou.
+- Tematická okna: [Příjem vody](okna.md#příjem-vody), [Chlazení](okna.md#chlazení), [Teplota](okna.md#teplota). Rozlišují příjem kořeny, energetický výkon a teplotní důsledek.
+- Elementy: [Voda linka](elementy.md#voda-linka) ukazuje prostorovou trasu a reaguje na související vodní okna; [Cesta vody](elementy.md#cesta-vody) vysvětluje pořadí míst ve stálém přehledu kapitoly. Další dekorativní efekty nejsou cílem kapitoly.
+- Při samostudiu má student nejprve vidět proces a trasu vody; po rozkliknutí zjistí rozdíl mezi příjmem a odparem a mezi výkonem chlazení a teplotou.
 - Navržený test porozumění: po minutě se zeptej „Co táhne vodu od kořenů k listům?“ a „Proč odpar strom ochlazuje?“. Práh navrhni stejně jako u Fotosyntézy: správné vysvětlení obou souvislostí u alespoň 4 z 5 studentů. Výsledek tohoto testu dosud není doložený.
 
 ## Pravidla struktury

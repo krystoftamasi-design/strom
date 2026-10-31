@@ -2,6 +2,9 @@
 history:
   - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
     date: 2026-10-31
+    change: Odstraněn Průtok a doplněny vzorce i šablona číselného okna podle Fotosyntézy.
+  - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
+    date: 2026-10-31
     change: Zpřehledněna Transpirace podle poznatků z uživatelského testu.
   - thread_id: 01a192c9-24b4-7642-a56f-53abd8bf4304
     date: 2026-10-31
@@ -12,9 +15,6 @@ history:
   - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
     date: 2026-10-31
     change: Převedena kapitola Transpirace na společný vzhled oken Fotosyntézy.
-  - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
-    date: 2026-10-31
-    change: Aktualizováno napojení zvýraznění podle tagů a okamžité změny stavu detailu.
 
 ---
 
@@ -33,7 +33,7 @@ history:
 - `zobrazitVzorec` a `zobrazitHodnotu` zapínají přehled vstupů a výslednou hodnotu.
 
 - Obsah obou kapitol vytváří stejný `configuredCard` z definic; `kapitoly/chapters.js` aktualizuje živé výstupy. Transpirace nemá vlastní HTML bloky oken.
-- Záznam Průtoku zapíná schéma cesty vody; Teplota zapíná živé porovnání teplot v detailu.
+- Průvodce kapitoly zobrazuje stálé schéma cesty vody; Teplota zapíná živé porovnání teplot v detailu.
 
 ### Rozložení
 
@@ -62,6 +62,8 @@ history:
 - O₂ a CO₂ mají textové detaily bez samostatného číselného výstupu; čísla ze SVG jsou pouze ukázková.
 
 ### Vstupy výpočtu
+
+- `vzorecText` definuje čitelný vztah pro Transpiraci včetně minima, převodu výkonu a rozdílu teplot; neprochází násobícím rozpisem Fotosyntézy. Výpočty dál poskytuje původní ekologický model.
 
 - `vstupyVzorce` rozepisuje mezivýpočty na základní vstupy bez živých čísel uvnitř názvů.
 - `veVzorci: false` skrývá technické přepočty a normalizaci; barevný řádek není úplný matematický vzorec.

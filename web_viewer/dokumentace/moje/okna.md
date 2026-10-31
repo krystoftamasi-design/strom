@@ -2,6 +2,9 @@
 history:
   - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
     date: 2026-10-31
+    change: Odstraněn Průtok a doplněny vzorce i šablona číselného okna podle Fotosyntézy.
+  - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
+    date: 2026-10-31
     change: Zpřehledněna Transpirace podle poznatků z uživatelského testu.
   - thread_id: 01a192c9-24b4-7642-a56f-53abd8bf4304
     date: 2026-10-31
@@ -12,9 +15,6 @@ history:
   - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
     date: 2026-10-31
     change: Převedena kapitola Transpirace na společný vzhled oken Fotosyntézy.
-  - thread_id: 01a192cd-90b3-7e21-8050-fdf9990fe825
-    date: 2026-10-31
-    change: Zkráceny texty oken Fotosyntéza, Cukry, Voda, CO₂ a O₂ na jeden odstavec.
 
 ---
 
@@ -93,9 +93,9 @@ history:
 
 ### Okna
 
-- Každé okno má jednu hlavní veličinu, stručný vlastní detail a samostatný stav otevření; stav se zachovává při změně kapitoly.
-- Kliknutí na nadpis nebo viditelné tlačítko +/− přepne detail; všech pět detailů je výchozím stavem zavřených.
-- Krátká shrnutí jsou viditelná i při zavřeném detailu: Transpirace vysvětluje tah odparem, Příjem vody doplňování vody kořeny, Průtok modrou linku v xylému, Chlazení spotřebu tepla a Teplota srovnání u koruny a mimo strom.
+- Každé okno má viditelný vzorec pod hodnotou a jednu hlavní veličinu, stručný vlastní detail a samostatný stav otevření; stav se zachovává při změně kapitoly.
+- Kliknutí na nadpis nebo viditelné tlačítko +/− přepne detail; všechny čtyři detaily je výchozím stavem zavřených.
+- Krátká shrnutí jsou viditelná i při zavřeném detailu: Transpirace vysvětluje tah odparem, Příjem vody doplňování vody kořeny, Chlazení spotřebu tepla a Teplota srovnání u koruny a mimo strom.
 - Zavřené okno nabízí „Otevřít vysvětlení +“; otevřené vodní téma odkazuje na zvýraznění modré linky. Teplotní témata označují otevřené vysvětlení bez tvrzení o prostorovém zvýraznění.
 - Průvodní texty určuje [Průvodce Transpirací](texty.md#průvodce-transpirací).
 
@@ -103,6 +103,7 @@ history:
 
 **Tag:** 🔵 `water`
 
+- Vzorec: `min(základ × listy × světlo × voda; spotřeba)`.
 - Hlavní okno vlevo dole; hodnota: odpařená voda v `l/h`, jedno desetinné místo.
 - Detail: odpařování převážně průduchy táhne vodu od kořenů a spotřebovává teplo; za světla bývá vyšší, nedostatek vody vede k omezení ztrát průduchy.
 - Související element: [Voda linka](elementy.md#voda-linka).
@@ -111,33 +112,35 @@ history:
 
 **Tag:** 🔵 `water`
 
+- Vzorec: `min(přísun; limit kořenů)`.
 - Okno vpravo nahoře; hodnota: příjem kořeny v `l/h`, jedno desetinné místo.
 - Detail: kořeny doplňují zásobu vody; příjem omezuje dostupnost vody a sezónní maximum, nemusí odpovídat okamžitému odparu.
 - Související element: [Voda linka](elementy.md#voda-linka).
-
-#### Průtok
-
-**Tag:** 🔵 `water`
-
-- Druhé okno vpravo; hodnota: odhad toku ze zásoby do koruny v `l/h`, jedno desetinné místo.
-- Detail: xylém vede vodu do koruny; průtok zahrnuje odpar i drobné ostatní ztráty.
-- Související elementy: [Voda linka](elementy.md#voda-linka), [Cesta vody](elementy.md#cesta-vody).
 
 #### Chlazení
 
 **Tag:** 🌡️ `temperature`
 
-- Třetí okno vpravo; hodnota: chladicí výkon v `kW`, dvě desetinná místa.
+- Vzorec: `odpar × 2450 / 3600`.
+- Druhé okno vpravo; hodnota: chladicí výkon v `kW`, dvě desetinná místa.
 - Detail: odpařování spotřebovává teplo; výkon klesá při omezení odparu a není změnou teploty.
 
 #### Teplota
 
 **Tag:** 🌡️ `temperature`
 
-- Čtvrté okno vpravo; hodnota: teplota u koruny ve `°C`, jedno desetinné místo.
+- Vzorec: `okolí − ochlazení + noční efekt`.
+- Třetí okno vpravo; hodnota: teplota u koruny ve `°C`, jedno desetinné místo.
 - Detail obsahuje živou teplotu mimo strom a podepsaný rozdíl teplot u koruny a mimo strom.
 - Vysvětlení: denní ochlazování odparem, noční omezení vyzařování olistěnou korunou a možný mírně teplejší vzduch u ní.
 - Základem jsou normály ČHMÚ 1991–2020; kolísání a teplá či chladná období jsou výukový odhad, nikoli měření nebo předpověď počasí.
+
+### Význam vzorců
+
+- `min` znamená menší ze dvou hodnot. Vodní toky a základ odparu jsou ve vzorcích vyjádřeny v `l/h`; listy, světlo a zavodnění jsou bezrozměrné podíly.
+- Limit kořenů je sezónní kapacita příjmu upravená podle stavu kořenů.
+- Chlazení převádí odpar v `l/h` na výkon v `kW` pomocí modelového skupenského tepla 2450 kJ/kg a převodu hodin na sekundy.
+- Teplota u koruny je teplota okolí snížená o modelový účinek odparu a zvýšená o noční efekt olistěné koruny; jde o výukový odhad.
 
 ## Související dokumenty
 
@@ -150,7 +153,8 @@ history:
 ## Pravidla struktury
 
 - Kapitola má úroveň `##`, oblast `###` a konkrétní okno `####`.
-- U okna uváděj tag a stručné body s obsahem, hodnotami, ovládáním a stavem detailu.
+- Používej šablonu okna odvozenou z Fotosyntézy: tag → nadpis a role → stručné shrnutí → detail → hodnota → vzorec a vstupy → ovládání a výchozí stav → související element.
+- U každého okna s vypočtenou hodnotou je vzorec povinný a viditelný i při zavřeném detailu. Přehled vstupů odlišuj od úplné rovnice; nepoužívej automaticky násobení pro součet, rozdíl nebo omezení minimem.
 - Ovládání okna a uchování stavu popisuj zde; reakci souvisejícího elementu definuj pouze v `elementy.md` a odkaž na ni.
 - Uváděj pouze položky, které se daného okna týkají.
 - Odkazy na související dokumenty ponechávej před těmito pravidly.
@@ -164,9 +168,12 @@ history:
 
 **Tag:** 🔵 `tag`
 
-- Nadpis: `Název`.
-- Obsah: popis obsahu okna.
-- Hodnota: veličina a jednotka.
+- Nadpis: `Název`; role: hlavní nebo tematické okno; strana: vlevo nebo vpravo.
+- Shrnutí: stručné vysvětlení viditelné bez otevření detailu.
+- Detailní text: krátké vysvětlení tématu.
+- Hodnota: vypočtená veličina, jednotka, formát a popisek.
+- Vzorec: skutečný vztah nebo označený přehled vstupů, viditelný pod hodnotou.
+- Vstupy výpočtu: význam jednotlivých proměnných a případná zjednodušení.
 - Ovládání detailu: způsob otevření a zavření.
 - Výchozí stav detailu: otevřený nebo zavřený.
 - Související element: [Název](elementy.md#kotva).

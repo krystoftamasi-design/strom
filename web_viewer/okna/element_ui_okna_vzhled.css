@@ -48,7 +48,7 @@ body.scene-night .tree-overlay { --ui-ink: #f0f2e9; }
 .tree-overlay .element-ui-okno[data-topic="co2"] { --ui-topic: var(--ui-co2); }
 .tree-overlay .element-ui-okno[data-topic="sugar"] { --ui-topic: var(--ui-sugar); }
 .tree-overlay .element-ui-okno[data-topic="light"] { --ui-topic: var(--ui-light); }
-.tree-overlay .element-ui-okno:is([data-window-id="kyslik"], [data-window-id="co2"], [data-window-id="cukry"], [data-window-id="voda"], [data-window-id="prijem-vody"], [data-window-id="prutok"], [data-window-id="chlazeni"], [data-window-id="teplota"]) {
+.tree-overlay .element-ui-okno:is([data-window-id="kyslik"], [data-window-id="co2"], [data-window-id="cukry"], [data-window-id="voda"], [data-window-id="prijem-vody"], [data-window-id="chlazeni"], [data-window-id="teplota"]) {
   grid-template-columns: calc(16.5 * var(--ui-formula-size)) minmax(0, 1fr);
 }
 .tree-overlay .element-ui-okno[data-main-window="true"] {
@@ -56,9 +56,9 @@ body.scene-night .tree-overlay { --ui-ink: #f0f2e9; }
   grid-template-columns: max-content minmax(0, 1fr);
 }
 .tree-overlay .element-ui-okno:is([data-window-id="kyslik"], [data-window-id="prijem-vody"]) { top: 28%; }
-.tree-overlay .element-ui-okno:is([data-window-id="co2"], [data-window-id="prutok"]) { top: 42%; }
-.tree-overlay .element-ui-okno:is([data-window-id="cukry"], [data-window-id="chlazeni"]) { top: 58%; }
-.tree-overlay .element-ui-okno:is([data-window-id="voda"], [data-window-id="teplota"]) { top: 74%; height: 18%; }
+.tree-overlay .element-ui-okno:is([data-window-id="co2"], [data-window-id="chlazeni"]) { top: 42%; }
+.tree-overlay .element-ui-okno:is([data-window-id="cukry"], [data-window-id="teplota"]) { top: 58%; }
+.tree-overlay .element-ui-okno[data-window-id="voda"] { top: 74%; height: 18%; }
 .tree-overlay .element-ui-okno > header {
   grid-column: 1; grid-row: 1; min-height: 0; padding: 0;
   justify-content: flex-start; border: 0;
@@ -158,9 +158,9 @@ body.scene-night .tree-overlay .element-ui-okno .ui-word {
   .tree-overlay .element-ui-okno { display: block; padding-left: 12px; width: 44%; height: 17%; min-height: 0; }
   .tree-overlay .element-ui-okno[data-main-window="true"] { left: 4%; top: 65%; width: 44%; height: 24%; min-height: 0; }
   .tree-overlay .element-ui-okno:is([data-window-id="kyslik"], [data-window-id="prijem-vody"]) { top: 22%; }
-  .tree-overlay .element-ui-okno:is([data-window-id="co2"], [data-window-id="prutok"]) { top: 40%; }
-  .tree-overlay .element-ui-okno:is([data-window-id="cukry"], [data-window-id="chlazeni"]) { top: 58%; }
-  .tree-overlay .element-ui-okno:is([data-window-id="voda"], [data-window-id="teplota"]) { top: 76%; height: 20%; }
+  .tree-overlay .element-ui-okno:is([data-window-id="co2"], [data-window-id="chlazeni"]) { top: 40%; }
+  .tree-overlay .element-ui-okno:is([data-window-id="cukry"], [data-window-id="teplota"]) { top: 58%; }
+  .tree-overlay .element-ui-okno[data-window-id="voda"] { top: 76%; height: 20%; }
   .tree-overlay .element-ui-okno h3 { font-size: clamp(22px, 5vw, 32px); }
   .tree-overlay .element-ui-okno[data-main-window="true"] h2 { font-size: clamp(18px, 4.5vw, 31px); }
   .tree-overlay .element-ui-okno .annotation-reveal,
@@ -212,3 +212,12 @@ body[data-chapter="transpiration"] [data-open-chapter="transpiration"] { text-de
 }
 
 body.scene-night .transpiration-guide .transpiration-legend, body.scene-night .element-ui-okno[data-chapter="transpiration"][data-topic="water"] .transpiration-connection { color: #a9baff; }
+
+.tree-overlay .element-ui-okno[data-chapter="transpiration"] > .ui-window-formula { white-space: normal; max-width: 30ch; }
+.tree-overlay .element-ui-okno[data-chapter="transpiration"] .transpiration-summary { grid-row: 4; }
+.tree-overlay .element-ui-okno[data-chapter="transpiration"] .annotation-reveal { grid-row: 1 / 5; }
+.tree-overlay .element-ui-okno[data-chapter="transpiration"] .transpiration-connection { grid-row: 5; }
+.tree-overlay .element-ui-okno[data-chapter="transpiration"].collapsed .transpiration-connection { grid-row: 1; }
+@media (max-width:700px) {
+  .tree-overlay .element-ui-okno[data-chapter="transpiration"] > .ui-window-formula { display: block; }
+}

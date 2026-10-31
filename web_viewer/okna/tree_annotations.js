@@ -170,7 +170,8 @@ export function createTreeAnnotations({ shell, model, createSeasonControl, setEl
       const formula = document.createElement('p');
       formula.className = 'ui-window-formula';
       try {
-        vstupyVzorce(definition.vypocet).forEach((key, index) => {
+        if (definition.vzorecText) formula.textContent = definition.vzorecText;
+        else vstupyVzorce(definition.vypocet).forEach((key, index) => {
           if (index) formula.append(document.createTextNode(' × '));
           const tag = document.createElement('span');
           tag.className = `ui-word ui-word-${veliciny[key].tema}`;
@@ -211,13 +212,6 @@ export function createTreeAnnotations({ shell, model, createSeasonControl, setEl
       const label = control.querySelector('label');
       if (label) label.textContent = definition.ovladani.popis;
       nodes.push(control);
-    }
-    if (definition.cestaVody) {
-      const route = document.createElement('div');
-      route.className = 'water-route';
-      route.setAttribute('aria-label', 'Cesta vody');
-      route.textContent = 'Kořeny → Xylém → Listy → pára';
-      nodes.push(route);
     }
     if (definition.teplotniPorovnani) {
       const comparison = document.createElement('p');

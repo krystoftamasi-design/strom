@@ -2,6 +2,9 @@
 history:
   - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
     date: 2026-10-31
+    change: Doplněna šablona vzhledu podle Fotosyntézy a vzorce zbývajících oken Transpirace.
+  - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
+    date: 2026-10-31
     change: Zpřehledněna Transpirace podle poznatků z uživatelského testu.
   - thread_id: 01a192c9-24b4-7642-a56f-53abd8bf4304
     date: 2026-10-31
@@ -12,9 +15,6 @@ history:
   - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
     date: 2026-10-31
     change: Převedena kapitola Transpirace na společný vzhled oken Fotosyntézy.
-  - thread_id: 01a192c9-24b4-7642-a56f-53abd8bf4304
-    date: 2026-10-31
-    change: Sladěno rozložení detailů, rozestupy a délky tahů se současným CSS.
 
 ---
 
@@ -31,6 +31,7 @@ history:
 
 - Nadpis: název tématu; kliknutí ovládá zobrazení detailu.
 - Hodnota: živé číslo s jednotkou pod nadpisem, pokud ji okno zobrazuje.
+- V Transpiraci má každé číselné okno vzorec pod hodnotou i při zavřeném detailu; dlouhý vztah se může zalomit a shrnutí následuje pod ním. Vzorec je v této kapitole viditelný i na úzké obrazovce.
 - Vstupy výpočtu: drobný černý nezalamovaný řádek pod hodnotou ve dne; v noci se převrátí na světlou barvu.
 - Detail se zobrazuje napravo od hlavních údajů a sází se od horního okraje okna.
 - O₂, CO₂, Cukry a Voda mají společnou šířku levého sloupce a jejich popisy začínají na stejné svislici.
@@ -43,7 +44,7 @@ history:
 
 - Podklad: [Untitled.svg](../../web_assets/ui_from_af/Untitled.svg), plátno přibližně 2020 × 1143.
 - Fotosyntéza je vlevo dole; vpravo následují shora O₂, CO₂, Cukry a Voda.
-- Transpirace používá stejné hlavní okno vlevo dole jako Fotosyntéza; vpravo jsou shora Příjem vody, Průtok, Chlazení a Teplota. Každé má jednu hodnotu a vlastní detail ve společných sloupcích.
+- Transpirace používá stejné hlavní okno vlevo dole jako Fotosyntéza; vpravo jsou shora Příjem vody, Chlazení a Teplota. Každé má jednu hodnotu a vlastní detail ve společných sloupcích.
 - Střed zůstává volný pro strom.
 - Bloky jsou bez výplně a rámečku; vlevo mají nepravidelný svislý tah.
 - Svislé tahy začínají u horního okraje okna; O₂, CO₂ a Cukry používají 65 % výšky svého bloku, Fotosyntéza 100 %.
@@ -75,6 +76,9 @@ history:
 
 - Název dokumentu má úroveň `#`, společná oblast oken `##` a její témata `###`.
 - Témata řaď jako obecný obsah, rozložení, písmo a barvy.
+- Šablonu jednoho okna odvozuj z hlavního a tematických oken Fotosyntézy: svislý tah, nadpis, hodnota, vzorec a detail napravo. Doplňky Transpirace nejsou součástí společné šablony.
+- Rozliš hlavní okno vlevo dole s dominantním nadpisem a hodnotou od menších tematických oken v pravém sloupci.
+- Pro další okna používej následující šablonu se zástupnými názvy; konkrétní obsah a výchozí otevření určují definice v `okna.md`.
 - Popisuj aktuální vzhled stručnými odrážkami; konkrétní texty a ovládání odkazuj do obsahu oken.
 - Historii udržuj ve frontmatteru, odkazy před touto závěrečnou částí.
 
@@ -106,4 +110,25 @@ history:
 ## Pravidla struktury
 
 - Pravidlo členění.
+```
+
+### Šablona jednoho okna podle Fotosyntézy
+
+```markdown
+#### Název okna
+
+- Role: hlavní okno procesu / tematické okno.
+- Umístění: hlavní okno vlevo dole / tematické okno v pravém sloupci; střed je vyhrazen stromu.
+- Podklad: bez výplně, rámečku a spojnice ke stromu.
+- Barevný tah: nepravidelná svislá linka vlevo v barvě tématu.
+- Nadpis: Nohemi; hlavní okno má dominantní větší a tučnější nadpis, tematické okno menší nadpis.
+- Hodnota: pod nadpisem, Nohemi v barvě tématu; popisek a jednotka v Satoshi.
+- Vzorec / přehled vstupů: pod hodnotou, drobné Satoshi Medium; ve dne černý, v noci světlý.
+- Detail: druhý sloupec napravo, zarovnaný k hornímu okraji okna, Satoshi Light; dlouhý text má vlastní posuv.
+- Rozestup sloupců: 15 px; tematická okna stejného sloupce mají společný začátek detailů.
+- Zavřený stav: nadpis, hodnota a vzorec zůstávají na místě; detail je skrytý.
+- Otevřený stav: detail se zobrazí ve vyhrazeném prostoru bez posunutí sousedních oken.
+- Ovládání: ovládací plocha nad nadpisem s viditelným označením při ovládání klávesnicí; konkrétní chování a výchozí stav určuje definice okna.
+- Úzká obrazovka: dva pevné sloupce, menší písmo a detail pod hlavními údaji; Fotosyntéza skrývá přehled vstupů.
+- Konkrétní nadpis, tag, hodnota, vzorec a detail: odkaz na definici v obsahu oken.
 ```

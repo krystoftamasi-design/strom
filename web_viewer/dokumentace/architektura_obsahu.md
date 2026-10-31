@@ -2,6 +2,9 @@
 history:
   - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
     date: 2026-10-31
+    change: Odstraněn Průtok a doplněny vzorce i šablona číselného okna podle Fotosyntézy.
+  - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
+    date: 2026-10-31
     change: Zpřehledněna Transpirace podle poznatků z uživatelského testu.
   - thread_id: 01a192c9-24b4-7642-a56f-53abd8bf4304
     date: 2026-10-31
@@ -12,9 +15,6 @@ history:
   - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
     date: 2026-10-31
     change: Převedena kapitola Transpirace na společný vzhled oken Fotosyntézy.
-  - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
-    date: 2026-10-31
-    change: Zvětšeny a zvýrazněny nadpisy kapitol a nahrazen obsah šablony obecnými položkami.
 
 ---
 
@@ -91,7 +91,6 @@ history:
 
 - [Transpirace](moje/okna.md#transpirace)
 - [Příjem vody](moje/okna.md#příjem-vody)
-- [Průtok](moje/okna.md#průtok)
 - [Chlazení](moje/okna.md#chlazení)
 - [Teplota](moje/okna.md#teplota)
 

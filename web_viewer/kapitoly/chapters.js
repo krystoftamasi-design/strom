@@ -314,8 +314,6 @@ export function createChapters({ model, applySeason, setSun, setAzimuth, setVisu
     }
     out('ecoTranspiration', hourly(model.transpiration));
     out('ecoTranspirationInflow', hourly(model.inflow));
-    // In the single-store model, upward flow is approximated by total water use.
-    out('ecoTreeWaterFlow', hourly(model.consumption));
     out('ecoCooling', fmt(model.coolingKW, 2));
     capturedLabel.textContent = `${hourly(model.waterInput)} l/h`;
     if (document.activeElement !== waterInput) waterInput.value = model.waterInput * 60;

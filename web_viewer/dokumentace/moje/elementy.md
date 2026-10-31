@@ -2,6 +2,9 @@
 history:
   - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
     date: 2026-10-31
+    change: Odstraněn Průtok a doplněny vzorce i šablona číselného okna podle Fotosyntézy.
+  - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
+    date: 2026-10-31
     change: Zpřehledněna Transpirace podle poznatků z uživatelského testu.
   - thread_id: 01a192c9-24b4-7642-a56f-53abd8bf4304
     date: 2026-10-31
@@ -12,9 +15,6 @@ history:
   - thread_id: 01a192c9-24b4-7642-a56f-53abd8bf4304
     date: 2026-10-31
     change: Přepnutí kapitoly zachovává aktuální stažení linek bez jejich opětovného zobrazení.
-  - thread_id: 01a192c9-24b4-7642-a56f-53abd8bf4304
-    date: 2026-10-31
-    change: Odstraněny skoky rychlosti a navázány obě linky pouze na čas přehrávání.
 
 ---
 
@@ -25,7 +25,7 @@ history:
 **Tag:** 🔵 `water`
 Definice spojení
 
-- Okna: [Voda](okna.md#voda) ve Fotosyntéze; [Transpirace](okna.md#transpirace), [Příjem vody](okna.md#příjem-vody) a [Průtok](okna.md#průtok) v Transpiraci.
+- Okna: [Voda](okna.md#voda) ve Fotosyntéze; [Transpirace](okna.md#transpirace), [Příjem vody](okna.md#příjem-vody) v Transpiraci.
 - **Zvýraznění**
 - při otevření okna modrá linka výrazně ztloustne a po její trase začne putovat pulzující vlna tloušťky.
 - Zvýraznění trvá, dokud je v aktivní kapitole otevřen alespoň jeden související detail; po zavření všech se vrátí původní vzhled.
@@ -120,9 +120,9 @@ Definice spojení
 **Tag:** 🔵 `water`
 Definice spojení
 
-- Okno: [Průtok](okna.md#průtok).
+- Kapitola: [Transpirace](okna.md#kapitola-transpirace).
 - **Viditelnost**
-- Svislý přehled cesty vody je v Transpiraci viditelný i bez otevření oken; další textové schéma v detailu Průtoku se zavřením skryje.
+- Svislý přehled cesty vody je v Transpiraci viditelný bez ohledu na stav detailů oken.
 
 **Chování elementu**
 

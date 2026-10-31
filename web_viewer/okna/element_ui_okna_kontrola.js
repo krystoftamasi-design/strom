@@ -95,7 +95,8 @@ export function zkontrolovatOkna({ okna, model, body, najitOvladani }) {
       if (okno.vypocet !== undefined || okno.zobrazitVzorec || okno.zobrazitHodnotu) {
         if (!ma(veliciny, okno.vypocet) || neplatneVeliciny.has(okno.vypocet)) chyba(`neplatná veličina „${okno.vypocet}“.`);
         if (neplatneVzorce.has(okno.vypocet)) chyba(`výpočet „${okno.vypocet}“ má neplatné vstupy.`);
-        if (okno.zobrazitVzorec) {
+        if (okno.vzorecText !== undefined && !text(okno.vzorecText)) chyba('text vzorce musí být neprázdný.');
+        if (okno.zobrazitVzorec && okno.vzorecText === undefined) {
           try {
             for (const vstup of vstupyVzorce(okno.vypocet)) {
               if (!zdroj(vstup) || neplatneVeliciny.has(vstup)) chyba(`neplatný vstup „${vstup}“.`);
