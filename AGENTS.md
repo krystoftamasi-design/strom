@@ -2,6 +2,9 @@
 history:
   - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
     date: 2026-11-01
+    change: Zavedena jednotná předběžná kontrola vybraných souborů před commitem.
+  - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
+    date: 2026-11-01
     change: Upřesněn bezpečný postup commitů a kontrol při souběžné práci.
   - thread_id: 01a19424-3d45-7e81-9ea4-3cd6ef98d1fa
     date: 2026-10-31
@@ -12,9 +15,6 @@ history:
   - thread_id: 01a192c9-24b4-7642-a56f-53abd8bf4304
     date: 2026-10-31
     change: Roztříděna dokumentace a opraveny cesty podle účelu souborů.
-  - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
-    date: 2026-10-31
-    change: Sjednocena struktura Transpirace, její okna a elementy podle vzoru Fotosyntézy.
 
 ---
 
@@ -172,6 +172,7 @@ Soubory jsou v `web_viewer/dokumentace`.
 - Pokud stejný soubor souběžně mění jiný chat, nepřibírej jeho úpravy ani je nevracej. Pracuj v samostatném worktree nebo nejprve dokonči oddělení vlastního obsahu; samotný seznam cest souběžné změny uvnitř souboru neodděluje. Při práci více chatů na společných souborech preferuj samostatné worktree.
 - Před ukládáním porovnej `git diff`, `git diff --cached` a aktuální `HEAD`; po souběžném commitu načti podklady znovu. Po commitu ověř `git show --stat HEAD` proti seznamu úkolu a hash z výsledku příkazu; cizí commit nevydávej za vlastní.
 - Po neúspěšném patchi, `git add`, kontrole nebo commitu zastav závislé kroky a nejprve oprav příčinu. V PowerShellu ověř po každém externím příkazu `$LASTEXITCODE`; oddělení příkazů novým řádkem nebo středníkem nezastaví běh při chybě.
+- Před commitem spusť `python web_viewer/tools/check_documentation.py --files cesta1 cesta2` se stejným seznamem souborů jako pro `commit --only`; po chybě necommituj. Kontrola neprovádí funkční ani vizuální test a nic nezapisuje do Gitu.
 - YAML načti parserem a limit pěti položek ověř hned po úpravě dokumentu, ještě před commitem; zachovej další pole frontmatteru. Po přidání vlastní položky odstraň pouze nadlimitní konec historie.
 - Při známém omezení zápisu do `.git` použij schvalovaný běh rovnou pro konkrétní lokální commit; neopakuj předem známý nefunkční běh a neměň ochrany adresáře.
 - Rozpracované kroky necommituj jednotlivě; commit neznamená ověření funkčnosti.

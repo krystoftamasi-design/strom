@@ -2,6 +2,9 @@
 history:
   - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
     date: 2026-11-01
+    change: Zavedena jednotná předběžná kontrola vybraných souborů před commitem.
+  - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
+    date: 2026-11-01
     change: Upřesněn bezpečný postup commitů a kontrol při souběžné práci.
   - thread_id: 01a19424-3d45-7e81-9ea4-3cd6ef98d1fa
     date: 2026-10-31
@@ -12,15 +15,19 @@ history:
   - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
     date: 2026-10-31
     change: Omezen obsah reportu revize na doložené neshody.
-  - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
-    date: 2026-10-31
-    change: Zavedeno porovnání definic se skutečným webem v Chromu po deseti commitech.
 
 ---
 
 # Kontrola dokumentace
 
 ## Před commitem
+
+- Jednotná kontrola pracovních souborů: `python web_viewer/tools/check_documentation.py --files cesta1 cesta2`. Použij stejný výslovný seznam jako u následného `commit --only`; při návratovém kódu 1 nejprve oprav příčinu.
+- Režim `--files` kontroluje vybrané soubory z disku nad verzí ostatních souborů v `HEAD`; nepoužívá ani nemění sdílený Git index. Zastaví se na mezerách v diffu, chybné syntaxi JS nebo dokumentaci. U nových souborů kontroluje mezery v celém textu.
+- HTML se neodesílá celé do Node.js: kontrolují se inline klasické a modulové JavaScripty, datové bloky JSON a importmap se přeskočí. Externí JS uveď samostatně v seznamu. Node ověřuje jen syntaxi, nespouští kód ani importy a nepotřebuje `document`.
+- U změněných dokumentů režim `--files` vyžaduje platný YAML, nejvýše pět položek historie a aktualizaci historie; prověřuje i odkazy a evidenci. Staré chyby přímo vybraného dokumentu nejsou omluvené stavem v `HEAD`.
+- Změna `HEAD` nebo vybraného souboru během kontroly vyžaduje nové spuštění. Výsledek je předběžný: následný Git hook zůstává rozhodující kontrolou skutečného commitu. Kontrola neověřuje autorství řádků, obsahovou správnost ani běh webu.
+- Testy tohoto režimu: `python -m unittest discover -s web_viewer/testy -p test_preflight.py`.
 
 - Ve sdíleném adresáři ukládej jen výslovně vyjmenované vlastní soubory přes `git commit --only`; podmínky a souběžné úpravy stejného souboru řeší [Commity](../../../AGENTS.md#commity).
 - `--staged` hodnotí současný index, nikoli automaticky soubory budoucího `commit --only`. Rozhodující hook kontroluje dočasný index přesného commitu připravený Gitem; dřívější úspěch po selhání `git add` není ověřením zamýšlené změny.

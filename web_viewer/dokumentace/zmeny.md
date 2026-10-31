@@ -1,5 +1,8 @@
 ---
 history:
+  - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
+    date: 2026-11-01
+    change: Zavedena jednotná předběžná kontrola vybraných souborů před commitem.
   - thread_id: 01a1943d-30ff-7d43-bbee-d60f487d7880
     date: 2026-11-01
     change: Zvětšeny částice O₂ a CO₂ a napojeno jejich zvýraznění na otevření příslušného okna.
@@ -12,9 +15,6 @@ history:
   - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
     date: 2026-11-01
     change: Upřesněn bezpečný postup commitů a kontrol při souběžné práci.
-  - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
-    date: 2026-11-01
-    change: Zjednodušena komponenta na nezávislý blok údajů a detailu.
 
 ---
 
@@ -25,6 +25,13 @@ history:
 ## Rozpracováno
 
 ## Implementováno
+
+#### Z051 — Jednotná kontrola před commitem
+
+- Zadání: zachytit formální chyby před pokusem o commit.
+- Výsledek: režim `--files` ověřuje výslovný seznam pracovních souborů bez zápisu do Gitu, mezery, syntaxi JS a inline skriptů HTML, dokumentaci, historii a evidenci; hlídá změnu podkladů během běhu.
+- Stav: Implementováno.
+- Ověření: testy předběžné kontroly a původního kontroloru; spuštění nového režimu na souborech tohoto úkolu.
 
 #### Z050 — Zvýraznění částic O₂ a CO₂
 

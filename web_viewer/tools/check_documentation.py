@@ -6,6 +6,7 @@ import re
 import subprocess
 import sys
 from pathlib import Path
+from html.parser import HTMLParser
 from urllib.parse import unquote, urlsplit
 
 try:
@@ -154,18 +155,20 @@ def inspect(snapshot, name):
     return errors
 
 
-def run_checks(root, staged):
+def run_checks(root, staged, files=None):
     snapshot = Snapshot(root, 'index' if staged else 'disk')
     baseline = Snapshot(root, 'HEAD')
-    changed = git(root, 'diff', '--cached', '--name-only', '--diff-filter=ACMR', '-z').decode('utf-8').split('\0')
+    changed = files if files is not None else git(root, 'diff', '--cached', '--name-only', '--diff-filter=ACMR', '-z').decode('utf-8').split('\0')
+    if files is not None:
+        snapshot = SelectedSnapshot(root, files)
     names = [n for n in changed if n.endswith('.md') and (n == 'AGENTS.md' or n.startswith(DOCS))] if staged else MAIN
     # Recheck inbound links even when only the destination's heading changed.
-    if staged and git(root, 'diff', '--cached', '--name-only').strip():
+    if staged and (files is not None or git(root, 'diff', '--cached', '--name-only').strip()):
         names = list(set(names + [n for n in MAIN if snapshot.exists(n)]))
     failures = []
     for name in sorted(set(names)):
         current = inspect(snapshot, name)
-        old = inspect(baseline, name) if staged and baseline.exists(name) else set()
+        old = inspect(baseline, name) if staged and baseline.exists(name) and not (files is not None and name in changed) else set()
         for error in sorted(current - old):
             failures.append(name + ': ' + error)
         if staged:
@@ -185,17 +188,123 @@ def run_checks(root, staged):
         failures.append('web code changes require staged ' + EVIDENCE)
     for failure in failures:
         print('ERROR: ' + failure)
-    print(f'Documentation check: {len(failures)} error(s); mode=' + ('staged' if staged else 'full'))
+    print(f'Documentation check: {len(failures)} error(s); mode=' + ('files' if files is not None else 'staged' if staged else 'full'))
     return 1 if failures else 0
+
+
+class SelectedSnapshot(Snapshot):
+    """Selected work files over HEAD; never writes or trusts the shared index."""
+    def __init__(self, root, files):
+        super().__init__(root, 'disk')
+        self.selected = set(files)
+        self.base = Snapshot(root, 'HEAD')
+
+    def read(self, name):
+        return super().read(name) if name in self.selected else self.base.read(name)
+
+    def exists(self, name):
+        return super().exists(name) if name in self.selected else self.base.exists(name)
+
+
+class InlineScripts(HTMLParser):
+    def __init__(self):
+        super().__init__(convert_charrefs=False)
+        self.active = None
+        self.blocks = []
+
+    def handle_starttag(self, tag, attrs):
+        if tag != 'script':
+            return
+        attrs = dict(attrs)
+        kind = attrs.get('type', '').strip().lower()
+        if 'src' not in attrs and kind in ('', 'module', 'text/javascript', 'application/javascript'):
+            self.active = [kind == 'module', self.getpos()[0], '']
+
+    def handle_data(self, data):
+        if self.active is not None:
+            self.active[2] += data
+
+    def handle_endtag(self, tag):
+        if tag == 'script' and self.active is not None:
+            self.blocks.append(self.active)
+            self.active = None
+
+
+def check_syntax(name, source):
+    suffix = Path(name).suffix.lower()
+    if suffix in ('.js', '.mjs', '.cjs'):
+        blocks = [(suffix != '.cjs', 1, source)]
+    elif suffix == '.html':
+        parser = InlineScripts()
+        parser.feed(source)
+        blocks = parser.blocks
+    else:
+        return []
+    failures = []
+    for module, line, code in blocks:
+        result = subprocess.run(['node', '--check', '--input-type=' + ('module' if module else 'commonjs')],
+                                input=code, text=True, encoding='utf-8', capture_output=True)
+        if result.returncode:
+            failures.append(f'{name} (script starts at line {line}): {result.stderr.strip()}')
+    return failures
+
+
+def preflight(root, files):
+    head = git(root, 'rev-parse', 'HEAD')
+    names = []
+    for name in files:
+        path = (root / name).resolve()
+        try:
+            name = path.relative_to(root.resolve()).as_posix()
+        except ValueError:
+            raise ValueError('Path outside repository: ' + name)
+        if not path.is_file():
+            raise ValueError('Not an existing file: ' + name)
+        names.append(name)
+    names = sorted(set(names))
+    originals = {name: (root / name).read_bytes() for name in names}
+    print('Selected files: ' + ', '.join(names), flush=True)
+    # Check the worktree against HEAD, not somebody else's staged changes.
+    result = subprocess.run(['git', '-C', str(root), 'diff', '--check', 'HEAD', '--', *names])
+    if result.returncode:
+        return 1
+    for name in names:
+        source = (root / name).read_text(encoding='utf-8-sig')
+        if not Snapshot(root, 'HEAD').exists(name):
+            if any(line.rstrip() != line for line in source.splitlines()):
+                print('ERROR: trailing whitespace in new file ' + name)
+                return 1
+        failures = check_syntax(name, source)
+        if failures:
+            print('ERROR: ' + '\n'.join(failures))
+            return 1
+    if run_checks(root, True, names):
+        return 1
+    if any((root / name).read_bytes() != data for name, data in originals.items()):
+        print('ERROR: selected file changed during checks; rerun preflight.')
+        return 1
+    if git(root, 'rev-parse', 'HEAD') != head:
+        print('ERROR: HEAD changed during checks; rerun preflight.')
+        return 1
+    print('PASS: selected files; syntax only, no browser or runtime tests; no Git writes.')
+    return 0
 
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('--staged', action='store_true')
+    modes = parser.add_mutually_exclusive_group()
+    modes.add_argument('--staged', action='store_true')
+    modes.add_argument('--files', nargs='+', help='Read-only preflight of explicit worktree files over HEAD')
     parser.add_argument('--review-status', action='store_true')
     parser.add_argument('--review-complete', metavar='HEAD_SHA')
     args = parser.parse_args()
     root = Path(subprocess.check_output(['git', 'rev-parse', '--show-toplevel']).decode().strip())
+    if args.files:
+        try:
+            return preflight(root, args.files)
+        except (ValueError, OSError, subprocess.CalledProcessError) as error:
+            print('ERROR: ' + str(error))
+            return 1
     state = root / 'web_viewer/old/documentation_review_state.json'
     if args.review_status or args.review_complete:
         head = git(root, 'rev-parse', 'HEAD').decode().strip()

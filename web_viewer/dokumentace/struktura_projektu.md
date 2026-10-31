@@ -1,5 +1,8 @@
 ---
 history:
+  - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
+    date: 2026-11-01
+    change: Zavedena jednotná předběžná kontrola vybraných souborů před commitem.
   - thread_id: 01a192c9-24b4-7642-a56f-53abd8bf4304
     date: 2026-10-31
     change: Roztříděna dokumentace a opraveny cesty podle účelu souborů.
@@ -12,9 +15,7 @@ history:
   - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
     date: 2026-10-31
     change: Vymezeny tři prioritní problémy porozumění.
-  - thread_id: d4bd5380-b7a9-4109-9dcd-32f5819e4b02
-    date: 2026-10-31
-    change: Doplněn soubor produktové strategie a testovací metriky.
+
 ---
 
 # Uspořádání projektu
@@ -62,11 +63,11 @@ Přehled původních přesunů souborů je v `starsi/presun_souboru.json`.
 
 - `web_assets` obsahuje modely, textury, písma a knihovny.
 - `tools` obsahuje pomocné nástroje.
-- `tools/check_documentation.py` kontroluje dokumentaci; `tools/pre-commit` je zdroj kontroly před commitem.
+- `tools/check_documentation.py` kontroluje dokumentaci a přes `--files` předběžně vybrané pracovní soubory včetně syntaxe JS v HTML; `tools/pre-commit` je zdroj kontroly před commitem.
 - `tools/review_documentation.py` spouští revizi po deseti commitech; `tools/post-commit` ji propojuje s Gitem a zachovává Git LFS.
 - `tools/review_browser.mjs` získává pozorování kapitol a oken v Google Chromu; snímky a data jsou v `old/browser_review_<hash>`.
 - `old/revize_dokumentace.md` obsahuje poslední pracovní report; stav a logy revize zůstávají v ignorovaném `old`.
-- `testy/test_documentation_check.py` ověřuje kontrolor v dočasných repozitářích.
+- `testy/test_documentation_check.py` ověřuje kontrolor v dočasných repozitářích; `testy/test_preflight.py` kontroluje předběžnou kontrolu vybraných souborů a skriptů HTML.
 - [Kontrola dokumentace](system/kontrola_dokumentace.md) popisuje instalaci, rozsah a pravidelnou revizi.
 - `testy` obsahuje existující testovací skripty.
 - `nahledy` obsahuje uložené obrázky z dřívějších kontrol.
