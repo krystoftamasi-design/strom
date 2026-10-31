@@ -1,5 +1,8 @@
 ---
 history:
+  - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
+    date: 2026-10-31
+    change: Popsáno propojení detailu Cukry se zvýrazněním glukózové linky.
   - thread_id: 01a18f17-efd7-7a02-8369-186b681bfcc0
     date: 2026-10-31
     change: Odděleny odkazy na obsah a samostatný vzhled oken.
@@ -12,9 +15,6 @@ history:
   - thread_id: 01a18f17-efd7-7a02-8369-186b681bfcc0
     date: 2026-10-31
     change: Odstraněna koncová mezera při kontrole dokumentu.
-  - thread_id: 01a18f17-efd7-7a02-8369-186b681bfcc0
-    date: 2026-10-31
-    change: Oddělena cílová statická architektura od dosavadního pohyblivého kódu.
 ---
 
 # Architektura oken
@@ -37,6 +37,13 @@ history:
 - `okna/tree_annotations.css` obsahuje společný základ bloků kapitol.
 - Rozložení pracuje v souřadnicích rozhraní; aktualizace za snímek obsluhuje pouze ovládání období.
 - `kapitoly/chapters.js` určuje pořadí a přepínání kapitol; `kapitoly/chapters.css` vzhled navigace.
+
+### Zvýraznění elementů
+
+- `okna/tree_annotations.js` předává otevření detailu Cukry přes `setSugarHighlight` v `kapitoly/chapters.js`.
+- `index.html` sdílí uniform `uSelected` mezi materiály glukózové linky; `vykreslovani/water_brush.js` podle něj zesvětlí barvu.
+- Zvýraznění je aktivní jen v kapitole Fotosyntéza; zavření detailu obnoví běžnou barvu.
+- Chování určuje [Glukóza linka](elementy.md#glukóza-linka).
 
 ## Hodnoty
 

@@ -10,6 +10,7 @@ export async function createWaterBrushMaterial(loader, uniforms) {
   brush.minFilter = THREE.LinearMipmapLinearFilter;
   brush.magFilter = THREE.LinearFilter;
   Object.assign(uniforms, {
+    uSelected: { value: 0.0 },
     uBrushMap: { value: brush },
     // Crop both tapered ends: only the solid part from row 40 to 920 repeats.
     uBrushRect: { value: new THREE.Vector4(0.493, 0.040, 0.045, 0.880) },
@@ -55,6 +56,7 @@ export async function createWaterBrushMaterial(loader, uniforms) {
       uniform float uTime;
       uniform float uSpeed;
       uniform float uGlow;
+      uniform float uSelected;
       uniform float uOpacity;
       uniform vec3 uColor;
       uniform vec3 uHighlightColor;
@@ -83,6 +85,7 @@ export async function createWaterBrushMaterial(loader, uniforms) {
         float pulse = sin(vFlowDistance * 3.0 - uTime * 2.2 * uSpeed * uFlowDirection) * 0.5 + 0.5;
         float highlight = pow(pulse, 3.5) * clamp(uGlow, 0.0, 2.5) * 0.55;
         vec3 color = mix(uColor, uHighlightColor, clamp(highlight, 0.0, 0.8));
+        color = mix(color, uHighlightColor, uSelected * 0.8);
         gl_FragColor = vec4(color, alpha);
       }
     `

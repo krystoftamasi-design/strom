@@ -1,5 +1,8 @@
 ---
 history:
+  - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
+    date: 2026-10-31
+    change: Upřesněno ovládání a rozsah zvýraznění glukózové linky.
   - thread_id: 01a18f17-efd7-7a02-8369-186b681bfcc0
     date: 2026-10-31
     change: Odstraněny prázdné body a sjednoceny odkazy na související okna.
@@ -25,9 +28,10 @@ history:
 
 - Fialová linka vede po kmeni a dělí se do dvou kořenů.
 - Související okno: [Cukry](okna.md#cukry).
-- Akce: kliknutí na okno Cukry.
-- Zvýraznění: při otevření okna se fialová linka rozjasní.
+- Akce: kliknutí na nadpis Cukry nebo tlačítko +/− přepne detail.
+- Zvýraznění: otevřený detail rozjasní celou fialovou linku v kapitole Fotosyntéza, včetně výchozího otevření.
 - Při zavření se vrátí původní vzhled.
+- Mimo kapitolu Fotosyntéza se zvýraznění vypne; stav detailu zůstává zachovaný.
 - Je odsazená od modré linky.
 - Končí dřív uvnitř kořenů.
 - Na jaře proudí ze zásob v kořenech a kmeni k novým listům.

@@ -59,7 +59,8 @@ function createElementUiOkno({ panel, body, reveal, toggle }) {
 
 // Static screen-space UI. Camera and tree geometry never participate in layout.
 // Original content and controls are moved, so live outputs and handlers survive.
-export function createTreeAnnotations({ shell, model, createSeasonControl }) {
+export function createTreeAnnotations({ shell, model, createSeasonControl, setSugarHighlight = () => {} }) {
+  let sugarExpanded = false;
   const content = shell.querySelector('.chapter-content');
   const kontrola = zkontrolovatOkna({
     okna: oknaPodleKapitol,
@@ -116,6 +117,7 @@ export function createTreeAnnotations({ shell, model, createSeasonControl }) {
     let expanded = false;
     function expand(open) {
       expanded = open;
+      if (definition?.id === 'cukry') sugarExpanded = open;
       body.inert = !open;
       body.setAttribute('aria-hidden', String(!open));
       panel.classList.toggle('collapsed', !open);
@@ -123,6 +125,7 @@ export function createTreeAnnotations({ shell, model, createSeasonControl }) {
       toggle.setAttribute('aria-expanded', String(open));
     }
     toggle.addEventListener('click', () => expand(!expanded));
+    if (definition?.id === 'cukry') h.addEventListener('click', () => expand(!expanded));
     expand(definition ? Boolean(definition.otevrene) : article.dataset.chapter === 'intro' || article.dataset.chapter === 'seasons');
     header.append(h, toggle);
     article.append(panel);
@@ -260,6 +263,7 @@ export function createTreeAnnotations({ shell, model, createSeasonControl }) {
 
   return {
     update(chapter, playbackDelta = 0) {
+      setSugarHighlight(chapter === 'photosynthesis' && sugarExpanded);
       seasonRow.hidden = chapter === 'intro';
       seasonControl.update(chapter, playbackDelta);
     }

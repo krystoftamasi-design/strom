@@ -1,5 +1,8 @@
 ---
 history:
+  - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
+    date: 2026-10-31
+    change: "Implementována Z002: zvýraznění glukózy podle otevření detailu Cukry."
   - thread_id: 01a18f17-efd7-7a02-8369-186b681bfcc0
     date: 2026-10-31
     change: Přesměrován vzhled oken na samostatný soubor vzhled_oken.md.
@@ -12,9 +15,6 @@ history:
   - thread_id: 01a18f17-efd7-7a02-8369-186b681bfcc0
     date: 2026-10-31
     change: Přesunuta Z003 do implementovaných změn a zapsány skutečné výsledky kontrol.
-  - thread_id: 01a18f17-efd7-7a02-8369-186b681bfcc0
-    date: 2026-10-31
-    change: Rozšířena Z003 o nahrazení pohyblivých oken statickým UI.
 ---
 
 # Změny
@@ -27,15 +27,15 @@ history:
 - Stav: Čeká.
 - Ověření: neprovedeno.
 
-#### Z002 — Glukóza
-
-- Zadání: [Glukóza linka](elementy.md#glukóza-linka), zvýraznění při otevření okna Cukry a návrat při zavření.
-- Stav: Čeká.
-- Ověření: neprovedeno.
-
 ## Rozpracováno
 
 ## Implementováno
+
+#### Z002 — Glukóza
+
+- Zadání: [Glukóza linka](elementy.md#glukóza-linka), zvýraznění při otevření okna Cukry a návrat při zavření.
+- Stav: Implementováno.
+- Ověření: porovnání vazby okna s uniformem shaderu v kódu; finální kontrola uživatelem.
 
 #### Z003 — UI podle SVG
 
