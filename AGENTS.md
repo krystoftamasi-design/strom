@@ -2,6 +2,9 @@
 history:
   - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
     date: 2026-10-31
+    change: Odstraněna obecná struktura nadpisů a upřesněna historie, výjimka pro tagy a rozsah kontrol.
+  - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
+    date: 2026-10-31
     change: Doplněna vlastní pravidla struktury a obecná šablona AGENTS.md.
   - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
     date: 2026-10-31
@@ -12,16 +15,14 @@ history:
   - thread_id: 01a191dc-21ba-7b11-9e58-687e0a2cfbd7
     date: 2026-10-31
     change: Doplněn stručný princip YAGNI pro vývoj podle aktuálních potřeb.
-  - thread_id: 01a18f17-efd7-7a02-8369-186b681bfcc0
-    date: 2026-10-31
-    change: Zpřesněno povinné sjednocení kódu a dokumentace v jednom kroku.
 ---
 
 # Prohlížeč a kontrola
 
 - Web otevírej a kontroluj pouze v Google Chrome; nikdy v integrovaném prohlížeči ani přes `open_in_codex`.
 - Pokud Chrome není dostupný, předej URL.
-- Finální testování nech uživateli, pokud výslovně nepožádá o test.
+- Průběžně kontroluj syntaxi změněného kódu, odkazy a shodu dokumentace s implementací.
+- Finální vizuální a funkční testování webu nech uživateli, pokud výslovně nepožádá o test.
 
 ## YAGNI
 
@@ -47,10 +48,9 @@ history:
 - U každého vytvářeného nebo upravovaného dokumentu Markdown vytvoř na konci část „Pravidla struktury“, pokud chybí.
 - Do této části patří pravidla členění a obecná šablona s úrovněmi nadpisů, pořadím částí a formátem položek; používej zástupné názvy místo konkrétního obsahu.
 - Při změně struktury aktualizuj současně pravidla, šablonu i členění dokumentu; před dokončením ověř jejich shodu.
-- Konkrétní strukturu určuje tato část; obecné členění níže použij, pokud dokument vlastní strukturu nemá.
+- Strukturu dokumentu určují výhradně jeho „Pravidla struktury“ a šablona na konci.
 - Piš stručně a bodově: jedna podstatná informace na bod, bez opakování a výplně.
 - Používej krátké názvy, malé podnadpisy a mezery mezi tématy.
-- Struktura: kapitola `##`, oblast `###`, konkrétní položka `####`; bez opakování slova „Okno“.
 - Zachovej uživatelovy úpravy a nevracej smazaný obsah.
 - Při změně systému automaticky aktualizuj všechny související definice, pravidla a odkazy.
 - Každou změnu kódu, vzhledu nebo chování aktualizuj současně v příslušné dokumentaci; před dokončením porovnej kód s dokumentací.
@@ -61,9 +61,10 @@ history:
 
 ## Historie změn dokumentů
 
-- U každého nově vytvořeného nebo upravovaného dokumentu Markdown udržuj historii posledních pěti změn v YAML frontmatteru.
+- U každého nově vytvořeného nebo upravovaného dokumentu Markdown udržuj v YAML frontmatteru nejvýše pět posledních dokončených logických změn.
 - Před zápisem změny zavolej API Codexu `list_threads` a podle aktuálního chatu ověř jeho ID; zapiš nalezené `thread_id`, datum a stručný popis.
-- Při každé změně Markdownu přidej nový záznam na začátek `history`; existující záznamy zachovej a nemaž ani nepřepisuj jen proto, že upravuješ tentýž soubor znovu.
+- Za každou dokončenou logickou změnu dokumentu přidej jeden záznam na začátek `history`; dílčí úpravy v rámci téže změny sluč do tohoto záznamu.
+- Záznamy předchozích dokončených změn zachovej; starší odstraňuj pouze podle limitu historie.
 - Po přidání záznamu ponechávej nejvýše pět nejnovějších položek `history` a starší odstraň až z konce seznamu.
 - Použij formát `history` jako seznam položek s poli `thread_id`, `date` a `change`; předchozí frontmatter zachovej a sluč jej bez ztráty ostatních polí.
 - Pokud ID není v prvním výsledku, stránkuj nebo zpřesni hledání `list_threads`; nikdy nevymýšlej `thread_id` ani nezapisuj `null` bez vyčerpání dostupného API hledání.
@@ -78,7 +79,7 @@ Soubory jsou v `web_viewer/dokumentace`.
 - `okna.md`: chování statických oken, obsah, hodnoty a související elementy.
 - `vzhled_oken.md`: samostatný vzhled oken, rozmístění, písmo a barvy.
 - `prvky.md`: tlačítka a ovládání.
-- `elementy.md`: linky, částice a jejich chování včetně reakcí na okna; bez zdrojových souborů a interních názvů.
+- `elementy.md`: linky, částice a jejich chování včetně reakcí na okna; bez zdrojových souborů a interních názvů, s výjimkou schválených tagů propojení, například `water` a `sugar`.
 - `zmeny.md`: stav změn a ověření, odkazy na definice.
 - Každou věc popiš jednou; ostatní místa na ni odkazují.
 - Technické podrobnosti drž odděleně od popisu obsahu.
