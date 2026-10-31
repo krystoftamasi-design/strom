@@ -1,5 +1,8 @@
 ---
 history:
+  - thread_id: 01a192c9-24b4-7642-a56f-53abd8bf4304
+    date: 2026-10-31
+    change: Sladěna dokumentace vzhledu se současným rozložením detailů a tahů oken.
   - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
     date: 2026-10-31
     change: Napojena revize dokumentace na každý pátý commit a určeno umístění výsledku.
@@ -12,9 +15,6 @@ history:
   - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
     date: 2026-10-31
     change: Zavedena automatická kontrola dokumentace před commitem a revize po pěti commitech.
-  - thread_id: 01a192cd-90b3-7e21-8050-fdf9990fe825
-    date: 2026-10-31
-    change: Sjednoceno zobrazení hodnot O₂, CO₂, Vody a Cukrů na jedno desetinné místo.
 ---
 
 # Změny
@@ -24,6 +24,13 @@ history:
 ## Rozpracováno
 
 ## Implementováno
+
+#### Z013 — Současný vzhled oken
+
+- Zadání: [Vzhled oken](vzhled_oken.md).
+- Výsledek: dokumentace popisuje horní zarovnání detailů, společný začátek pravého sloupce, mezeru 15 px a samostatné délky barevných tahů.
+- Stav: Implementováno.
+- Ověření: porovnání s aktuálním CSS a definicemi obsahu; předchozí kontrola v Chromu naměřila odstup dlouhého vzorce přibližně 15 px. Poslední změna zakončení Vody je ověřena pouze v kódu.
 
 #### Z012 — Revize bez hodinového čekání
 

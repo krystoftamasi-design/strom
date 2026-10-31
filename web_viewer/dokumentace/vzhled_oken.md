@@ -2,25 +2,19 @@
 history:
   - thread_id: 01a192c9-24b4-7642-a56f-53abd8bf4304
     date: 2026-10-31
+    change: Sladěno rozložení detailů, rozestupy a délky tahů se současným CSS.
+  - thread_id: 01a192c9-24b4-7642-a56f-53abd8bf4304
+    date: 2026-10-31
     change: Detailní text se při rozkliknutí drží ve vyhrazeném prostoru bez překrytí sousedních oken.
   - thread_id: 01a192c9-24b4-7642-a56f-53abd8bf4304
     date: 2026-10-31
-    change: Opravena délka tahů: běžná okna končí u obsahu, Fotosyntéza používá delší tah kvůli velkému obsahu.
+    change: "Opravena délka tahů: běžná okna končí u obsahu, Fotosyntéza používá delší tah kvůli velkému obsahu."
   - thread_id: 01a192c9-24b4-7642-a56f-53abd8bf4304
     date: 2026-10-31
     change: Sjednocena výška barevných svislých tahů s výškou každého okna.
   - thread_id: 01a18f17-efd7-7a02-8369-186b681bfcc0
     date: 2026-10-31
     change: Nastaven nezalamovaný řádek vstupů výpočtu.
-  - thread_id: 01a18f17-efd7-7a02-8369-186b681bfcc0
-    date: 2026-10-31
-    change: Upřesněna barva vstupů výpočtu: černá ve dne a světlá v noci.
-  - thread_id: 01a18f17-efd7-7a02-8369-186b681bfcc0
-    date: 2026-10-31
-    change: Doplněna obecná skladba obsahu oken bez přesunu konkrétních textů.
-  - thread_id: 01a18f17-efd7-7a02-8369-186b681bfcc0
-    date: 2026-10-31
-    change: Přesunut samostatný popis vzhledu oken z okna.md.
 ---
 
 # Vzhled oken
@@ -28,7 +22,7 @@ history:
 
 - Okna mají pevnou polohu a rozměry v rozhraní, nezávisle na stromu a kameře.
 - Kliknutí na nadpis zobrazí nebo skryje detail ve vyhrazeném prostoru.
-- Změna hodnot a zobrazení detailu neposouvají bloky ani nemění délku barevného tahu.
+- Změna hodnot a zobrazení detailu neposouvají polohu oken.
 - Okna nemají pohybové animace ani spojnice ke stromu.
 - Při vstupu jsou otevřené detaily Cukrů a Vody; ostatní jsou skryté.
 
@@ -37,7 +31,10 @@ history:
 - Nadpis: název tématu; kliknutí ovládá zobrazení detailu.
 - Hodnota: živé číslo s jednotkou pod nadpisem, pokud ji okno zobrazuje.
 - Vstupy výpočtu: drobný černý nezalamovaný řádek pod hodnotou ve dne; v noci se převrátí na světlou barvu.
-- Detail: vysvětlující text ve vyhrazeném prostoru vedle hlavních údajů; při rozkliknutí nepřekrývá sousední okna.
+- Detail se zobrazuje napravo od hlavních údajů a sází se od horního okraje okna.
+- O₂, CO₂, Cukry a Voda mají společnou šířku levého sloupce a jejich popisy začínají na stejné svislici.
+- Mezi sloupci je mezera 15 px; u dlouhého vzorce je výsledný odstup přibližně 15 px. Krátký vzorec Vody ponechává větší volný prostor.
+- Prostor detailu zabírá výšku řádků nadpisu, hodnoty a vzorce; delší obsah má vlastní posuv.
 - Ovládání: případný posuvník nebo jiný ovládací prvek v detailu.
 - Konkrétní hodnoty, texty a ovládání jednotlivých oken určuje [Obsah oken](okna.md).
 
@@ -47,7 +44,8 @@ history:
 - Fotosyntéza je vlevo dole; vpravo následují shora O₂, CO₂, Cukry a Voda.
 - Střed zůstává volný pro strom.
 - Bloky jsou bez výplně a rámečku; vlevo mají nepravidelný svislý tah.
-- Barevný svislý tah začíná u horního okraje obsahu a končí přibližně u posledního údaje nebo vzorce; nesahá k dalšímu oknu. Fotosyntéza má kvůli dominantnímu titulku a vzorci samostatně delší tah.
+- Svislé tahy začínají u horního okraje okna; O₂, CO₂ a Cukry používají 65 % výšky svého bloku, Fotosyntéza 100 %.
+- Tah Vody se roztahuje podle výšky řádků nadpisu, hodnoty a vzorce místo procentní výšky bloku.
 - Do šířky 700 px zůstávají dva pevné sloupce; detaily mají místo pod nadpisem s vlastním posuvem a přehled vstupů je skrytý.
 
 ### Písmo
@@ -67,3 +65,40 @@ history:
 - Cukry jsou fialové, listy zelené, kořeny hnědé a teplota růžovočervená.
 
 [Obsah oken](okna.md) · [Obsah](architektura_obsahu.md)
+
+## Pravidla struktury
+
+- Název dokumentu má úroveň `#`, společná oblast oken `##` a její témata `###`.
+- Témata řaď jako obecný obsah, rozložení, písmo a barvy.
+- Popisuj aktuální vzhled stručnými odrážkami; konkrétní texty a ovládání odkazuj do obsahu oken.
+- Historii udržuj ve frontmatteru, odkazy před touto závěrečnou částí.
+
+```markdown
+# Název dokumentu
+
+## Název oblasti
+
+- Společné pravidlo.
+
+### Obecný obsah
+
+- Skladba obsahu.
+
+### Rozložení
+
+- Poloha a rozměry.
+
+### Písmo
+
+- Typografické pravidlo.
+
+### Barvy
+
+- Barevné pravidlo.
+
+[Související dokument](soubor.md)
+
+## Pravidla struktury
+
+- Pravidlo členění.
+```
