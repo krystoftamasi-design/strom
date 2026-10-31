@@ -1,5 +1,8 @@
 ---
 history:
+  - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
+    date: 2026-11-01
+    change: Upřesněn bezpečný postup commitů a kontrol při souběžné práci.
   - thread_id: 01a19424-3d45-7e81-9ea4-3cd6ef98d1fa
     date: 2026-10-31
     change: Zrušeno automatické spouštění revize webu po commitech.
@@ -12,14 +15,16 @@ history:
   - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
     date: 2026-10-31
     change: Zavedeno porovnání definic se skutečným webem v Chromu po deseti commitech.
-  - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
-    date: 2026-10-31
-    change: Skryto konzolové okno podprocesu automatické revize.
+
 ---
 
 # Kontrola dokumentace
 
 ## Před commitem
+
+- Ve sdíleném adresáři ukládej jen výslovně vyjmenované vlastní soubory přes `git commit --only`; podmínky a souběžné úpravy stejného souboru řeší [Commity](../../../AGENTS.md#commity).
+- `--staged` hodnotí současný index, nikoli automaticky soubory budoucího `commit --only`. Rozhodující hook kontroluje dočasný index přesného commitu připravený Gitem; dřívější úspěch po selhání `git add` není ověřením zamýšlené změny.
+- Před commitem zkontroluj YAML změněných dokumentů parserem a limit historie; při chybě příkazu zastav další závislé kroky podle [pravidel](../../../AGENTS.md#commity).
 
 - `python web_viewer/tools/check_documentation.py --staged` kontroluje obsah Git indexu, který bude skutečně commitovaný.
 - Kontrola ověřuje YAML, položky historie a jejich limit, část „Pravidla struktury“, místní Markdown odkazy a kotvy a povinné položky záznamů změn.

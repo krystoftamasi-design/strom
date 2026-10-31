@@ -2,6 +2,9 @@
 history:
   - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
     date: 2026-11-01
+    change: Upřesněn bezpečný postup commitů a kontrol při souběžné práci.
+  - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
+    date: 2026-11-01
     change: Zjednodušena komponenta na nezávislý blok údajů a detailu.
   - thread_id: 01a1942e-d161-7933-b8f7-31bb2827f7a1
     date: 2026-11-01
@@ -12,9 +15,6 @@ history:
   - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
     date: 2026-11-01
     change: Sjednoceny společné části oken a datové varianty jejich vzhledu.
-  - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
-    date: 2026-11-01
-    change: Zachována definovaná velikost nadpisů bez zmenšování podle obsahu.
 
 ---
 
@@ -25,6 +25,13 @@ history:
 ## Rozpracováno
 
 ## Implementováno
+
+#### Z047 — Bezpečnější postup ukládání změn
+
+- Zadání: vyřešit opakované chyby historie, oprávnění a smíšených commitů.
+- Výsledek: pravidla explicitního commitu podle cest, oddělení práce na společných souborech, zastavení po chybě a kontroly YAML před commitem; upřesněn rozsah kontroly indexu.
+- Stav: Implementováno.
+- Ověření: kontrola postupů chatu 01a1942e-d161-7933-b8f7-31bb2827f7a1, test odděleného commitu v dočasném repozitáři a kontrola dokumentace.
 
 #### Z046 — Jednoduché okno bez posunů údajů
 
