@@ -1,6 +1,6 @@
-import { oknaPodleKapitol, pruvodceTranspiraci } from './element_ui_okna_obsah.js?v=simple-window-1';
-import { veliciny, vstupyVzorce, ohlasitChybuOken } from './element_ui_okna_veliciny.js?v=simple-window-1';
-import { zkontrolovatOkna } from './element_ui_okna_kontrola.js?v=simple-window-1';
+import { oknaPodleKapitol, pruvodceTranspiraci } from './element_ui_okna_obsah.js?v=temperature-text-1';
+import { veliciny, vstupyVzorce, ohlasitChybuOken } from './element_ui_okna_veliciny.js?v=temperature-text-1';
+import { zkontrolovatOkna } from './element_ui_okna_kontrola.js?v=temperature-text-1';
 
 // Original embedded assets from ui_new.svg, at their exported stroke widths.
 const strokes = {
@@ -205,19 +205,6 @@ export function createTreeAnnotations({ shell, model, createSeasonControl, setEl
       const label = control.querySelector('label');
       if (label) label.textContent = definition.ovladani.popis;
       nodes.push(control);
-    }
-    if (definition.teplotniPorovnani) {
-      const comparison = document.createElement('p');
-      comparison.append('Mimo strom: ');
-      const ambient = document.createElement('output');
-      ambient.dataset.zivaVelicina = 'ambientTemperature';
-      ambient.textContent = '—';
-      comparison.append(ambient, ' °C · rozdíl u koruny: ');
-      const difference = document.createElement('output');
-      difference.id = 'ecoCanopyTemperatureDifference';
-      difference.textContent = '—';
-      comparison.append(difference);
-      nodes.push(comparison);
     }
     if (definition.odkaz) {
       const link = document.createElement('a');

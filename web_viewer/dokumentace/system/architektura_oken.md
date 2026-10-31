@@ -2,6 +2,9 @@
 history:
   - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
     date: 2026-11-01
+    change: Odstraněn doplňkový řádek s porovnáním teplot v detailu.
+  - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
+    date: 2026-11-01
     change: Zjednodušena komponenta na nezávislý blok údajů a detailu.
   - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
     date: 2026-11-01
@@ -12,9 +15,6 @@ history:
   - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
     date: 2026-10-31
     change: Odstraněn Průtok a doplněny vzorce i šablona číselného okna podle Fotosyntézy.
-  - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
-    date: 2026-10-31
-    change: Zpřehledněna Transpirace podle poznatků z uživatelského testu.
 
 ---
 
@@ -33,7 +33,7 @@ history:
 - `zobrazitVzorec` a `zobrazitHodnotu` zapínají přehled vstupů a výslednou hodnotu.
 
 - Obsah obou kapitol vytváří stejný `configuredCard` z definic; `kapitoly/chapters.js` aktualizuje živé výstupy. Transpirace nemá vlastní HTML bloky oken.
-- Průvodce kapitoly zobrazuje stálé schéma cesty vody; Teplota zapíná živé porovnání teplot v detailu.
+- Průvodce kapitoly zobrazuje stálé schéma cesty vody.
 
 ### Rozložení
 

@@ -1,6 +1,9 @@
 ---
 history:
   - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
+    date: 2026-11-01
+    change: Odstraněn doplňkový řádek s porovnáním teplot v detailu.
+  - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
     date: 2026-10-31
     change: Vrácena viditelná tlačítka +/− do oken Transpirace.
   - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
@@ -12,9 +15,6 @@ history:
   - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
     date: 2026-10-31
     change: Zpřehledněna Transpirace podle poznatků z uživatelského testu.
-  - thread_id: 01a192c9-24b4-7642-a56f-53abd8bf4304
-    date: 2026-10-31
-    change: Roztříděna dokumentace a opraveny cesty podle účelu souborů.
 
 ---
 
@@ -140,7 +140,6 @@ history:
 
 - Nadpis: `Teplota`; role: tematické okno; strana: vpravo, třetí shora.
 - Detailní text: „Ve dne odpar ochlazuje okolí koruny; v noci olistěná koruna omezuje vyzařování tepla a u ní může být mírně tepleji. Základem jsou normály ČHMÚ 1991–2020. Denní kolísání a teplá či chladná období jsou výukový odhad, nikoli měření nebo předpověď počasí.“
-- Detail obsahuje také živou teplotu mimo strom a podepsaný rozdíl vůči teplotě u koruny.
 - Hodnota: teplota u koruny ve `°C`, jedno desetinné místo.
 - Vzorec: `okolí − ochlazení + noční efekt`, viditelný pod hodnotou.
 - Vstupy výpočtu: teplota okolí, modelový účinek odparu a noční efekt olistěné koruny.

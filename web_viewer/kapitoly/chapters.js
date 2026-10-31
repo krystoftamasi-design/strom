@@ -1,6 +1,6 @@
-import { zobrazitHodnotu } from '../okna/element_ui_okna_veliciny.js?v=simple-window-1';
+import { zobrazitHodnotu } from '../okna/element_ui_okna_veliciny.js?v=temperature-text-1';
 import { SEASONS } from '../ekologie/tree_ecology.js?v=active-leaves-3&checks=1';
-import { createTreeAnnotations } from '../okna/tree_annotations.js?v=simple-window-1';
+import { createTreeAnnotations } from '../okna/tree_annotations.js?v=temperature-text-1';
 
 const chapters = [
   ['seasons', 'Období'], ['photosynthesis', 'Fotosyntéza'], ['transpiration', 'Transpirace'],
@@ -282,7 +282,6 @@ export function createChapters({ model, applySeason, setSun, setAzimuth, setVisu
     const temperatureDifference = Math.round((model.temperatureNearCanopy - model.ambientTemperature) * 10) / 10;
     const differenceText = `${temperatureDifference < 0 ? '−' : temperatureDifference > 0 ? '+' : ''}${fmt(Math.abs(temperatureDifference), 1)} °C`;
     out('ecoTemperatureDifference', differenceText);
-    out('ecoCanopyTemperatureDifference', differenceText);
     const lightPhase = model.sunElevation > 6 ? 'Den' : model.sunElevation < -6 ? 'Noc' : model.sunAzimuth < 180 ? 'Svítání' : 'Soumrak';
     out('ecoDaylight', model.dayCycleEnabled
       ? `${lightPhase} · denní cyklus`

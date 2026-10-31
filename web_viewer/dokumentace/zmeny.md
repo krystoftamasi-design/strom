@@ -1,5 +1,8 @@
 ---
 history:
+  - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
+    date: 2026-11-01
+    change: Odstraněn doplňkový řádek s porovnáním teplot v detailu.
   - thread_id: 01a19439-ee7f-71f1-af82-4e2ff1146c5f
     date: 2026-11-01
     change: Zjednodušen dokument vzhledu oken bez změny webu.
@@ -12,9 +15,6 @@ history:
   - thread_id: 01a1942e-d161-7933-b8f7-31bb2827f7a1
     date: 2026-11-01
     change: Odstraněna položka Úvod z nabídky a odpovídající část z platné dokumentace.
-  - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
-    date: 2026-11-01
-    change: Odstraněn vliv skrytého detailu na výšku řádků oken.
 
 ---
 
@@ -25,6 +25,13 @@ history:
 ## Rozpracováno
 
 ## Implementováno
+
+#### Z049 — Zkrácení detailu Teploty
+
+- Zadání: odstranit dovětek na konci detailu Teploty.
+- Výsledek: odstraněn přidaný řádek s teplotou mimo strom a rozdílem; hlavní hodnota, vzorec a vysvětlení zachovány.
+- Stav: Implementováno.
+- Ověření: syntaxe, validační test oken a kontrola dokumentace; finální kontrola uživatelem.
 
 #### Z048 — Úklid vzhledu oken
 
