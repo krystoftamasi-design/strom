@@ -2,6 +2,12 @@
 history:
   - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
     date: 2026-10-31
+    change: Přesunuto pravidlo propojení na konec dokumentu pod definice elementů.
+  - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
+    date: 2026-10-31
+    change: Uspořádány definice podle společného tagu, spojení a chování elementu.
+  - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
+    date: 2026-10-31
     change: Upřesněno ovládání a rozsah zvýraznění glukózové linky.
   - thread_id: 01a18f17-efd7-7a02-8369-186b681bfcc0
     date: 2026-10-31
@@ -15,23 +21,36 @@ history:
 
 #### Voda linka
 
-- Modrá linka vede z kořenů přes kmen k listům.
-- Související okno: [Voda](okna.md#voda).
-- Akce: kliknutí na okno Voda.
+**Tag:** `water` · modrá
+
+**Spojení**
+
+- Okno: [Voda](okna.md#voda).
 - Zvýraznění: při otevření okna se modrá linka rozjasní.
 - Při zavření se vrátí původní vzhled.
+
+**Chování elementu**
+
+- Modrá linka vede z kořenů přes kmen k listům.
 - Při fotosyntéze proudí nahoru.
 - Při červenání prvního listu se stahuje od kořenů k listům.
 - Při vstupu do kapitoly je hned celá viditelná.
 
 #### Glukóza linka
 
-- Fialová linka vede po kmeni a dělí se do dvou kořenů.
-- Související okno: [Cukry](okna.md#cukry).
+**Tag:** `sugar` · fialová
+
+**Spojení**
+
+- Okno: [Cukry](okna.md#cukry).
 - Akce: kliknutí na nadpis Cukry nebo tlačítko +/− přepne detail.
 - Zvýraznění: otevřený detail rozjasní celou fialovou linku v kapitole Fotosyntéza, včetně výchozího otevření.
 - Při zavření se vrátí původní vzhled.
 - Mimo kapitolu Fotosyntéza se zvýraznění vypne; stav detailu zůstává zachovaný.
+
+**Chování elementu**
+
+- Fialová linka vede po kmeni a dělí se do dvou kořenů.
 - Je odsazená od modré linky.
 - Končí dřív uvnitř kořenů.
 - Na jaře proudí ze zásob v kořenech a kmeni k novým listům.
@@ -46,16 +65,37 @@ history:
 
 #### O₂
 
+**Tag:** `oxygen` · světle modrá
+
+**Spojení**
+
+- Okno: [O₂](okna.md#o₂).
+
+**Chování elementu**
+
 - Světle modré částice odlétají od listů.
-- Související okno: [O₂](okna.md#o₂).
 
 #### CO₂
 
+**Tag:** `co2` · červenooranžová
+
+**Spojení**
+
+- Okno: [CO₂](okna.md#co₂).
+
+**Chování elementu**
+
 - Červenooranžové částice přicházejí ke koruně.
-- Související okno: [CO₂](okna.md#co₂).
 
 #### Fotony
 
 - Žluté částice putují od slunce k listům.
+
+### Pravidlo propojení
+
+- Okno a související element spojuje stejný tag; barva tagu odpovídá barevnému tématu.
+- Tag určuje vazbu, blok **Spojení** určuje její chování.
+- Samotná shoda barvy ani výskyt barevného tagu ve vzorci nespouští zvýraznění.
+- Reakce na okno se popisuje pouze u elementu; okno na něj odkazuje.
 
 [Zpět na obsah](architektura_obsahu.md)

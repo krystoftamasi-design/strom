@@ -2,6 +2,9 @@
 history:
   - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
     date: 2026-10-31
+    change: Zapsána čekající implementace propojení oken a elementů společnými tagy.
+  - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
+    date: 2026-10-31
     change: "Implementována Z002: zvýraznění glukózy podle otevření detailu Cukry."
   - thread_id: 01a18f17-efd7-7a02-8369-186b681bfcc0
     date: 2026-10-31
@@ -12,14 +15,18 @@ history:
   - thread_id: 01a18f17-efd7-7a02-8369-186b681bfcc0
     date: 2026-10-31
     change: Zkrácena evidence na zadání, stav a ověření bez opakování definic.
-  - thread_id: 01a18f17-efd7-7a02-8369-186b681bfcc0
-    date: 2026-10-31
-    change: Přesunuta Z003 do implementovaných změn a zapsány skutečné výsledky kontrol.
 ---
 
 # Změny
 
 ## Čeká
+
+#### Z004 — Propojení tagy
+
+- Zadání: [Pravidlo propojení](elementy.md#pravidlo-propojení), společný tag okna a elementu.
+- Stav: Čeká.
+- Ověření: témata v kódu určují barvy; zvýraznění glukózy je dosud navázané na ID `cukry`, nikoli na společný tag.
+- Dokumentace: sjednocené tagy a členění definic; kód v tomto kroku nezměněn.
 
 #### Z001 — Voda
 
