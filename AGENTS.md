@@ -2,6 +2,9 @@
 history:
   - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
     date: 2026-10-31
+    change: Vyjmuto drobné vizuální ladění z povinné aktualizace obsahové dokumentace a evidence změn.
+  - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
+    date: 2026-10-31
     change: Doplněn jednoduchý postup ručního a automatického spuštění webu v Chromu.
   - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
     date: 2026-10-31
@@ -12,9 +15,6 @@ history:
   - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
     date: 2026-10-31
     change: Zavedena povinná obecná šablona na konci každého upravovaného dokumentu a její průběžná aktualizace.
-  - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
-    date: 2026-10-31
-    change: Doplněno povinné čtení a ukládání pravidel struktury na konci dokumentů.
 ---
 
 # Prohlížeč a kontrola
@@ -62,8 +62,9 @@ history:
 - Používej krátké názvy, malé podnadpisy a mezery mezi tématy.
 - Zachovej uživatelovy úpravy a nevracej smazaný obsah.
 - Při změně systému automaticky aktualizuj všechny související definice, pravidla a odkazy.
-- Každou změnu kódu, vzhledu nebo chování aktualizuj současně v příslušné dokumentaci; před dokončením porovnej kód s dokumentací.
-- Samostatný commit změny kódu bez odpovídající dokumentace není dokončený úkol.
+- Změny funkcí, ovládání, vazeb a definovaného chování aktualizuj současně v příslušné dokumentaci; před dokončením porovnej kód s dokumentací.
+- Drobné vizuální ladění, například sílu zvýraznění, šířku linek, odstíny nebo rozestupy, nezapisuj do obsahové dokumentace ani do `zmeny.md`, pokud nemění definované chování a uživatel zápis výslovně nechce.
+- Změna vyžadující dokumentaci není dokončená bez její odpovídající úpravy; drobné vizuální ladění podle předchozího pravidla může mít samostatný commit kódu.
 - Překonané popisy nahraď; odstraň duplicity a dodatky porovnávající staré a nové řešení.
 - Uspořádej text do návazného pořadí; v definicích popisuj platné řešení, historii a stav drž odděleně.
 - Nesouvisející dokumenty hromadně nepřepisuj bez zadání.
@@ -98,7 +99,7 @@ Soubory jsou v `web_viewer/dokumentace`.
 - Definice říkají, jak má web fungovat; neprokazují hotovou implementaci.
 - Existující chování ověř v kódu nebo na webu; požadavky přebírej ze zadání uživatele.
 - Před změnou čti související definice, pravidla rozcestníku a `zmeny.md`.
-- Rozdíl proti kódu zapiš jako „Čeká“; schválené chování neoznačuj jako návrh.
+- Rozdíl definovaného chování proti kódu zapiš jako „Čeká“; schválené chování neoznačuj jako návrh.
 - Kód měň na pokyn uživatele; samotné uložení dokumentu implementaci nespouští.
 - Stavy: Čeká → Rozpracováno → Implementováno → Ověřeno; nejasnosti „K upřesnění“.
 - Uveď skutečné ověření nebo „finální kontrola uživatelem“; neevidované neznamená hotové.

@@ -33,10 +33,11 @@ export async function createWaterBrushMaterial(loader, uniforms) {
       attribute vec3 flowTangent;
       attribute float flowDistance;
       uniform float uWidthScale;
+      uniform float uSelected;
       varying float vBrushX;
       varying float vFlowDistance;
       void main() {
-        vec3 scaledPosition = flowCenter + (position - flowCenter) * uWidthScale;
+        vec3 scaledPosition = flowCenter + (position - flowCenter) * uWidthScale * (1.0 + 0.65 * uSelected);
         vec4 viewPosition = modelViewMatrix * vec4(scaledPosition, 1.0);
         vec3 tangent = mat3(modelViewMatrix) * flowTangent;
         vec2 axis = length(tangent.xy) > 0.0001 ? normalize(tangent.xy) : vec2(0.0, 1.0);
@@ -85,7 +86,8 @@ export async function createWaterBrushMaterial(loader, uniforms) {
         float pulse = sin(vFlowDistance * 3.0 - uTime * 2.2 * uSpeed * uFlowDirection) * 0.5 + 0.5;
         float highlight = pow(pulse, 3.5) * clamp(uGlow, 0.0, 2.5) * 0.55;
         vec3 color = mix(uColor, uHighlightColor, clamp(highlight, 0.0, 0.8));
-        color = mix(color, uHighlightColor, uSelected * 0.8);
+        vec3 selectedColor = mix(uHighlightColor, vec3(1.0), 0.65);
+        color = mix(color, selectedColor, uSelected * 0.95);
         gl_FragColor = vec4(color, alpha);
       }
     `
