@@ -2,6 +2,12 @@
 history:
   - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
     date: 2026-10-31
+    change: Doplněna vlastní pravidla struktury a obecná šablona AGENTS.md.
+  - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
+    date: 2026-10-31
+    change: Zavedena povinná obecná šablona na konci každého upravovaného dokumentu a její průběžná aktualizace.
+  - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
+    date: 2026-10-31
     change: Doplněno povinné čtení a ukládání pravidel struktury na konci dokumentů.
   - thread_id: 01a191dc-21ba-7b11-9e58-687e0a2cfbd7
     date: 2026-10-31
@@ -9,12 +15,6 @@ history:
   - thread_id: 01a18f17-efd7-7a02-8369-186b681bfcc0
     date: 2026-10-31
     change: Zpřesněno povinné sjednocení kódu a dokumentace v jednom kroku.
-  - thread_id: 01a18f17-efd7-7a02-8369-186b681bfcc0
-    date: 2026-10-31
-    change: Doplněno oddělení vzhledu oken do samostatného souboru a kategorie rozcestníku.
-  - thread_id: 01a18f17-efd7-7a02-8369-186b681bfcc0
-    date: 2026-10-31
-    change: Upřesněno nahrazování starých popisů a průběžné čištění návaznosti dokumentace.
 ---
 
 # Prohlížeč a kontrola
@@ -44,7 +44,9 @@ history:
 # Styl dokumentů
 
 - Před každou úpravou přečti aktuální dokument včetně pravidel na jeho konci a postupuj podle nich.
-- Pravidla struktury a šablony konkrétního dokumentu ukládej na jeho konec do části „Pravidla struktury“.
+- U každého vytvářeného nebo upravovaného dokumentu Markdown vytvoř na konci část „Pravidla struktury“, pokud chybí.
+- Do této části patří pravidla členění a obecná šablona s úrovněmi nadpisů, pořadím částí a formátem položek; používej zástupné názvy místo konkrétního obsahu.
+- Při změně struktury aktualizuj současně pravidla, šablonu i členění dokumentu; před dokončením ověř jejich shodu.
 - Konkrétní strukturu určuje tato část; obecné členění níže použij, pokud dokument vlastní strukturu nemá.
 - Piš stručně a bodově: jedna podstatná informace na bod, bez opakování a výplně.
 - Používej krátké názvy, malé podnadpisy a mezery mezi tématy.
@@ -98,3 +100,19 @@ Soubory jsou v `web_viewer/dokumentace`.
 - Před commitem zkontroluj diff a zahrň jen změny daného úkolu; cizí úpravy vynech.
 - Rozpracované kroky necommituj jednotlivě; commit neznamená ověření funkčnosti.
 - Na vzdálený repozitář odesílej jen na výslovný pokyn uživatele.
+
+# Pravidla struktury
+
+- Oblasti projektových pravidel mají úroveň `#`, jejich podoblasti `##`.
+- Pokyny piš jako stručné odrážky v rozkazovacím způsobu.
+- Historii změn udržuj ve frontmatteru; tuto část se šablonou ponechávej na konci.
+
+```markdown
+# Název oblasti
+
+- Pravidlo pro danou oblast.
+
+## Název podoblasti
+
+- Podrobnější pravidlo.
+```
