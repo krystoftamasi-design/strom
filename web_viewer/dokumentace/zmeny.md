@@ -2,6 +2,9 @@
 history:
   - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
     date: 2026-10-31
+    change: Zdokumentována replikovatelnost, rozestupy a prostor ovládání oken.
+  - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
+    date: 2026-10-31
     change: Zvětšeny svislé rozestupy oken Transpirace.
   - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
     date: 2026-10-31
@@ -12,9 +15,6 @@ history:
   - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
     date: 2026-10-31
     change: Sjednocen vzhled a definice oken Transpirace podle Fotosyntézy.
-  - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
-    date: 2026-10-31
-    change: Opraven pád vykreslování při chybějícím výstupu a obnovení modulů po změně oken.
 
 ---
 
@@ -25,6 +25,13 @@ history:
 ## Rozpracováno
 
 ## Implementováno
+
+#### Z040 — Replikovatelná specifikace vzhledu oken
+
+- Zadání: [Vzhled oken](moje/vzhled_oken.md).
+- Výsledek: zapsán účel replikovatelnosti, konkrétní rozestupy Transpirace, vlastní prostor tlačítka a obecné položky přenositelné šablony včetně úzkých obrazovek.
+- Stav: Implementováno.
+- Ověření: porovnání rozměrů a pozic s aktuálním CSS, kontrola dokumentace; web se nemění a jeho finální vizuální kontrola zůstává uživateli.
 
 #### Z039 — Větší odstupy oken Transpirace
 
