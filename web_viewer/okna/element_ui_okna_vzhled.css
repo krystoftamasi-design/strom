@@ -47,6 +47,9 @@ body.scene-night .tree-overlay { --ui-ink: #f0f2e9; }
 .tree-overlay .element-ui-okno[data-topic="co2"] { --ui-topic: var(--ui-co2); }
 .tree-overlay .element-ui-okno[data-topic="sugar"] { --ui-topic: var(--ui-sugar); }
 .tree-overlay .element-ui-okno[data-topic="light"] { --ui-topic: var(--ui-light); }
+.tree-overlay .element-ui-okno:is([data-window-id="kyslik"], [data-window-id="co2"], [data-window-id="cukry"], [data-window-id="voda"]) {
+  grid-template-columns: calc(26 * var(--ui-formula-size)) minmax(0, 1fr);
+}
 .tree-overlay .element-ui-okno[data-window-id="fotosynteza"] {
   left: 6%; top: 65%; width: 55%; height: 21%; min-height: 140px;
   grid-template-columns: max-content minmax(0, 1fr);

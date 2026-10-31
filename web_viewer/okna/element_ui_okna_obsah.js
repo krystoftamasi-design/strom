@@ -12,8 +12,7 @@ export const oknaPodleKapitol = {
       zobrazitVzorec: true,
       zobrazitHodnotu: true,
       text: [
-        'Listy využívají světlo k tvorbě cukrů z vody a oxidu uhličitého. Při ději se uvolňuje kyslík. Cukry dodávají stromu energii i materiál pro růst.',
-        'Rychlost procesu závisí na světle, vodě, ploše aktivních listů, CO₂ a teplotě.',
+        'Listy využívají světlo, vodu a CO₂ k tvorbě cukrů; při fotosyntéze se uvolňuje O₂.',
       ],
     },
     {
@@ -27,8 +26,7 @@ export const oknaPodleKapitol = {
       zobrazitVzorec: true,
       zobrazitHodnotu: true,
       text: [
-        'Fotosyntéza ukládá energii světla do glukózy. Ta slouží jako palivo i stavební materiál pro růst kmene, kořenů a nových listů.',
-        'Hodnota ukazuje odhad okamžité produkce cukrů.',
+        'Cukry ukládají energii ze světla a slouží jako palivo i stavební materiál pro růst stromu.',
       ],
     },
     {
@@ -41,8 +39,7 @@ export const oknaPodleKapitol = {
       zobrazitVzorec: true,
       zobrazitHodnotu: true,
       text: [
-        'Při nedostatku vody se přivírají průduchy. Do listů proniká méně CO₂ a fotosyntéza slábne. Zkuste omezit přítok nebo snížit slunce pod obzor.',
-        'Voda zároveň ochlazuje korunu odparem a pomáhá udržovat listy zavodněné.',
+        'Voda proudí do listů, ochlazuje korunu odparem a pomáhá udržovat listy zavodněné.',
       ],
     },
     {
@@ -54,9 +51,7 @@ export const oknaPodleKapitol = {
       zobrazitVzorec: true,
       zobrazitHodnotu: true,
       text: [
-        'CO₂ se při fotosyntéze spotřebovává jako vstup pro tvorbu cukrů.',
-        'Zobrazená hodnota je okamžitá spotřeba podle aktivní plochy listů a fotosyntetické účinnosti.',
-        'Průduchy regulují jeho příjem podle dostupné vody a podmínek prostředí.',
+        'CO₂ je vstupní látka fotosyntézy; průduchy regulují jeho příjem podle vody a podmínek prostředí.',
       ],
     },
     {
@@ -68,8 +63,7 @@ export const oknaPodleKapitol = {
       zobrazitVzorec: true,
       zobrazitHodnotu: true,
       text: [
-        'Kyslík vzniká při štěpení vody ve světelné fázi a strom ho uvolňuje jako vedlejší produkt.',
-        'Vyšší světlo a více aktivních listů obvykle zvyšují jeho produkci.',
+        'O₂ vzniká při štěpení vody a strom ho při fotosyntéze uvolňuje do vzduchu.',
       ],
     },
   ],
