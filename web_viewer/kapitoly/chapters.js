@@ -1,6 +1,6 @@
 import { zobrazitHodnotu } from '../okna/element_ui_okna_veliciny.js?v=4';
 import { SEASONS } from '../ekologie/tree_ecology.js?v=active-leaves-1&checks=1';
-import { createTreeAnnotations } from '../okna/tree_annotations.js?v=sugar-highlight-1';
+import { createTreeAnnotations } from '../okna/tree_annotations.js?v=linked-highlight-1';
 
 const chapters = [
   ['intro', 'Úvod'], ['seasons', 'Období'], ['photosynthesis', 'Fotosyntéza'], ['transpiration', 'Transpirace'],
@@ -18,7 +18,7 @@ const rootDiagram = `<svg class="root-diagram" viewBox="0 0 300 210" role="img" 
   <g fill="#d9dfd3" font-size="10" font-family="Nohemi, sans-serif"><text x="190" y="43">Prodlužovací oblast</text><text x="190" y="89">Přechodová zóna</text><text x="190" y="121">Dělivá oblast</text><text x="190" y="151">Čepička</text><text x="20" y="200">Překážka → signál → změna růstu</text></g>
 </svg>`;
 
-export function createChapters({ model, applySeason, setSun, setAzimuth, setVisualChapter, introFrame, focusRoots, project, getAnchors, getCrownBounds, createSeasonControl, setSugarHighlight }) {
+export function createChapters({ model, applySeason, setSun, setAzimuth, setVisualChapter, introFrame, focusRoots, project, getAnchors, getCrownBounds, createSeasonControl, setElementHighlight }) {
   document.body.classList.add('has-chapters');
   const drawer = document.getElementById('controlsPanel');
   drawer.classList.add('collapsed');
@@ -173,7 +173,7 @@ export function createChapters({ model, applySeason, setSun, setAzimuth, setVisu
     blackWindowTitles.setAttribute('aria-pressed', String(enabled));
     blackWindowTitles.textContent = enabled ? 'Nadpisy oken: černé' : 'Nadpisy oken: barvy';
   });
-  const treeAnnotations = createTreeAnnotations({ shell, model, createSeasonControl, setSugarHighlight });
+  const treeAnnotations = createTreeAnnotations({ shell, model, createSeasonControl, setElementHighlight });
 
   let chapter = 'intro', ready = false, introTime = 0, saved = null, lastUI = -Infinity, introStarted = false;
   const setInput = (id, value) => {

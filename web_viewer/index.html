@@ -1119,7 +1119,7 @@
     import { CanopyOcclusion } from './vykreslovani/canopy_occlusion.js?v=sky-1';
     import { createWaterBrushMaterial, addWaterBrushAttributes } from './vykreslovani/water_brush.js?v=sugar-highlight-1';
     import { TreeEcology, SEASONS, MODEL_MINUTES_PER_SECOND } from './ekologie/tree_ecology.js?v=active-leaves-1&checks=1';
-    import { createChapters } from './kapitoly/chapters.js?v=sugar-highlight-1';
+    import { createChapters } from './kapitoly/chapters.js?v=linked-highlight-1';
     import { createSeasonRing } from './obdobi/season_ring.js?v=beech-calendar-1';
     import { createIntroForest } from './obdobi/intro_forest.js?v=intro-closer-camera-2';
     import { seasonColorForPosition } from './obdobi/season_timeline.js?v=beech-calendar-1';
@@ -1665,7 +1665,7 @@
     } catch (e) { }
 
     // Jednoduchá čistá barva pulzující s bílou (bez 3D stínování a bez fresnelu)
-    const sugarSelected = { value: 0.0 };
+    const flowSelections = { water: { value: 0.0 }, sugar: { value: 0.0 } };
     const sapUniforms = {
       uTime: { value: 0 },
       uSpeed: { value: 1.0 },
@@ -1682,6 +1682,7 @@
     // The user's cara.png alpha brush, tinted blue; speed/glow/opacity
     // controls and the original anatomical water routes are preserved.
     const sapMaterial = await createWaterBrushMaterial(textureLoader, sapUniforms);
+    sapUniforms.uSelected = flowSelections.water;
 
     const sapGroup = new THREE.Group();
     sapGroup.name = "SapFlowGroup";
@@ -2286,7 +2287,7 @@
         glucoseMinDistance = Math.min(glucoseMinDistance, flowStart);
         glucoseMaxDistance = Math.max(glucoseMaxDistance, flowStart + greenCurve.getLength());
         const material = sapMaterial.clone();
-        material.uniforms.uSelected = sugarSelected;
+        material.uniforms.uSelected = flowSelections.sugar;
         material.uniforms.uTime = sapUniforms.uTime;
         material.uniforms.uSpeed = sapUniforms.uSpeed;
         material.uniforms.uGlow = sapUniforms.uGlow;
@@ -3050,7 +3051,7 @@
       const waterAmount = ecology.ready
         ? THREE.MathUtils.clamp(ecology.waterInput / Math.max(0.001, ecology.baseTranspiration), 0, 2)
         : 1;
-      sapUniforms.uWidthScale.value = 0.12 + 0.88 * waterAmount;
+      sapUniforms.uWidthScale.value = 1.4 * (0.12 + 0.88 * waterAmount);
       greenRootFlowMesh?.traverse(node => {
         if (node.material?.uniforms?.uWidthScale) {
           node.material.uniforms.uWidthScale.value = sapUniforms.uWidthScale.value;
@@ -3867,7 +3868,9 @@
       invalidateShadows
     });
     const chapterApp = createChapters({
-      setSugarHighlight: active => { sugarSelected.value = active ? 1.0 : 0.0; },
+      setElementHighlight: (tag, active) => {
+        if (flowSelections[tag]) flowSelections[tag].value = active ? 1.0 : 0.0;
+      },
       model: ecology,
       createSeasonControl: () => {
         seasonRingControl = createSeasonRing({ scene, camera, controls, canvas, model: ecology });
