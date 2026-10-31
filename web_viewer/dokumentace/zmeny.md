@@ -1,5 +1,8 @@
 ---
 history:
+  - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
+    date: 2026-10-31
+    change: Zavedena automatická kontrola dokumentace před commitem a revize po pěti commitech.
   - thread_id: 01a192cd-90b3-7e21-8050-fdf9990fe825
     date: 2026-10-31
     change: Sjednoceno zobrazení hodnot O₂, CO₂, Vody a Cukrů na jedno desetinné místo.
@@ -12,9 +15,6 @@ history:
   - thread_id: 01a192cd-90b3-7e21-8050-fdf9990fe825
     date: 2026-10-31
     change: Doplněny vstupy a číselné hodnoty s jednotkami do oken O₂, CO₂ a Voda.
-  - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
-    date: 2026-10-31
-    change: Sjednocena evidence s přijetím bez výhrady bez čekání na schválení.
 ---
 
 # Změny
@@ -24,6 +24,13 @@ history:
 ## Rozpracováno
 
 ## Implementováno
+
+#### Z010 — Automatická kontrola dokumentace
+
+- Zadání: [Kontrola dokumentace](kontrola_dokumentace.md).
+- Výsledek: kontrolor připraveného commitu, lokální hook a hodinová automatizace s revizí po pěti nových commitech.
+- Stav: Implementováno.
+- Ověření: integrační testy kontroloru v dočasných repozitářích; úplná kontrola hlásí existující nálezy, první pravidelná revize čeká na spuštění.
 
 #### Z009 — Jedno desetinné místo hodnot
 

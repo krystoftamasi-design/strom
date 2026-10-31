@@ -1,5 +1,8 @@
 ---
 history:
+  - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
+    date: 2026-10-31
+    change: Doplněno umístění kontroloru dokumentace, hooku, testů a pracovního stavu revize.
   - thread_id: 01a191dc-21ba-7b11-9e58-687e0a2cfbd7
     date: 2026-10-31
     change: Doplněn rozsah verzovaného webu, externí podklady a Git LFS.
@@ -47,6 +50,9 @@ Přehled přesunutých souborů je v `presun_souboru.json`.
 
 - `web_assets` obsahuje modely, textury, písma a knihovny.
 - `tools` obsahuje pomocné nástroje.
+- `tools/check_documentation.py` kontroluje dokumentaci a eviduje interval revizí; `tools/pre-commit` je zdroj lokálního Git hooku.
+- `testy/test_documentation_check.py` ověřuje kontrolor v dočasných repozitářích.
+- [Kontrola dokumentace](kontrola_dokumentace.md) popisuje instalaci, rozsah a pravidelnou revizi.
 - `testy` obsahuje existující testovací skripty.
 - `nahledy` obsahuje uložené obrázky z dřívějších kontrol.
 - `old` obsahuje staré verze a pracovní výstupy.
@@ -67,3 +73,16 @@ Starší kopie hlavní stránky a pracovní diff jsou ve složce `old`.
 - Kořenový `spustit_strom_web.bat` a použité podklady ve složce `obrazky` jsou součástí verzovaného webu.
 - Výjimkou z pracovního archivu je jednotlivě verzovaný podklad `old/leaf_light_calibration.json` pro existující test.
 - Požadavky na spuštění a omezení starších testů uvádí [README](../README.md).
+
+## Pravidla struktury
+
+- Hlavní oblasti mají nadpis `##` a popisují umístění souborů podle účelu.
+- Uváděj relativní cesty a krátké odpovědnosti; postupy sdílej odkazy.
+- Pravidla a obecnou šablonu ponechávej na konci.
+
+```markdown
+## Název oblasti
+
+- `cesta` obsahuje soubory daného účelu.
+- [Postup](soubor.md#kotva) určuje podrobnosti.
+```

@@ -2,6 +2,9 @@
 history:
   - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
     date: 2026-10-31
+    change: Doplněna automatická kontrola připraveného commitu a pravidelná revize dokumentace.
+  - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
+    date: 2026-10-31
     change: Upřesněn rozsah uživatelských výjimek a povinná kontrola dokončení podle aktuálních pravidel.
   - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
     date: 2026-10-31
@@ -12,9 +15,6 @@ history:
   - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
     date: 2026-10-31
     change: Zapsán úplný šestikrokový pracovní postup včetně evidence po finální kontrole uživatelem.
-  - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
-    date: 2026-10-31
-    change: Zavedena stručná evidence i drobných vizuálních úprav a společný commit kódu s evidencí.
 ---
 
 # Aktuálnost pravidel
@@ -127,6 +127,12 @@ Soubory jsou v `web_viewer/dokumentace`.
 4. **Evidence výsledku:** do `zmeny.md` zapiš konečný výsledek, stav a skutečné ověření. Přidej jednu YAML položku za logickou změnu každého upraveného dokumentu. Podrobné definice uprav jen tam, kde by výsledku odporovaly.
 5. **Společný commit:** kód a odpovídající evidenci ulož společně po dokončení logické změny; jednotlivé pokusy necommituj. Commit potvrzuje uloženou implementaci, nikoli schválení vzhledu uživatelem.
 6. **Předání a případná oprava:** předaný výsledek ber jako vyhovující bez čekání na další schválení; pokud uživatel nic dalšího nenapíše, změna je uzavřená. Vrať se k ní jen při výslovné výhradě nebo požadavku na úpravu a zopakuj úpravu, kontroly, evidenci a commit. Mlčení neprokazuje provedení testu: bez doloženého finálního ověření ponech stav „Implementováno“. Pokud uživatel potvrdí skutečnou kontrolu, zapiš její rozsah, přesuň změnu do „Ověřeno“ a evidenci ulož dalším commitem.
+
+## Automatické kontroly
+
+- Před každým commitem spouští Git kontrolu připraveného obsahu podle [Kontroly dokumentace](web_viewer/dokumentace/kontrola_dokumentace.md).
+- Nové formální chyby nebo změnu webu bez připravené evidence oprav před commitem; dřívější nálezy nejsou důkazem správnosti a zůstávají předmětem úplné revize.
+- Revize po pěti nových commitech je pouze kontrolní; kód a dokumenty sama neopravuje. Její výsledek rozlišuj od finálního testování webu.
 
 # Commity
 

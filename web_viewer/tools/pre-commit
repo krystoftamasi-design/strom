@@ -1,0 +1,3 @@
+#!/bin/sh
+# Keep the existing Git LFS hooks; install only this missing pre-commit hook.
+exec python web_viewer/tools/check_documentation.py --staged
