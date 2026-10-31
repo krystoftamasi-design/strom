@@ -1,5 +1,8 @@
 ---
 history:
+  - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
+    date: 2026-10-31
+    change: Upřesněna úroveň nadpisů elementů odkazem na jejich vlastní pravidla.
   - thread_id: 01a18f17-efd7-7a02-8369-186b681bfcc0
     date: 2026-10-31
     change: Přidána k oknům kategorie Vzhled s odkazem na samostatný soubor.
@@ -12,9 +15,6 @@ history:
   - thread_id: 01a18f17-efd7-7a02-8369-186b681bfcc0
     date: 2026-10-31
     change: Uspořádána Fotosyntéza podle UI podkladu a sjednocena úroveň kapitoly.
-  - thread_id: 01a18d15-6ca3-7241-81c2-fc807aeadc12
-    date: 2026-10-30
-    change: Změněn smajlík na konci pravidel dokumentu.
 ---
 
 # Architektura obsahu
@@ -116,7 +116,7 @@ history:
 - Uváděj jen krátké klikací názvy nebo značky; u linek přidej slovo „linka“.
 - Podrobnosti patří do `texty.md`, `okna.md`, `vzhled_oken.md`, `prvky.md` a `elementy.md`.
 - Každý prvek definuj pouze jednou; kapitoly na něj odkazují.
-- Konkrétní definice mají úroveň `####`.
+- Konkrétní definice mají úroveň `####`; elementy používají `###` podle [pravidel struktury](elementy.md#pravidla-struktury).
 - Chování oken určuje společná definice [Statická okna](okna.md#statická-okna).
 - Elementy jsou konkrétní prvky děje, například vodní a glukózová linka; ne obecné části scény jako strom, listy nebo slunce.
 - U oken odkazuj na související element; body připojení a spojnice ke stromu se nepoužívají.
