@@ -1,5 +1,8 @@
 ---
 history:
+  - thread_id: d4bd5380-b7a9-4109-9dcd-32f5819e4b02
+    date: 2026-10-31
+    change: Doplněn soubor produktové strategie a testovací metriky.
   - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
     date: 2026-10-31
     change: Zavedeno porovnání definic se skutečným webem v Chromu po deseti commitech.
@@ -12,9 +15,6 @@ history:
   - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
     date: 2026-10-31
     change: Doplněno umístění kontroloru dokumentace, hooku, testů a pracovního stavu revize.
-  - thread_id: 01a191dc-21ba-7b11-9e58-687e0a2cfbd7
-    date: 2026-10-31
-    change: Doplněn rozsah verzovaného webu, externí podklady a Git LFS.
 
 ---
 
@@ -48,6 +48,7 @@ Popis každé funkce patří do vlastního souboru.
 Obsah a chování oken jsou v `okna.md`, jejich vzhled v `vzhled_oken.md`.
 Technické podrobnosti o oknech jsou v `architektura_oken.md`.
 Celkovou architekturu popisuje `ARCHITEKTURA_IMPLEMENTACE.md`.
+Produktovou strategii a metriky popisuje [Strategie](strategie.md).
 Přehled přesunutých souborů je v `presun_souboru.json`.
 
 ## Podklady a nástroje
