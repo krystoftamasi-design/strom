@@ -2,16 +2,38 @@
 history:
   - thread_id: d4bd5380-b7a9-4109-9dcd-32f5819e4b02
     date: 2026-10-31
+    change: Doplněna hodnota produktu, cílové prostředí na počítači a žákovské miskoncepce fotosyntézy a transpirace z českých výzkumů.
+  - thread_id: d4bd5380-b7a9-4109-9dcd-32f5819e4b02
+    date: 2026-10-31
     change: Definován scénář samostudia, metrika porozumění fotosyntéze do jedné minuty a scénář testu s pěti uživateli.
 ---
 
 # Produktová strategie
 
-## Uživatel a scénář
+## Hodnota (Value) a scénář
 
+- Hlavní hodnota (Value): skutečné pochopení tématu stromu jako propojeného živého systému (ne odříkání chemické rovnice nazpaměť).
 - Cílový uživatel: student při domácím samostudiu.
-- Kontext: samostatné otevření webu na notebooku bez výkladu učitele a bez nápovědy.
-- Hlavní problém: v běžné učebnici student vidí statický vzorec a nevnímá strom jako živý propojený systém, kde změna jednoho prvku okamžitě ovlivní ostatní.
+- Kontext: samostatné otevření webu doma na počítači bez výkladu učitele a bez nápovědy.
+
+## Cílové zařízení, distribuce a omezení prostředí
+
+- Cílové zařízení: stolní počítač nebo notebook (ovládání myší/touchpadem, dostatečná plocha obrazovky pro 3D strom i postranní sloupce oken).
+- Distribuce a prostředí (K dořešení – zaměřit se dále):
+  - Způsob spuštění pro běžného studenta: přechod z lokálního spouštěče (`spustit_strom_web.bat`, Python, Git LFS) na okamžitě dostupnou veřejnou URL v prohlížeči bez instalace.
+  - Hardwarová a síťová omezení: rychlost načtení 3D modelu (`strom_web_fast.glb`) na běžném domácím internetu a plynulost WebGL shaderů na běžných noteboocích s integrovanou grafikou.
+
+## Co žáci nechápou a proč nestačí učebnice či video
+
+Podle českých didaktických výzkumů na ZŠ a SŠ (např. *Brčáková 2022*, *Zástěra 2022*, *Musilová 2023*, *Boháčová 2023*, *Nováková* – PF JU; *Šantrůček* a *Hála* v časopise *Živa*) žáci u fotosyntézy a transpirace opakovaně selhávají v těchto bodech:
+
+- **Mýtus „kyslík pro lidi“ místo tvorby vlastního těla (cukrů):** žáci si myslí, že cílem fotosyntézy je vyrábět O₂ pro lidi a zvířata; nechápou, že hlavním produktem pro strom jsou [Cukry](okna.md#cukry) jako palivo a stavební materiál.
+- **Mýtus „strom jí hlínu kořeny“:** žáci věří, že dřevo a hmota stromu rostou z půdy; nedokážou si představit, že pevná hmota stromu vzniká ze vzduchu ([CO₂](okna.md#co₂)) a [Vody](okna.md#voda) za pomoci světla.
+- **Záměna dvou tras v kmeni:** učebnice ukazují rovnici $6\text{CO}_2 + 6\text{H}_2\text{O} \rightarrow \text{C}_6\text{H}_{12}\text{O}_6 + 6\text{O}_2$, ale žák nevidí, že v kmeni vedou dvě oddělené cesty – [Voda linka](elementy.md#voda-linka) (xylém nahoru do listů) a [Glukóza linka](elementy.md#glukóza-linka) (floém z listů do kmene a kořenů).
+- **Nepochopení tahu vody a transpirace:** žáci berou odpar jen jako „usychání listu“ nebo si myslí, že strom vodu aktivně pumpuje zdola jako srdce; nechápou, že právě odpařování v koruně ([Transpirace](okna.md#transpirace)) táhne vodu od kořenů přes xylém a zároveň strom chladí.
+- **Proč nestačí učebnice ani běžné video:**
+  - Učebnice vede k memorování mrtvé rovnice a pojmů (*asimilace, transpirace, xylém*) bez prostorové představy.
+  - Video je pasivní: student v něm nemůže kliknout na konkrétní látku ([Cukry](okna.md#cukry), [Voda](okna.md#voda)), okamžitě si zvýraznit její trasu v kmeni ani zastavit čas a zkoumat příčinu a následek vlastním tempem.
 
 ## Metrika úspěchu
 
