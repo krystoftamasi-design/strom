@@ -2,6 +2,9 @@
 history:
   - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
     date: 2026-10-31
+    change: Upřesněn rozsah uživatelských výjimek a povinná kontrola dokončení podle aktuálních pravidel.
+  - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
+    date: 2026-10-31
     change: Zavedeno opakované čtení aktuálních pravidel před úkolem, před commitem a při souběžných změnách.
   - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
     date: 2026-10-31
@@ -12,15 +15,14 @@ history:
   - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
     date: 2026-10-31
     change: Zavedena stručná evidence i drobných vizuálních úprav a společný commit kódu s evidencí.
-  - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
-    date: 2026-10-31
-    change: Upřesněno dokončení implementace podle dokumentace, doložení výsledků a řešení oprávnění ke commitu.
 ---
 
 # Aktuálnost pravidel
 
 - Před každým novým úkolem včetně navazující drobné úpravy znovu přečti celý aktuální `AGENTS.md` z disku; nespoléhej na pravidla zapamatovaná ze začátku chatu.
 - Znovu jej načti před každým commitem a ověř proti němu připravený diff, evidenci a YAML historii.
+- Jednorázovou výjimku uživatele, například „tuto úpravu bez commitu“, vztahuj jen na daný úkol; nepřenášej ji automaticky na jiné zadání. Výslovné trvalé preference zachovej.
+- Přímé pokyny uživatele mají přednost před tímto souborem v rozsahu, který určují; vlastní dřívější rozhodnutí agenta není uživatelská výjimka.
 - Pokud uživatel oznámí změnu pravidel nebo zjistíš souběžné úpravy jiného chatu, načti aktuální pravidla a dotčené dokumenty před pokračováním v úpravách.
 
 # Prohlížeč a kontrola
@@ -112,7 +114,7 @@ Soubory jsou v `web_viewer/dokumentace`.
 - Kód měň na pokyn uživatele; samotné uložení dokumentu implementaci nespouští.
 - Stavy: Čeká → Rozpracováno → Implementováno → Ověřeno; nejasnosti „K upřesnění“.
 - Při implementaci již popsané funkce ponech platné definice a aktualizuj její stav a skutečné ověření v `zmeny.md`; existující definice nenahrazuje evidenci dokončení.
-- Před závěrečnou odpovědí porovnej diff s evidencí a ověř YAML historii každého změněného dokumentu. Výslovný zákaz změn dokumentace respektuj.
+- Před závěrečnou odpovědí ověř dokončení podle aktuálního `AGENTS.md`: soulad diffu s evidencí v `zmeny.md`, YAML historii změněných dokumentů a úspěšný společný commit. Pokud je některý krok vynechaný, musí mít oporu v platném pokynu uživatele nebo doložené blokaci; tuto výjimku uveď v závěru.
 - V závěru uváděj jen provedené úpravy a kontroly doložené diffem a výsledky nástrojů; vynechané nebo zablokované kroky pojmenuj.
 - Uveď skutečné ověření nebo „finální kontrola uživatelem“; neevidované neznamená hotové.
 - Zachovej historii změn.
