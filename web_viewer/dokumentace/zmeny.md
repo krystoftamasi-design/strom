@@ -1,5 +1,8 @@
 ---
 history:
+  - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
+    date: 2026-10-31
+    change: Zavedeno porovnání definic se skutečným webem v Chromu po deseti commitech.
   - thread_id: 01a192c9-24b4-7642-a56f-53abd8bf4304
     date: 2026-10-31
     change: Opraveny duplicitní identifikátory a doplněna prevence souběžných kolizí.
@@ -12,9 +15,7 @@ history:
   - thread_id: 01a192c9-24b4-7642-a56f-53abd8bf4304
     date: 2026-10-31
     change: Sladěna dokumentace vzhledu se současným rozložením detailů a tahů oken.
-  - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
-    date: 2026-10-31
-    change: Napojena revize dokumentace na každý pátý commit a určeno umístění výsledku.
+
 ---
 
 # Změny
@@ -24,6 +25,13 @@ history:
 ## Rozpracováno
 
 ## Implementováno
+
+#### Z020 — Shoda dokumentace s webem po deseti commitech
+
+- Zadání: [Revize po deseti commitech](kontrola_dokumentace.md#revize-po-deseti-commitech).
+- Výsledek: revize porovnává všechny obsahové definice s kódem a pozorováním skutečného Google Chromu; hlásí neshody a neověřené oblasti bez oprav.
+- Stav: Implementováno.
+- Ověření: integrační testy spouštěče a ruční kontrola sběru v Chromu; úplnost všech scénářů není zaručena.
 
 #### Z018 — Jedinečné identifikátory změn
 
@@ -55,8 +63,8 @@ history:
 
 #### Z012 — Revize bez hodinového čekání
 
-- Zadání: [Revize po pěti commitech](kontrola_dokumentace.md#revize-po-pěti-commitech).
-- Výsledek: pátý commit spustí revizi agentem na pozadí; výsledek je v `old/revize_dokumentace.md` a hodinová automatizace je pozastavená.
+- Zadání: [Revize po deseti commitech](kontrola_dokumentace.md#revize-po-deseti-commitech).
+- Výsledek: desátý commit spustí revizi agentem na pozadí; výsledek je v `old/revize_dokumentace.md` a hodinová automatizace je pozastavená.
 - Stav: Implementováno.
 - Ověření: integrační testy spouštěče a výstupů, ověření neinteraktivního Codex CLI; ruční spuštění vstupní revize.
 
@@ -77,7 +85,7 @@ history:
 #### Z019 — Automatická kontrola dokumentace
 
 - Zadání: [Kontrola dokumentace](kontrola_dokumentace.md).
-- Výsledek: kontrolor připraveného commitu a lokální hook; spouštění revizí určuje [Revize po pěti commitech](kontrola_dokumentace.md#revize-po-pěti-commitech).
+- Výsledek: kontrolor připraveného commitu a lokální hook; spouštění revizí určuje [Revize po deseti commitech](kontrola_dokumentace.md#revize-po-deseti-commitech).
 - Stav: Implementováno.
 - Ověření: integrační testy kontroloru v dočasných repozitářích; úplná kontrola hlásí existující nálezy, první pravidelná revize čeká na spuštění.
 

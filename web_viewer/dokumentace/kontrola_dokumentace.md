@@ -2,6 +2,9 @@
 history:
   - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
     date: 2026-10-31
+    change: Zavedeno porovnání definic se skutečným webem v Chromu po deseti commitech.
+  - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
+    date: 2026-10-31
     change: Skryto konzolové okno podprocesu automatické revize.
   - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
     date: 2026-10-31
@@ -11,7 +14,7 @@ history:
     change: Nahrazen hodinový plán spuštěním revize z post-commit hooku a popsáno umístění reportu.
   - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
     date: 2026-10-31
-    change: Popsána kontrola dokumentace před commitem a automatická revize po pěti commitech.
+    change: Popsána kontrola dokumentace před commitem a automatická revize po deseti commitech.
 
 ---
 
@@ -42,20 +45,25 @@ history:
 - Návratový kód `0` znamená bez nalezených formálních chyb; `1` znamená nálezy. Soubory se neopravují.
 - Testy: `python -m unittest discover -s web_viewer/testy -p test_documentation_check.py`.
 
-## Revize po pěti commitech
+## Revize po deseti commitech
 
-- Lokální Git `post-commit` hook po každém dokončeném commitu spočítá nové commity a při alespoň pěti spustí `tools/review_documentation.py --kick` na pozadí, bez hodinového čekání.
+- Lokální Git `post-commit` hook po každém dokončeném commitu spočítá nové commity a při alespoň deseti spustí `tools/review_documentation.py --kick` na pozadí, bez hodinového čekání.
 - Existující Git LFS hook zůstává zachovaný; zdroj sloučeného hooku je `tools/post-commit`. V novém klonu ho nainstaluj nebo sluč s existujícím hookem.
 - Revize vyžaduje dostupný a přihlášený Codex CLI; používá jeho uložené přihlášení a výchozí model v režimu `read-only`, bez trvalého nového chatu.
 - Počítají se všechny nové commity včetně dokumentace. Při prvním běhu nebo neplatném výchozím bodu proběhne vstupní revize.
 - Ve Windows se Codex CLI spouští s `CREATE_NO_WINDOW`, aby revize neotevírala konzolové okno.
-- Průběh je asynchronní: pátý commit spustí revizi hned, dokončení závisí na délce kontroly a dostupnosti služby.
+- Průběh je asynchronní: desátý commit spustí revizi hned, dokončení závisí na délce kontroly a dostupnosti služby.
 - Výsledek je v ignorovaném `web_viewer/old/revize_dokumentace.md`: `PROBIHA`, `DOKONCENA` nebo `SELHANI`, prověřený hash a zpráva agenta.
 - Terminál commitu při spuštění vypíše cestu k reportu; zpráva se automaticky nevkládá do hlavního chatu ani do aplikace.
 - Technický průběh je v `web_viewer/old/revize_dokumentace.log`; report se při další revizi aktualizuje.
-- Agent porovnává přesný zachycený commit a odpovídající definice s kódem, odděluje nové a staré nálezy a nesmí nic opravovat, commitovat ani otevírat prohlížeč.
+- Agent porovnává přesný zachycený commit a odpovídající definice s kódem, odděluje nové a staré nálezy a nesmí nic opravovat ani commitovat. Podklady z prohlížeče získává samostatný sběr v Google Chromu.
+- `tools/review_browser.mjs` spustí skutečný Google Chrome bez okna, projde kapitoly, zachytí texty a okna, přepne detaily a uloží snímky i chyby.
+- Web obsluhuje dočasný server z přesného Git commitu na volném místním portu; u LFS ověřuje hash dostupného podkladu. Server i Chrome se po sběru ukončí.
+- Agent vždy porovnává všechny hlavní obsahové definice jako zdroj požadavků, nejen změněné soubory. Report obsahuje požadavek, skutečnost, důkaz a SHODA / NESHODA / NEOVĚŘENO.
+- Snímky a JSON jsou v `old/browser_review_<hash>`; samotné otevření webu neprokazuje správnost animací ani všech interakcí. Chybějící pokrytí a selhání Chromu musí být uvedeno v reportu.
+- Vyžaduje Node.js, Google Chrome a Playwright z existujícího lokálního runtime Codexu; jiný prohlížeč se nepoužije.
 - Pracovní změny ostatních chatů se nehodnotí jako součást prověřeného commitu.
-- Souběžné revize chrání systémový zámek; pokud během revize přibude dalších pět commitů, pracovní proces provede další revizi.
+- Souběžné revize chrání systémový zámek; pokud během revize přibude dalších deset commitů, pracovní proces provede další revizi.
 - Po úspěšné revizi se uloží jen prověřený hash do `web_viewer/old/documentation_review_state.json`; při selhání se výchozí bod neposouvá a další commit revizi zkusí znovu.
 - Ruční spuštění úplné revize: `python web_viewer/tools/review_documentation.py --force`.
 - Původní hodinová automatizace je pozastavená. „Bez nálezu“ není záruka bezchybnosti ani finální test webu.

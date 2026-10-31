@@ -211,7 +211,7 @@ def main():
         valid = previous and subprocess.run(['git', '-C', str(root), 'merge-base', '--is-ancestor', previous, head], capture_output=True).returncode == 0
         count = int(git(root, 'rev-list', '--count', previous + '..' + head)) if valid else None
         print(json.dumps({'head': head, 'last_reviewed_commit': previous, 'new_commits': count,
-                          'review_due': count is None or count >= 5, 'baseline_changed': not bool(valid)}))
+                          'review_due': count is None or count >= 10, 'baseline_changed': not bool(valid)}))
         return 0
     return run_checks(root, args.staged)
 

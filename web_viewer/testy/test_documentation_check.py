@@ -104,19 +104,22 @@ class DocumentationChecks(unittest.TestCase):
         self.git('add', '.')
         self.assertIn('missing heading anchor', self.run_check().stdout)
 
-    def test_five_commit_review_gate(self):
+    def test_ten_commit_review_gate(self):
         head = self.git('rev-parse', 'HEAD').decode().strip()
         result = subprocess.run(['python', str(SCRIPT), '--review-complete', head], cwd=self.root, capture_output=True)
         self.assertEqual(result.returncode, 0)
-        for i in range(5):
+        for i in range(10):
             self.write('counter.txt', str(i))
             self.git('add', 'counter.txt')
             self.commit()
+            if i == 8:
+                result = subprocess.run(['python', str(SCRIPT), '--review-status'], cwd=self.root, capture_output=True)
+                self.assertIn(b'"review_due": false', result.stdout)
         result = subprocess.run(['python', str(SCRIPT), '--review-status'], cwd=self.root, capture_output=True)
-        self.assertIn(b'"new_commits": 5', result.stdout)
+        self.assertIn(b'"new_commits": 10', result.stdout)
         self.assertIn(b'"review_due": true', result.stdout)
 
-    def test_review_waits_for_five_commits(self):
+    def test_review_waits_for_ten_commits(self):
         head = self.git('rev-parse', 'HEAD').decode().strip()
         (self.root / 'web_viewer/old').mkdir()
         reviewer.save_state(self.root, head)
@@ -127,11 +130,13 @@ class DocumentationChecks(unittest.TestCase):
         original = subprocess.run
         def fake_run(command, **kwargs):
             if command[0] == 'fake-codex':
+                self.assertIn('Chrome fixture', kwargs['input'])
+                self.assertIn('Dokumentace je zdroj pozadavku', kwargs['input'])
                 self.assertEqual(kwargs['creationflags'], subprocess.CREATE_NO_WINDOW if reviewer.os.name == 'nt' else 0)
                 Path(command[command.index('-o') + 1]).write_text('NALEZY: test report', encoding='utf-8')
                 return subprocess.CompletedProcess(command, 0)
             return original(command, **kwargs)
-        with patch.object(reviewer.shutil, 'which', return_value='fake-codex'), patch.object(reviewer.subprocess, 'run', side_effect=fake_run):
+        with patch.object(reviewer, 'capture_browser', return_value='Chrome fixture'), patch.object(reviewer.shutil, 'which', return_value='fake-codex'), patch.object(reviewer.subprocess, 'run', side_effect=fake_run):
             self.assertEqual(reviewer.review(self.root, force=True), 0)
         self.assertIn('DOKONCENA', (self.root / 'web_viewer/old/revize_dokumentace.md').read_text(encoding='utf-8'))
         self.assertEqual(reviewer.status(self.root)[2], 0)
