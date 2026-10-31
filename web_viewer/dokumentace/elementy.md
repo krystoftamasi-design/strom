@@ -2,6 +2,9 @@
 history:
   - thread_id: 01a192c9-24b4-7642-a56f-53abd8bf4304
     date: 2026-10-31
+    change: Přepnutí kapitoly zachovává aktuální stažení linek bez jejich opětovného zobrazení.
+  - thread_id: 01a192c9-24b4-7642-a56f-53abd8bf4304
+    date: 2026-10-31
     change: Odstraněny skoky rychlosti a navázány obě linky pouze na čas přehrávání.
   - thread_id: 01a192c9-24b4-7642-a56f-53abd8bf4304
     date: 2026-10-31
@@ -9,9 +12,6 @@ history:
   - thread_id: 01a192c9-24b4-7642-a56f-53abd8bf4304
     date: 2026-10-31
     change: Nastavena stálá rychlost animace glukózy nezávislá na podmínkách a modelovém čase.
-  - thread_id: 01a192c9-24b4-7642-a56f-53abd8bf4304
-    date: 2026-10-31
-    change: Zviditelněna putující vlna zvýraznění větším pulzem tloušťky a řízením průhlednosti.
   - thread_id: 01a192c9-24b4-7642-a56f-53abd8bf4304
     date: 2026-10-31
     change: Změněno zvýraznění linek na zesílení tloušťky s pulzací bez zesvětlení.
@@ -34,7 +34,7 @@ Definice spojení
 - Modrá linka vede z kořenů přes kmen k listům.
 - Při fotosyntéze proudí nahoru.
 - Při červenání prvního listu se stahuje od kořenů k listům.
-- Při vstupu do kapitoly je hned celá viditelná.
+- Při vstupu do kapitoly zachovává aktuální stav podle [Společného stahování linek](#společné-stahování-linek).
 - Rychlost nočního stahování určuje [Společné stahování linek](#společné-stahování-linek).
 
 
@@ -62,6 +62,7 @@ Definice spojení
 
 #### Společné stahování linek
 
+- Přepnutí kapitoly neresetuje stažení ani stav červenání listů; skryté linky se při návratu krátce neobnovují na plnou délku.
 - Při zastavení fotosyntézy se sluncem na obzoru nebo pod ním se obě linky plně stáhnou za přibližně 1,2 sekundy animace.
 - Ranní rozvinutí a ostatní stahování trvá přibližně 3,6 sekundy animace.
 

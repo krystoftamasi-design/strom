@@ -1,5 +1,8 @@
 ---
 history:
+  - thread_id: 01a192c9-24b4-7642-a56f-53abd8bf4304
+    date: 2026-10-31
+    change: Odstraněn reset délky linek při přepnutí kapitoly.
   - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
     date: 2026-10-31
     change: Převedena kapitola Transpirace na společný vzhled oken Fotosyntézy.
@@ -12,9 +15,6 @@ history:
   - thread_id: 01a192c9-24b4-7642-a56f-53abd8bf4304
     date: 2026-10-31
     change: Nastavena jediná stálá rychlost proudění a zvýraznění glukózy.
-  - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
-    date: 2026-10-31
-    change: Omezen obsah reportu revize na doložené neshody.
 
 ---
 
@@ -25,6 +25,13 @@ history:
 ## Rozpracováno
 
 ## Implementováno
+
+#### Z026 — Zachování linek při přepnutí kapitoly
+
+- Zadání: [Společné stahování linek](elementy.md#společné-stahování-linek).
+- Výsledek: přepnutí kapitoly zachovává stažení vody a glukózy i stav červenání; před zobrazením skupin aktualizuje hranice linek bez posunu animace.
+- Stav: Implementováno.
+- Ověření: kontrola syntaxe a odstranění resetu v přepínači kapitol; finální vizuální kontrola uživatelem.
 
 #### Z025 — Transpirace ve stylu Fotosyntézy
 

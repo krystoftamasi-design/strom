@@ -3948,23 +3948,9 @@
       setVisualChapter: chapter => {
         lastDaylightFrame = -Infinity;
 
-        // Show the complete flow immediately on chapter entry; only a new
-        // leaf-fall event during the chapter should start its retraction.
-        sapFlowRetraction = 0;
-        sapUniforms.uFlowCutoff.value = sapFlowMinDistance - 0.4;
-        sapUniforms.uFlowRevealBottom.value = 0;
-        const glucoseFlow = greenRootFlowMesh?.userData;
-        if (glucoseFlow?.flowCutoff) {
-          glucoseFlow.flowCutoff.value = glucoseFlow.flowMaxDistance + 0.4;
-          glucoseFlow.flowRevealBottom.value = 1;
-        }
-        const firstRedProgress = leafControls.getFirstRedSeasonProgress(
-          shaderUniforms.uDryingSpeed.value,
-          shaderUniforms.uDryingSharpness.value,
-          shaderUniforms.uDryingFrontWidth.value
-        );
-        sapLeafRedWasStarted = THREE.MathUtils.clamp(shaderUniforms.uSeasonOffset.value / 0.44 + 0.5, 0, 1) >= firstRedProgress;
-        sapLeafRedRetractionActive = false;
+        // Preserve retraction across chapters, including night and red leaves.
+        // Refresh cutoffs before making the flow groups visible.
+        updateSapRetraction(0);
 
         controls.enabled = chapter !== 'intro';
         controls.autoRotate = false;
