@@ -1,5 +1,8 @@
 ---
 history:
+  - thread_id: 01a191dc-21ba-7b11-9e58-687e0a2cfbd7
+    date: 2026-10-31
+    change: Doplněn stručný princip YAGNI pro vývoj podle aktuálních potřeb.
   - thread_id: 01a18f17-efd7-7a02-8369-186b681bfcc0
     date: 2026-10-31
     change: Zpřesněno povinné sjednocení kódu a dokumentace v jednom kroku.
@@ -12,12 +15,6 @@ history:
   - thread_id: 01a18f17-efd7-7a02-8369-186b681bfcc0
     date: 2026-10-31
     change: Doplněna automatická aktualizace související dokumentace a pravidla statických oken.
-  - thread_id: 01a18d15-6ca3-7241-81c2-fc807aeadc12
-    date: 2026-10-30
-    change: Zpřesněno přidávání a ověřování historie Markdownu.
-  - thread_id: 01a18d15-6ca3-7241-81c2-fc807aeadc12
-    date: 2026-10-30
-    change: Přidáno dohledání ID threadu přes API Codexu.
 ---
 
 # Prohlížeč a kontrola
@@ -25,6 +22,13 @@ history:
 - Web otevírej a kontroluj pouze v Google Chrome; nikdy v integrovaném prohlížeči ani přes `open_in_codex`.
 - Pokud Chrome není dostupný, předej URL.
 - Finální testování nech uživateli, pokud výslovně nepožádá o test.
+
+## YAGNI
+
+- Implementuj jen funkce potřebné pro aktuální zadání.
+- Nepřidávej funkce, abstrakce ani optimalizace pro hypotetické budoucí potřeby.
+- Vol nejjednodušší řešení, které splňuje požadavky a zůstává srozumitelné a udržovatelné.
+- Řešení rozšiřuj postupně podle skutečných potřeb a zpětné vazby; výkon optimalizuj na základě měření.
 
 # Struktura souborů
 
