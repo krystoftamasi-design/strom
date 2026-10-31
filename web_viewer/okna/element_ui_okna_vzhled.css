@@ -217,3 +217,11 @@ body.scene-night .transpiration-guide .transpiration-legend { color: #a9baff; }
   font: 400 24px/1 var(--ui-font-text);
 }
 .tree-overlay .element-ui-okno[data-chapter="transpiration"] .element-ui-trigger:hover { color: var(--ui-topic); }
+
+/* Reserve vertical breathing room between fixed topic windows. */
+.tree-overlay .element-ui-okno[data-chapter="transpiration"][data-window-id="chlazeni"] { top: 48%; }
+.tree-overlay .element-ui-okno[data-chapter="transpiration"][data-window-id="teplota"] { top: 68%; }
+@media (max-width: 700px) {
+  .tree-overlay .element-ui-okno[data-chapter="transpiration"][data-window-id="chlazeni"] { top: 46%; }
+  .tree-overlay .element-ui-okno[data-chapter="transpiration"][data-window-id="teplota"] { top: 70%; }
+}

@@ -2,6 +2,9 @@
 history:
   - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
     date: 2026-10-31
+    change: Zvětšeny svislé rozestupy oken Transpirace.
+  - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
+    date: 2026-10-31
     change: Vyhrazen samostatný prostor pro tlačítka detailů Transpirace.
   - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
     date: 2026-10-31
@@ -12,9 +15,6 @@ history:
   - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
     date: 2026-10-31
     change: Opraven pád vykreslování při chybějícím výstupu a obnovení modulů po změně oken.
-  - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
-    date: 2026-10-31
-    change: Odstraněn Průtok a doplněny vzorce i šablona číselného okna podle Fotosyntézy.
 
 ---
 
@@ -25,6 +25,13 @@ history:
 ## Rozpracováno
 
 ## Implementováno
+
+#### Z039 — Větší odstupy oken Transpirace
+
+- Zadání: přidat mezery mezi okny.
+- Výsledek: zvětšeny svislé rozestupy pravých oken posunem Chlazení a Teploty; samostatné rozmístění pro úzké obrazovky.
+- Stav: Implementováno.
+- Ověření: kontrola změněných pozic a připravené dokumentace; finální vizuální kontrola uživatelem.
 
 #### Z038 — Prostor pro tlačítka detailů
 
