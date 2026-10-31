@@ -3,16 +3,16 @@
 export const oknaPodleKapitol = {
   transpiration: [
     { id: 'transpirace', nadpis: 'Transpirace', tema: 'water', strana: 'left', hlavni: true,
-      shrnuti: 'Odpar v listech pomáhá táhnout vodu od kořenů.', vypocet: 'transpiration', zobrazitVzorec: true, vzorecText: 'min(základ × listy × světlo × voda; spotřeba)', zobrazitHodnotu: true,
+      vypocet: 'transpiration', zobrazitVzorec: true, vzorecText: 'min(základ × listy × světlo × voda; spotřeba)', zobrazitHodnotu: true,
       text: ['Voda se odpařuje převážně průduchy listů. Odpar pomáhá táhnout vodu od kořenů a spotřebovává teplo. Za světla bývá vyšší; nedostatek vody vede k omezení ztrát průduchy.'] },
     { id: 'prijem-vody', nadpis: 'Příjem vody', tema: 'water', strana: 'right',
-      shrnuti: 'Kořeny doplňují vodu do stromu.', vypocet: 'inflow', zobrazitVzorec: true, vzorecText: 'min(přísun; limit kořenů)', zobrazitHodnotu: true,
+      vypocet: 'inflow', zobrazitVzorec: true, vzorecText: 'min(přísun; limit kořenů)', zobrazitHodnotu: true,
       text: ['Kořeny doplňují zásobu vody ve stromu. Příjem omezuje dostupná voda a sezónní maximum kořenů; nemusí být stejný jako okamžitý odpar.'] },
     { id: 'chlazeni', nadpis: 'Chlazení', tema: 'temperature', strana: 'right',
-      shrnuti: 'Odpaření vody spotřebovává teplo.', vypocet: 'coolingKW', zobrazitVzorec: true, vzorecText: 'odpar × 2450 / 3600', zobrazitHodnotu: true,
+      vypocet: 'coolingKW', zobrazitVzorec: true, vzorecText: 'odpar × 2450 / 3600', zobrazitHodnotu: true,
       text: ['Odpařování vody spotřebovává teplo. Chladicí výkon je fyzikální odhad, nikoli změna teploty; při omezení odparu klesá.'] },
     { id: 'teplota', nadpis: 'Teplota', tema: 'temperature', strana: 'right',
-      shrnuti: 'Porovnej teplotu u koruny a mimo strom.', vypocet: 'temperatureNearCanopy', zobrazitVzorec: true, vzorecText: 'okolí − ochlazení + noční efekt', zobrazitHodnotu: true, teplotniPorovnani: true,
+      vypocet: 'temperatureNearCanopy', zobrazitVzorec: true, vzorecText: 'okolí − ochlazení + noční efekt', zobrazitHodnotu: true, teplotniPorovnani: true,
       text: ['Ve dne odpar ochlazuje okolí koruny; v noci olistěná koruna omezuje vyzařování tepla a u ní může být mírně tepleji. Základem jsou normály ČHMÚ 1991–2020. Denní kolísání a teplá či chladná období jsou výukový odhad, nikoli měření nebo předpověď počasí.'] },
   ],
   photosynthesis: [
@@ -90,5 +90,5 @@ export const pruvodceTranspiraci = {
   cesta: ['Kořeny · příjem', 'Kmen · voda vzhůru', 'Listy · odpar a chlazení'],
   legenda: 'Modrá linka ve stromu = cesta vody',
   temata: 'Prozkoumej prvky transpirace',
-  ovladani: 'Klikni na + u názvu. Otevřeš vysvětlení; vodní témata zvýrazní modrou linku.',
+  ovladani: 'Klikni na nadpis okna. Otevřeš vysvětlení; vodní témata zvýrazní modrou linku.',
 };

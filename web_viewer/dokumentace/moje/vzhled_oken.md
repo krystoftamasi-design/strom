@@ -2,6 +2,9 @@
 history:
   - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
     date: 2026-10-31
+    change: Sjednocen vzhled oken Transpirace se společnou šablonou Fotosyntézy.
+  - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
+    date: 2026-10-31
     change: Doplněna šablona vzhledu podle Fotosyntézy a vzorce zbývajících oken Transpirace.
   - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
     date: 2026-10-31
@@ -12,9 +15,6 @@ history:
   - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
     date: 2026-10-31
     change: Sjednocena struktura Transpirace, její okna a elementy podle vzoru Fotosyntézy.
-  - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
-    date: 2026-10-31
-    change: Převedena kapitola Transpirace na společný vzhled oken Fotosyntézy.
 
 ---
 
@@ -25,16 +25,16 @@ history:
 - Kliknutí na nadpis zobrazí nebo skryje detail ve vyhrazeném prostoru.
 - Změna hodnot a zobrazení detailu neposouvají polohu oken.
 - Okna nemají pohybové animace ani spojnice ke stromu.
-- V kapitole Fotosyntéza jsou výchozí detaily Cukrů a Vody otevřené; v Transpiraci jsou všechny detaily výchozím stavem zavřené a základní vysvětlení zůstávají viditelná.
+- V kapitole Fotosyntéza jsou výchozí detaily Cukrů a Vody otevřené; v Transpiraci jsou všechny detaily výchozím stavem zavřené.
 
 ### Obecný obsah
 
 - Nadpis: název tématu; kliknutí ovládá zobrazení detailu.
 - Hodnota: živé číslo s jednotkou pod nadpisem, pokud ji okno zobrazuje.
-- V Transpiraci má každé číselné okno vzorec pod hodnotou i při zavřeném detailu; dlouhý vztah se může zalomit a shrnutí následuje pod ním. Vzorec je v této kapitole viditelný i na úzké obrazovce.
+- Transpirace používá stejné rozložení nadpisu, hodnoty a detailu jako Fotosyntéza. Delší názvy témat a skutečné vzorce se zalamují uvnitř společných sloupců; vzorce zůstávají v Transpiraci viditelné i na úzké obrazovce.
 - Vstupy výpočtu: drobný černý nezalamovaný řádek pod hodnotou ve dne; v noci se převrátí na světlou barvu.
 - Detail se zobrazuje napravo od hlavních údajů a sází se od horního okraje okna.
-- O₂, CO₂, Cukry a Voda mají společnou šířku levého sloupce a jejich popisy začínají na stejné svislici.
+- Tematická okna obou kapitol mají společnou šířku levého sloupce a jejich detaily začínají na stejné svislici.
 - Mezi sloupci je mezera 15 px; u dlouhého vzorce je výsledný odstup přibližně 15 px. Krátký vzorec Vody ponechává větší volný prostor.
 - Prostor detailu zabírá výšku řádků nadpisu, hodnoty a vzorce; delší obsah má vlastní posuv.
 - Ovládání: případný posuvník nebo jiný ovládací prvek v detailu.
@@ -51,7 +51,7 @@ history:
 - Tah Vody se roztahuje podle výšky řádků nadpisu, hodnoty a vzorce místo procentní výšky bloku.
 - Do šířky 700 px zůstávají dva pevné sloupce; detaily mají místo pod nadpisem s vlastním posuvem a přehled vstupů je skrytý.
 
-- V Transpiraci jsou tlačítka +/− viditelná v kruhu vedle nadpisu; otevřený blok má silnější svislý tah a slovní potvrzení otevření.
+- Transpirace přebírá ovládací plochu nad nadpisem z Fotosyntézy. Otevření detailu nemění sílu barevného tahu; samostatná shrnutí a stavové nápisy nejsou součástí okna.
 - Vlevo nad hlavním oknem je vysvětlení děje a svislé schéma s vodou stoupající od kořenů k listům; nad pravými okny je označení témat a krátká instrukce.
 
 ### Písmo
@@ -129,6 +129,6 @@ history:
 - Zavřený stav: nadpis, hodnota a vzorec zůstávají na místě; detail je skrytý.
 - Otevřený stav: detail se zobrazí ve vyhrazeném prostoru bez posunutí sousedních oken.
 - Ovládání: ovládací plocha nad nadpisem s viditelným označením při ovládání klávesnicí; konkrétní chování a výchozí stav určuje definice okna.
-- Úzká obrazovka: dva pevné sloupce, menší písmo a detail pod hlavními údaji; Fotosyntéza skrývá přehled vstupů.
+- Úzká obrazovka: dva pevné sloupce, menší písmo a detail pod hlavními údaji; Fotosyntéza skrývá přehled vstupů, Transpirace zachovává skutečné vzorce.
 - Konkrétní nadpis, tag, hodnota, vzorec a detail: odkaz na definici v obsahu oken.
 ```

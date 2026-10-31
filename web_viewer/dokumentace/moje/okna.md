@@ -2,6 +2,9 @@
 history:
   - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
     date: 2026-10-31
+    change: Sjednoceny zápisy čtyř oken Transpirace podle šablony Fotosyntézy.
+  - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
+    date: 2026-10-31
     change: Odstraněn Průtok a doplněny vzorce i šablona číselného okna podle Fotosyntézy.
   - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
     date: 2026-10-31
@@ -12,9 +15,6 @@ history:
   - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
     date: 2026-10-31
     change: Sjednocena struktura Transpirace, její okna a elementy podle vzoru Fotosyntézy.
-  - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
-    date: 2026-10-31
-    change: Převedena kapitola Transpirace na společný vzhled oken Fotosyntézy.
 
 ---
 
@@ -93,47 +93,59 @@ history:
 
 ### Okna
 
-- Každé okno má viditelný vzorec pod hodnotou a jednu hlavní veličinu, stručný vlastní detail a samostatný stav otevření; stav se zachovává při změně kapitoly.
-- Kliknutí na nadpis nebo viditelné tlačítko +/− přepne detail; všechny čtyři detaily je výchozím stavem zavřených.
-- Krátká shrnutí jsou viditelná i při zavřeném detailu: Transpirace vysvětluje tah odparem, Příjem vody doplňování vody kořeny, Chlazení spotřebu tepla a Teplota srovnání u koruny a mimo strom.
-- Zavřené okno nabízí „Otevřít vysvětlení +“; otevřené vodní téma odkazuje na zvýraznění modré linky. Teplotní témata označují otevřené vysvětlení bez tvrzení o prostorovém zvýraznění.
-- Průvodní texty určuje [Průvodce Transpirací](texty.md#průvodce-transpirací).
+- Okna používají [šablonu Fotosyntézy](vzhled_oken.md#šablona-jednoho-okna-podle-fotosyntézy); samostatný [průvodce](texty.md#průvodce-transpirací) zůstává mimo ně.
+- Stav detailů zůstává zachovaný při změně kapitoly.
 
 #### Transpirace
 
 **Tag:** 🔵 `water`
 
-- Vzorec: `min(základ × listy × světlo × voda; spotřeba)`.
-- Hlavní okno vlevo dole; hodnota: odpařená voda v `l/h`, jedno desetinné místo.
-- Detail: odpařování převážně průduchy táhne vodu od kořenů a spotřebovává teplo; za světla bývá vyšší, nedostatek vody vede k omezení ztrát průduchy.
+- Nadpis: `Transpirace`; role: hlavní okno; strana: vlevo.
+- Detailní text: „Voda se odpařuje převážně průduchy listů. Odpar pomáhá táhnout vodu od kořenů a spotřebovává teplo. Za světla bývá vyšší; nedostatek vody vede k omezení ztrát průduchy.“
+- Hodnota: odpařená voda v `l/h`, jedno desetinné místo.
+- Vzorec: `min(základ × listy × světlo × voda; spotřeba)`, viditelný pod hodnotou.
+- Vstupy výpočtu: základ odparu, podíl listů, světlo, zavodnění a mez spotřeby; význam jednotek určuje [Význam vzorců](#význam-vzorců).
+- Ovládání detailu: kliknutí na nadpis nebo ovládací plochu nad ním.
+- Výchozí stav detailu: zavřený.
 - Související element: [Voda linka](elementy.md#voda-linka).
 
 #### Příjem vody
 
 **Tag:** 🔵 `water`
 
-- Vzorec: `min(přísun; limit kořenů)`.
-- Okno vpravo nahoře; hodnota: příjem kořeny v `l/h`, jedno desetinné místo.
-- Detail: kořeny doplňují zásobu vody; příjem omezuje dostupnost vody a sezónní maximum, nemusí odpovídat okamžitému odparu.
+- Nadpis: `Příjem vody`; role: tematické okno; strana: vpravo nahoře.
+- Detailní text: „Kořeny doplňují zásobu vody ve stromu. Příjem omezuje dostupná voda a sezónní maximum kořenů; nemusí být stejný jako okamžitý odpar.“
+- Hodnota: příjem kořeny v `l/h`, jedno desetinné místo.
+- Vzorec: `min(přísun; limit kořenů)`, viditelný pod hodnotou.
+- Vstupy výpočtu: dostupný přísun vody a sezónní kapacita kořenů upravená jejich stavem.
+- Ovládání detailu: kliknutí na nadpis nebo ovládací plochu nad ním.
+- Výchozí stav detailu: zavřený.
 - Související element: [Voda linka](elementy.md#voda-linka).
 
 #### Chlazení
 
 **Tag:** 🌡️ `temperature`
 
-- Vzorec: `odpar × 2450 / 3600`.
-- Druhé okno vpravo; hodnota: chladicí výkon v `kW`, dvě desetinná místa.
-- Detail: odpařování spotřebovává teplo; výkon klesá při omezení odparu a není změnou teploty.
+- Nadpis: `Chlazení`; role: tematické okno; strana: vpravo, druhé shora.
+- Detailní text: „Odpařování vody spotřebovává teplo. Chladicí výkon je fyzikální odhad, nikoli změna teploty; při omezení odparu klesá.“
+- Hodnota: chladicí výkon v `kW`, dvě desetinná místa.
+- Vzorec: `odpar × 2450 / 3600`, viditelný pod hodnotou.
+- Vstupy výpočtu: odpar v `l/h`, modelové skupenské teplo 2450 kJ/kg a převod hodin na sekundy.
+- Ovládání detailu: kliknutí na nadpis nebo ovládací plochu nad ním.
+- Výchozí stav detailu: zavřený.
 
 #### Teplota
 
 **Tag:** 🌡️ `temperature`
 
-- Vzorec: `okolí − ochlazení + noční efekt`.
-- Třetí okno vpravo; hodnota: teplota u koruny ve `°C`, jedno desetinné místo.
-- Detail obsahuje živou teplotu mimo strom a podepsaný rozdíl teplot u koruny a mimo strom.
-- Vysvětlení: denní ochlazování odparem, noční omezení vyzařování olistěnou korunou a možný mírně teplejší vzduch u ní.
-- Základem jsou normály ČHMÚ 1991–2020; kolísání a teplá či chladná období jsou výukový odhad, nikoli měření nebo předpověď počasí.
+- Nadpis: `Teplota`; role: tematické okno; strana: vpravo, třetí shora.
+- Detailní text: „Ve dne odpar ochlazuje okolí koruny; v noci olistěná koruna omezuje vyzařování tepla a u ní může být mírně tepleji. Základem jsou normály ČHMÚ 1991–2020. Denní kolísání a teplá či chladná období jsou výukový odhad, nikoli měření nebo předpověď počasí.“
+- Detail obsahuje také živou teplotu mimo strom a podepsaný rozdíl vůči teplotě u koruny.
+- Hodnota: teplota u koruny ve `°C`, jedno desetinné místo.
+- Vzorec: `okolí − ochlazení + noční efekt`, viditelný pod hodnotou.
+- Vstupy výpočtu: teplota okolí, modelový účinek odparu a noční efekt olistěné koruny.
+- Ovládání detailu: kliknutí na nadpis nebo ovládací plochu nad ním.
+- Výchozí stav detailu: zavřený.
 
 ### Význam vzorců
 

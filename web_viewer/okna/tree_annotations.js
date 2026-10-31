@@ -1,6 +1,6 @@
-import { oknaPodleKapitol, pruvodceTranspiraci } from './element_ui_okna_obsah.js?v=transpiration-cache-1';
-import { veliciny, vstupyVzorce, ohlasitChybuOken } from './element_ui_okna_veliciny.js?v=transpiration-cache-1';
-import { zkontrolovatOkna } from './element_ui_okna_kontrola.js?v=transpiration-cache-1';
+import { oknaPodleKapitol, pruvodceTranspiraci } from './element_ui_okna_obsah.js?v=transpiration-template-1';
+import { veliciny, vstupyVzorce, ohlasitChybuOken } from './element_ui_okna_veliciny.js?v=transpiration-template-1';
+import { zkontrolovatOkna } from './element_ui_okna_kontrola.js?v=transpiration-template-1';
 
 // Original embedded assets from ui_new.svg, at their exported stroke widths.
 const strokes = {
@@ -122,16 +122,6 @@ export function createTreeAnnotations({ shell, model, createSeasonControl, setEl
     body.append(...nodes.filter(Boolean));
     panel.append(header, reveal);
     if (definition) createElementUiOkno({ panel, body, reveal, toggle });
-    let connection = null;
-    if (article.dataset.chapter === 'transpiration') {
-      const summary = document.createElement('p');
-      summary.className = 'transpiration-summary';
-      summary.textContent = definition.shrnuti;
-      panel.append(summary);
-      connection = document.createElement('p');
-      connection.className = 'transpiration-connection';
-      panel.append(connection);
-    }
     let expanded = false;
     function expand(open) {
       expanded = open;
@@ -144,9 +134,6 @@ export function createTreeAnnotations({ shell, model, createSeasonControl, setEl
       panel.classList.toggle('collapsed', !open);
       toggle.textContent = open ? '−' : '+';
       toggle.setAttribute('aria-expanded', String(open));
-      if (connection) connection.textContent = open
-        ? definition.tema === 'water' ? '↗ Sleduj zvýraznění modré linky' : 'Otevřené vysvětlení'
-        : 'Otevřít vysvětlení +';
     }
     toggle.addEventListener('click', () => expand(!expanded));
     if (definition && (article.dataset.chapter === 'transpiration' || ['water', 'sugar'].includes(definition.tema))) h.addEventListener('click', () => expand(!expanded));

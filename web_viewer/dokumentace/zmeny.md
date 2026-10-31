@@ -2,6 +2,9 @@
 history:
   - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
     date: 2026-10-31
+    change: Sjednocen vzhled a definice oken Transpirace podle Fotosyntézy.
+  - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
+    date: 2026-10-31
     change: Opraven pád vykreslování při chybějícím výstupu a obnovení modulů po změně oken.
   - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
     date: 2026-10-31
@@ -12,9 +15,6 @@ history:
   - thread_id: 01a192c9-24b4-7642-a56f-53abd8bf4304
     date: 2026-10-31
     change: Roztříděna dokumentace a opraveny cesty podle účelu souborů.
-  - thread_id: 01a192c9-24b4-7642-a56f-53abd8bf4304
-    date: 2026-10-31
-    change: Archivovány tři překonané dokumenty a upraven rozcestník i přehled struktury.
 
 ---
 
@@ -25,6 +25,13 @@ history:
 ## Rozpracováno
 
 ## Implementováno
+
+#### Z036 — Okna Transpirace podle šablony Fotosyntézy
+
+- Zadání: [Šablona vzhledu](moje/vzhled_oken.md#šablona-jednoho-okna-podle-fotosyntézy), [Transpirace](moje/okna.md#kapitola-transpirace).
+- Výsledek: společné písmo, sloupce, barevné tahy a ovládací plocha nad nadpisem; odstraněny odlišné kruhové přepínače, duplicitní shrnutí a stavové nápisy uvnitř oken. Zachovány čtyři hodnoty, vzorce, výpočty, samostatné detaily a průvodce mimo okna. Zápisy všech čtyř oken sjednoceny podle obsahové šablony.
+- Stav: Implementováno.
+- Ověření: kontrola syntaxe, validační test oken a kontrola připravené dokumentace; finální vizuální a funkční kontrola uživatelem.
 
 #### Z035 — Obnovení stromu po změně oken
 
