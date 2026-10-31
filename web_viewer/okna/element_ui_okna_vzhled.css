@@ -133,6 +133,10 @@ body.scene-night .tree-overlay .element-ui-okno .ui-word {
   mask: var(--ui-edge-variant) center / 100% 100% no-repeat;
 }
 .tree-overlay .element-ui-okno[data-window-id="fotosynteza"] .element-ui-edge { height: 100%; width: 12px; }
+.tree-overlay .element-ui-okno[data-window-id="voda"] .element-ui-edge {
+  position: relative; grid-column: 1; grid-row: 1 / 4;
+  left: -20px; height: auto; align-self: stretch;
+}
 .tree-overlay .element-ui-okno .ui-word-light { color: var(--ui-light); }
 .tree-overlay .element-ui-okno .ui-word-water { color: var(--ui-water); }
 .tree-overlay .element-ui-okno .ui-word-temperature { color: var(--ui-temperature); }
