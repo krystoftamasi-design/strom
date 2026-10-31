@@ -2,6 +2,9 @@
 history:
   - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
     date: 2026-10-31
+    change: Upřesněno dokončení implementace podle dokumentace, doložení výsledků a řešení oprávnění ke commitu.
+  - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
+    date: 2026-10-31
     change: Zobecněna výjimka z dokumentování drobného vizuálního ladění na všechny části webu.
   - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
     date: 2026-10-31
@@ -12,9 +15,6 @@ history:
   - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
     date: 2026-10-31
     change: Odstraněna obecná struktura nadpisů a upřesněna historie, výjimka pro tagy a rozsah kontrol.
-  - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
-    date: 2026-10-31
-    change: Doplněna vlastní pravidla struktury a obecná šablona AGENTS.md.
 ---
 
 # Prohlížeč a kontrola
@@ -103,6 +103,9 @@ Soubory jsou v `web_viewer/dokumentace`.
 - Rozdíl definovaného chování proti kódu zapiš jako „Čeká“; schválené chování neoznačuj jako návrh.
 - Kód měň na pokyn uživatele; samotné uložení dokumentu implementaci nespouští.
 - Stavy: Čeká → Rozpracováno → Implementováno → Ověřeno; nejasnosti „K upřesnění“.
+- Při implementaci již popsané funkce ponech platné definice a aktualizuj její stav a skutečné ověření v `zmeny.md`; existující definice nenahrazuje evidenci dokončení.
+- Před závěrečnou odpovědí porovnej diff s evidencí a ověř YAML historii každého změněného dokumentu. Výjimku pro vizuální ladění nebo výslovný zákaz změn dokumentace respektuj.
+- V závěru uváděj jen provedené úpravy a kontroly doložené diffem a výsledky nástrojů; vynechané nebo zablokované kroky pojmenuj.
 - Uveď skutečné ověření nebo „finální kontrola uživatelem“; neevidované neznamená hotové.
 - Zachovej historii změn.
 
@@ -111,6 +114,8 @@ Soubory jsou v `web_viewer/dokumentace`.
 - Po každé dokončené logické změně vytvoř lokální commit s krátkým popisem.
 - Před commitem zkontroluj diff a zahrň jen změny daného úkolu; cizí úpravy vynech.
 - Rozpracované kroky necommituj jednotlivě; commit neznamená ověření funkčnosti.
+- Při chybě oprávnění k zápisu do `.git` použij dostupný schvalovací postup pro tentýž lokální commit; neměň oprávnění ani nemaž zámky jako náhradu. Pokud schválení není dostupné nebo je zamítnuté, oznam konkrétní blokaci.
+- Úspěšný commit potvrď výsledkem Gitu a jeho hashem; samotný pokus není vytvořený commit.
 - Na vzdálený repozitář odesílej jen na výslovný pokyn uživatele.
 
 # Pravidla struktury
