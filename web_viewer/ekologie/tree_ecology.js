@@ -1,4 +1,4 @@
-import { vypocitatVzorec } from './tree_ecology_vzorce.js?v=4';
+import { vypocitatVzorec } from './tree_ecology_vzorce.js?v=5';
 
 // One water store for every chapter. Rates use litres/minute of model time.
 // Species-inspired teaching presets, not a calibrated prediction of this tree.
@@ -50,9 +50,8 @@ export class TreeEcology {
     this.sunIntensity = 1;
     this.hourOfDay = 12;
     this.waterInput = 0.1;
-    this.waterInputLitresPerHour = 0;
-    this.co2Concentration = CO2_PPM;
-    this.co2Ppm = CO2_PPM;
+    this.waterConsumption = 0;
+    this.waterConsumptionLitresPerHour = 0;
     this.inflow = 0;
     this.seasonalWaterLimit = 0;
     this.excessWater = 0;
@@ -79,6 +78,7 @@ export class TreeEcology {
     this.photosynthesisTemperatureFactor = 1;
     this.glucoseGramsPerMinute = 0;
     this.oxygenGramsPerMinute = 0;
+    this.co2GramsPerMinute = 0;
     this.hydration = 1;
   }
 
@@ -133,8 +133,6 @@ export class TreeEcology {
   }
 
   evaluate(minutes) {
-    this.waterInputLitresPerHour = this.waterInput;
-    this.co2Ppm = vypocitatVzorec('co2Ppm', this);
     const season = this.seasonState;
     this.seasonalWaterLimit = this.baseTranspiration * season.waterSupply;
     this.excessWater = Math.max(0, this.waterInput - this.seasonalWaterLimit);
@@ -168,6 +166,8 @@ export class TreeEcology {
     const requested = potentialTranspiration * this.hydration + maintenance;
     const availableRate = minutes > 0 ? this.reserve / minutes + this.inflow : (this.reserve > 0 ? Infinity : this.inflow);
     this.consumption = Math.min(requested, availableRate);
+    this.waterConsumption = this.consumption;
+    this.waterConsumptionLitresPerHour = this.waterConsumption;
     this.transpiration = Math.min(potentialTranspiration * this.hydration, this.consumption);
     this.coolingKW = this.transpiration / 60 * 2450; // L/min ≈ kg/min; latent heat 2450 kJ/kg.
     // Illustrative air cooling scales with actual evaporation relative to a
@@ -193,6 +193,7 @@ export class TreeEcology {
     // 8 µmol CO₂/m²/s, six CO₂ per glucose; show glucose equivalent, not storage.
     this.glucoseGramsPerMinute = vypocitatVzorec('glucoseGramsPerMinute', this);
     this.oxygenGramsPerMinute = vypocitatVzorec('oxygenGramsPerMinute', this);
+    this.co2GramsPerMinute = vypocitatVzorec('co2GramsPerMinute', this);
     return this;
   }
 

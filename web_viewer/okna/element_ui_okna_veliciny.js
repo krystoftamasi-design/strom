@@ -1,13 +1,13 @@
-import { vzorce } from '../ekologie/tree_ecology_vzorce.js?v=4';
+import { vzorce } from '../ekologie/tree_ecology_vzorce.js?v=5';
 
 // Převod výpočetních názvů na text, barvu, jednotku a formát pro okna.
 export const veliciny = {
-  waterInput: { nazev: 'voda', tema: 'water' },
+  waterConsumption: { nazev: 'voda', tema: 'water' },
   light: { nazev: 'Světlo', tema: 'light' },
   hydration: { nazev: 'voda', tema: 'water' },
   activeLeafArea: { nazev: 'listy', tema: 'leaves' },
   co2Response: { nazev: 'CO₂', tema: 'co2' },
-  co2Concentration: { nazev: 'CO₂', tema: 'co2' },
+  co2Conversion: { nazev: 'CO₂/přepočet', tema: 'co2', veVzorci: false },
   oxygenPerGlucose: { nazev: 'O₂/glukóza', tema: 'oxygen', veVzorci: false },
   photosynthesisTemperatureFactor: { nazev: 'teplota', tema: 'temperature' },
   photosynthesisEfficiency: { nazev: 'účinnost', tema: 'light' },
@@ -20,22 +20,22 @@ export const veliciny = {
   glucoseGramsPerMinute: {
     nazev: 'Tvorba cukrů', tema: 'sugar',
     jednotka: 'g/min', nasobek: 1, desetinnaMista: 1,
-    vystupId: 'ecoGlucose', druh: 'glucose',
+    vystupId: 'ecoGlucose', popisHodnoty: 'produkce', druh: 'glucose',
   },
-  waterInputLitresPerHour: {
-    nazev: 'Přívod vody', tema: 'water',
+  waterConsumptionLitresPerHour: {
+    nazev: 'Spotřeba vody', tema: 'water',
     jednotka: 'l/h', nasobek: 60, desetinnaMista: 2,
-    vystupId: 'ecoWaterInput', druh: 'water',
+    vystupId: 'ecoWaterConsumption', popisHodnoty: 'spotřeba', druh: 'water',
   },
-  co2Ppm: {
-    nazev: 'CO₂', tema: 'co2',
-    jednotka: 'ppm', nasobek: 1, desetinnaMista: 0,
-    vystupId: 'ecoCo2Ppm', druh: 'co2',
+  co2GramsPerMinute: {
+    nazev: 'Spotřeba CO₂', tema: 'co2',
+    jednotka: 'g/min', nasobek: 1, desetinnaMista: 3,
+    vystupId: 'ecoCo2Consumption', popisHodnoty: 'spotřeba', druh: 'co2',
   },
   oxygenGramsPerMinute: {
     nazev: 'Tvorba O₂', tema: 'oxygen',
     jednotka: 'g/min', nasobek: 1, desetinnaMista: 2,
-    vystupId: 'ecoOxygen', druh: 'oxygen',
+    vystupId: 'ecoOxygen', popisHodnoty: 'produkce', druh: 'oxygen',
   },
 };
 

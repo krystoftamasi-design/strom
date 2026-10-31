@@ -1,5 +1,8 @@
 ---
 history:
+  - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
+    date: 2026-10-31
+    change: Rozlišeny produkce a spotřeba hodnot; CO₂ změněno z koncentrace na spotřebu v g/min a Voda na spotřebu v l/h.
   - thread_id: 01a192cd-90b3-7e21-8050-fdf9990fe825
     date: 2026-10-31
     change: Doplněny vstupy výpočtu a číselné hodnoty s jednotkami do oken O₂, CO₂ a Voda.
@@ -12,9 +15,6 @@ history:
   - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
     date: 2026-10-31
     change: Obarveny tagy přesnými barvami témat z webu.
-  - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
-    date: 2026-10-31
-    change: Doplněny tagy oken shodné s tématy a souvisejícími elementy.
 ---
 
 # Okna
@@ -53,9 +53,9 @@ history:
 
 - Nadpis: `CO₂`.
 - Téma: CO₂; strana: vpravo.
-- Detailní text: „Oproti předindustriální hodnotě jde přibližně o nárůst 50 %. Vyšší CO₂ může podpořit fotosyntézu.“
-- Vstup výpočtu: `CO₂`.
-- Hodnota: koncentrace CO₂ v `ppm`.
+- Detailní text: „CO₂ se při fotosyntéze spotřebovává jako vstup pro tvorbu cukrů. Zobrazená hodnota je okamžitá spotřeba podle aktivní plochy listů a fotosyntetické účinnosti.“
+- Vstupy výpočtu: `Světlo × voda × listy × CO₂ × teplota`.
+- Hodnota: spotřeba CO₂ v `g/min`.
 - Výchozí stav detailu: zavřený.
 - Související element: [CO₂ částice](elementy.md#co₂).
 
@@ -82,7 +82,7 @@ history:
 - Téma: voda; strana: vpravo.
 - Detailní text: „Při nedostatku vody se přivírají průduchy. Do listů proniká méně CO₂ a fotosyntéza slábne. Zkuste omezit přítok nebo snížit slunce pod obzor.“
 - Vstup výpočtu: `voda`.
-- Hodnota: přívod vody ke kořenům v `l/h`.
+- Hodnota: spotřeba vody v `l/h`.
 - Ovládání: posuvník `sliderTreeWater`, popisek `Voda`.
 - Výchozí stav detailu: otevřený.
 - Související element: [Voda linka](elementy.md#voda-linka).

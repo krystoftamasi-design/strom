@@ -32,7 +32,7 @@ export const oknaPodleKapitol = {
       tema: 'water',
       strana: 'right',
       otevrene: true,
-      vypocet: 'waterInputLitresPerHour',
+      vypocet: 'waterConsumptionLitresPerHour',
       zobrazitVzorec: true,
       zobrazitHodnotu: true,
       text: [
@@ -45,12 +45,12 @@ export const oknaPodleKapitol = {
       nadpis: 'CO₂',
       tema: 'co2',
       strana: 'right',
-      vypocet: 'co2Ppm',
+      vypocet: 'co2GramsPerMinute',
       zobrazitVzorec: true,
       zobrazitHodnotu: true,
       text: [
-        'Oproti předindustriální hodnotě jde přibližně o nárůst 50 %.',
-        'Vyšší CO₂ může podpořit fotosyntézu.',
+        'CO₂ se při fotosyntéze spotřebovává jako vstup pro tvorbu cukrů.',
+        'Zobrazená hodnota je okamžitá spotřeba podle aktivní plochy listů a fotosyntetické účinnosti.',
       ],
     },
     {

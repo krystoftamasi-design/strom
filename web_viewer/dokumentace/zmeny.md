@@ -1,5 +1,8 @@
 ---
 history:
+  - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
+    date: 2026-10-31
+    change: Rozlišeny produkce a spotřeba hodnot a upraven výpočet CO₂ na skutečnou spotřebu v g/min.
   - thread_id: 01a192cd-90b3-7e21-8050-fdf9990fe825
     date: 2026-10-31
     change: Doplněny vstupy a číselné hodnoty s jednotkami do oken O₂, CO₂ a Voda.
@@ -12,9 +15,6 @@ history:
   - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
     date: 2026-10-31
     change: Doplněna evidence drobného vizuálního ladění po dokončených logických změnách.
-  - thread_id: 01a192c9-24b4-7642-a56f-53abd8bf4304
-    date: 2026-10-31
-    change: Zviditelněna animace zvýraznění jako putující pás tloušťky bez změny barvy.
 ---
 
 # Změny
@@ -28,7 +28,14 @@ history:
 #### Z007 — Hodnoty a vstupy oken O₂, CO₂ a Voda
 
 - Zadání: [O₂](okna.md#o₂), [CO₂](okna.md#co₂), [Voda](okna.md#voda).
-- Výsledek: O₂ zobrazuje produkci v `g/min`, CO₂ koncentraci v `ppm` a Voda přívod ke kořenům v `l/h`; každé okno zobrazuje své vstupy výpočtu.
+- Výsledek: O₂ zobrazuje produkci v `g/min`, CO₂ spotřebu v `g/min` a Voda spotřebu v `l/h`; každé okno zobrazuje své vstupy výpočtu.
+- Stav: Implementováno.
+- Ověření: kontrola syntaxe, validační test oken a kontrola zobrazení v Chromu.
+
+#### Z008 — Rozlišení produkce a spotřeby
+
+- Zadání: [O₂](okna.md#o₂), [CO₂](okna.md#co₂), [Cukry](okna.md#cukry), [Voda](okna.md#voda).
+- Výsledek: hodnoty O₂ a Cukrů mají popisek „produkce“, hodnoty CO₂ a Vody „spotřeba“; CO₂ se počítá z aktivní plochy listů, fotosyntetické účinnosti a převodu molů na gramy.
 - Stav: Implementováno.
 - Ověření: kontrola syntaxe, validační test oken a kontrola zobrazení v Chromu.
 

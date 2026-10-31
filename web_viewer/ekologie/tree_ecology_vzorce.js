@@ -1,10 +1,7 @@
 // One definition for the calculation and its displayed factors.
 export const vzorce = {
-  waterInputLitresPerHour: {
-    vstupy: ['waterInput'],
-  },
-  co2Ppm: {
-    vstupy: ['co2Concentration'],
+  waterConsumptionLitresPerHour: {
+    vstupy: ['waterConsumption'],
   },
   photosynthesisEfficiency: {
     vstupy: ['light', 'hydration', 'co2Response', 'photosynthesisTemperatureFactor'],
@@ -21,11 +18,15 @@ export const vzorce = {
   oxygenGramsPerMinute: {
     vstupy: ['glucoseGramsPerMinute', 'oxygenPerGlucose'],
   },
+  co2GramsPerMinute: {
+    vstupy: ['activeLeafArea', 'photosynthesisEfficiency', 'co2Conversion'],
+  },
 };
 
 // 8 µmol CO₂/m²/s, six CO₂ per glucose, molar mass, seconds per minute.
 export const konstanty = {
   glucoseConversion: 8e-6 / 6 * 180.156 * 60,
+  co2Conversion: 8e-6 * 44.01 * 60,
   oxygenPerGlucose: 6 * 31.998 / 180.156,
 };
 
