@@ -1,5 +1,8 @@
 ---
 history:
+  - thread_id: 01a19439-ee7f-71f1-af82-4e2ff1146c5f
+    date: 2026-11-01
+    change: Zjednodušen dokument vzhledu oken bez změny webu.
   - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
     date: 2026-11-01
     change: Upřesněn bezpečný postup commitů a kontrol při souběžné práci.
@@ -12,9 +15,6 @@ history:
   - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
     date: 2026-11-01
     change: Odstraněn vliv skrytého detailu na výšku řádků oken.
-  - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
-    date: 2026-11-01
-    change: Sjednoceny společné části oken a datové varianty jejich vzhledu.
 
 ---
 
@@ -25,6 +25,13 @@ history:
 ## Rozpracováno
 
 ## Implementováno
+
+#### Z048 — Úklid vzhledu oken
+
+- Zadání: zkrátit [Vzhled oken](moje/vzhled_oken.md) a odstranit zastaralá pravidla.
+- Výsledek: sloučeny opakované definice, zkrácena šablona, obsah a technické použití nahrazeny odkazy; zachovány rozměry a platné rozdíly kapitol. Kód webu se nemění.
+- Stav: Implementováno.
+- Ověření: porovnání s obsahem oken a CSS, kontrola YAML historie, jedinečnosti ID a místních odkazů; bez vizuálního testu webu.
 
 #### Z047 — Bezpečnější postup ukládání změn
 
