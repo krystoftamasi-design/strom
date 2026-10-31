@@ -1,5 +1,8 @@
 ---
 history:
+  - thread_id: 01a19424-3d45-7e81-9ea4-3cd6ef98d1fa
+    date: 2026-10-31
+    change: Doplněno používání skillů pro vzhled a responzivní webové komponenty.
   - thread_id: 01a192c9-24b4-7642-a56f-53abd8bf4304
     date: 2026-10-31
     change: Roztříděna dokumentace a opraveny cesty podle účelu souborů.
@@ -12,9 +15,6 @@ history:
   - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
     date: 2026-10-31
     change: Zavedeno porovnání definic se skutečným webem v Chromu po deseti commitech.
-  - thread_id: 01a192c9-24b4-7642-a56f-53abd8bf4304
-    date: 2026-10-31
-    change: Doplněn postup přidělování jedinečných ID změn při souběžné práci.
 ---
 
 # Aktuálnost pravidel
@@ -38,6 +38,17 @@ history:
 - Nepřidávej funkce, abstrakce ani optimalizace pro hypotetické budoucí potřeby.
 - Vol nejjednodušší řešení, které splňuje požadavky a zůstává srozumitelné a udržovatelné.
 - Řešení rozšiřuj postupně podle skutečných potřeb a zpětné vazby; výkon optimalizuj na základě měření.
+
+# Skilly pro webové prvky
+
+- Při tvorbě nebo úpravě vzhledu oken a dalších webových prvků přečti a použij skill `frontend-design` pro rozložení, typografii, barvy, mezery a přehlednost obsahu.
+- Při tvorbě nebo sjednocování opakovaně používaných oken a ovládacích prvků přečti a použij skill `web-component-design` pro společnou strukturu, znovupoužití a jednotné ovládání.
+- Vytvářej okna jako samostatné znovupoužitelné komponenty; obsah, hodnoty a reakce předávej přes jasné rozhraní místo pevného navázání na konkrétní kapitolu nebo scénu.
+- Drž strukturu, styly a obecné chování okna pohromadě a odděl je od dat projektu, aby šla komponenta použít jinde i přenést do jiného projektu; potřebné závislosti a způsob použití stručně popiš v příslušné technické dokumentaci.
+- Přizpůsob doporučení skillů stávajícímu kódu, schváleným definicím a vizuálnímu stylu projektu; nezaváděj nový framework ani závislosti jen kvůli příkladům ve skillu.
+- U upravovaných prvků zajisti přizpůsobení šířce a výšce obrazovky, čitelnost textu, dostupnost ovládání a posouvání dlouhého obsahu bez nechtěného přetékání.
+- Zachovej ovládání klávesnicí, viditelný fokus a respektování omezeného pohybu u přidaných animací.
+- Dodržuj při použití skillů pravidla YAGNI, prohlížeče, kontrol a evidence uvedená v tomto dokumentu.
 
 # Spuštění webu
 
