@@ -1,5 +1,8 @@
 ---
 history:
+  - thread_id: 01a192c9-24b4-7642-a56f-53abd8bf4304
+    date: 2026-10-31
+    change: Doplněn postup přidělování jedinečných ID změn při souběžné práci.
   - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
     date: 2026-10-31
     change: Změněn výstup revize dokumentace na Markdown.
@@ -12,10 +15,6 @@ history:
   - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
     date: 2026-10-31
     change: Upřesněn rozsah uživatelských výjimek a povinná kontrola dokončení podle aktuálních pravidel.
-  - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
-    date: 2026-10-31
-    change: Zavedeno opakované čtení aktuálních pravidel před úkolem, před commitem a při souběžných změnách.
-
 ---
 
 # Aktuálnost pravidel
@@ -119,6 +118,9 @@ Soubory jsou v `web_viewer/dokumentace`.
 - V závěru uváděj jen provedené úpravy a kontroly doložené diffem a výsledky nástrojů; vynechané nebo zablokované kroky pojmenuj.
 - Uveď skutečné ověření nebo „finální kontrola uživatelem“; neevidované neznamená hotové.
 - Zachovej historii změn.
+- Kontrolu před commitem neobcházej; při hlášení `duplicate change ID` oprav kolizi před uložením.
+- Před commitem znovu ověř jedinečnost všech ID v aktuálním dokumentu i připraveném obsahu; při souběžné kolizi přečísluj vlastní nový záznam a oprav jeho odkazy.
+- Před přidáním změny znovu načti aktuální `zmeny.md` a přiděl číslo vyšší než nejvyšší použité ID v celém dokumentu; nespoléhej na pořadí záznamů ani paměť chatu.
 
 ## Pracovní postup
 

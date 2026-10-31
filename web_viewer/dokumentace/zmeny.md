@@ -1,5 +1,8 @@
 ---
 history:
+  - thread_id: 01a192c9-24b4-7642-a56f-53abd8bf4304
+    date: 2026-10-31
+    change: Opraveny duplicitní identifikátory a doplněna prevence souběžných kolizí.
   - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
     date: 2026-10-31
     change: Skryto konzolové okno podprocesu automatické revize.
@@ -12,10 +15,6 @@ history:
   - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
     date: 2026-10-31
     change: Napojena revize dokumentace na každý pátý commit a určeno umístění výsledku.
-  - thread_id: 01a192cd-90b3-7e21-8050-fdf9990fe825
-    date: 2026-10-31
-    change: Zkráceny texty oken Fotosyntéza, Cukry, Voda, CO₂ a O₂ na jeden odstavec.
-
 ---
 
 # Změny
@@ -25,6 +24,13 @@ history:
 ## Rozpracováno
 
 ## Implementováno
+
+#### Z018 — Jedinečné identifikátory změn
+
+- Zadání: [Změny](../../AGENTS.md#změny).
+- Výsledek: odstraněny duplicity ID, doplněno načtení aktuální evidence a kontrola kolizí před commitem; existující kontrolor duplicity automaticky hlásí.
+- Stav: Implementováno.
+- Ověření: kontrola jedinečnosti ID, vyhledání odkazů a testy kontroloru dokumentace.
 
 #### Z015 — Revize bez konzolového okna
 
@@ -68,7 +74,7 @@ history:
 - Stav: Implementováno.
 - Ověření: kontrola textů proti definici oken, syntaxe a validační test oken.
 
-#### Z010 — Automatická kontrola dokumentace
+#### Z019 — Automatická kontrola dokumentace
 
 - Zadání: [Kontrola dokumentace](kontrola_dokumentace.md).
 - Výsledek: kontrolor připraveného commitu a lokální hook; spouštění revizí určuje [Revize po pěti commitech](kontrola_dokumentace.md#revize-po-pěti-commitech).
@@ -82,7 +88,7 @@ history:
 - Stav: Implementováno.
 - Ověření: kontrola formátování hodnot, validační test oken a kontrola zobrazení v Chromu.
 
-#### Z009 — Detail bez překrytí a vypnuté ovládání Vody
+#### Z017 — Detail bez překrytí a vypnuté ovládání Vody
 
 - Zadání: [Voda](okna.md#voda), [Vzhled oken](vzhled_oken.md#obecný-obsah).
 - Stav: Implementováno.
@@ -150,6 +156,7 @@ history:
 
 - Postup dokončení určuje [Pracovní postup](../../AGENTS.md#pracovní-postup), význam stavů [Změny](../../AGENTS.md#změny).
 - Každá změna má stálé ID, odkaz na zadání, stav a výsledek ověření.
+- Přidělování ID a řešení souběžných kolizí určuje [AGENTS.md](../../AGENTS.md#změny); každé ID použij pouze jednou v celém dokumentu.
 - Eviduj i drobné vizuální ladění celého webu; související pokusy sluč do jedné dokončené logické změny.
 - U drobných úprav stačí stručný výsledný popis a skutečné ověření; podrobné definice nepřepisuj, pokud se jejich význam nemění.
 - Za logickou změnu přidej jeden záznam YAML historie s ověřeným `thread_id`; evidenci commituj společně s příslušným kódem.
