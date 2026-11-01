@@ -15,12 +15,20 @@
 
 ## Fotosyntéza
 
+- Texty cílí na [Mýty a porozumění](strategi_problems.md#mýty-a-porozumění); jde o návrh sdělení, nikoli potvrzení nasazení nebo rozsahu modelu.
+
 | Kontext | Navržený text | Cíl porozumění |
 |---|---|---|
 | Výchozí | Strom si vytváří cukry pro vlastní růst. Kyslík se přitom uvolňuje. | Přínos fotosyntézy pro strom; kyslík není jejím účelem pro lidi. |
-| Otevřené [CO₂](okna.md#co₂) | Uhlík pro tvorbu dřeva pochází z CO₂ ve vzduchu. | Původ uhlíku v těle stromu. |
-| Otevřené [Cukry](okna.md#cukry) | Z cukrů strom staví své tělo a získává energii. | Cukry jako stavební materiál a zdroj energie. |
-| Otevřená [Voda](okna.md#voda) | Kořeny přijímají vodu a minerální živiny. Uhlík strom získává ze vzduchu. | Rozlišení příjmu kořeny a původu uhlíku. |
+| Otevřené [CO₂](okna.md#co₂) | Uhlík pro tvorbu dřeva pochází z CO₂ ve vzduchu. | Původ uhlíku v těle stromu, nikoli z hlíny. |
+| Otevřené [Cukry](okna.md#cukry) | Z cukrů strom staví své tělo. Živé buňky listů, kmene i kořenů z nich získávají energii. | Cukry jako stavební materiál a palivo; buněčné dýchání i mimo listy. |
+| Otevřená [Voda](okna.md#voda) | Kořeny nepřijímají hlínu, ale vodu a minerální živiny. Část přijaté vody odchází z listů jako pára. | Příjem kořeny a výpar; přijatá voda nezůstává všechna ve stromu. |
+| Otevřené [O₂](okna.md#o₂) | Při fotosyntéze se kyslík uvolňuje. Buněčným dýcháním ho strom také spotřebovává, ve dne i v noci. | Rozlišit fotosyntézu a buněčné dýchání; nejde o střídání dvou dějů podle dne a noci. |
+| Noc, bez vybraného tématu | Bez světla fotosyntéza ustává. Strom dál získává energii buněčným dýcháním z uložených cukrů. | Zastavení fotosyntézy neznamená zastavení života stromu. |
+| Téma využití světla — spouštěč k dopracování | Sluneční energie slouží i k odpařování vody. Fotosyntéza využívá jen část dopadající energie. | Fotosyntéza není jediným ani automaticky největším využitím sluneční energie; návaznost na Transpiraci. |
+
+- U noční varianty a textu O₂ ověřit rozsah modelovaného dýchání; nezaměnit čistou bilanci plynů s jednotlivými procesy. Obecné vysvětlení nesmí předstírat další zobrazený tok.
+- Při nedostatku vody nebo listů ponechat vysvětlení tématu, ale netvrdit aktivní tvorbu cukrů; přesné stavové varianty a priorita při více otevřených oknech zůstávají k dopracování.
 
 ## Transpirace
 
