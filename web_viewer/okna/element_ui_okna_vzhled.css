@@ -255,3 +255,9 @@ body.scene-night .transpiration-guide .transpiration-legend { color: #a9baff; }
 @media (max-width: 700px) {
   .tree-overlay .element-ui-okno[data-main-window="true"] .annotation-reveal { left: 12px; width: calc(100% - 12px); max-height: 20vh; margin: 0; }
 }
+
+/* Keep the complete toggle border inside its reserved box. */
+.tree-overlay .element-ui-okno[data-toggle-visible="true"] .element-ui-trigger {
+  position: static; top: auto; box-sizing: border-box; padding: 0; margin: 0;
+  min-width: var(--ui-toggle-size); min-height: var(--ui-toggle-size);
+}

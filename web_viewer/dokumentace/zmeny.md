@@ -26,6 +26,13 @@ history:
 
 ## Implementováno
 
+#### Z081 — Neořezané tlačítko detailu
+
+- Zadání: minimální oprava tlačítka plus/minus ve společné šabloně.
+- Výsledek: tlačítko bez záporného posunu, rámeček uvnitř rozměru a zachovaná minimální velikost.
+- Stav: Implementováno.
+- Ověření: kontrola CSS; vizuální kontrola uživatelem.
+
 #### Z078 — Výraznější kruh období
 
 - Zadání: větší tučné verzálky a silnější tah kruhu.
