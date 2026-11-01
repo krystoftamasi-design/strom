@@ -1,4 +1,4 @@
-import { oknaPodleKapitol, pruvodceTranspiraci } from './element_ui_okna_obsah.js?v=transpiration-vapour-1';
+import { oknaPodleKapitol, pruvodceTranspiraci } from './element_ui_okna_obsah.js?v=photosynthesis-template-1';
 import { veliciny, vstupyVzorce, ohlasitChybuOken } from './element_ui_okna_veliciny.js?v=transpiration-vapour-1';
 import { zkontrolovatOkna } from './element_ui_okna_kontrola.js?v=transpiration-vapour-1';
 
@@ -142,7 +142,7 @@ export function createTreeAnnotations({ shell, model, createSeasonControl, setEl
       toggle.setAttribute('aria-expanded', String(open));
     }
     toggle.addEventListener('click', () => expand(!expanded));
-    if (definition && (article.dataset.chapter === 'transpiration' || ['water', 'sugar'].includes(definition.tema))) h.addEventListener('click', () => expand(!expanded));
+    if (definition && (definition.viditelnyPrepinac || ['water', 'sugar'].includes(definition.tema))) h.addEventListener('click', () => expand(!expanded));
     expand(definition ? Boolean(definition.otevrene) : article.dataset.chapter === 'intro' || article.dataset.chapter === 'seasons');
     header.append(h, toggle);
     article.append(panel);

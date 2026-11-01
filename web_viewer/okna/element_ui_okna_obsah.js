@@ -18,10 +18,12 @@ export const oknaPodleKapitol = {
   photosynthesis: [
     {
       id: 'fotosynteza',
+      viditelnyPrepinac: true,
       nadpis: 'Fotosyntéza',
       tema: 'light',
       strana: 'left',
       hlavni: true,
+      otevrene: true,
       vypocet: 'activity',
       zobrazitVzorec: true,
       zobrazitHodnotu: true,
@@ -31,7 +33,7 @@ export const oknaPodleKapitol = {
     },
     {
       id: 'cukry',
-      otevrene: true,
+      viditelnyPrepinac: true,
       nadpis: 'Cukry',
       tema: 'sugar',
       strana: 'right',
@@ -45,10 +47,10 @@ export const oknaPodleKapitol = {
     },
     {
       id: 'voda',
+      viditelnyPrepinac: true,
       nadpis: 'Voda',
       tema: 'water',
       strana: 'right',
-      otevrene: true,
       vypocet: 'waterConsumptionLitresPerHour',
       zobrazitVzorec: true,
       zobrazitHodnotu: true,
@@ -58,6 +60,7 @@ export const oknaPodleKapitol = {
     },
     {
       id: 'co2',
+      viditelnyPrepinac: true,
       nadpis: 'CO₂',
       tema: 'co2',
       strana: 'right',
@@ -70,6 +73,7 @@ export const oknaPodleKapitol = {
     },
     {
       id: 'kyslik',
+      viditelnyPrepinac: true,
       nadpis: 'O₂',
       tema: 'oxygen',
       strana: 'right',

@@ -36,36 +36,45 @@ history:
 
 ### Rozložení
 
-- Vzor: [podklad rozhraní](../../web_assets/ui_from_af/Untitled.svg), přibližně 2020 × 1143 px; procenta se vztahují k ploše rozhraní.
+- Aktuální vzor oken: Transpirace; původní grafický podklad: [podklad rozhraní](../../web_assets/ui_from_af/Untitled.svg), přibližně 2020 × 1143 px; procenta se vztahují k ploše rozhraní.
 - Hlavní okno je vlevo dole, tematická okna vpravo; střed zůstává volný pro strom.
-- Fotosyntéza: vpravo shora O₂, CO₂, Cukry a Voda; detaily mají společný začátek druhého sloupce.
-- Transpirace: vpravo shora Příjem vody, Chlazení a Teplota; první sloupec se přizpůsobuje nezalomenému nadpisu a tlačítku.
+- Fotosyntéza: vpravo shora O₂, CO₂, Cukry a Voda; stejně jako u Transpirace se první sloupec přizpůsobuje nadpisu a tlačítku. Pravá okna mají horní okraje 28 / 42 / 58 / 74 %, poslední výšku 18 %; ostatní sdílené rozměry zůstávají.
+- Transpirace: vpravo shora Teplota, Chlazení a Příjem vody; první sloupec se přizpůsobuje nezalomenému nadpisu a tlačítku.
+- Hlavní okno Transpirace: levý okraj 6 %, horní okraj 65 %, šířka 55 %, výška 21 %, nejméně 140 px.
 - Pravá okna Transpirace: levý okraj 68 %, šířka 29 %, horní okraje 28 / 48 / 68 %, výška 14 %, nejméně 85 px.
-- Tahy O₂, CO₂ a Cukrů mají 65 % výšky okna, hlavní okno 100 %; tah Vody sleduje výšku údajů.
+- Levé odsazení obsahu je 20 px. Tematický tah má šířku 8 px a 65 % výšky okna; hlavní tah 12 px a 100 %. Nepravidelný obrys vybírá jedna z pěti obrazových masek.
 - Mezi okny zůstává volný prostor; dlouhý detail se posouvá uvnitř svého okna.
 
 ### Úzká obrazovka
 
 - Do šířky 700 px zůstávají dva pevné sloupce; tematický detail je pod údaji, hlavní detail zůstává nad nimi. Oba mají vlastní posuv.
-- Pravý sloupec začíná na 52 % a má šířku 44 %; okna Transpirace mají horní okraje 22 / 46 / 70 % a výšku 17 %.
+- Pravý sloupec začíná na 52 % a má šířku 44 %; okna Transpirace mají horní okraje 26 / 46 / 70 % a výšku 17 %.
+- Hlavní okno: levý okraj 4 %, horní 65 %, šířka 44 %, výška 24 %; minimální výška oken se ruší. Odsazení obsahu je 12 px, tematický tah má šířku 5 px a hlavní 6 px. Tematický detail má nad sebou mezeru 8 px.
 - Používá se společná typografická škála pro úzkou obrazovku, bez výjimek podle délky nadpisu.
-- Fotosyntéza skrývá přehled vstupů; skutečné vzorce Transpirace zůstávají viditelné a mohou se zalomit.
+- Vzorce i přehledy vstupů obou kapitol zůstávají viditelné a mohou se zalomit. Fotosyntéza má pravá okna na 22 / 40 / 58 / 76 %, poslední výšku 20 %.
 
 ### Písmo
 
-- Nadpisy: Nohemi Regular, na referenčním plátně přibližně 53 px; hlavní nadpis přibližně 92 px a výraznější řez.
-- Hodnoty: Nohemi v barvě tématu; hlavní okno má větší hodnotu než tematická okna.
-- Popisky, jednotky a detaily: Satoshi Light; vzorce a přehled vstupů: drobné Satoshi Medium.
+- Velikosti jsou v CSS pixelech; `vw` je 1 % šířky obrazovky. `clamp(minimum, plynulá velikost, maximum)` omezuje písmo mezi krajními hodnotami. Nejde o pevné velikosti ze SVG.
+- Tematický nadpis: Nohemi, váha 400, `clamp(27px, 2.63vw, 53px)`; hlavní nadpis: váha 500, `clamp(40px, 4.57vw, 92px)`. Oba mají řádkování 1,05 a prostrkání −0,035 em, bez vnějších okrajů.
+- Tematická hodnota: Nohemi, váha 600, `clamp(20px, 1.15vw, 26px)`; hlavní hodnota: `clamp(38px, 4vw, 80px)`. Řádkování 1,1; číslice mají stejnou šířku. Nad hlavní hodnotou je odsazení 12 px.
+- Popisky, tematické jednotky a detail: Satoshi, váha 300, `clamp(11px, .83vw, 16px)`, řádkování 1,35. Tematická jednotka má odstup 4 px od čísla; hlavní jednotka dědí velikost a barvu hodnoty bez tohoto odstupu. Odstavce detailu mají dolní mezeru 8 px, poslední 0.
+- Vzorec: Satoshi, váha 500, `clamp(8px, .6vw, 12px)`, řádkování 1,25, horní mezera 3 px. Skutečná rovnice se může zalomit.
+- Symbol +/−: Satoshi, váha 400, 24 px, řádkování 1; uprostřed tlačítka 28 × 28 px s rámečkem 1 px. Fokus má obrys 2 px v barvě tématu, vzdálený 4 px; při najetí se symbol i rámeček přebarví do tématu.
+- Do šířky 700 px: tematický nadpis `clamp(22px, 5vw, 32px)`, hlavní `clamp(18px, 4.5vw, 31px)`; tematická hodnota zůstává na společné škále (v tomto rozsahu 20 px), hlavní má 35 px. Text má 11 px, vzorec 9 px, odsazení nad hlavní hodnotou 6 px. Váhy, řádkování a velikost tlačítka se nemění.
 
 ### Barvy
 
-- Běžný text a vstupy jsou ve dne tmavé, v noci světlé; barvy témat se nemění.
-- Světlo a aktivita: žlutá; voda: modrá; kyslík: světle modrá; CO₂: červenooranžová.
-- Cukry: fialová; listy: zelená; kořeny: hnědá; teplota: růžovočervená.
+- Běžný text, nadpisy, tematické jednotky a vzorce: ve dne `#181818`, v noci `#f0f2e9`. Hodnoty a levé tahy používají barvu tématu v obou režimech.
+- Transpirace a Příjem vody: modrá `#2f49d6`; Teplota a Chlazení: růžovočervená `#ff1f4c`.
+- Další témata: světlo `#ffcc00`, kyslík `#4fa2da`, CO₂ `#ff583c`, cukry `#d42fd5`, listy `#51b700`, kořeny `#311619`.
 
-### Šablona jednoho okna podle Fotosyntézy
+### Šablona jednoho okna podle Transpirace
 
-- Společný základ tvoří barevný tah, blok údajů a samostatný detail podle pravidel výše.
+- Vzorem tematického okna je Teplota, Chlazení nebo Příjem vody; hlavní variantou je Transpirace. Společný základ tvoří barevný tah, blok údajů a samostatný detail podle pravidel výše.
+- Tematické okno má první sloupec široký podle nezalomeného nadpisu a tlačítka; detail dostává zbývající šířku po odečtení mezery. Hlavní varianta používá samostatný detail nad oknem.
+- Nadpis nebo tlačítko přepíná detail; tlačítko je dostupné klávesnicí a oznamuje otevření. Zavření skryje pouze detail, hodnota i vzorec zůstávají. Hlavní detaily obou kapitol jsou výchozí otevřené, tematické zavřené a jejich stav se zachovává při změně kapitoly podle [Obsahu oken](okna.md#kapitola-transpirace).
+- Samostatný průvodce kapitoly není součástí šablony okna.
 - U dalšího okna určuj pouze roli, umístění, rozměry a případnou vzhledovou odlišnost; obsah patří do [Obsahu oken](okna.md).
 - Technické použití společné komponenty popisuje [Architektura oken](../system/architektura_oken.md#rozložení).
 

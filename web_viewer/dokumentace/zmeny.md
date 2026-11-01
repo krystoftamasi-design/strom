@@ -26,6 +26,20 @@ history:
 
 ## Implementováno
 
+#### Z059 — Fotosyntéza podle šablony Transpirace
+
+- Zadání: aplikovat [šablonu Transpirace](moje/vzhled_oken.md#šablona-jednoho-okna-podle-transpirace) na okna Fotosyntézy.
+- Výsledek: všech pět oken má viditelné +/− a přepínání nadpisem, společné písmo, tahy a rozložení detailu. Hlavní detail je otevřený nad údaji, tematické výchozí zavřené. Přehled vstupů je viditelný i na úzké obrazovce; původní výpočty, témata a vazby elementů zůstávají.
+- Stav: Implementováno.
+- Ověření: cílený validační test oken a kontrola vlastního diffu; finální vizuální a funkční kontrola uživatelem.
+
+#### Z057 — Přesná šablona podle Transpirace
+
+- Zadání: popsat úplnou šablonu okna podle Transpirace včetně velikostí písma.
+- Výsledek: vzorem je Transpirace; definice obsahuje přesné škály písma, váhy, řádkování, barvy, rozměry, odstupy, ovládání a úzkou variantu podle současného kódu. Odkazy na šablonu jsou sjednocené.
+- Stav: Implementováno.
+- Ověření: porovnání s CSS a rendererem; dokumentační změna bez úpravy webu a bez finální vizuální kontroly.
+
 #### Z061 — Obnovení importů hlavního okna
 
 - Zadání: načíst aktuální variantu hlavního okna bez starých modulů v cache.
@@ -171,7 +185,7 @@ history:
 
 #### Z036 — Okna Transpirace podle šablony Fotosyntézy
 
-- Zadání: [Šablona vzhledu](moje/vzhled_oken.md#šablona-jednoho-okna-podle-fotosyntézy), [Transpirace](moje/okna.md#kapitola-transpirace).
+- Zadání: [Šablona vzhledu](moje/vzhled_oken.md#šablona-jednoho-okna-podle-transpirace), [Transpirace](moje/okna.md#kapitola-transpirace).
 - Výsledek: společné písmo, sloupce, barevné tahy a ovládací plocha nad nadpisem; odstraněny odlišné kruhové přepínače, duplicitní shrnutí a stavové nápisy uvnitř oken. Zachovány čtyři hodnoty, vzorce, výpočty, samostatné detaily a průvodce mimo okna. Zápisy všech čtyř oken sjednoceny podle obsahové šablony.
 - Stav: Implementováno.
 - Ověření: kontrola syntaxe, validační test oken a kontrola připravené dokumentace; finální vizuální a funkční kontrola uživatelem.

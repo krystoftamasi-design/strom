@@ -24,6 +24,9 @@ history:
 
 ### Okna
 
+- Všechna okna používají [šablonu Transpirace](vzhled_oken.md#šablona-jednoho-okna-podle-transpirace), včetně velikostí písma, tahů a viditelného tlačítka +/−. Nadpis i tlačítko přepínají detail; stav se zachovává při změně kapitoly.
+- Hlavní detail je nad údaji a výchozí otevřený; tematické detaily jsou výchozí zavřené, vpravo od údajů a na úzké obrazovce pod nimi.
+
 #### Fotosyntéza
 
 **Tag:** 🟡 `light`
@@ -34,7 +37,7 @@ history:
 - Hodnota: `activity`, zobrazená v procentech.
 - Vstupy výpočtu: zapnuté.
 - Výsledná hodnota: zapnutá.
-- Výchozí stav detailu: zavřený.
+- Výchozí stav detailu: otevřený; detail je nad hlavními údaji.
 
 #### O₂
 
@@ -71,7 +74,7 @@ history:
 - Hodnota: `glucoseGramsPerMinute`, jednotka `g/min`, jedno desetinné místo.
 - Vstupy výpočtu: zapnuté.
 - Výsledná hodnota: zapnutá.
-- Výchozí stav detailu: otevřený.
+- Výchozí stav detailu: zavřený.
 - Ovládání detailu: kliknutí na nadpis Cukry nebo tlačítko +/− přepne detail.
 - Stav detailu zůstává zachovaný při změně kapitoly.
 - Související element: [Glukóza linka](elementy.md#glukóza-linka).
@@ -86,14 +89,14 @@ history:
 - Vstup výpočtu: `voda`.
 - Hodnota: spotřeba vody v `l/h`, zobrazena na jedno desetinné místo.
 - Ovládání: vypnuté; posuvník se v okně nezobrazuje.
-- Výchozí stav detailu: otevřený.
+- Výchozí stav detailu: zavřený.
 - Související element: [Voda linka](elementy.md#voda-linka).
 
 ## Kapitola Transpirace
 
 ### Okna
 
-- Okna používají [šablonu Transpirace](vzhled_oken.md#šablona-jednoho-okna-podle-fotosyntézy); samostatný [průvodce](texty.md#průvodce-transpirací) zůstává mimo ně.
+- Okna používají [šablonu Transpirace](vzhled_oken.md#šablona-jednoho-okna-podle-transpirace); samostatný [průvodce](texty.md#průvodce-transpirací) zůstává mimo ně.
 - Stav detailů zůstává zachovaný při změně kapitoly.
 
 #### Transpirace

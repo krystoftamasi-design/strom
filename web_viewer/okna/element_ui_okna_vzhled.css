@@ -141,9 +141,6 @@ body.scene-night .tree-overlay .element-ui-okno .ui-word {
   mask: var(--ui-edge-variant) center / 100% 100% no-repeat;
 }
 .tree-overlay .element-ui-okno[data-main-window="true"] .element-ui-edge { height: 100%; width: 12px; }
-.tree-overlay .element-ui-okno[data-window-id="voda"] .element-ui-edge {
-  height: 100%;
-}
 .tree-overlay .element-ui-okno .ui-word-light { color: var(--ui-light); }
 .tree-overlay .element-ui-okno .ui-word-water { color: var(--ui-water); }
 .tree-overlay .element-ui-okno .ui-word-temperature { color: var(--ui-temperature); }
@@ -205,9 +202,9 @@ body[data-chapter="transpiration"] [data-open-chapter="transpiration"] { text-de
 }
 
 /* Headers stay on one line; mathematical relations may wrap. */
-.tree-overlay .element-ui-okno[data-formula-kind="equation"] .element-ui-readout > .ui-window-formula { white-space: normal; }
+.tree-overlay .element-ui-okno[data-toggle-visible="true"] .element-ui-readout > .ui-window-formula { white-space: normal; }
 @media (max-width: 700px) {
-  .tree-overlay .element-ui-okno[data-formula-kind="equation"] .element-ui-readout > .ui-window-formula { display: block; }
+  .tree-overlay .element-ui-okno[data-toggle-visible="true"] .element-ui-readout > .ui-window-formula { display: block; }
 }
 
 body.scene-night .transpiration-guide .transpiration-legend { color: #a9baff; }
