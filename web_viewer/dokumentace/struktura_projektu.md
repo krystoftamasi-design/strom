@@ -64,6 +64,7 @@ Přehled původních přesunů souborů je v `starsi/presun_souboru.json`.
 
 - `web_assets` obsahuje modely, textury, písma a knihovny.
 - `tools` obsahuje pomocné nástroje.
+- `tools/unisal_video.py` zpracovává video s časovou pamětí modelu a vytváří překryv H.264; používá stejný lokální model a návod jako statická predikce.
 - `tools/unisal_predict.py` vytváří lokální predikce pozornosti; postup je v [UNISAL](../tools/UNISAL.md), model a prostředí v ignorovaném `old`, výsledky v `nahledy/unisal`.
 - `tools/check_documentation.py` kontroluje dokumentaci a přes `--files` předběžně vybrané pracovní soubory včetně syntaxe JS v HTML; `tools/pre-commit` je zdroj kontroly před commitem.
 - `tools/review_documentation.py` spouští revizi po deseti commitech; `tools/post-commit` ji propojuje s Gitem a zachovává Git LFS.

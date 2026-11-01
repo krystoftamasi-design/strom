@@ -12,6 +12,19 @@ web_viewer/old/unisal-env/Scripts/python.exe web_viewer/tools/unisal_predict.py 
 - Instalace závislostí: `torch torchvision numpy scipy opencv-python pillow fire tensorboardX` z PyPI.
 - Oficiální zdroj: https://github.com/rdroste/unisal, revize `7f8ca1a7ecb3dbc1bf7fca837cb6186a85ac27d9`; archivovaný výzkumný projekt ECCV 2020.
 
+## Video
+
+```powershell
+web_viewer/old/unisal-env/Scripts/python.exe web_viewer/tools/unisal_video.py "zaznam.mp4" --output "web_viewer/nahledy/unisal/video"
+```
+
+- Vyžaduje `ffmpeg` na PATH; předává video ve zdrojové snímkové frekvenci.
+- Používá video režim DHF1K, `static=False` a průběžný skrytý stav mezi snímky; nejde o sadu nezávislých statických predikcí.
+- Výstup `overlay.mp4` je H.264 bez zvuku; `saliency.npy` obsahuje mapy v pracovním rozlišení a `metadata.json` parametry.
+- Barevná škála je společná pro celý klip. Nesrovnávej intenzity barev mezi různými klipy bez společného měřítka.
+- Záznam prohlížeče z jednotlivých snímků může mít nepravidelné intervaly; před predikcí je nutné jej převést na pravidelnou frekvenci podle časových značek. Ukázka Vody je převzorkovaná na 8 fps a nezachycuje všechny rychlé změny.
+- Video model nezná záměr kliknutí, neumí prokázat porozumění a není validovaný specificky pro tento výukový web.
+
 ## Výstupy a význam
 
 - `overlay.png`: predikce přes původní snímek; `heatmap.png`: barevná mapa.
@@ -24,5 +37,5 @@ web_viewer/old/unisal-env/Scripts/python.exe web_viewer/tools/unisal_predict.py 
 
 ## Pravidla struktury
 
-- Postup spuštění → výstupy a omezení → pravidla struktury.
+- Postup spuštění → video → výstupy a omezení → pravidla struktury.
 - Udržuj příkaz, umístění modelu a význam map aktuální.

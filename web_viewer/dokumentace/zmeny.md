@@ -26,6 +26,13 @@ history:
 
 ## Implementováno
 
+#### Z069 — Časová heatmapa UNISAL
+
+- Zadání: analyzovat otevření Vody jako video.
+- Výsledek: [video nástroj](../tools/UNISAL.md#video) zachovává rekurentní stav a společnou škálu celého klipu; výstup H.264.
+- Stav: Implementováno.
+- Ověření: 81 snímků při 8 fps, konečné normalizované mapy a dekódovaný náhled; jde o predikci pozornosti, nikoli důkaz příčiny či porozumění.
+
 #### Z068 — Lokální predikce pozornosti UNISAL
 
 - Zadání: lokální UNISAL pro modelové heatmapy webu.
