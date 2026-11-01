@@ -26,6 +26,13 @@ history:
 
 ## Implementováno
 
+#### Z071 — Interakční odhad pozornosti
+
+- Zadání: zahrnout kliknutí a polohu myši do lokální analýzy.
+- Výsledek: [oddělený heuristický odhad](../tools/UNISAL.md#kliknutí-a-myš) s poklesem váhy, původní UNISAL zachován; srovnávací video používá společnou škálu.
+- Stav: Implementováno.
+- Ověření: skutečný záznam automatického otevření Vody, video H.264, kontrola normalizace, nulového účinku před kliknutím, poklesu, ukončení a slabšího vlivu myši. Nejde o měřený pohled ani validovaný model.
+
 #### Z069 — Časová heatmapa UNISAL
 
 - Zadání: analyzovat otevření Vody jako video.

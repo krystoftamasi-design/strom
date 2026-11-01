@@ -25,6 +25,20 @@ web_viewer/old/unisal-env/Scripts/python.exe web_viewer/tools/unisal_video.py "z
 - Záznam prohlížeče z jednotlivých snímků může mít nepravidelné intervaly; před predikcí je nutné jej převést na pravidelnou frekvenci podle časových značek. Ukázka Vody je převzorkovaná na 8 fps a nezachycuje všechny rychlé změny.
 - Video model nezná záměr kliknutí, neumí prokázat porozumění a není validovaný specificky pro tento výukový web.
 
+## Kliknutí a myš
+
+```powershell
+web_viewer/old/unisal-env/Scripts/python.exe web_viewer/tools/unisal_interaction.py zaznam.mp4 --prediction slozka-predikce --events udalosti.json --output slozka-srovnani
+```
+
+- Události jsou JSON: `{"events":[{"type":"click","time":3.0,"x":0.75,"y":0.7,"roi":[0.8,0.65,0.98,0.85]}]}`. Souřadnice i obdélník detailu jsou relativní k celému snímku 0–1; čas je v sekundách od začátku videa.
+- `pointer` označuje skutečný vzorek polohy myši; `roi` je volitelný obdélník otevřeného detailu u kliknutí. Chybějící události se nevymýšlejí.
+- Výstup `comparison.mp4`: vlevo čistý UNISAL, vpravo kombinovaný heuristický odhad, se společnou barevnou škálou. `hybrid.npy` obsahuje kombinované mapy; původní predikce se nemění.
+- Zvolený nenaučený předpoklad: kliknutí má počáteční váhu 0,55 a exponenciální pokles s konstantou 1,5 s, končí po 6 s. Myš má váhu 0,08, konstantu 0,3 s a konec po 1 s.
+- S detailem jde 35 % interakční váhy na okolí kliknutí a 65 % rovnoměrně na obdélník detailu. Bez detailu jde váha na okolí kliknutí.
+- Váhy nejsou kalibrované na lidech; zvýraznění detailu v kombinované mapě je vložený předpoklad, nikoli nezávislé potvrzení jeho účinnosti. Vazba na linku ve stromu se automaticky nevynucuje.
+- Ukázka Vody zaznamenává automatické kliknutí: střed tlačítka je náhradní souřadnice, nikoli měřená lidská myš či pohled. Obdélník detailu pochází z DOM po otevření.
+
 ## Výstupy a význam
 
 - `overlay.png`: predikce přes původní snímek; `heatmap.png`: barevná mapa.
@@ -37,5 +51,5 @@ web_viewer/old/unisal-env/Scripts/python.exe web_viewer/tools/unisal_video.py "z
 
 ## Pravidla struktury
 
-- Postup spuštění → video → výstupy a omezení → pravidla struktury.
+- Postup spuštění → video → kliknutí a myš → výstupy a omezení → pravidla struktury.
 - Udržuj příkaz, umístění modelu a význam map aktuální.
