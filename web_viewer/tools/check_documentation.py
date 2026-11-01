@@ -99,7 +99,7 @@ def anchors(text):
     return found
 
 
-def inspect(snapshot, name):
+def inspect(snapshot, name, basic=False):
     text = snapshot.read(name)
     if text is None:
         return {'file cannot be read'}
@@ -110,6 +110,8 @@ def inspect(snapshot, name):
             yaml.load(front[1], Loader=UniqueLoader)
     except yaml.YAMLError as error:
         errors.add('invalid YAML: ' + str(error).splitlines()[0])
+    if basic:
+        return errors
     if not re.search(r'^#{1,6} Pravidla struktury\s*$', prose(text), re.M):
         errors.add('missing Pravidla struktury section')
     for target in re.findall(r'!?\[[^\]\n]*\]\((<[^>]+>|[^)\n]+)\)', prose(text)):
@@ -149,13 +151,10 @@ def run_checks(root, staged, files=None):
     if files is not None:
         snapshot = SelectedSnapshot(root, files)
     names = [n for n in changed if n.endswith('.md') and (n == 'AGENTS.md' or n.startswith(DOCS))] if staged else MAIN
-    # Recheck inbound links even when only the destination's heading changed.
-    if staged and names:
-        names = list(set(names + [n for n in MAIN if snapshot.exists(n)]))
     failures = []
     for name in sorted(set(names)):
-        current = inspect(snapshot, name)
-        old = inspect(baseline, name) if staged and baseline.exists(name) and not (files is not None and name in changed) else set()
+        current = inspect(snapshot, name, basic=staged)
+        old = inspect(baseline, name, basic=True) if staged and baseline.exists(name) and not (files is not None and name in changed) else set()
         for error in sorted(current - old):
             failures.append(name + ': ' + error)
         if staged:

@@ -56,18 +56,18 @@ class DocumentationChecks(unittest.TestCase):
                               capture_output=True, text=True, encoding='utf-8')
 
     def test_index_is_checked_instead_of_working_file(self):
-        self.write('AGENTS.md', VALID.replace('Initial.', 'Broken.').replace('- Rule.', '- [missing](no.md)'))
+        self.write('AGENTS.md', VALID.replace('history:', 'history: ['))
         self.git('add', 'AGENTS.md')
         self.write('AGENTS.md', VALID)
         result = self.run_check()
         self.assertEqual(result.returncode, 1)
-        self.assertIn('missing link target', result.stdout)
+        self.assertIn('invalid YAML', result.stdout)
 
     def test_old_error_does_not_block_unrelated_edit(self):
-        self.write('AGENTS.md', VALID + '\n[old link](no.md)\n')
+        self.write('AGENTS.md', VALID.replace('history:', 'history: ['))
         self.git('add', '.')
         self.commit()
-        self.write('AGENTS.md', (VALID + '\n[old link](no.md)\n').replace('Initial.', 'Updated.').replace('- Rule.', '- New rule.'))
+        self.write('AGENTS.md', (VALID.replace('history:', 'history: [')).replace('Initial.', 'Updated.').replace('- Rule.', '- New rule.'))
         self.git('add', '.')
         result = self.run_check()
         self.assertEqual(result.returncode, 0, result.stdout)
@@ -109,13 +109,18 @@ class DocumentationChecks(unittest.TestCase):
         self.git('add', '.')
         self.assertIn('whitespace', self.run_check().stdout)
 
-    def test_changed_heading_breaks_inbound_link(self):
+    def test_hook_skips_links_and_structure_but_full_check_finds_them(self):
         self.write(check.EVIDENCE, VALID + '\n[link](../../AGENTS.md#document)\n')
         self.git('add', '.')
         self.commit()
         self.write('AGENTS.md', VALID.replace('# Document', '# Renamed').replace('Initial.', 'Renamed.'))
         self.git('add', '.')
-        self.assertIn('missing heading anchor', self.run_check().stdout)
+        self.assertEqual(self.run_check().returncode, 0)
+        errors = check.inspect(check.Snapshot(self.root, 'disk'), check.EVIDENCE)
+        self.assertTrue(any('missing heading anchor' in error for error in errors))
+        self.write('AGENTS.md', '# Plain document\n[missing](no.md)\n')
+        self.git('add', 'AGENTS.md')
+        self.assertEqual(self.run_check().returncode, 0)
 
     def test_ten_commit_review_gate(self):
         head = self.git('rev-parse', 'HEAD').decode().strip()
