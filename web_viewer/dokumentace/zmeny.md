@@ -26,6 +26,13 @@ history:
 
 ## Implementováno
 
+#### Z075 — Úvod bez ovládání času
+
+- Zadání: [Ovládání času](moje/prvky.md#ovládání-času).
+- Výsledek: v Úvodu jsou skryté pauza a rychlosti 2× a 4×; ostatní kapitoly ovládání zachovávají.
+- Stav: Implementováno.
+- Ověření: cílená kontrola v Chromu.
+
 #### Z071 — Interakční odhad pozornosti
 
 - Zadání: zahrnout kliknutí a polohu myši do lokální analýzy.

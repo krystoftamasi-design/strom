@@ -140,3 +140,6 @@ body.has-chapters .chapter-nav .ui-test-window-button { flex-basis: 100%; text-a
   body.has-chapters .chapter-nav { left: 52%; right: 4%; top: 7%; max-width: none; gap: 8px; justify-content: flex-start; }
   body.has-chapters .chapter-nav button { font-size: 11px; }
 }
+
+/* The intro animation has no user-facing time controls. */
+body.has-chapters:has(.chapter-content > article[data-chapter="intro"]:not([hidden])) .time-playback-panel { display: none; }

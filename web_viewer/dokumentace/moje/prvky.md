@@ -36,7 +36,8 @@ history:
 #### Ovládání času
 
 - Pauza, rychlost 2× a rychlost 4× jsou vpravo dole.
-- Tato tlačítka zůstávají viditelná i při vypnutém Manageru.
+- V Úvodu se pauza ani rychlosti 2× a 4× nezobrazují; úvodní animace běží automaticky.
+- V ostatních kapitolách tato tlačítka zůstávají viditelná i při vypnutém Manageru.
 
 [Zpět na architekturu obsahu](../architektura_obsahu.md)
 
