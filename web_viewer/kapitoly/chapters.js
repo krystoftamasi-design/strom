@@ -109,6 +109,7 @@ export function createChapters({ model, applySeason, setSun, setAzimuth, setVisu
   const waterInput = document.getElementById('sliderTreeWater');
   const waterRow = waterInput.closest('.slider-group');
   const waterSection = shell.querySelector('[data-chapter="photosynthesis"]');
+  waterRow.hidden = true;
   waterSection.append(waterRow);
   waterRow.className = 'slider-group shared-water';
   waterRow.removeAttribute('style');
@@ -314,9 +315,6 @@ export function createChapters({ model, applySeason, setSun, setAzimuth, setVisu
     for (const output of shell.querySelectorAll('output[data-ziva-velicina]')) {
       output.textContent = zobrazitHodnotu(output.dataset.zivaVelicina, model);
     }
-    out('ecoTranspiration', hourly(model.transpiration));
-    out('ecoTranspirationInflow', hourly(model.inflow));
-    out('ecoCooling', fmt(model.coolingKW, 2));
     capturedLabel.textContent = `${hourly(model.waterInput)} l/h`;
     if (document.activeElement !== waterInput) waterInput.value = model.waterInput * 60;
     shell.querySelectorAll('[data-seed-season]').forEach(li => {

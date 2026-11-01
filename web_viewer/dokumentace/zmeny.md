@@ -26,6 +26,13 @@ history:
 
 ## Implementováno
 
+#### Z063 — Opravy po testu oken
+
+- Zadání: [Okna](moje/okna.md).
+- Výsledek: odstraněn viditelný posuvník vody, sjednoceno formátování hodnot Transpirace a velikost +/− na 28 px; drobné popisky a vzorce zachovány.
+- Stav: Implementováno.
+- Ověření: cílená kontrola oken; finální kontrola uživatelem.
+
 #### Z062 — Ukotvení hlavního detailu nad oknem
 
 - Zadání: hlavní detail Transpirace se nezobrazuje nad údaji.

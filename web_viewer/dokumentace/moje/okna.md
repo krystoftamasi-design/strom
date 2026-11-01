@@ -32,6 +32,7 @@ history:
 **Tag:** 🟡 `light`
 
 - Nadpis: `Fotosyntéza`.
+- Ovládání přívodu vody: posuvník se na webu nezobrazuje.
 - Téma: světlo; strana: vlevo; hlavní okno.
 - Detailní text: „Listy využívají světlo, vodu a CO₂ k tvorbě cukrů; při fotosyntéze se uvolňuje O₂.“
 - Hodnota: `activity`, zobrazená v procentech.
