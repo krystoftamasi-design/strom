@@ -1,18 +1,16 @@
 # Uvědomění
 
-## Poznámky
+- Text je důležitý nástroj, který pomáhá pochopit, co se na webu děje a jak spolu jednotlivé prvky souvisejí.
 
 ## Pravidla struktury
 
-- Jednotlivá uvědomění zapisuj stručnými odrážkami v části Poznámky.
-- Při rozšíření členění aktualizuj pravidla a šablonu; tuto část ponechávej na konci.
+- Každé uvědomění zapisuj jako samostatnou odrážku o nejvýše jedné větě.
+- Pravidla struktury ponechávej na konci dokumentu.
 
 ```markdown
 # Uvědomění
 
-## Poznámky
-
-- Stručné uvědomění.
+- Jedno uvědomění v nejvýše jedné větě.
 
 ## Pravidla struktury
 
