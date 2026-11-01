@@ -26,6 +26,14 @@ history:
 
 ## Implementováno
 
+#### Z061 — Obnovení importů hlavního okna
+
+- Zadání: načíst aktuální variantu hlavního okna bez starých modulů v cache.
+- Výsledek: sjednocen řetězec importů kapitoly a rendereru s novou definicí Transpirace.
+- Stav: Implementováno.
+- Ověření: kontrola importů; finální vizuální kontrola uživatelem.
+
+
 #### Z058 — Vodní pára a hlavní okno Transpirace
 
 - Zadání: H₂O částice, hlavní detail nad údaji, stručnější texty a soubor nápadů.
