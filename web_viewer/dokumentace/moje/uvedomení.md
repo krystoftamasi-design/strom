@@ -1,16 +1,16 @@
 # Uvědomění
 
-- Text je důležitý nástroj, který pomáhá pochopit, co se na webu děje a jak spolu jednotlivé prvky souvisejí.
+- Text je důležitý nástroj porozumění.
 
 ## Pravidla struktury
 
-- Každé uvědomění zapisuj jako samostatnou odrážku o nejvýše jedné větě.
+- Každé uvědomění piš jednou stručnou větou.
 - Pravidla struktury ponechávej na konci dokumentu.
 
 ```markdown
 # Uvědomění
 
-- Jedno uvědomění v nejvýše jedné větě.
+- Jedno uvědomění v jedné stručné větě.
 
 ## Pravidla struktury
 
