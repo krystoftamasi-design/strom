@@ -26,6 +26,13 @@ history:
 
 ## Implementováno
 
+#### Z067 — Vyšší poloha menu bez staré cache
+
+- Zadání: [Kapitoly](moje/prvky.md#kapitoly).
+- Výsledek: menu začíná u barevné hrany pravých oken ve výšce 7 % obrazovky; obnovena verze stylopisu pro načtení úpravy.
+- Stav: Implementováno.
+- Ověření: kontrola CSS a odkazu stylopisu; finální kontrola uživatelem.
+
 #### Z066 — Zarovnání menu kapitol
 
 - Zadání: [Kapitoly](moje/prvky.md#kapitoly).

@@ -121,8 +121,8 @@ body[data-chapter="intro"] #btnTogglePanel, body[data-chapter="intro"] #btnAutoR
 
 /* Text navigation from the UI reference; outside the camera-controlled scene. */
 body.has-chapters .chapter-nav {
-  left: 68%; right: 3%; top: 12%; bottom: auto; transform: none;
-  width: auto; max-width: none; display: flex; flex-direction: row; flex-wrap: wrap;
+  left: 68%; right: 3%; top: 7%; bottom: auto; transform: none;
+  width: auto; max-width: none; display: flex; flex-direction: row; flex-wrap: wrap; justify-content: flex-start;
   gap: clamp(9px, .9vw, 20px); padding: 0; border: 0; border-radius: 0;
   background: none; backdrop-filter: none;
 }
@@ -137,6 +137,6 @@ body.scene-night .chapter-nav button { color: #f0f2e9; }
 body.has-chapters .chapter-nav button:hover { text-decoration: underline; text-underline-offset: 4px; }
 body.has-chapters .chapter-nav .ui-test-window-button { flex-basis: 100%; text-align: right; }
 @media (max-width: 700px) {
-  body.has-chapters .chapter-nav { left: 52%; right: 4%; top: 10%; max-width: none; gap: 8px; justify-content: flex-start; }
+  body.has-chapters .chapter-nav { left: 52%; right: 4%; top: 7%; max-width: none; gap: 8px; justify-content: flex-start; }
   body.has-chapters .chapter-nav button { font-size: 11px; }
 }
