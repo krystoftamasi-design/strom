@@ -26,6 +26,13 @@ history:
 
 ## Implementováno
 
+#### Z076 — Úvod bez Manageru
+
+- Zadání: [Manager](moje/prvky.md#manager).
+- Výsledek: tlačítko Manager je v Úvodu skryté, v ostatních kapitolách zůstává dostupné.
+- Stav: Implementováno.
+- Ověření: netestováno na výslovný pokyn uživatele.
+
 #### Z075 — Úvod bez ovládání času
 
 - Zadání: [Ovládání času](moje/prvky.md#ovládání-času).

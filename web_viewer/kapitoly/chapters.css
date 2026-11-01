@@ -142,4 +142,5 @@ body.has-chapters .chapter-nav .ui-test-window-button { flex-basis: 100%; text-a
 }
 
 /* The intro animation has no user-facing time controls. */
-body.has-chapters:has(.chapter-content > article[data-chapter="intro"]:not([hidden])) .time-playback-panel { display: none; }
+body.has-chapters:has(.chapter-content > article[data-chapter="intro"]:not([hidden])) .time-playback-panel,
+body.has-chapters:has(.chapter-content > article[data-chapter="intro"]:not([hidden])) #btnManager { display: none; }

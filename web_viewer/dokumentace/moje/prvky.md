@@ -30,6 +30,7 @@ history:
 #### Manager
 
 - Tlačítko vpravo nahoře zobrazí nebo skryje rozšířené ovládání.
+- V Úvodu se tlačítko Manager nezobrazuje.
 - Patří pod něj nastavení, uložení pohledu, podmínky stromu a přepínač barev nadpisů.
 - Skrývá také posuvník času, údaj o čase, FPS a výšku stromu.
 
