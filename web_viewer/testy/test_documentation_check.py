@@ -85,16 +85,29 @@ class DocumentationChecks(unittest.TestCase):
         self.write('AGENTS.md', VALID.replace('history:', 'history: []\nhistory:'))
         self.assertTrue(any('invalid YAML' in e for e in check.inspect(check.Snapshot(self.root, 'disk'), 'AGENTS.md')))
         self.write('AGENTS.md', VALID.replace('history:\n', 'history: 42\nignored:\n'))
-        self.assertIn('history must contain 1..5 entries', check.inspect(check.Snapshot(self.root, 'disk'), 'AGENTS.md'))
+        self.assertEqual(check.inspect(check.Snapshot(self.root, 'disk'), 'AGENTS.md'), set())
 
     def test_czech_anchors_and_templates(self):
         self.write('AGENTS.md', VALID + '\n### Část okna\n\n[link](#část-okna)\n```markdown\n[placeholder](missing.md)\n```\n')
         self.assertEqual(check.inspect(check.Snapshot(self.root, 'disk'), 'AGENTS.md'), set())
 
-    def test_missing_history_update(self):
+    def test_content_edit_needs_no_history_update(self):
         self.write('AGENTS.md', VALID.replace('- Rule.', '- Modified rule.'))
         self.git('add', '.')
-        self.assertIn('requires updated YAML history', self.run_check().stdout)
+        self.assertEqual(self.run_check().returncode, 0)
+
+    def test_markdown_without_frontmatter_is_valid(self):
+        self.write('AGENTS.md', '# Document\n\n## Pravidla struktury\n\n- Rule.\n')
+        self.git('add', '.')
+        self.assertEqual(self.run_check().returncode, 0)
+
+    def test_hook_checks_syntax_and_whitespace(self):
+        self.write('web_viewer/tools/example.js', 'const broken = ;\n')
+        self.git('add', '.')
+        self.assertEqual(self.run_check().returncode, 1)
+        self.write('web_viewer/tools/example.js', 'const valid = 1;  \n')
+        self.git('add', '.')
+        self.assertIn('whitespace', self.run_check().stdout)
 
     def test_changed_heading_breaks_inbound_link(self):
         self.write(check.EVIDENCE, VALID + '\n[link](../../AGENTS.md#document)\n')

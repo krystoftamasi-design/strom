@@ -22,23 +22,13 @@ history:
 
 ## Před commitem
 
-- Jednotná kontrola pracovních souborů: `python web_viewer/tools/check_documentation.py --files cesta1 cesta2`. Použij stejný výslovný seznam jako u následného `commit --only`; při návratovém kódu 1 nejprve oprav příčinu.
-- Režim `--files` kontroluje vybrané soubory z disku nad verzí ostatních souborů v `HEAD`; nepoužívá ani nemění sdílený Git index. Zastaví se na mezerách v diffu, chybné syntaxi JS nebo dokumentaci. U nových souborů kontroluje mezery v celém textu.
-- HTML se neodesílá celé do Node.js: kontrolují se inline klasické a modulové JavaScripty, datové bloky JSON a importmap se přeskočí. Externí JS uveď samostatně v seznamu. Node ověřuje jen syntaxi, nespouští kód ani importy a nepotřebuje `document`.
-- U změněných dokumentů režim `--files` vyžaduje platný YAML, nejvýše pět položek historie a aktualizaci historie; prověřuje i odkazy a evidenci. Staré chyby přímo vybraného dokumentu nejsou omluvené stavem v `HEAD`.
-- Změna `HEAD` nebo vybraného souboru během kontroly vyžaduje nové spuštění. Výsledek je předběžný: následný Git hook zůstává rozhodující kontrolou skutečného commitu. Kontrola neověřuje autorství řádků, obsahovou správnost ani běh webu.
-- Testy tohoto režimu: `python -m unittest discover -s web_viewer/testy -p test_preflight.py`.
-
-- Ve sdíleném adresáři ukládej jen výslovně vyjmenované vlastní soubory přes `git commit --only`; podmínky a souběžné úpravy stejného souboru řeší [Commity](../../../AGENTS.md#commity).
-- `--staged` hodnotí současný index, nikoli automaticky soubory budoucího `commit --only`. Rozhodující hook kontroluje dočasný index přesného commitu připravený Gitem; dřívější úspěch po selhání `git add` není ověřením zamýšlené změny.
-- Před commitem zkontroluj YAML změněných dokumentů parserem a limit historie; při chybě příkazu zastav další závislé kroky podle [pravidel](../../../AGENTS.md#commity).
-
-- `python web_viewer/tools/check_documentation.py --staged` kontroluje obsah Git indexu, který bude skutečně commitovaný.
-- Kontrola ověřuje YAML, položky historie a jejich limit, část „Pravidla struktury“, místní Markdown odkazy a kotvy a povinné položky záznamů změn.
-- Změna těla dokumentu vyžaduje aktualizaci jeho YAML historie.
-- Změny JavaScriptu, CSS a HTML webu vyžadují připravenou úpravu `zmeny.md`; testy, nástroje a assety jsou z této kontroly evidence vyjmuté.
-- Nové nálezy commit zastaví; existující stejné nálezy proti `HEAD` se vypíší jako `EXISTING` a neblokují nesouvisející práci.
-- Kontrolor ověřuje přítomnost a formát evidence; neumí prokázat její pravdivost, původ ID chatu ani významovou shodu s kódem.
+- Běžný postup: zkontroluj diff, podle změny proveď cílený funkční test a vytvoř lokální commit s výslovnými cestami podle [AGENTS.md](../../../AGENTS.md#commity).
+- Git hook jednou spustí `python web_viewer/tools/check_documentation.py --staged` nad skutečným obsahem commitu: mezery, syntaxi JS a inline skriptů HTML, místní odkazy, pravidla struktury a stručnou evidenci webové změny.
+- Historii vede Git. YAML frontmatter je volitelný; jeho staré záznamy se nedoplňují a nemají limit počtu položek. Přítomný YAML musí zůstat syntakticky platný.
+- Volitelná diagnostika: `python web_viewer/tools/check_documentation.py --files cesta1 cesta2` zkontroluje vybrané pracovní soubory nad HEAD bez použití sdíleného indexu. Po úspěšném hooku stejné kontroly znovu nespouštěj.
+- Skripty HTML se kontrolují samostatně; datové bloky JSON a importmap se přeskočí. Externí JS se kontroluje jako samostatný změněný soubor. Kód se nespouští a není potřeba DOM.
+- Při chybě se commit zastaví; oprav příčinu a zopakuj jej. Kontrola neprokazuje autorství, správnost chování ani vzhledu. Staré shodné nálezy se označují EXISTING; nové nálezy blokují commit.
+- Testy nástroje spouštěj při změně kontroloru: `python -m unittest discover -s web_viewer/testy -p test_preflight.py` a `python -m unittest discover -s web_viewer/testy -p test_documentation_check.py`.
 
 ## Instalace
 

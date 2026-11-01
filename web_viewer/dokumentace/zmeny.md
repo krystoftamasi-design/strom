@@ -26,6 +26,14 @@ history:
 
 ## Implementováno
 
+#### Z054 — Jednodušší pracovní postup
+
+- Zadání: omezit administrativu a opakované kontroly.
+- Výsledek: historie v Gitu bez povinných YAML záznamů a ID chatů; kratší AGENTS.md, cílené testy a jedna automatická kontrola při commitu. Hook prověřuje i syntaxi a mezery. Web se nemění.
+- Stav: Implementováno.
+- Ověření: testy kontroloru pro dokumenty bez frontmatteru, obsah bez aktualizace historie, starou delší historii, neplatný YAML, chybný JavaScript a mezery; kontrola diffu.
+
+
 #### Z053 — Jednoduchý text průvodce Transpirací
 
 - Zadání: [Co žáci nechápou a proč nestačí učebnice či video](moje/strategie.md#co-žáci-nechápou-a-proč-nestačí-učebnice-či-video).
@@ -399,7 +407,7 @@ history:
 - Přidělování ID a řešení souběžných kolizí určuje [AGENTS.md](../../AGENTS.md#změny); každé ID použij pouze jednou v celém dokumentu.
 - Eviduj i drobné vizuální ladění celého webu; související pokusy sluč do jedné dokončené logické změny.
 - U drobných úprav stačí stručný výsledný popis a skutečné ověření; podrobné definice nepřepisuj, pokud se jejich význam nemění.
-- Za logickou změnu přidej jeden záznam YAML historie s ověřeným `thread_id`; evidenci commituj společně s příslušným kódem.
+- Evidenci commituj společně s příslušným kódem; historii souborů vede Git, bez povinné YAML historie a ID chatu.
 - Při změně stavu přesuň záznam do příslušné části.
 - Předaný výsledek ber jako vyhovující a uzavřený bez dalšího schválení, pokud uživatel výslovně nevznese výhradu nebo požadavek na úpravu.
 - Přijetí bez výhrady neprokazuje provedení testu; bez doložené finální kontroly ponech stav „Implementováno“. Po potvrzení skutečné kontroly zapiš rozsah ověření, přesuň záznam do „Ověřeno“ a evidenci ulož samostatným commitem.

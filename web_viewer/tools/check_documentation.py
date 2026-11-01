@@ -1,6 +1,5 @@
 """Read-only documentation checks; staged checks inspect Git's index, not disk."""
 import argparse
-import datetime
 import json
 import re
 import subprocess
@@ -46,6 +45,7 @@ class Snapshot:
     def __init__(self, root, revision):
         self.root, self.revision = Path(root), revision
         self.cache = {}
+        self.existence = {}
 
     def read(self, name):
         if name not in self.cache:
@@ -63,9 +63,10 @@ class Snapshot:
     def exists(self, name):
         if self.revision == 'disk':
             return (self.root / name).is_file()
-        spec = ':' + name if self.revision == 'index' else self.revision + ':' + name
-        return subprocess.run(['git', '-C', str(self.root), 'cat-file', '-e', spec],
-                              capture_output=True).returncode == 0
+        if name not in self.existence:
+            spec = ':' + name if self.revision == 'index' else self.revision + ':' + name
+            self.existence[name] = subprocess.run(['git', '-C', str(self.root), 'cat-file', '-e', spec], capture_output=True).returncode == 0
+        return self.existence[name]
 
 
 def body(text):
@@ -105,22 +106,8 @@ def inspect(snapshot, name):
     errors = set()
     front = re.match(r'\A---\r?\n(.*?)\r?\n---(?:\r?\n|$)', text, re.S)
     try:
-        data = yaml.load(front[1], Loader=UniqueLoader) if front else None
-        history = data.get('history') if isinstance(data, dict) else None
-        if not isinstance(history, list) or not 1 <= len(history) <= 5:
-            errors.add('history must contain 1..5 entries')
-        for item in history if isinstance(history, list) else []:
-            if not isinstance(item, dict) or not {'thread_id', 'date', 'change'} <= item.keys():
-                errors.add('history entry missing thread_id/date/change')
-                continue
-            if not re.fullmatch(r'[0-9a-f]{8}(?:-[0-9a-f]{4}){3}-[0-9a-f]{12}', str(item['thread_id'])):
-                errors.add('invalid thread_id format')
-            try:
-                datetime.date.fromisoformat(str(item['date']))
-            except ValueError:
-                errors.add('invalid history date')
-            if not isinstance(item['change'], str) or not item['change'].strip():
-                errors.add('empty history description')
+        if front:
+            yaml.load(front[1], Loader=UniqueLoader)
     except yaml.YAMLError as error:
         errors.add('invalid YAML: ' + str(error).splitlines()[0])
     if not re.search(r'^#{1,6} Pravidla struktury\s*$', prose(text), re.M):
@@ -163,7 +150,7 @@ def run_checks(root, staged, files=None):
         snapshot = SelectedSnapshot(root, files)
     names = [n for n in changed if n.endswith('.md') and (n == 'AGENTS.md' or n.startswith(DOCS))] if staged else MAIN
     # Recheck inbound links even when only the destination's heading changed.
-    if staged and (files is not None or git(root, 'diff', '--cached', '--name-only').strip()):
+    if staged and names:
         names = list(set(names + [n for n in MAIN if snapshot.exists(n)]))
     failures = []
     for name in sorted(set(names)):
@@ -174,18 +161,19 @@ def run_checks(root, staged, files=None):
         if staged:
             for error in sorted(current & old):
                 print('EXISTING: ' + name + ': ' + error)
-        if staged and name in changed and baseline.exists(name):
-            old_front = baseline.read(name).split('---', 2)[1] if baseline.read(name).startswith('---') else ''
-            new_text = snapshot.read(name)
-            if new_text is None:
-                continue
-            new_front = new_text.split('---', 2)[1] if new_text.startswith('---') else ''
-            if body(baseline.read(name)) != body(snapshot.read(name)) and old_front == new_front:
-                failures.append(name + ': changed document requires updated YAML history')
     web_code = [n for n in changed if n.startswith('web_viewer/') and n.endswith(('.js', '.css', '.html'))
                 and not any('/' + part + '/' in n for part in ('web_assets', 'old', 'testy', 'tools'))]
     if staged and web_code and (EVIDENCE not in changed or snapshot.read(EVIDENCE) == baseline.read(EVIDENCE)):
         failures.append('web code changes require staged ' + EVIDENCE)
+    if staged and files is None:
+        whitespace = subprocess.run(['git', '-C', str(root), 'diff', '--cached', '--check'])
+        if whitespace.returncode:
+            failures.append('staged diff contains whitespace errors')
+        for name in changed:
+            if Path(name).suffix.lower() in ('.js', '.mjs', '.cjs', '.html'):
+                source = snapshot.read(name)
+                if source is not None:
+                    failures.extend(check_syntax(name, source))
     for failure in failures:
         print('ERROR: ' + failure)
     print(f'Documentation check: {len(failures)} error(s); mode=' + ('files' if files is not None else 'staged' if staged else 'full'))

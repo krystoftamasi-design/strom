@@ -28,13 +28,13 @@ class PreflightTests(unittest.TestCase):
                 self.assertEqual(snapshot.read('own.md'), 'own')
                 self.assertEqual(snapshot.read('foreign.md'), 'committed')
 
-    def test_six_history_items_and_invalid_yaml_are_rejected(self):
+    def test_old_history_is_optional_but_invalid_yaml_is_rejected(self):
         entry = '  - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a\n    date: 2026-11-01\n    change: Test\n'
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
             path = root / 'doc.md'
             path.write_text('---\nhistory:\n' + entry * 6 + '---\n# Pravidla struktury\n', encoding='utf-8')
-            self.assertIn('history must contain 1..5 entries', checks.inspect(checks.Snapshot(root, 'disk'), 'doc.md'))
+            self.assertEqual(checks.inspect(checks.Snapshot(root, 'disk'), 'doc.md'), set())
             path.write_text('---\nhistory: [\n---\n# Pravidla struktury\n', encoding='utf-8')
             self.assertTrue(any('invalid YAML' in error for error in checks.inspect(checks.Snapshot(root, 'disk'), 'doc.md')))
 

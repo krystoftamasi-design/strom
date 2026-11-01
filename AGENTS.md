@@ -18,180 +18,75 @@ history:
 
 ---
 
-# Aktuálnost pravidel
+# Pracovní postup
 
-- Před každým novým úkolem včetně navazující drobné úpravy znovu přečti celý aktuální `AGENTS.md` z disku; nespoléhej na pravidla zapamatovaná ze začátku chatu.
-- Znovu jej načti před každým commitem a ověř proti němu připravený diff, evidenci a YAML historii.
-- Jednorázovou výjimku uživatele, například „tuto úpravu bez commitu“, vztahuj jen na daný úkol; nepřenášej ji automaticky na jiné zadání. Výslovné trvalé preference zachovej.
-- Přímé pokyny uživatele mají přednost před tímto souborem v rozsahu, který určují; vlastní dřívější rozhodnutí agenta není uživatelská výjimka.
-- Pokud uživatel oznámí změnu pravidel nebo zjistíš souběžné úpravy jiného chatu, načti aktuální pravidla a dotčené dokumenty před pokračováním v úpravách.
+- Na začátku úkolu přečti tento soubor a přímo související definice v dokumentaci. Znovu je čti jen při jejich změně nebo souběžné práci, ne opakovaně během stejné úpravy.
+- Proveď pouze zadanou změnu nejjednodušším srozumitelným řešením. Nepřidávej funkce, frameworky a závislosti pro budoucí potřeby.
+- Zachovej uživatelovy i cizí rozpracované úpravy. Při chybě zastav závislé kroky a nejprve oprav příčinu.
+- Přímé pokyny uživatele mají přednost. Jednorázová výjimka platí jen pro daný úkol.
 
-# Prohlížeč a kontrola
+# Prohlížeč a spuštění
 
-- Web otevírej a kontroluj pouze v Google Chrome; nikdy v integrovaném prohlížeči ani přes `open_in_codex`.
-- Pokud Chrome není dostupný, předej URL.
-- Průběžně kontroluj syntaxi změněného kódu, odkazy a shodu dokumentace s implementací.
-- Finální vizuální a funkční testování webu nech uživateli, pokud výslovně nepožádá o test.
-
-## YAGNI
-
-- Implementuj jen funkce potřebné pro aktuální zadání.
-- Nepřidávej funkce, abstrakce ani optimalizace pro hypotetické budoucí potřeby.
-- Vol nejjednodušší řešení, které splňuje požadavky a zůstává srozumitelné a udržovatelné.
-- Řešení rozšiřuj postupně podle skutečných potřeb a zpětné vazby; výkon optimalizuj na základě měření.
-
-# Skilly pro webové prvky
-
-- Při tvorbě nebo úpravě vzhledu oken a dalších webových prvků přečti a použij skill `frontend-design` pro rozložení, typografii, barvy, mezery a přehlednost obsahu.
-- Při tvorbě nebo sjednocování opakovaně používaných oken a ovládacích prvků přečti a použij skill `web-component-design` pro společnou strukturu, znovupoužití a jednotné ovládání.
-- Vytvářej okna jako samostatné znovupoužitelné komponenty; obsah, hodnoty a reakce předávej přes jasné rozhraní místo pevného navázání na konkrétní kapitolu nebo scénu.
-- Drž strukturu, styly a obecné chování okna pohromadě a odděl je od dat projektu, aby šla komponenta použít jinde i přenést do jiného projektu; potřebné závislosti a způsob použití stručně popiš v příslušné technické dokumentaci.
-- Přizpůsob doporučení skillů stávajícímu kódu, schváleným definicím a vizuálnímu stylu projektu; nezaváděj nový framework ani závislosti jen kvůli příkladům ve skillu.
-- U upravovaných prvků zajisti přizpůsobení šířce a výšce obrazovky, čitelnost textu, dostupnost ovládání a posouvání dlouhého obsahu bez nechtěného přetékání.
-- Zachovej ovládání klávesnicí, viditelný fokus a respektování omezeného pohybu u přidaných animací.
-- Dodržuj při použití skillů pravidla YAGNI, prohlížeče, kontrol a evidence uvedená v tomto dokumentu.
-
-# Spuštění webu
-
-- Nejjednodušší ruční spuštění: z kořene projektu spusť `spustit_strom_web.bat`; `web_viewer/spustit_web_viewer.bat` volá stejný spouštěč.
-- Stránku otevírej v Google Chrome na `http://localhost:8080/web_viewer/index.html`.
-- Před spuštěním ověř, zda zde už běží tento projekt; existující server znovu použij.
-- Při automatickém spuštění spusť z kořene projektu `python -m http.server 8080 --bind 127.0.0.1` na pozadí se skrytým oknem a URL otevři v Chromu.
-- Server musí obsluhovat kořen projektu, aby fungovaly i podklady mimo `web_viewer`; stránku neotevírej přes `file://`.
-- Je-li port obsazený jinou službou, nezastavuj ji; použij volný port a uprav URL.
-
-# Struktura souborů
-
-- Před přidáním souboru přečti `web_viewer/dokumentace/struktura_projektu.md` a najdi příslušnou složku.
-- Nové soubory ukládej podle účelu; související JavaScript a CSS drž pohromadě.
-- Používej existující složky a názvosloví; nevytvářej duplicity ani zbytečné složky.
-- Modely, textury a písma patří do `web_assets`, nástroje do `tools`, testy do `testy`.
-- Pracovní výstupy ukládej mimo aktivní kód; starší verze do `old`, obrázky kontrol do `nahledy`.
-- Při přesunu nebo přejmenování oprav importy, odkazy a cesty k assetům.
-- Při změně uspořádání aktualizuj `struktura_projektu.md`.
-- Bez zadání nepřesouvej ani nemaž nesouvisející soubory.
-
-# Převod podle vzoru
-
-- Při zadání „do stylu“ nebo „podle“ jiné kapitoly převezmi vedle vzhledu také strukturu obsahu, hierarchii hlavního procesu a tematických oken, skladbu hodnot a detailů i systém definic a vazeb v dokumentaci.
-- Nejprve porovnej vzorovou a cílovou kapitolu v rozcestníku, definicích i kódu; obsah cílové kapitoly rozděl podle významu do odpovídajících témat.
-- Zachovej platné výpočty a podstatné informace; opakující se vysvětlení sluč a dlouhý obsah rozděl mezi příslušná témata.
-- Posuď pro cílový děj také texty, ovládání a elementy; existující prvky sdílej odkazem a jejich vazby popiš jednou. Funkce bez opory v zadání nevymýšlej.
-- Použij společné komponenty a definice vzoru; odstraň překonanou souběžnou implementaci cílové kapitoly.
-- Výslovné omezení uživatele na vzhled respektuj; jinak nepovažuj pouhé přestylování původních bloků za dokončený převod.
-
-# Styl dokumentů
-
-- Před každou úpravou přečti aktuální dokument včetně pravidel na jeho konci a postupuj podle nich.
-- U každého vytvářeného nebo upravovaného dokumentu Markdown vytvoř na konci část „Pravidla struktury“, pokud chybí.
-- Do této části patří pravidla členění a obecná šablona s úrovněmi nadpisů, pořadím částí a formátem položek; používej zástupné názvy místo konkrétního obsahu.
-- Při změně struktury aktualizuj současně pravidla, šablonu i členění dokumentu; před dokončením ověř jejich shodu.
-- Strukturu dokumentu určují výhradně jeho „Pravidla struktury“ a šablona na konci.
-- Piš stručně a bodově: jedna podstatná informace na bod, bez opakování a výplně.
-- Používej krátké názvy, malé podnadpisy a mezery mezi tématy.
-- Zachovej uživatelovy úpravy a nevracej smazaný obsah.
-- Při změně systému automaticky aktualizuj všechny související definice, pravidla a odkazy.
-- Změny funkcí, ovládání, vazeb a definovaného chování aktualizuj současně v příslušné dokumentaci; před dokončením porovnej kód s dokumentací.
-- Každou dokončenou logickou změnu webu, včetně drobného vizuálního ladění, stručně zapiš do `zmeny.md` s výsledkem a skutečným ověřením.
-- Související pokusy při ladění sluč do jednoho záznamu popisujícího výslednou úpravu; jednotlivé mezikroky neeviduj samostatně.
-- Toto pravidlo platí pro všechny elementy, okna, texty, ovládací prvky i scénu; zahrnuje například barvy, řezy písma, velikosti, tloušťky, rozestupy, průhlednost, stíny a intenzitu efektů.
-- Kvůli drobnému vizuálnímu ladění nepřepisuj podrobné definice, pokud nemění jejich význam; stručný záznam v `zmeny.md` je povinný.
-- Kód a odpovídající evidenci včetně YAML historie ulož společně do jednoho lokálního commitu za dokončenou logickou změnu.
-- Překonané popisy nahraď; odstraň duplicity a dodatky porovnávající staré a nové řešení.
-- Uspořádej text do návazného pořadí; v definicích popisuj platné řešení, historii a stav drž odděleně.
-- Nesouvisející dokumenty hromadně nepřepisuj bez zadání.
-
-## Historie změn dokumentů
-
-- U každého nově vytvořeného nebo upravovaného dokumentu Markdown udržuj v YAML frontmatteru nejvýše pět posledních dokončených logických změn.
-- Před zápisem změny zavolej API Codexu `list_threads` a podle aktuálního chatu ověř jeho ID; zapiš nalezené `thread_id`, datum a stručný popis.
-- Za každou dokončenou logickou změnu dokumentu přidej jeden záznam na začátek `history`; dílčí úpravy v rámci téže změny sluč do tohoto záznamu.
-- Záznamy předchozích dokončených změn zachovej; starší odstraňuj pouze podle limitu historie.
-- Po přidání záznamu ponechávej nejvýše pět nejnovějších položek `history` a starší odstraň až z konce seznamu.
-- Použij formát `history` jako seznam položek s poli `thread_id`, `date` a `change`; předchozí frontmatter zachovej a sluč jej bez ztráty ostatních polí.
-- Pokud ID není v prvním výsledku, stránkuj nebo zpřesni hledání `list_threads`; nikdy nevymýšlej `thread_id` ani nezapisuj `null` bez vyčerpání dostupného API hledání.
-- Před dokončením zkontroluj, že existuje nový záznam pro právě provedenou změnu, má správné `thread_id`, datum a popis a že seznam obsahuje nejvýše pět položek.
-
-# Rozdělení dokumentace
-
-Soubory jsou v `web_viewer/dokumentace`.
-
-- Uživatelské definice a podklady hledej ve složce `moje`; technickou architekturu a automatické kontroly ve složce `system`.
-- Složka `starsi` obsahuje původní podklady; neber je jako platné definice vzhledu. Přesné rozdělení určuje [Struktura projektu](web_viewer/dokumentace/struktura_projektu.md).
-- Rozcestník `architektura_obsahu.md`, přehled `struktura_projektu.md` a evidence `zmeny.md` zůstávají v kořeni dokumentace; názvy níže označují soubory v příslušných složkách.
-
-- `architektura_obsahu.md`: rozcestník; kapitoly → Text, Okna, Vzhled, Ovládací prvky, Elementy; pouze krátké klikací názvy.
-- `texty.md`: samostatné nápisy, písmo, poloha a barva.
-- `okna.md`: chování statických oken, obsah, hodnoty a související elementy.
-- `vzhled_oken.md`: samostatný vzhled oken, rozmístění, písmo a barvy.
-- `prvky.md`: tlačítka a ovládání.
-- `elementy.md`: linky, částice a jejich chování včetně reakcí na okna; bez zdrojových souborů a interních názvů, s výjimkou schválených tagů propojení, například `water` a `sugar`.
-- `zmeny.md`: stav změn a ověření, odkazy na definice.
-- Každou věc popiš jednou; ostatní místa na ni odkazují.
-- Technické podrobnosti drž odděleně od popisu obsahu.
+- Web otevírej pouze v Google Chrome, nikdy v integrovaném prohlížeči ani přes `open_in_codex`. Pokud Chrome není dostupný, předej URL.
+- Použij `spustit_strom_web.bat`; `web_viewer/spustit_web_viewer.bat` volá stejný spouštěč.
+- Nejprve ověř běžící server a znovu jej použij. Výchozí URL je `http://localhost:8080/web_viewer/index.html`.
+- Server musí obsluhovat kořen projektu. Automatické spuštění: `python -m http.server 8080 --bind 127.0.0.1` na pozadí se skrytým oknem; nepoužívej `file://`.
+- Je-li port obsazen jinou službou, použij volný; cizí službu nezastavuj.
+- Finální vizuální a funkční test nech uživateli, pokud o něj výslovně nepožádá.
 
 # Změny
 
-- Definice říkají, jak má web fungovat; neprokazují hotovou implementaci.
-- Existující chování ověř v kódu nebo na webu; požadavky přebírej ze zadání uživatele.
-- Před změnou čti související definice, pravidla rozcestníku a `zmeny.md`.
-- Rozdíl definovaného chování proti kódu zapiš jako „Čeká“; schválené chování neoznačuj jako návrh.
-- Kód měň na pokyn uživatele; samotné uložení dokumentu implementaci nespouští.
-- Stavy: Čeká → Rozpracováno → Implementováno → Ověřeno; nejasnosti „K upřesnění“.
-- Při implementaci již popsané funkce ponech platné definice a aktualizuj její stav a skutečné ověření v `zmeny.md`; existující definice nenahrazuje evidenci dokončení.
-- Před závěrečnou odpovědí ověř dokončení podle aktuálního `AGENTS.md`: soulad diffu s evidencí v `zmeny.md`, YAML historii změněných dokumentů a úspěšný společný commit. Pokud je některý krok vynechaný, musí mít oporu v platném pokynu uživatele nebo doložené blokaci; tuto výjimku uveď v závěru.
-- V závěru uváděj jen provedené úpravy a kontroly doložené diffem a výsledky nástrojů; vynechané nebo zablokované kroky pojmenuj.
-- Uveď skutečné ověření nebo „finální kontrola uživatelem“; neevidované neznamená hotové.
-- Zachovej historii změn.
-- Kontrolu před commitem neobcházej; při hlášení `duplicate change ID` oprav kolizi před uložením.
-- Před commitem znovu ověř jedinečnost všech ID v aktuálním dokumentu i připraveném obsahu; při souběžné kolizi přečísluj vlastní nový záznam a oprav jeho odkazy.
-- Před přidáním změny znovu načti aktuální `zmeny.md` a přiděl číslo vyšší než nejvyšší použité ID v celém dokumentu; nespoléhej na pořadí záznamů ani paměť chatu.
+- Před úpravou ověř příslušný kód a dokumentaci; definice jsou požadavky, nikoli důkaz implementace.
+- Změnu chování nebo ovládání ověř cíleným existujícím testem. Pro změnu textu či drobné CSS nespouštěj automaticky celou sadu testů a nepřidávej test kopírující implementaci.
+- Testy vyžadující DOM nebo WebGL nespouštěj jako běžný Node test bez odpovídajícího prostředí. Neúspěšný test neoznačuj za důkaz absence regrese.
+- Před commitem zkontroluj vlastní diff. Git hook jednou prověří připravenou dokumentaci, mezery a syntaxi JS včetně inline skriptů HTML; stejné kontroly nemusíš ručně opakovat.
+- Volitelná diagnostika před commitem: `python web_viewer/tools/check_documentation.py --files cesta1 cesta2`. Použij ji při nejistotě nebo opravě chyby, ne jako další povinný krok.
+- Úplnou revizi webu spouštěj pouze na výslovné vyžádání. Report s doloženými neshodami patří do `web_viewer/old/revize_dokumentace.md`; opravy jsou samostatné úkoly.
+- Ve výsledku uveď skutečné změny, ověření, případná omezení a hash vytvořeného commitu. Syntaxe neprokazuje funkčnost ani vzhled.
 
-## Pracovní postup
+# Dokumentace
 
-1. **Zadání:** znovu načti aktuální `AGENTS.md` podle části „Aktuálnost pravidel“, přečti související definice a evidenci, najdi odpovídající kód a rozliš vizuální ladění od změny funkce.
-2. **Úprava:** proveď zadání; související pokusy při ladění ber jako jednu rozpracovanou logickou změnu, dokud není výsledná úprava připravená k předání.
-3. **Průběžné kontroly:** zkontroluj diff, správnost zápisu, odkazy a shodu s definicemi; podle změny proveď vhodné testy. Kontrolu syntaxe nevydávej za vizuální nebo funkční ověření.
-4. **Evidence výsledku:** do `zmeny.md` zapiš konečný výsledek, stav a skutečné ověření. Přidej jednu YAML položku za logickou změnu každého upraveného dokumentu. Podrobné definice uprav jen tam, kde by výsledku odporovaly.
-5. **Společný commit:** kód a odpovídající evidenci ulož společně po dokončení logické změny; jednotlivé pokusy necommituj. Commit potvrzuje uloženou implementaci, nikoli schválení vzhledu uživatelem.
-6. **Předání a případná oprava:** předaný výsledek ber jako vyhovující bez čekání na další schválení; pokud uživatel nic dalšího nenapíše, změna je uzavřená. Vrať se k ní jen při výslovné výhradě nebo požadavku na úpravu a zopakuj úpravu, kontroly, evidenci a commit. Mlčení neprokazuje provedení testu: bez doloženého finálního ověření ponech stav „Implementováno“. Pokud uživatel potvrdí skutečnou kontrolu, zapiš její rozsah, přesuň změnu do „Ověřeno“ a evidenci ulož dalším commitem.
+- Aktuální definice jsou v `web_viewer/dokumentace/moje`, technické postupy v `system`; `starsi` je archiv.
+- `architektura_obsahu.md` je rozcestník kapitol: Text, Okna, Vzhled, Ovládací prvky, Elementy; pouze krátké odkazy.
+- `moje/okna.md` určuje obsah a chování oken; `moje/vzhled_oken.md` jejich replikovatelný vzhled.
+- `moje/elementy.md` určuje linky, částice a reakce na okna; `moje/prvky.md` ovládání; `moje/texty.md` samostatné texty.
+- Každou věc definuj jednou a odkazuj na ni. Změny definovaného chování a schváleného vzhledu promítni do příslušných definic.
+- Zachovej pravidla struktury a šablonu na konci upravovaného dokumentu; při změně členění je sjednoť. Piš stručně, bez duplicit a interních názvů v uživatelských definicích; schválené tagy jsou výjimka.
+- Za dokončenou logickou změnu webu přidej do `zmeny.md` jeden stručný záznam: zadání, konečný výsledek, stav a skutečné ověření. Dílčí pokusy sluč; podrobné definice kvůli pouhému ladění nepřepisuj, pokud zůstávají platné.
+- Přiděl vlastnímu záznamu ID vyšší než nejvyšší aktuální ID; při kolizi oprav pouze vlastní záznam.
+- Stavy jsou Čeká, Rozpracováno, Implementováno, Ověřeno a K upřesnění. Bez doložené finální kontroly ponech Implementováno.
+- Historii souborů vede Git. YAML historie ani ID chatu nejsou povinné; kvůli dokumentaci nevolej `list_threads`. Existující frontmatter ponech jako historický záznam, bez přidávání a zkracování seznamu.
+- Toto pravidlo nahrazuje starší pokyny jednotlivých dokumentů k udržování historie ve frontmatteru. Ostatní pole frontmatteru zachovej; existující YAML musí zůstat syntakticky platný.
 
-## Automatické kontroly
+# Komponenty a struktura projektu
 
-- Před každým commitem spouští Git kontrolu připraveného obsahu podle [Kontroly dokumentace](web_viewer/dokumentace/system/kontrola_dokumentace.md).
-- Nové formální chyby nebo změnu webu bez připravené evidence oprav před commitem; dřívější nálezy nejsou důkazem správnosti a zůstávají předmětem úplné revize.
-- Revizi webu a porovnání dokumentace se skutečným webem spouštěj pouze na výslovné vyžádání uživatele; nespouštěj ji po commitech ani pravidelně na pozadí. Report je v `web_viewer/old/revize_dokumentace.md`.
-- Dokumentaci považuj při revizi za zdroj požadavků; porovnej ji s pozorováním webu v Chromu a kódem, do reportu vypisuj pouze doložené neshody; neověřenost sama není neshoda.
-- Revize je pouze kontrolní; kód a dokumenty sama neopravuje. Její výsledek rozlišuj od finálního testování webu.
+- Před přidáním nebo přesunem souboru přečti `web_viewer/dokumentace/struktura_projektu.md`. Použij existující složku a názvosloví, bez nesouvisejícího přesouvání nebo mazání.
+- Modely, textury a písma patří do `web_assets`, nástroje do `tools`, testy do `testy`, snímky do `nahledy` a pracovní výstupy do `old`.
+- Související JS a CSS drž pohromadě. Při změně uspořádání oprav cesty a aktualizuj přehled struktury.
+- Okna vytvářej společnou komponentou; obsah předávej jako data. Sdílej nadpis, hodnotu, vzorec, detail a ovládání; pozice kapitoly odděl od společného vzhledu.
+- Při novém návrhu vzhledu použij `frontend-design`; při návrhu či změně společné struktury komponenty `web-component-design`. Kvůli jedné hodnotě CSS nebo opravě textu je znovu nenačítej.
+- Zachovej dostupnost klávesnicí, viditelný fokus, čitelnost, responzivitu a posuv dlouhého detailu.
+
+# Převod podle vzoru
+
+- Při převodu podle jiné kapitoly převezmi vzhled i členění obsahu, hlavní a tematická okna, vazby elementů a dokumentaci; zachovej platné výpočty. Respektuj výslovné omezení pouze na vzhled.
 
 # Commity
 
-- Po každé dokončené logické změně vytvoř lokální commit s krátkým popisem.
-- Před commitem znovu přečti aktuální `AGENTS.md`, zkontroluj diff a zahrň jen změny daného úkolu; cizí úpravy vynech.
-- Ve sdíleném pracovním adresáři nepoužívej obecné `git commit -m ...` nad společným indexem. Pro soubory obsahující pouze vlastní změny použij `git commit --only -m "Popis" -- cesta1 cesta2`; tento seznam musí odpovídat zkontrolovanému diffu. Příkaz zahrnuje celé pracovní soubory, nikoli jen vlastní řádky.
-- Pokud stejný soubor souběžně mění jiný chat, nepřibírej jeho úpravy ani je nevracej. Pracuj v samostatném worktree nebo nejprve dokonči oddělení vlastního obsahu; samotný seznam cest souběžné změny uvnitř souboru neodděluje. Při práci více chatů na společných souborech preferuj samostatné worktree.
-- Před ukládáním porovnej `git diff`, `git diff --cached` a aktuální `HEAD`; po souběžném commitu načti podklady znovu. Po commitu ověř `git show --stat HEAD` proti seznamu úkolu a hash z výsledku příkazu; cizí commit nevydávej za vlastní.
-- Po neúspěšném patchi, `git add`, kontrole nebo commitu zastav závislé kroky a nejprve oprav příčinu. V PowerShellu ověř po každém externím příkazu `$LASTEXITCODE`; oddělení příkazů novým řádkem nebo středníkem nezastaví běh při chybě.
-- Před commitem spusť `python web_viewer/tools/check_documentation.py --files cesta1 cesta2` se stejným seznamem souborů jako pro `commit --only`; po chybě necommituj. Kontrola neprovádí funkční ani vizuální test a nic nezapisuje do Gitu.
-- YAML načti parserem a limit pěti položek ověř hned po úpravě dokumentu, ještě před commitem; zachovej další pole frontmatteru. Po přidání vlastní položky odstraň pouze nadlimitní konec historie.
-- Při známém omezení zápisu do `.git` použij schvalovaný běh rovnou pro konkrétní lokální commit; neopakuj předem známý nefunkční běh a neměň ochrany adresáře.
-- Rozpracované kroky necommituj jednotlivě; commit neznamená ověření funkčnosti.
-- Při chybě oprávnění k zápisu do `.git` použij dostupný schvalovací postup pro tentýž lokální commit; neměň oprávnění ani nemaž zámky jako náhradu. Pokud schválení není dostupné nebo je zamítnuté, oznam konkrétní blokaci.
-- Úspěšný commit potvrď výsledkem Gitu a jeho hashem; samotný pokus není vytvořený commit.
-- Na vzdálený repozitář odesílej jen na výslovný pokyn uživatele.
+- Po dokončené logické změně ulož kód a odpovídající dokumentaci společně do lokálního commitu. Push pouze na výslovný pokyn.
+- Ve sdíleném adresáři použij `git commit --only -m "Popis" -- cesta1 cesta2`; necommituj obecně celý společný index. Příkaz zahrnuje celé soubory: nejprve ověř, že neobsahují cizí změny.
+- Při souběžné úpravě stejného souboru použij samostatné worktree nebo nejprve odděl vlastní obsah. Cizí změny nevracej ani necommituj.
+- Po změně HEAD jiným chatem znovu načti dotčené podklady. Po commitu ověř jeho hash a seznam souborů; cizí commit nevydávej za vlastní.
+- Při známém omezení zápisu do `.git` použij rovnou schvalovaný běh konkrétního commitu. Neměň oprávnění a nemaž zámky; blokaci výslovně oznam.
+- V PowerShellu po externím příkazu s navazujícími kroky ověř `$LASTEXITCODE`; po chybě nepokračuj k commitu a neobcházej hook.
+- Předaný výsledek je bez výhrady uzavřený; mlčení uživatele neznamená provedení testu. Při výslovné výhradě proveď další logickou opravu.
 
 # Pravidla struktury
 
-- Oblasti projektových pravidel mají úroveň `#`, jejich podoblasti `##`.
-- Pokyny piš jako stručné odrážky v rozkazovacím způsobu.
-- Historii změn udržuj ve frontmatteru; tuto část se šablonou ponechávej na konci.
+- Oblasti mají úroveň `#`; používej stručné odrážky. Tuto část ponechávej na konci.
 
 ```markdown
 # Název oblasti
 
 - Pravidlo pro danou oblast.
-
-## Název podoblasti
-
-- Podrobnější pravidlo.
 ```
