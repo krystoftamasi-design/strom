@@ -26,6 +26,14 @@ history:
 
 ## Implementováno
 
+#### Z066 — Zarovnání menu kapitol
+
+- Zadání: [Kapitoly](moje/prvky.md#kapitoly).
+- Výsledek: navigace posunuta výš a zarovnána s levým okrajem pravého sloupce oken, včetně úzkého zobrazení.
+- Stav: Implementováno.
+- Ověření: kontrola pravidel CSS; finální kontrola uživatelem.
+
+
 #### Z063 — Opravy po testu oken
 
 - Zadání: [Okna](moje/okna.md).
