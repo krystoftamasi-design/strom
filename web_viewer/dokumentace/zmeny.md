@@ -26,6 +26,13 @@ history:
 
 ## Implementováno
 
+#### Z068 — Lokální predikce pozornosti UNISAL
+
+- Zadání: lokální UNISAL pro modelové heatmapy webu.
+- Výsledek: samostatné prostředí, oficiální předtrénované váhy a [příkaz pro snímky](../tools/UNISAL.md); bez změny webu.
+- Stav: Implementováno.
+- Ověření: predikce uloženého snímku Fotosyntézy; mapa neprokazuje porozumění ani měřený pohyb očí.
+
 #### Z067 — Vyšší poloha menu bez staré cache
 
 - Zadání: [Kapitoly](moje/prvky.md#kapitoly).

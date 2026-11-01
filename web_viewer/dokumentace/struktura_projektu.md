@@ -64,6 +64,7 @@ Přehled původních přesunů souborů je v `starsi/presun_souboru.json`.
 
 - `web_assets` obsahuje modely, textury, písma a knihovny.
 - `tools` obsahuje pomocné nástroje.
+- `tools/unisal_predict.py` vytváří lokální predikce pozornosti; postup je v [UNISAL](../tools/UNISAL.md), model a prostředí v ignorovaném `old`, výsledky v `nahledy/unisal`.
 - `tools/check_documentation.py` kontroluje dokumentaci a přes `--files` předběžně vybrané pracovní soubory včetně syntaxe JS v HTML; `tools/pre-commit` je zdroj kontroly před commitem.
 - `tools/review_documentation.py` spouští revizi po deseti commitech; `tools/post-commit` ji propojuje s Gitem a zachovává Git LFS.
 - `tools/review_browser.mjs` získává pozorování kapitol a oken v Google Chromu; snímky a data jsou v `old/browser_review_<hash>`.
