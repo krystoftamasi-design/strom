@@ -93,7 +93,7 @@ history:
 
 ### Okna
 
-- Okna používají [šablonu Fotosyntézy](vzhled_oken.md#šablona-jednoho-okna-podle-fotosyntézy); samostatný [průvodce](texty.md#průvodce-transpirací) zůstává mimo ně.
+- Okna používají [šablonu Transpirace](vzhled_oken.md#šablona-jednoho-okna-podle-fotosyntézy); samostatný [průvodce](texty.md#průvodce-transpirací) zůstává mimo ně.
 - Stav detailů zůstává zachovaný při změně kapitoly.
 
 #### Transpirace
@@ -101,20 +101,20 @@ history:
 **Tag:** 🔵 `water`
 
 - Nadpis: `Transpirace`; role: hlavní okno; strana: vlevo.
-- Detailní text: „Voda se odpařuje převážně průduchy listů. Odpar pomáhá táhnout vodu od kořenů a spotřebovává teplo. Za světla bývá vyšší; nedostatek vody vede k omezení ztrát průduchy.“
+- Detailní text: „Voda se odpařuje z listů. Tím pomáhá táhnout další vodu od kořenů a spotřebovává teplo. Strom vodu nepumpuje jako srdce.“
 - Hodnota: odpařená voda v `l/h`, jedno desetinné místo.
 - Vzorec: `min(základ × listy × světlo × voda; spotřeba)`, viditelný pod hodnotou.
 - Vstupy výpočtu: základ odparu, podíl listů, světlo, zavodnění a mez spotřeby; význam jednotek určuje [Význam vzorců](#význam-vzorců).
 - Ovládání detailu: kliknutí na nadpis nebo viditelné tlačítko +/− vedle něj.
-- Výchozí stav detailu: zavřený.
-- Související element: [Voda linka](elementy.md#voda-linka).
+- Výchozí stav detailu: otevřený; detail je nad hlavními údaji.
+- Související elementy: [Voda linka](elementy.md#voda-linka), [H₂O částice](elementy.md#h₂o).
 
 #### Příjem vody
 
 **Tag:** 🔵 `water`
 
 - Nadpis: `Příjem vody`; role: tematické okno; strana: vpravo nahoře.
-- Detailní text: „Kořeny doplňují zásobu vody ve stromu. Příjem omezuje dostupná voda a sezónní maximum kořenů; nemusí být stejný jako okamžitý odpar.“
+- Detailní text: „Kořeny přijímají vodu a doplňují její zásobu ve stromu. Příjem a odpar nemusí být v danou chvíli stejné.“
 - Hodnota: příjem kořeny v `l/h`, jedno desetinné místo.
 - Vzorec: `min(přísun; limit kořenů)`, viditelný pod hodnotou.
 - Vstupy výpočtu: dostupný přísun vody a sezónní kapacita kořenů upravená jejich stavem.
@@ -127,7 +127,7 @@ history:
 **Tag:** 🌡️ `temperature`
 
 - Nadpis: `Chlazení`; role: tematické okno; strana: vpravo, druhé shora.
-- Detailní text: „Odpařování vody spotřebovává teplo. Chladicí výkon je fyzikální odhad, nikoli změna teploty; při omezení odparu klesá.“
+- Detailní text: „Odpaření vody spotřebovává teplo. Číslo ukazuje odhad chladicího výkonu, nikoli pokles teploty.“
 - Hodnota: chladicí výkon v `kW`, dvě desetinná místa.
 - Vzorec: `odpar × 2450 / 3600`, viditelný pod hodnotou.
 - Vstupy výpočtu: odpar v `l/h`, modelové skupenské teplo 2450 kJ/kg a převod hodin na sekundy.
@@ -139,7 +139,7 @@ history:
 **Tag:** 🌡️ `temperature`
 
 - Nadpis: `Teplota`; role: tematické okno; strana: vpravo, třetí shora.
-- Detailní text: „Ve dne odpar ochlazuje okolí koruny; v noci olistěná koruna omezuje vyzařování tepla a u ní může být mírně tepleji. Základem jsou normály ČHMÚ 1991–2020. Denní kolísání a teplá či chladná období jsou výukový odhad, nikoli měření nebo předpověď počasí.“
+- Detailní text: „Číslo ukazuje teplotu u koruny. Ve dne ji odpar pomáhá snižovat; v noci může být u koruny mírně tepleji. Jde o výukový odhad založený na normálech ČHMÚ 1991–2020, nikoli měření nebo předpověď.“
 - Hodnota: teplota u koruny ve `°C`, jedno desetinné místo.
 - Vzorec: `okolí − ochlazení + noční efekt`, viditelný pod hodnotou.
 - Vstupy výpočtu: teplota okolí, modelový účinek odparu a noční efekt olistěné koruny.
@@ -164,7 +164,7 @@ history:
 ## Pravidla struktury
 
 - Kapitola má úroveň `##`, oblast `###` a konkrétní okno `####`.
-- Používej šablonu okna odvozenou z Fotosyntézy: tag → nadpis a role → stručné shrnutí → detail → hodnota → vzorec a vstupy → ovládání a výchozí stav → související element.
+- Používej šablonu okna odvozenou z Transpirace: tag → nadpis a role → stručné shrnutí → detail → hodnota → vzorec a vstupy → ovládání a výchozí stav → související element.
 - U každého okna s vypočtenou hodnotou je vzorec povinný a viditelný i při zavřeném detailu. Přehled vstupů odlišuj od úplné rovnice; nepoužívej automaticky násobení pro součet, rozdíl nebo omezení minimem.
 - Ovládání okna a uchování stavu popisuj zde; reakci souvisejícího elementu definuj pouze v `elementy.md` a odkaž na ni.
 - Uváděj pouze položky, které se daného okna týkají.

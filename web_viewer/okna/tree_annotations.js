@@ -1,6 +1,6 @@
-import { oknaPodleKapitol, pruvodceTranspiraci } from './element_ui_okna_obsah.js?v=temperature-text-1';
-import { veliciny, vstupyVzorce, ohlasitChybuOken } from './element_ui_okna_veliciny.js?v=temperature-text-1';
-import { zkontrolovatOkna } from './element_ui_okna_kontrola.js?v=temperature-text-1';
+import { oknaPodleKapitol, pruvodceTranspiraci } from './element_ui_okna_obsah.js?v=transpiration-vapour-1';
+import { veliciny, vstupyVzorce, ohlasitChybuOken } from './element_ui_okna_veliciny.js?v=transpiration-vapour-1';
+import { zkontrolovatOkna } from './element_ui_okna_kontrola.js?v=transpiration-vapour-1';
 
 // Original embedded assets from ui_new.svg, at their exported stroke widths.
 const strokes = {

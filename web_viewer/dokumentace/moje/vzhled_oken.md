@@ -29,7 +29,7 @@ history:
 ### Obecný obsah
 
 - Údaje tvoří svislý blok: nadpis → hodnota s jednotkou → vzorec nebo přehled vstupů.
-- Detail má samostatný prostor vpravo, zarovnaný k hornímu okraji okna, a vlastní posuv; mezera mezi sloupci je 15 px.
+- Tematické okno má detail vpravo, zarovnaný k hornímu okraji, s vlastním posuvem a mezerou 15 px. Hlavní okno používá variantu detailu nad údaji.
 - Nadpis zůstává na jednom řádku bez zmenšování podle délky; při nedostatku místa je dostupný vodorovný posuv.
 - Viditelné tlačítko +/− je kruhové, široké 28 px, s odstupem 8 px od nadpisu a vlastním prostorem; fokus je viditelný.
 - Konkrétní texty, hodnoty, ovládání a výchozí otevření detailů určuje [Obsah oken](okna.md).
@@ -46,7 +46,7 @@ history:
 
 ### Úzká obrazovka
 
-- Do šířky 700 px zůstávají dva pevné sloupce; detail je pod údaji a má vlastní posuv.
+- Do šířky 700 px zůstávají dva pevné sloupce; tematický detail je pod údaji, hlavní detail zůstává nad nimi. Oba mají vlastní posuv.
 - Pravý sloupec začíná na 52 % a má šířku 44 %; okna Transpirace mají horní okraje 22 / 46 / 70 % a výšku 17 %.
 - Používá se společná typografická škála pro úzkou obrazovku, bez výjimek podle délky nadpisu.
 - Fotosyntéza skrývá přehled vstupů; skutečné vzorce Transpirace zůstávají viditelné a mohou se zalomit.
@@ -69,12 +69,20 @@ history:
 - U dalšího okna určuj pouze roli, umístění, rozměry a případnou vzhledovou odlišnost; obsah patří do [Obsahu oken](okna.md).
 - Technické použití společné komponenty popisuje [Architektura oken](../system/architektura_oken.md#rozložení).
 
+### Šablona hlavního okna
+
+- Nadpis, hodnota a vzorec zůstávají na pevném místě vlevo dole.
+- Detail se otevírá nad oknem, 14 px nad jeho horním okrajem; šířka nejvýše 44 znakových jednotek a zároveň uvnitř šířky okna.
+- Detail má vlastní posuv a maximální výšku 24 % výšky obrazovky; do šířky 700 px 20 %.
+- Otevření ani délka textu neposouvá údaje a sousední okna. Stejná varianta platí pro hlavní okna všech kapitol.
+- Výchozí otevření určuje obsah okna, nikoli šablona.
+
 [Obsah oken](okna.md) · [Obsah](../architektura_obsahu.md)
 
 ## Pravidla struktury
 
 - Název dokumentu má úroveň `#`, společná oblast `##` a témata `###`.
-- Témata řaď: obecný obsah → rozložení → úzká obrazovka → písmo → barvy → šablona okna.
+- Témata řaď: obecný obsah → rozložení → úzká obrazovka → písmo → barvy → šablona okna → šablona hlavního okna.
 - Každé pravidlo vzhledu uveď jednou; obsah a ovládání odkazuj do `okna.md`, technické návody do architektury.
 - U rozměrů uváděj jednotky, vztažnou plochu procent a mezní šířku obrazovky.
 - Historii ponechávej ve frontmatteru a odkazy před touto závěrečnou částí.
@@ -109,6 +117,10 @@ history:
 ### Šablona jednoho okna podle vzoru
 
 - Společný základ a odkaz na použití.
+
+### Šablona hlavního okna
+
+- Poloha detailu nad údaji, odstup a omezení posuvu.
 
 [Související dokument](../soubor.md)
 

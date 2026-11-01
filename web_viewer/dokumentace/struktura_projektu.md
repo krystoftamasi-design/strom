@@ -57,6 +57,7 @@ Původní architekturu popisuje `starsi/ARCHITEKTURA_IMPLEMENTACE.md`.
 Produktovou strategii a metriky popisuje [Strategie](moje/strategie.md).
 Prioritní problémy porozumění vymezuje [Problémy k řešení](moje/strategi_problems.md).
 Záznamy uživatelského ověřování jsou v [Testech](moje/tests.md).
+Nerealizované návrhy jsou v [Nápadech](moje/napady.md); nejde o definice hotového webu.
 Přehled původních přesunů souborů je v `starsi/presun_souboru.json`.
 
 ## Podklady a nástroje

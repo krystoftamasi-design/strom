@@ -246,3 +246,15 @@ body.scene-night .transpiration-guide .transpiration-legend { color: #a9baff; }
   .tree-overlay .element-ui-okno .annotation-reveal,
   .tree-overlay .element-ui-okno[data-main-window="true"] .annotation-reveal { left: auto; top: auto; flex: 1 1 auto; height: auto; margin-top: 8px; }
 }
+
+/* Main-window variant: details open upward without moving the readout. */
+.tree-overlay .element-ui-okno[data-main-window="true"] .annotation-reveal {
+  position: absolute; left: 20px; right: auto; top: auto; bottom: calc(100% + 14px);
+  width: min(44ch, calc(100% - 20px)); height: auto; max-height: 24vh;
+  margin: 0; overflow: auto;
+}
+.tree-overlay .element-ui-okno[data-main-window="true"] .annotation-reveal-inner,
+.tree-overlay .element-ui-okno[data-main-window="true"] .annotation-body { height: auto; }
+@media (max-width: 700px) {
+  .tree-overlay .element-ui-okno[data-main-window="true"] .annotation-reveal { left: 12px; width: calc(100% - 12px); max-height: 20vh; margin: 0; }
+}

@@ -37,12 +37,14 @@ history:
 
 ### Rozložení
 
-- Komponenta má dva nezávislé bloky: `.element-ui-readout` skládá nadpis, hodnotu a vzorec pod sebe pomocí flexu; `.annotation-reveal` obsahuje pouze detail ve druhém sloupci s omezenou výškou a posuvem. Detail nesdílí řádky s údaji a nemění jejich rozestupy. Na úzké obrazovce je detail pod blokem údajů.
+- Hlavní okna používají stejnou komponentu s variantou detailu nad blokem údajů podle [šablony hlavního okna](../moje/vzhled_oken.md#šablona-hlavního-okna); příznak `hlavni` určuje vzhled, `otevrene` výchozí stav.
+
+- Komponenta má dva nezávislé bloky: `.element-ui-readout` skládá nadpis, hodnotu a vzorec pod sebe pomocí flexu; `.annotation-reveal` obsahuje pouze detail ve druhém sloupci s omezenou výškou a posuvem. Detail nesdílí řádky s údaji a nemění jejich rozestupy. Na úzké obrazovce je tematický detail pod blokem údajů; hlavní detail zůstává nad ním.
 
 - Okno je společná komponenta vytvářená `configuredCard` a `createElementUiOkno`; nadpis, hodnota, vzorec a detail mají jednu strukturu a společné styly pro všechny záznamy Fotosyntézy a Transpirace.
 - Typografii a odstupy upravuj v `okna/element_ui_okna_vzhled.css`: `--ui-heading-size`, `--ui-main-heading-size`, `--ui-value-size`, `--ui-main-value-size`, `--ui-formula-size`, `--ui-column-gap`, `--ui-toggle-size` a `--ui-toggle-gap`. Změna sdílené proměnné platí pro všechna okna příslušné role; úzká obrazovka používá společnou sadu hodnot.
-- `viditelnyPrepinac: true` v záznamu zapíná variantu +/−; bez něj zůstává plocha nad nadpisem. CSS používá `data-toggle-visible`, nikoli název kapitoly.
-- `vzorecText` volí variantu skutečné rovnice přes `data-formula-kind="equation"`; ta umožňuje zalomení a viditelnost na úzké obrazovce. Přehled vstupů používá stejnou část komponenty s variantou `inputs`.
+- `viditelnyPrepinac: true` v záznamu zapíná variantu +/− a přepínání kliknutím na nadpis; používají ji obě kapitoly. Bez něj zůstává plocha nad nadpisem. CSS používá `data-toggle-visible`, nikoli název kapitoly.
+- `vzorecText` volí variantu skutečné rovnice přes `data-formula-kind="equation"`; přehled vstupů používá stejnou část komponenty s variantou `inputs`. Obě varianty se u oken s viditelným přepínačem zalamují a zůstávají viditelné i na úzké obrazovce.
 - Použití: do seznamu kapitoly přidej záznam `{ id, nadpis, tema, strana, vypocet, zobrazitVzorec, zobrazitHodnotu, text }`; volitelně `hlavni`, `otevrene`, `vzorecText` a `viditelnyPrepinac`. Téma určuje barvu, převodník jednotku a formát hodnoty. Pozice patří do rozložení kapitoly, velikost nadpisu do společného stylu.
 - Přenos vyžaduje renderer, společné CSS, převodník veličin a validátor; renderer přijímá model a callback zvýraznění. Průvodce a pozice konkrétní kapitoly nejsou přenositelnou částí okna.
 
@@ -53,6 +55,8 @@ history:
 - `kapitoly/chapters.js` určuje pořadí a přepínání kapitol; `kapitoly/chapters.css` vzhled navigace.
 
 ### Zvýraznění elementů
+
+- `PhotolysisSystem` přijímá volitelnou `waterGroup`; částice H₂O vznikají v `getReactionPoint` a sdílí `_updateGasScale` i zvýraznění tagem `water` s ostatními plyny. Emisi řídí odpar přes `setTranspiration`, nikoli kolize fotonů. Skupina je oddělená od fotosyntézy a viditelná pouze v Transpiraci.
 
 - `okna/tree_annotations.js` předává tag tématu a stav otevření přes `setElementHighlight` v `kapitoly/chapters.js`.
 - Změna detailu přepíná zvýraznění přímo v obsluze události; aktivní kapitola omezuje zvýraznění na viditelná okna.

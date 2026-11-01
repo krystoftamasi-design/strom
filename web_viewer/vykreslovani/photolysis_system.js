@@ -29,7 +29,10 @@ export class PhotolysisSystem {
     this.getFrontDirection = options.getFrontDirection || (() => this._zAxis);
     this.totalCarbonDioxideEmitted = 0;
     this.totalCarbonDioxideAbsorbed = 0;
-    this.highlightedGases = { oxygen: false, co2: false };
+    this.highlightedGases = { oxygen: false, co2: false, water: false };
+    this.waterGroup = options.waterGroup || null;
+    this.transpiration = 0;
+    this.waterEmitTimer = 0;
 
     // Callbacks / suppliers
     this.getReactionPoint = options.getReactionPoint || (() => new this.THREE.Vector3(4.33, 17.46, -0.84));
@@ -89,6 +92,7 @@ export class PhotolysisSystem {
     this._initPhotonPool();
     this._initOxygenPool();
     this._initCarbonPool();
+    this._initWaterPool(options.waterTexture);
   }
 
   // Check if environmental inputs permit photolysis
@@ -126,7 +130,7 @@ export class PhotolysisSystem {
   setBubbleSize(multiplier) {
     if (!Number.isFinite(multiplier)) return;
     this.bubbleSize = Math.max(0.25, Math.min(4.0, multiplier));
-    for (const pool of [this.bubblePool, this.carbonPool]) {
+    for (const pool of [this.bubblePool, this.carbonPool, this.waterPool]) {
       for (const b of pool) if (b.active) this._updateGasScale(b);
     }
   }
@@ -134,7 +138,7 @@ export class PhotolysisSystem {
   setElementHighlight(tag, active) {
     if (!(tag in this.highlightedGases)) return;
     this.highlightedGases[tag] = Boolean(active);
-    const pool = tag === 'oxygen' ? this.bubblePool : this.carbonPool;
+    const pool = tag === 'oxygen' ? this.bubblePool : tag === 'co2' ? this.carbonPool : this.waterPool;
     for (const bubble of pool) if (bubble.active) this._updateGasScale(bubble);
   }
 
@@ -266,6 +270,68 @@ export class PhotolysisSystem {
       return { mesh, material, active: false, age: 0, maxLifetime: 1,
         baseScale: 0.62, kind: 'co2', origin: new THREE.Vector3(), target: new THREE.Vector3() };
     });
+  }
+
+  // Optional water-vapour stream, independent of photolysis stoichiometry.
+  _initWaterPool(texture) {
+    this.waterPool = [];
+    if (!this.waterGroup) return;
+    const THREE = this.THREE;
+    if (!texture) {
+      const canvas = document.createElement('canvas');
+      canvas.width = 256;
+      canvas.height = 256;
+      const ctx = canvas.getContext('2d');
+      ctx.fillStyle = '#2f49d6';
+      ctx.font = 'bold 88px sans-serif';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText('H₂O', 128, 128);
+      texture = new THREE.CanvasTexture(canvas);
+      texture.colorSpace = THREE.SRGBColorSpace;
+    }
+    const material = applyGasLeafStyle(new THREE.SpriteMaterial({ map: texture, toneMapped: false }));
+    for (let i = 0; i < this.maxBubbles; i++) {
+      const mesh = new THREE.Sprite(material);
+      mesh.name = `WaterVapour_${i}`;
+      mesh.visible = false;
+      this.waterGroup.add(mesh);
+      this.waterPool.push({ mesh, material, active: false, age: 0, maxLifetime: 3.5,
+        baseScale: 0.8, kind: 'water', velocity: new THREE.Vector3() });
+    }
+  }
+
+  setTranspiration(value) {
+    this.transpiration = Math.max(0, Number(value) || 0);
+  }
+
+  _updateWaterVapour(dt) {
+    if (this.waterGroup?.visible && this.transpiration > 0.0001) {
+      this.waterEmitTimer += dt;
+      const interval = 1 / Math.min(6, 2 + Math.sqrt(this.transpiration));
+      while (this.waterEmitTimer >= interval) {
+        this.waterEmitTimer -= interval;
+        const b = this.waterPool.find(p => !p.active);
+        if (!b) break;
+        b.active = true;
+        b.age = 0;
+        b.mesh.position.copy(this.getReactionPoint());
+        b.velocity.set((Math.random() - 0.5) * 1.5, 1 + Math.random(), (Math.random() - 0.5) * 1.5);
+        b.mesh.visible = true;
+        this._updateGasScale(b);
+      }
+    } else this.waterEmitTimer = 0;
+    for (const b of this.waterPool) {
+      if (!b.active) continue;
+      b.age += dt;
+      if (b.age >= b.maxLifetime || !this.waterGroup.visible) {
+        b.active = false;
+        b.mesh.visible = false;
+      } else {
+        b.mesh.position.addScaledVector(b.velocity, dt);
+        this._updateGasScale(b);
+      }
+    }
   }
 
   _spawnCarbonDioxide() {
@@ -432,6 +498,7 @@ export class PhotolysisSystem {
   // Main simulation update loop
   update(delta = 0.016) {
     const dt = Math.min(delta, 0.1);
+    this._updateWaterVapour(dt);
 
     // 1. Emission logic (only emit when conditions are met)
     if (this.isPhotolysisActive() && this.photonsPerSecond > 0) {
@@ -531,7 +598,8 @@ export class PhotolysisSystem {
     this.emitTimer = 0;
     this.totalCarbonDioxideEmitted = 0;
     this.totalCarbonDioxideAbsorbed = 0;
-    for (const b of this.carbonPool) {
+    this.waterEmitTimer = 0;
+    for (const b of [...this.carbonPool, ...this.waterPool]) {
       b.active = false;
       b.mesh.visible = false;
     }

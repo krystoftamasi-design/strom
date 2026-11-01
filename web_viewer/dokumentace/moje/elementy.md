@@ -80,6 +80,21 @@ Definice spojení
 - zakladní šířka linek je setjná
 - Při nulovém přísunu zůstávají obě velmi tenké.
 
+### H₂O
+
+**Tag:** 🔵 `water`
+Definice spojení
+
+- Okna: [Transpirace](okna.md#transpirace), [Příjem vody](okna.md#příjem-vody).
+- Reakce na okno: při otevření souvisejícího vodního detailu se částice zvětší stejným poměrem jako O₂ a CO₂; po zavření všech souvisejících detailů v aktivní kapitole se vrátí běžná velikost.
+
+**Chování elementu**
+
+- Modré nápisy H₂O představují vodní páru, nikoli kyslík vznikající při fotosyntéze.
+- V Transpiraci vycházejí přímo z konce vodní linky v koruně, stoupají a rozptylují se; při vzniku rostou a při zániku se zmenšují stejně jako ostatní plynové částice.
+- Emise probíhá při kladném modelovém odparu a plně rozvinuté vodní lince; při jejím stažení se nové částice nevytvářejí. Mimo Transpiraci jsou skryté.
+- Částice používají společnou velikost a přehrávání částicového systému; počet částic je schematický, nikoli měřítko litrů vody.
+
 ### O₂
 
 **Tag:** 🔹 `oxygen`
