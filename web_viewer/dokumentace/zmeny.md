@@ -26,6 +26,13 @@ history:
 
 ## Implementováno
 
+#### Z078 — Výraznější kruh období
+
+- Zadání: větší tučné verzálky a silnější tah kruhu.
+- Výsledek: názvy období jsou větší, tučné a verzálkami; tah kruhu je širší.
+- Stav: Implementováno.
+- Ověření: vizuální test neprováděn.
+
 #### Z076 — Úvod bez Manageru
 
 - Zadání: [Manager](moje/prvky.md#manager).

@@ -2,7 +2,7 @@ import * as THREE from '../web_assets/vendor/three.module.js';
 import { createSeasonTimeline } from './season_timeline.js?v=beech-calendar-1';
 
 const SEASONS = ['spring', 'summer', 'autumn', 'latefall'];
-const LABELS = ['jaro', 'léto', 'podzim', 'zima'];
+const LABELS = ['JARO', 'LÉTO', 'PODZIM', 'ZIMA'];
 const QUARTER = Math.PI / 2;
 // Keep label pivots fixed; place the calendar's season midpoint at each label.
 const LABEL_CALENDAR_POSITION = 0.5;
@@ -29,7 +29,7 @@ export function createSeasonRing({ scene, camera, controls, canvas, model }) {
   const stepsPerSection = 96;
   const sectionAngle = Math.PI * 2 / sectionCount;
   const gapAngle = 0.075;
-  const ribbonWidth = 0.52;
+  const ribbonWidth = 0.85;
   const sectionLength = radius * (sectionAngle - gapAngle);
   for (let section = 0; section < sectionCount; section++) {
     const base = positions.length / 3;
@@ -94,12 +94,12 @@ export function createSeasonRing({ scene, camera, controls, canvas, model }) {
     texture.minFilter = THREE.LinearMipmapLinearFilter;
     texture.magFilter = THREE.LinearFilter;
     texture.anisotropy = 8;
-    const label = new THREE.Mesh(new THREE.PlaneGeometry(4.3, 1.05), new THREE.MeshBasicMaterial({
+    const label = new THREE.Mesh(new THREE.PlaneGeometry(5.2, 1.3), new THREE.MeshBasicMaterial({
       map: texture, color: 0xffffff, transparent: true, opacity: 1,
       side: THREE.DoubleSide, depthWrite: false,
       alphaTest: 0.01, toneMapped: false
     }));
-    label.position.z = radius + 0.85;
+    label.position.z = radius + 1.2;
     label.rotation.x = -Math.PI / 2;
     label.userData.season = SEASONS[i];
     const pivot = new THREE.Group();
@@ -111,7 +111,7 @@ export function createSeasonRing({ scene, camera, controls, canvas, model }) {
       const context = image.getContext('2d');
       context.setTransform(labelResolution, 0, 0, labelResolution, 0, 0);
       context.clearRect(0, 0, labelWidth, labelHeight);
-      context.font = '300 120px Nohemi, sans-serif';
+      context.font = '700 130px Nohemi, sans-serif';
       context.textAlign = 'center';
       context.textBaseline = 'middle';
       context.fillStyle = lightInk ? '#f2f3e9' : '#171813';
@@ -120,7 +120,7 @@ export function createSeasonRing({ scene, camera, controls, canvas, model }) {
     }
     label.userData.draw = draw;
     draw();
-    document.fonts.load('300 120px Nohemi').then(draw);
+    document.fonts.load('700 130px Nohemi').then(draw);
   }
 
   const raycaster = new THREE.Raycaster();
