@@ -26,6 +26,14 @@ history:
 
 ## Implementováno
 
+#### Z062 — Ukotvení hlavního detailu nad oknem
+
+- Zadání: hlavní detail Transpirace se nezobrazuje nad údaji.
+- Výsledek: absolutně umístěný hlavní detail už nedědí druhý sloupec mřížky; jeho poloha se počítá vůči celému oknu. Obnovena verze CSS.
+- Stav: Implementováno.
+- Ověření: kontrola CSS a dokumentace; Chrome není dostupný, finální vizuální kontrola uživatelem.
+
+
 #### Z059 — Fotosyntéza podle šablony Transpirace
 
 - Zadání: aplikovat [šablonu Transpirace](moje/vzhled_oken.md#šablona-jednoho-okna-podle-transpirace) na okna Fotosyntézy.
