@@ -134,25 +134,73 @@ body.has-chapters .chapter-nav button {
 }
 body.has-chapters .chapter-nav button[aria-current="page"] { font-weight: 900; background: none; }
 body.scene-night .chapter-nav button { color: #f0f2e9; }
-
 body.has-chapters .chapter-nav .ui-test-window-button { flex-basis: 100%; text-align: right; }
 @media (max-width: 700px) {
   body.has-chapters .chapter-nav { left: 52%; right: 4%; top: 7%; max-width: none; gap: 8px; justify-content: flex-start; }
   body.has-chapters .chapter-nav button { font-size: 11px; }
 }
 
-/* The intro animation has no user-facing time controls. */
-body.has-chapters:has(.chapter-content > article[data-chapter="intro"]:not([hidden])) .time-playback-panel,
-body.has-chapters:has(.chapter-content > article[data-chapter="intro"]:not([hidden])) #btnManager { display: none; }
+body.has-chapters:has(.chapter-content > article[data-chapter="intro"]:not([hidden])) .chapter-nav {
+  top: 50%; transform: translateY(-50%);
+}
 
-/* Reserve bold text width and animate the variable font weight. */
+/* The intro animation has no user-facing time controls. */
+body.has-chapters:has(.chapter-content > article[data-chapter="intro"]:not([hidden])) .time-playback-panel { display: none; }
+
+/* Navigation occupies the former date position. */
+body.has-chapters .chapter-nav,
+body.has-chapters:has(.chapter-content > article[data-chapter="intro"]:not([hidden])) .chapter-nav {
+  left: 6%; right: 32%; top: 7%; transform: none;
+}
+@media (max-width: 700px) {
+  body.has-chapters .chapter-nav,
+  body.has-chapters:has(.chapter-content > article[data-chapter="intro"]:not([hidden])) .chapter-nav {
+    left: 4%; right: 52%; top: 7%;
+  }
+}
+
+/* Time controls follow the chapter navigation's quiet typography. */
+body.has-chapters .hud-bottom { left: 6%; right: auto; top: auto; bottom: 10%; }
+body.has-chapters .time-playback-panel {
+  gap: 10px; padding: 0; background: none; border: 0; border-radius: 0;
+  box-shadow: none; backdrop-filter: none; color: #181818;
+}
+body.has-chapters .time-playback-buttons button {
+  width: 38px; height: 38px; padding: 8px; color: inherit;
+  background: none; border: 1px solid transparent; border-radius: 50%;
+}
+body.has-chapters .time-playback-buttons button:hover,
+body.has-chapters .time-playback-buttons button[aria-pressed="true"] {
+  color: inherit; background: none; border-color: currentColor;
+}
+body.has-chapters .time-playback-buttons button:focus-visible { outline: 2px solid currentColor; outline-offset: 3px; }
+body.scene-night .time-playback-panel { color: #f0f2e9; }
+@media (max-width: 700px) {
+  body.has-chapters .hud-bottom { left: 4%; right: auto; top: auto; bottom: 8%; }
+}
+
+/* Keep the intro navigation in its original position. */
+body.has-chapters:has(.chapter-content > article[data-chapter="intro"]:not([hidden])) .chapter-nav {
+  left: 68%; right: 3%; top: 50%; transform: translateY(-50%);
+}
+@media (max-width: 700px) {
+  body.has-chapters:has(.chapter-content > article[data-chapter="intro"]:not([hidden])) .chapter-nav { left: 52%; right: 4%; }
+}
+
+/* Reserve the width of bold text so hovering does not move other items. */
 body.has-chapters .chapter-nav [data-open-chapter] { display: grid; text-decoration: none; transition: font-weight 300ms ease; }
 body.has-chapters .chapter-nav [data-open-chapter]::after,
 body.has-chapters .chapter-nav [data-open-chapter] > span { grid-area: 1 / 1; }
-body.has-chapters .chapter-nav [data-open-chapter]::after { content: attr(data-label); font-weight: 900; visibility: hidden; pointer-events: none; }
+body.has-chapters .chapter-nav [data-open-chapter]::after {
+  content: attr(data-label); font-weight: 900; visibility: hidden; pointer-events: none;
+}
 @media (hover: hover) {
   body.has-chapters .chapter-nav [data-open-chapter]:hover { font-weight: 900; }
 }
 @media (prefers-reduced-motion: reduce) {
   body.has-chapters .chapter-nav [data-open-chapter] { transition: none; }
 }
+
+/* Time anchors for the two chapter layouts. */
+body.has-chapters[data-chapter="transpiration"] .hud-bottom { top: 16%; bottom: auto; }
+body.has-chapters[data-chapter="photosynthesis"] .hud-bottom { top: auto; bottom: 8%; }

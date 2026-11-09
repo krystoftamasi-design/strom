@@ -25,10 +25,13 @@ history:
 - **„Kyslík pro lidi“:** vysvětlit, že strom fotosyntézou vytváří cukry pro vlastní růst a získávání energie; kyslík se přitom uvolňuje. Ověření: „Co fotosyntéza přináší samotnému stromu?“ Viz [Fotosyntéza](okna.md#fotosyntéza).
 - **„Většina sluneční energie jde do fotosyntézy“:** odlišit tvorbu cukrů od spotřeby energie při výparu; podíly závisejí na podmínkách. Ověření: „Na co strom kromě fotosyntézy využívá dopadající energii?“ Viz [Fotosyntéza](okna.md#fotosyntéza) a [Chlazení](okna.md#chlazení). Zdroj: [Metodika pro 9. ročník, kap. 3](#zdroje).
 - **„Všechna přijatá voda zůstává ve stromu“:** propojit příjem kořeny s odchodem vody do vzduchu. Ověření: „Kam se dostává voda, kterou kořeny přijmou?“ Viz [Příjem vody](okna.md#příjem-vody) a [Transpirace](okna.md#transpirace). Zdroj: [Metodika pro 9. ročník, kap. 3](#zdroje).
+
 - **„Strom chladí jen stínem nebo fotosyntézou“:** rozlišit zastínění a odvod tepla výparem, závislý na dostupnosti vody. Ověření: „Proč nestačí znát jen velikost stínu, abychom určili chlazení stromem?“ Viz [Chlazení](okna.md#chlazení) a [Teplota](okna.md#teplota). Zdroj: [Metodika pro 9. ročník, kap. 3](#zdroje).
+
 - **„Fotosyntéza je dýchání rostlin“:** odlišit tvorbu cukrů při fotosyntéze od jejich využívání buněčným dýcháním. Ověření: „Jsou tvorba cukrů a získávání energie z cukrů stejný děj?“ Viz [Fotosyntéza](okna.md#fotosyntéza) a [Cukry](okna.md#cukry). Zdroj: [Čipková a kol., s. 26](#zdroje).
 - **„Rostliny dýchají pouze v noci“:** vysvětlit, že buněčné dýchání probíhá i ve dne současně s fotosyntézou. Ověření: „Přestane strom ve dne buněčně dýchat? Proč?“ Viz [O₂](okna.md#o₂) a [Cukry](okna.md#cukry). Zdroj: [Čipková a kol., s. 26](#zdroje).
 - **„Dýchají jen listy“:** vztáhnout buněčné dýchání i k živým buňkám kořenů a kmene, nikoli ke všem buňkám dřeva. Ověření: „Potřebují také živé buňky kořenů získávat energii z cukrů?“ Viz [Cukry](okna.md#cukry). Zdroj: [Čipková a kol., s. 26](#zdroje).
+
 - Stav všech témat: K řešení; vyřešení musí potvrdit ověření porozumění u studentů.
 - Odkazy na okna určují vhodné místo vysvětlení, nikoli potvrzení implementace; zejména buněčné dýchání vyžaduje kontrolu rozsahu modelu před nasazením.
 

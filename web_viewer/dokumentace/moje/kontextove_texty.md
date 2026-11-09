@@ -1,8 +1,8 @@
 # Kontextové texty
 
-- Stav: návrh k implementaci; tento dokument sám nemění web.
+
 - Cíl: krátkou větou vysvětlit právě sledovanou souvislost a pomoci řešit [Mýty a porozumění](strategi_problems.md#mýty-a-porozumění).
-- Návrh vychází ze [Strategie](strategie.md). Aktuálně nasazené samostatné texty popisují [Texty](texty.md).
+- Návrh vychází ze [Strategie](strategie.md).
 
 ## Zobrazení
 
@@ -15,11 +15,12 @@
 
 ## Fotosyntéza
 
-- Texty cílí na [Mýty a porozumění](strategi_problems.md#mýty-a-porozumění); jde o návrh sdělení, nikoli potvrzení nasazení nebo rozsahu modelu.
+- Výchozí a tematické texty jsou nasazené v průvodci kapitoly; texty pro noc a využití světla zůstávají návrhem k dopracování.
+- Texty cílí na [Mýty a porozumění](strategi_problems.md#mýty-a-porozumění); nasazení samo nepotvrzuje porozumění žáků.
 
 | Kontext | Navržený text | Cíl porozumění |
 |---|---|---|
-| Výchozí | Strom si vytváří cukry pro vlastní růst. Kyslík se přitom uvolňuje. | Přínos fotosyntézy pro strom; kyslík není jejím účelem pro lidi. |
+| Výchozí | Strom si vytváří cukry pro vlastní růst. Kyslík je odpad tohoto procesu. | Přínos fotosyntézy pro strom; kyslík není jejím účelem pro lidi. |
 | Otevřené [CO₂](okna.md#co₂) | Uhlík pro tvorbu dřeva pochází z CO₂ ve vzduchu. | Původ uhlíku v těle stromu, nikoli z hlíny. |
 | Otevřené [Cukry](okna.md#cukry) | Z cukrů strom staví své tělo. Živé buňky listů, kmene i kořenů z nich získávají energii. | Cukry jako stavební materiál a palivo; buněčné dýchání i mimo listy. |
 | Otevřená [Voda](okna.md#voda) | Kořeny nepřijímají hlínu, ale vodu a minerální živiny. Část přijaté vody odchází z listů jako pára. | Příjem kořeny a výpar; přijatá voda nezůstává všechna ve stromu. |
@@ -34,7 +35,13 @@
 
 - Výchozí text: „Odpar v listech táhne vodu od kořenů a spotřebovává teplo — tím strom ochlazuje.“
 - Cíl: propojit tah vody a chlazení podle [Mýtů a porozumění](strategi_problems.md#mýty-a-porozumění).
-- Tematické varianty pro jednotlivá okna zatím nejsou navržené.
+
+| Kontext | Navržený text | Cíl porozumění |
+|---|---|---|
+| Otevřená [Transpirace](okna.md#transpirace) | Odpar vody v listech pomáhá táhnout vodu xylémem od kořenů vzhůru. | Tah vody vzniká v souvislosti s odparem v listech, ne čerpadlem v kořenech. |
+| Otevřená [Teplota](okna.md#teplota) | Když se voda z listů odpařuje, spotřebovává teplo a koruna se ochlazuje. | Ochlazení stromu je důsledek odparu vody. |
+| Otevřené [Chlazení](okna.md#chlazení) | Chlazení nevzniká samostatným mechanismem: způsobuje ho voda, která se při odparu mění v páru. | Propojit odpar se spotřebou tepla. |
+| Otevřený [Příjem vody](okna.md#příjem-vody) | Kořeny přijímají vodu a minerální živiny; voda pak putuje xylémem k listům. | Rozlišit příjem vody kořeny, její transport a odpar v listech. |
 
 ## K dopracování a ověření
 

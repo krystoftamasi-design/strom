@@ -26,14 +26,15 @@ history:
 #### Datum
 
 - Zobrazuje datum modelového roku.
-- Umístění: vlevo nahoře.
+- Umístění: vpravo nahoře.
 - Písmo: Satoshi, bez pozadí.
 - Barva: ve dne tmavá, v noci světlá.
 - Vzhled: [tree_annotations.css](../../okna/tree_annotations.css), `.season-date-card`.
 
 #### Průvodce Transpirací
 
-- Průvodce obsahuje pouze text „Odpar v listech táhne vodu vzhůru.“.
+- Fotosyntéza zobrazuje výchozí text a po otevření oken CO₂, Cukry, Voda nebo O₂ zobrazí příslušnou tematickou variantu. Definice textů jsou v [Kontextových textech](kontextove_texty.md#fotosyntéza).
+- Transpirace zobrazuje text „Odpar v listech táhne vodu vzhůru.“.
 
 [Zpět na obsah](../architektura_obsahu.md)
 

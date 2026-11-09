@@ -1,5 +1,8 @@
 ---
 history:
+  - thread_id: 01a19445-cca8-7da2-a034-14d5bea3af17
+    date: 2026-11-01
+    change: "Přeskupeno pořadí pravých oken Transpirace: nahoře Teplota, uprostřed Chlazení a dole Příjem vody."
   - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
     date: 2026-11-01
     change: Odstraněn doplňkový řádek s porovnáním teplot v detailu.
@@ -20,12 +23,14 @@ history:
 
 # Okna
 
+- Nápověda +/− se aktivuje 30 sekund po načtení stránky, pokud uživatel dosud ručně nepřepnul žádné okno; první přepnutí tlačítkem, nadpisem či klávesnicí ji vypne všude až do obnovení stránky. Automatické výchozí otevření ji nevypíná. Animaci určuje [Vzhled oken](vzhled_oken.md).
+
 ## Kapitola Fotosyntéza
 
 ### Okna
 
 - Všechna okna používají [šablonu Transpirace](vzhled_oken.md#šablona-jednoho-okna-podle-transpirace), včetně velikostí písma, tahů a viditelného tlačítka +/−. Nadpis i tlačítko přepínají detail; stav se zachovává při změně kapitoly.
-- Hlavní detail je nad údaji a výchozí otevřený; tematické detaily jsou výchozí zavřené, vpravo od údajů a na úzké obrazovce pod nimi.
+- Hlavní detail je pod údaji a výchozí otevřený; tematické detaily jsou výchozí zavřené, vpravo od údajů a na úzké obrazovce pod nimi.
 
 #### Fotosyntéza
 
@@ -38,7 +43,7 @@ history:
 - Hodnota: `activity`, zobrazená v procentech.
 - Vstupy výpočtu: zapnuté.
 - Výsledná hodnota: zapnutá.
-- Výchozí stav detailu: otevřený; detail je nad hlavními údaji.
+- Výchozí stav detailu: otevřený; detail je pod hlavními údaji.
 
 #### O₂
 
@@ -110,14 +115,14 @@ history:
 - Vzorec: `min(základ × listy × světlo × voda; spotřeba)`, viditelný pod hodnotou.
 - Vstupy výpočtu: základ odparu, podíl listů, světlo, zavodnění a mez spotřeby; význam jednotek určuje [Význam vzorců](#význam-vzorců).
 - Ovládání detailu: kliknutí na nadpis nebo viditelné tlačítko +/− vedle něj.
-- Výchozí stav detailu: otevřený; detail je nad hlavními údaji.
+- Výchozí stav detailu: otevřený; detail je pod hlavními údaji.
 - Související elementy: [Voda linka](elementy.md#voda-linka), [H₂O částice](elementy.md#h₂o).
 
 #### Příjem vody
 
 **Tag:** 🔵 `water`
 
-- Nadpis: `Příjem vody`; role: tematické okno; strana: vpravo nahoře.
+- Nadpis: `Příjem vody`; role: tematické okno; strana: vpravo dole.
 - Detailní text: „Kořeny přijímají vodu a doplňují její zásobu ve stromu. Příjem a odpar nemusí být v danou chvíli stejné.“
 - Hodnota: příjem kořeny v `l/h`, jedno desetinné místo.
 - Vzorec: `min(přísun; limit kořenů)`, viditelný pod hodnotou.
@@ -142,7 +147,7 @@ history:
 
 **Tag:** 🌡️ `temperature`
 
-- Nadpis: `Teplota`; role: tematické okno; strana: vpravo, třetí shora.
+- Nadpis: `Teplota`; role: tematické okno; strana: vpravo nahoře.
 - Detailní text: „Číslo ukazuje teplotu u koruny. Ve dne ji odpar pomáhá snižovat; v noci může být u koruny mírně tepleji. Jde o výukový odhad založený na normálech ČHMÚ 1991–2020, nikoli měření nebo předpověď.“
 - Hodnota: teplota u koruny ve `°C`, jedno desetinné místo.
 - Vzorec: `okolí − ochlazení + noční efekt`, viditelný pod hodnotou.

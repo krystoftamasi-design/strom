@@ -2,19 +2,22 @@
 history:
   - thread_id: 01a19445-cca8-7da2-a034-14d5bea3af17
     date: 2026-11-01
+    change: Opraveno záhlaví oken, aby tlačítko plus/minus zůstalo uvnitř okna.
+  - thread_id: 01a19445-cca8-7da2-a034-14d5bea3af17
+    date: 2026-11-01
+    change: Zmenšeno společné tlačítko plus/minus v šabloně oken.
+  - thread_id: 01a19445-cca8-7da2-a034-14d5bea3af17
+    date: 2026-11-01
+    change: Zvětšen text odstavců v detailech oken na 14 px; úzké obrazovky používají 12 px.
+  - thread_id: 01a19445-cca8-7da2-a034-14d5bea3af17
+    date: 2026-11-01
+    change: "Přeskupeno pořadí pravých oken Transpirace: nahoře Teplota, uprostřed Chlazení a dole Příjem vody."
+  - thread_id: 01a19445-cca8-7da2-a034-14d5bea3af17
+    date: 2026-11-01
     change: Zjednodušen průvodce Transpirací na jedinou větu o tahu vody odparem v listech.
   - thread_id: 01a19440-f196-71c2-b537-4d16ada46139
     date: 2026-11-01
     change: Obnovena verze importu částicového modulu po přidání zvýraznění plynů.
-  - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
-    date: 2026-11-01
-    change: Zavedena jednotná předběžná kontrola vybraných souborů před commitem.
-  - thread_id: 01a1943d-30ff-7d43-bbee-d60f487d7880
-    date: 2026-11-01
-    change: Zvětšeny částice O₂ a CO₂ a napojeno jejich zvýraznění na otevření příslušného okna.
-  - thread_id: 01a191e0-8d1f-70f1-ba15-e9a7b61dbe4a
-    date: 2026-11-01
-    change: Odstraněn doplňkový řádek s porovnáním teplot v detailu.
 
 ---
 
@@ -26,6 +29,48 @@ history:
 
 ## Implementováno
 
+#### Z097 — Výraznější zvýraznění elementů
+
+- Zadání: zvýšit zřetelnost zvýraznění propojených elementů.
+- Výsledek: zvýrazněné linky jsou světlejší a méně průhledné, částice jsou větší.
+- Stav: Implementováno.
+- Ověření: cílený test částic a kontrola změn; finální vizuální kontrola uživatelem.
+
+#### Z093 — Zvýraznění elementů při najetí na okno
+
+- Zadání: rozšířit propojení oken a elementů o najetí.
+- Výsledek: najetí zvýrazní související element stejně jako otevřený detail; oba stavy se kombinují.
+- Stav: Implementováno.
+- Ověření: kontrola změn a syntaxe JavaScriptu; finální funkční kontrola uživatelem.
+
+#### Z096 — Rozvržení kapitol a času
+
+- Zadání: vytvořit dvě varianty rozmístění hlavního okna, průvodce a času.
+- Výsledek: Fotosyntéza řadí hlavní okno, průvodce a čas shora; Transpirace čas, průvodce a hlavní okno.
+- Stav: Implementováno.
+- Ověření: kontrola CSS a dokumentace; vizuální kontrola čeká na uživatele.
+
+#### Z095 — Zvýraznění tlačítka vedlejšího okna
+
+- Zadání: zvýraznit tlačítko při najetí na celé vedlejší okno a zachovat zvětšení při najetí na tlačítko.
+- Výsledek: tlačítko přebírá barvu tématu při hoveru okna; při vlastním hoveru se také zvětší.
+- Stav: Implementováno.
+- Ověření: kontrola CSS a dokumentace; vizuální kontrola čeká na uživatele.
+
+#### Z094 — Velikost textu hlavního detailu
+
+- Zadání: sjednotit velikost rozbaleného textu hlavního a vedlejších oken.
+- Výsledek: všechny detaily používají stejnou velikost a řez písma včetně úzkých obrazovek.
+- Stav: Implementováno.
+- Ověření: kontrola pravidel CSS a dokumentace; vizuální kontrola čeká na uživatele.
+
+#### Z093 — Časování kontextového textu
+
+- Zadání: zkrátit čekání a prolínání kontextového textu a odstranit výjimku při omezení pohybu.
+- Výsledek: po 15 sekundách původní text 3 sekundy mizí a nový se 3 sekundy objevuje za všech nastavení pohybu.
+- Stav: Implementováno.
+- Ověření: kontrola změněných hodnot v kódu a dokumentaci; vizuální kontrola čeká na uživatele.
+
 #### Z092 — Jednotné plynulé zvýraznění menu
 
 - Zadání: odstranit podtržení a sjednotit zvýraznění všech kapitol.
@@ -33,12 +78,98 @@ history:
 - Stav: Implementováno.
 - Ověření: kontrola změn a pravidel stylu; finální vizuální a funkční kontrola uživatelem.
 
+#### Z091 — Stabilní tučné menu
+
+- Zadání: vrátit skutečně tučné písmo při najetí a odstranit poskakování položek.
+- Výsledek: tlačítka mají předem šířku tučného textu, zvětšuje se samotný text od spodního okraje.
+- Stav: Implementováno.
+- Ověření: kontrola vlastního diffu a commitový hook; vizuální ověření uživatelem.
+
+
+#### Z090 — Jemnější zvýraznění menu
+
+- Zadání: zjemnit a zpomalit zvětšení při najetí a omezit poskakování textu dolů.
+- Výsledek: plynulý přechod 300 ms, zvětšení o 3 % od spodního okraje a zvýraznění bez změny šířky textu.
+- Stav: Implementováno.
+- Ověření: kontrola vlastního diffu a commitový hook; vizuální ověření uživatelem.
+
+
+#### Z089 — Zvýraznění položek menu při najetí
+
+- Zadání: nahradit podtržení při najetí tučným a zvětšeným textem ve společném menu.
+- Výsledek: položky kapitol se při najetí zvýrazní tučně a zvětší o 8 %; fokus zůstává viditelný a omezení pohybu vypíná přechod.
+- Stav: Implementováno.
+- Ověření: kontrola vlastního diffu a commitový hook; vizuální ověření uživatelem.
+
+
+#### Z088 — Poloha menu v Úvodu a načtení data
+
+- Zadání: vrátit menu v Úvodu na původní místo a načíst přesunuté datum.
+- Výsledek: v Úvodu je menu znovu uprostřed výšky vpravo; nová verze stylů se načte po obnovení stránky.
+- Stav: Implementováno.
+- Ověření: kontrola diffu a commitový hook; vizuální ověření uživatelem.
+
+
+#### Z087 — Odstranění Manageru a vzhled ovládání času
+
+- Zadání: odstranit tlačítko Manager a sladit ovládání času se současným rozhraním.
+- Výsledek: Manager je odstraněný; pauza a rychlosti mají jednoduchý světlý nebo tmavý vzhled vpravo dole, v Úvodu zůstávají skryté.
+- Stav: Implementováno.
+- Ověření: kontrola syntaxe JavaScriptu a existující test definic oken; chování času ani vzhled nebyly v prohlížeči ověřeny.
+
+
+#### Z086 — Menu vlevo a datum vpravo
+
+- Zadání: přesunout menu na levou hranu na místo data a datum dát doprava.
+- Výsledek: navigace začíná vlevo nahoře, datum je vpravo nahoře; úzké obrazovky používají přizpůsobené okraje.
+- Stav: Implementováno.
+- Ověření: kontrola vlastního diffu a commitový hook; finální vizuální kontrola uživatelem.
+
+
+#### Z085 — Detail hlavních oken pod údaji
+
+- Zadání: otevřít text hlavního okna směrem dolů a upravit společnou šablonu i dokumentaci.
+- Výsledek: detail hlavního okna Fotosyntézy i Transpirace je samostatně pod pevným oknem, nezvětšuje je a má vlastní posuv; šablona platí i pro úzké obrazovky.
+- Stav: Implementováno.
+- Ověření: kontrola CSS a cílený test definic oken; finální vizuální kontrola uživatelem.
+
+
+#### Z084 — Plynulá změna kontextu
+
+- Zadání: pomalejší prolínání kontextových textů a nižší poloha průvodce Fotosyntézy.
+- Výsledek: po 20 sekundách text 5 sekund mizí a nový se 5 sekund objevuje; při omezení pohybu se po čekání přepne bez animace. Průvodce je níže pod hlavním oknem.
+- Stav: Implementováno.
+- Ověření: kontrola syntaxe JavaScriptu; vizuální a funkční kontrola uživatelem.
+
+
+#### Z083 — Fotosyntéza nahoře s kontextem pod oknem
+
+- Zadání: zarovnat hlavní Fotosyntézu s horním postranním oknem a umístit kontext hned pod ni.
+- Výsledek: hlavní okno začíná na 25 % výšky (na úzké obrazovce 22 %); kontext následuje 14 px pod ním a dlouhý text má vlastní posuv.
+- Stav: Implementováno.
+- Ověření: kontrola CSS a vlastního diffu; finální vizuální kontrola ponechána uživateli.
+
+
+#### Z082 — Pohybová nápověda oken
+
+- Zadání: [Nápověda +/−](moje/okna.md).
+- Výsledek: hover +8 %, po 30 s bez použití pulz každých 8 s; první ruční přepnutí vypíná nápovědu všude až do obnovení. Respektuje omezení pohybu.
+- Stav: Implementováno.
+- Ověření: kontrola definic oken; finální vizuální kontrola uživatelem.
+
 #### Z081 — Neořezané tlačítko detailu
 
 - Zadání: minimální oprava tlačítka plus/minus ve společné šabloně.
 - Výsledek: tlačítko bez záporného posunu, rámeček uvnitř rozměru a zachovaná minimální velikost.
 - Stav: Implementováno.
 - Ověření: kontrola CSS; vizuální kontrola uživatelem.
+
+#### Z080 — Kontextové texty Fotosyntézy
+
+- Zadání: nasadit kontextové texty z [Kontextových textů](moje/kontextove_texty.md#fotosyntéza) do kapitoly Fotosyntéza.
+- Výsledek: průvodce zobrazuje výchozí větu a při otevření oken CO₂, Cukry, Voda nebo O₂ přepíná na tematickou variantu; po zavření se vrací k výchozímu textu.
+- Stav: Implementováno.
+- Ověření: kontrola syntaxe JavaScriptu, odkazů a dokumentace; finální vizuální kontrola uživatelem.
 
 #### Z078 — Výraznější kruh období
 
@@ -54,6 +185,13 @@ history:
 - Stav: Implementováno.
 - Ověření: netestováno na výslovný pokyn uživatele.
 
+#### Z077 — Sjednocení pohybu částic H₂O
+
+- Zadání: řídit množství částic H₂O stejně jako ostatní částice a nezačínat na hnědém konci vodní linky.
+- Výsledek: odpar dál určuje četnost emisí; H₂O nyní používá stejný odstup od zdroje, náhodnou rychlost, životnost, velikost a plynulé zvětšení/zmenšení jako plynové částice.
+- Stav: Implementováno.
+- Ověření: cílený test vodní páry, vizuální kontrola Transpirace v Google Chromu a kontrola dokumentace.
+
 #### Z075 — Úvod bez ovládání času
 
 - Zadání: [Ovládání času](moje/prvky.md#ovládání-času).
@@ -61,12 +199,40 @@ history:
 - Stav: Implementováno.
 - Ověření: cílená kontrola v Chromu.
 
+#### Z074 — PNG textury H₂O v Transpiraci
+
+- Zadání: nahradit částice Transpirace připravenými PNG texturami H₂O.
+- Výsledek: vodní pára používá tři existující malované varianty H₂O; generovaný text přes canvas byl odstraněn.
+- Stav: Implementováno.
+- Ověření: cílené testy částic, kontrola dokumentace a vizuální kontrola Transpirace v Google Chromu.
+
+#### Z073 — Vycentrování menu v Úvodu
+
+- Zadání: umístit menu v Úvodu na střed výšky obrázku.
+- Výsledek: úvodní menu je svisle vycentrované na 50 % výšky obrazovky; menu ostatních kapitol zůstává nahoře.
+- Stav: Implementováno.
+- Ověření: kontrola CSS, dokumentace a změny verze stylopisu; finální vizuální kontrola v Google Chromu.
+
+#### Z072 — Ukotvení tahu okna Voda
+
+- Zadání: opravit okno Voda, protože levý tah přesahoval okno.
+- Výsledek: obnoveno absolutní umístění oken podle společné šablony; levý tematický tah se kotví k oknu a nemění jeho rozložení.
+- Stav: Implementováno.
+- Ověření: kontrola CSS, dokumentace a změny verze stylopisu; finální vizuální kontrola uživatelem.
+
 #### Z071 — Interakční odhad pozornosti
 
 - Zadání: zahrnout kliknutí a polohu myši do lokální analýzy.
 - Výsledek: [oddělený heuristický odhad](../tools/UNISAL.md#kliknutí-a-myš) s poklesem váhy, původní UNISAL zachován; srovnávací video používá společnou škálu.
 - Stav: Implementováno.
 - Ověření: skutečný záznam automatického otevření Vody, video H.264, kontrola normalizace, nulového účinku před kliknutím, poklesu, ukončení a slabšího vlivu myši. Nejde o měřený pohled ani validovaný model.
+
+#### Z070 — Větší text v postranních oknech
+
+- Zadání: zvětšit malý text odstavců v šabloně postranních oken.
+- Výsledek: tematické odstavce používají řez medium (váha 500), `clamp(16px, 1.05vw, 20px)` a na úzké obrazovce 14 px; hlavní okna zůstávají beze změny.
+- Stav: Implementováno.
+- Ověření: kontrola CSS, dokumentace a změny verze stylopisu; finální vizuální kontrola uživatelem.
 
 #### Z069 — Časová heatmapa UNISAL
 
@@ -96,6 +262,19 @@ history:
 - Stav: Implementováno.
 - Ověření: kontrola pravidel CSS; finální kontrola uživatelem.
 
+#### Z065 — Přesunutí tlačítka detailu k hodnotě
+
+- Zadání: přesunout kolečko plus/minus na místo vedle hodnoty v okně.
+- Výsledek: u všech ostatních tematických oken je tlačítko hned za celým nadpisem; název se nerozděluje. Hlavní okna jsou pouze Transpirace a Fotosyntéza a zůstávají v původním rozložení.
+- Stav: Implementováno.
+- Ověření: kontrola diffu; finální vizuální kontrola v Google Chromu.
+
+#### Z064 — Tlačítko uvnitř záhlaví okna
+
+- Zadání: kolečka plus/minus se nevejdou do okna.
+- Výsledek: záhlaví používá dostupnou šířku okna, nadpis se může zmenšit a tlačítko zůstává uvnitř.
+- Stav: Implementováno.
+- Ověření: kontrola diffu; finální vizuální kontrola v Google Chromu.
 
 #### Z063 — Opravy po testu oken
 
@@ -112,20 +291,6 @@ history:
 - Ověření: kontrola CSS a dokumentace; Chrome není dostupný, finální vizuální kontrola uživatelem.
 
 
-#### Z059 — Fotosyntéza podle šablony Transpirace
-
-- Zadání: aplikovat [šablonu Transpirace](moje/vzhled_oken.md#šablona-jednoho-okna-podle-transpirace) na okna Fotosyntézy.
-- Výsledek: všech pět oken má viditelné +/− a přepínání nadpisem, společné písmo, tahy a rozložení detailu. Hlavní detail je otevřený nad údaji, tematické výchozí zavřené. Přehled vstupů je viditelný i na úzké obrazovce; původní výpočty, témata a vazby elementů zůstávají.
-- Stav: Implementováno.
-- Ověření: cílený validační test oken a kontrola vlastního diffu; finální vizuální a funkční kontrola uživatelem.
-
-#### Z057 — Přesná šablona podle Transpirace
-
-- Zadání: popsat úplnou šablonu okna podle Transpirace včetně velikostí písma.
-- Výsledek: vzorem je Transpirace; definice obsahuje přesné škály písma, váhy, řádkování, barvy, rozměry, odstupy, ovládání a úzkou variantu podle současného kódu. Odkazy na šablonu jsou sjednocené.
-- Stav: Implementováno.
-- Ověření: porovnání s CSS a rendererem; dokumentační změna bez úpravy webu a bez finální vizuální kontroly.
-
 #### Z061 — Obnovení importů hlavního okna
 
 - Zadání: načíst aktuální variantu hlavního okna bez starých modulů v cache.
@@ -133,6 +298,20 @@ history:
 - Stav: Implementováno.
 - Ověření: kontrola importů; finální vizuální kontrola uživatelem.
 
+
+#### Z060 — Menší tlačítko detailu oken
+
+- Zadání: zmenšit tlačítko plus v šabloně okna.
+- Výsledek: společný přepínač detailu má 20 px místo 28 px, menší znak plus/minus a jeho optické vycentrování.
+- Stav: Implementováno.
+- Ověření: kontrola diffu a předběžná kontrola vybraných souborů; finální vizuální kontrola uživatelem.
+
+#### Z059 — Fotosyntéza podle šablony Transpirace
+
+- Zadání: aplikovat [šablonu Transpirace](moje/vzhled_oken.md#šablona-jednoho-okna-podle-transpirace) na okna Fotosyntézy.
+- Výsledek: všech pět oken má viditelné +/− a přepínání nadpisem, společné písmo, tahy a rozložení detailu. Hlavní detail je otevřený nad údaji, tematické výchozí zavřené. Přehled vstupů je viditelný i na úzké obrazovce; původní výpočty, témata a vazby elementů zůstávají.
+- Stav: Implementováno.
+- Ověření: cílený validační test oken a kontrola vlastního diffu; finální vizuální a funkční kontrola uživatelem.
 
 #### Z058 — Vodní pára a hlavní okno Transpirace
 
@@ -142,13 +321,33 @@ history:
 - Ověření: cílený test H₂O a validační test oken prošly; finální vizuální kontrola uživatelem. Průběžné načtení v Chromu nebylo dostupné kvůli nedostupnému připojení prohlížeče.
 
 
+#### Z057 — Přesná šablona podle Transpirace
+
+- Zadání: popsat úplnou šablonu okna podle Transpirace včetně velikostí písma.
+- Výsledek: vzorem je Transpirace; definice obsahuje přesné škály písma, váhy, řádkování, barvy, rozměry, odstupy, ovládání a úzkou variantu podle současného kódu. Odkazy na šablonu jsou sjednocené.
+- Stav: Implementováno.
+- Ověření: porovnání s CSS a rendererem; dokumentační změna bez úpravy webu a bez finální vizuální kontroly.
+
+#### Z056 — Větší text detailu oken
+
+- Zadání: zvětšit text odstavce v okně.
+- Výsledek: `.annotation-body p` používá 14 px, na úzké obrazovce 12 px.
+- Stav: Implementováno.
+- Ověření: kontrola diffu a předběžná kontrola vybraných souborů; finální vizuální kontrola uživatelem.
+
+#### Z055 — Pořadí oken Transpirace
+
+- Zadání: [Rozložení oken](moje/vzhled_oken.md#rozložení).
+- Výsledek: pravá okna jsou shora Teplota, Chlazení a Příjem vody; Příjem vody je nyní dole.
+- Stav: Implementováno.
+- Ověření: kontrola diffu, syntaxe JavaScriptu, YAML historie a předběžná kontrola vybraných souborů; finální vizuální kontrola uživatelem.
+
 #### Z054 — Jednodušší pracovní postup
 
 - Zadání: omezit administrativu a opakované kontroly.
 - Výsledek: historie v Gitu bez povinných YAML záznamů a ID chatů; kratší AGENTS.md, cílené testy a jedna automatická kontrola při commitu. Hook prověřuje i syntaxi a mezery. Web se nemění.
 - Stav: Implementováno.
 - Ověření: testy kontroloru pro dokumenty bez frontmatteru, obsah bez aktualizace historie, starou delší historii, neplatný YAML, chybný JavaScript a mezery; kontrola diffu.
-
 
 #### Z053 — Jednoduchý text průvodce Transpirací
 

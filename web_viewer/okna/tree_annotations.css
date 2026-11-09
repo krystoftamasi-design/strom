@@ -37,7 +37,7 @@ body[data-chapter="intro"] .chapter-panel.tree-overlay {
 .tree-annotation:not([data-chapter="photosynthesis"]) .annotation-body p { color: #c8d0c3; }
 .tree-annotation:not([data-chapter="photosynthesis"]) .annotation-body strong,
 .tree-annotation:not([data-chapter="photosynthesis"]) .annotation-body output { color: #d9eabd; }
-.tree-overlay .annotation-body p { font-size: 12px; line-height: 1.45; margin-bottom: 7px; }
+.tree-overlay .annotation-body p { font-size: 14px; line-height: 1.45; margin-bottom: 7px; }
 .tree-overlay .annotation-body > :last-child { margin-bottom: 0; }
 .tree-overlay .annotation-body .chapter-eyebrow { font-size: 9px; margin: 0 0 9px; }
 .tree-overlay .annotation-body .chapter-note { font-size: 10px; color: #b0bfaa; }
@@ -90,7 +90,7 @@ body.scene-night .tree-overlay [data-chapter="intro"] .intro-title { color: #f0f
 .shared-toggle { border: 0; border-radius: 50%; background: #ffffff0c; color: #c5dda4; width: 22px; height: 22px; flex: 0 0 auto; font-size: 18px; cursor: pointer; }
 .shared-toggle:hover { background: #ffffff20; }
 .chapter-shared.collapsed .shared-body { display: none; }
-.tree-overlay .season-date-card { position: absolute; top: 32px; left: 32px; z-index: 2; display: flex; align-items: baseline; gap: 11px; padding: 0; border: 0; border-radius: 0; background: transparent; color: #252b25; font: 400 14px 'Satoshi', sans-serif; pointer-events: none; }
+.tree-overlay .season-date-card { position: absolute; top: 7%; left: 6%; z-index: 2; display: flex; align-items: baseline; gap: 11px; padding: 0; border: 0; border-radius: 0; background: transparent; color: #252b25; font: 400 14px 'Satoshi', sans-serif; pointer-events: none; }
 .tree-overlay .season-date-card[hidden] { display: none; }
 .tree-overlay .season-date-card output { color: inherit; font: 500 17px 'Satoshi', sans-serif; }
 body.scene-night .tree-overlay .season-date-card { color: #f0f2e9; }
@@ -128,18 +128,24 @@ body.scene-night .tree-overlay .season-date-card { color: #f0f2e9; }
   .tree-overlay .tree-annotation h2, .tree-overlay .tree-annotation h3 { font-size: 12px; }
   .annotation-toggle { width: 22px; height: 22px; }
   .annotation-body { padding: 0 10px 10px; max-height: 30vh; }
-  .tree-overlay .annotation-body p { font-size: 11px; }
+  .tree-overlay .annotation-body p { font-size: 12px; }
   .tree-overlay [data-chapter="intro"] .tree-annotation { width: min(270px, calc(100vw - 36px)); }
   .tree-overlay [data-chapter="intro"] .annotation-body { max-height: 25vh; }
   .tree-overlay .chapter-shared { left: 10px; bottom: 82px; width: 160px; padding: 11px; max-height: 185px; }
   .tree-overlay .shared-heading { display: block; }
   .tree-overlay .shared-heading { position: relative; padding-right: 28px; }
   .tree-overlay .shared-toggle { position: absolute; right: 0; top: 0; }
-  .tree-overlay .season-date-card { top: 22px; left: 22px; padding: 0; }
+  .tree-overlay .season-date-card { top: 17%; left: 4%; padding: 0; }
   .tree-overlay .shared-heading h3 { font-size: 12px; margin-bottom: 4px; }
   .tree-overlay .temperature-comparison { gap: 4px; }
   .tree-overlay .temperature-comparison > div { padding: 5px; }
   .tree-overlay .temperature-comparison strong { font-size: 12px; }
   .tree-overlay .reserve-heading, .tree-overlay .chapter-shared .slider-label { font-size: 10px; }
   .has-chapters .hud-bottom { left: 10px; right: auto; top: 74px; bottom: auto; }
+}
+
+/* Place the date against the right edge. */
+.tree-overlay .season-date-card { left: auto; right: 3%; }
+@media (max-width: 700px) {
+  .tree-overlay .season-date-card { left: auto; right: 4%; top: 7%; }
 }

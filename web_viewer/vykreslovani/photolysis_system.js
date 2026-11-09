@@ -87,6 +87,7 @@ export class PhotolysisSystem {
     this._baseBubbleDir = new this.THREE.Vector3(0.55, 0.70, -0.35).normalize();
     this._vScreenStart = new this.THREE.Vector3();
     this._vScreenEnd = new this.THREE.Vector3();
+    this._vWaterOut = new this.THREE.Vector3();
 
     // Initialize pools
     this._initPhotonPool();
@@ -148,7 +149,7 @@ export class PhotolysisSystem {
     const growth = entrance * entrance * (3 - 2 * entrance);
     const exit = Math.max(0, Math.min(1, (b.maxLifetime - b.age) / 0.25));
     const shrink = exit * exit * (3 - 2 * exit);
-    const highlight = this.highlightedGases[b.kind] ? 1.72 : 1;
+    const highlight = this.highlightedGases[b.kind] ? 2.1 : 1;
     b.mesh.scale.setScalar(b.baseScale * 1.6 * this.bubbleSize * highlight * (0.02 + 0.98 * growth) * shrink);
   }
   setBubbleSpawnDistance(distance) {
@@ -277,21 +278,19 @@ export class PhotolysisSystem {
     this.waterPool = [];
     if (!this.waterGroup) return;
     const THREE = this.THREE;
-    if (!texture) {
-      const canvas = document.createElement('canvas');
-      canvas.width = 256;
-      canvas.height = 256;
-      const ctx = canvas.getContext('2d');
-      ctx.fillStyle = '#2f49d6';
-      ctx.font = 'bold 88px sans-serif';
-      ctx.textAlign = 'center';
-      ctx.textBaseline = 'middle';
-      ctx.fillText('H₂O', 128, 128);
-      texture = new THREE.CanvasTexture(canvas);
-      texture.colorSpace = THREE.SRGBColorSpace;
-    }
-    const material = applyGasLeafStyle(new THREE.SpriteMaterial({ map: texture, toneMapped: false }));
+    const waterTextures = Array.isArray(texture) && texture.length
+      ? texture
+      : texture
+        ? [texture]
+        : ['1.png', '2.png', '3.png'].map(name => new THREE.TextureLoader().load(
+          new URL(`../web_assets/h2o/${name}`, import.meta.url).href
+        ));
+    for (const waterTexture of waterTextures) waterTexture.colorSpace = THREE.SRGBColorSpace;
+    const waterMaterials = waterTextures.map(waterTexture => applyGasLeafStyle(
+      new THREE.SpriteMaterial({ map: waterTexture, toneMapped: false })
+    ));
     for (let i = 0; i < this.maxBubbles; i++) {
+      const material = waterMaterials[i % waterMaterials.length];
       const mesh = new THREE.Sprite(material);
       mesh.name = `WaterVapour_${i}`;
       mesh.visible = false;
@@ -315,8 +314,22 @@ export class PhotolysisSystem {
         if (!b) break;
         b.active = true;
         b.age = 0;
-        b.mesh.position.copy(this.getReactionPoint());
-        b.velocity.set((Math.random() - 0.5) * 1.5, 1 + Math.random(), (Math.random() - 0.5) * 1.5);
+        const rx = this.getReactionPoint();
+        // Water vapour leaves the crown: use the radial direction away from
+        // the trunk and add a gentle upward component, with small variation.
+        this._vWaterOut.set(rx.x, 0, rx.z);
+        if (this._vWaterOut.lengthSq() < 0.0001) this._vWaterOut.set(0, 0, 1);
+        this._vWaterOut.normalize();
+        b.velocity.copy(this._vWaterOut).multiplyScalar(0.9).add(this._vUp).normalize();
+        b.velocity.x += (Math.random() - 0.5) * 0.25;
+        b.velocity.y += Math.random() * 0.25;
+        b.velocity.z += (Math.random() - 0.5) * 0.25;
+        b.velocity.normalize().multiplyScalar(this.bubbleSpeed * (0.85 + Math.random() * 0.30));
+        const spawnDirection = this._vDir.copy(b.velocity).normalize();
+        const spawnDistance = this._getBubbleSpawnDistance(spawnDirection, rx);
+        b.mesh.position.copy(rx).addScaledVector(spawnDirection, spawnDistance);
+        b.maxLifetime = 3.2 + Math.random() * 0.8;
+        b.baseScale = 0.62 + Math.random() * 0.28;
         b.mesh.visible = true;
         this._updateGasScale(b);
       }

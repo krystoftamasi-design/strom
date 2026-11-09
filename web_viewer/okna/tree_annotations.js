@@ -1,4 +1,4 @@
-import { oknaPodleKapitol, pruvodceTranspiraci } from './element_ui_okna_obsah.js?v=photosynthesis-template-1';
+import { oknaPodleKapitol, kontextoveTexty, pruvodceTranspiraci } from './element_ui_okna_obsah.js?v=context-guides-1';
 import { veliciny, vstupyVzorce, ohlasitChybuOken } from './element_ui_okna_veliciny.js?v=transpiration-vapour-1';
 import { zkontrolovatOkna } from './element_ui_okna_kontrola.js?v=transpiration-vapour-1';
 
@@ -64,12 +64,21 @@ function createElementUiOkno({ panel, body, reveal, toggle }) {
 // Static screen-space UI. Camera and tree geometry never participate in layout.
 // Original content and controls are moved, so live outputs and handlers survive.
 export function createTreeAnnotations({ shell, model, createSeasonControl, setElementHighlight = () => {} }) {
+  // This hint lives only until reload; defaults opening programmatically do not dismiss it.
+  const hintTimer = setTimeout(() => shell.classList.add('window-toggle-hint'),
+    Math.max(0, 30000 - performance.now()));
+  function dismissToggleHint() {
+    clearTimeout(hintTimer);
+    shell.classList.remove('window-toggle-hint');
+  }
   const linkedWindows = new Map();
+  const contextSelections = new Map();
+  const contextGuides = new Map();
   let activeChapter = null;
   function syncHighlights() {
     const states = [...linkedWindows.values()];
     for (const tag of new Set(states.map(state => state.tag))) {
-      setElementHighlight(tag, states.some(state => state.tag === tag && state.chapter === activeChapter && state.open));
+      setElementHighlight(tag, states.some(state => state.tag === tag && state.chapter === activeChapter && (state.open || state.hovered)));
     }
   }
   const content = shell.querySelector('.chapter-content');
@@ -79,6 +88,45 @@ export function createTreeAnnotations({ shell, model, createSeasonControl, setEl
     najitOvladani: id => document.getElementById(id)?.closest('.slider-group'),
   });
   kontrola.chyby.forEach(ohlasitChybuOken);
+  function updateContextGuide(chapter) {
+    const guide = contextGuides.get(chapter);
+    const config = kontextoveTexty[chapter];
+    if (!guide || !config) return;
+    const selections = contextSelections.get(chapter) || [];
+    const selected = selections.at(-1);
+    const title = guide.querySelector('h2');
+    const next = config.varianty[selected] || config.vychozi;
+    clearTimeout(guide.contextTimer);
+    if (!title.textContent) {
+      title.textContent = next;
+      title.classList.remove('context-fading');
+      return;
+    }
+    if (title.textContent === next) {
+      title.classList.remove('context-fading');
+      return;
+    }
+    title.classList.remove('context-fading');
+    guide.contextTimer = setTimeout(() => {
+      title.classList.add('context-fading');
+      guide.contextTimer = setTimeout(() => {
+        title.textContent = next;
+        title.classList.remove('context-fading');
+      }, 3000);
+    }, 15000);
+  }
+  function addContextGuide(article, chapter) {
+    const config = kontextoveTexty[chapter];
+    if (!config) return;
+    const guide = document.createElement('section');
+    guide.className = 'chapter-context-guide';
+    guide.setAttribute('aria-label', `Kontext kapitoly ${article.dataset.chapter}`);
+    const title = document.createElement('h2');
+    guide.append(title);
+    contextGuides.set(chapter, guide);
+    article.append(guide);
+    updateContextGuide(chapter);
+  }
   function card(article, anchor, side, title, nodes, heading = null, definition = null) {
     const panel = document.createElement('section');
     panel.className = 'tree-annotation';
@@ -128,12 +176,29 @@ export function createTreeAnnotations({ shell, model, createSeasonControl, setEl
     body.append(...nodes.filter(Boolean));
     panel.append(header, reveal);
     if (definition) createElementUiOkno({ panel, body, reveal, toggle });
+    if (definition) {
+      for (const [eventName, hovered] of [['pointerenter', true], ['pointerleave', false]]) {
+        panel.addEventListener(eventName, event => {
+          if (event.pointerType === 'touch') return;
+          const state = linkedWindows.get(panel);
+          if (state) { state.hovered = hovered; syncHighlights(); }
+        });
+      }
+    }
     let expanded = false;
     function expand(open) {
       expanded = open;
       if (definition) {
-        linkedWindows.set(panel, { tag: definition.tema, chapter: article.dataset.chapter, open });
+        linkedWindows.set(panel, { tag: definition.tema, chapter: article.dataset.chapter, open, hovered: linkedWindows.get(panel)?.hovered || false });
         syncHighlights();
+        const context = kontextoveTexty[article.dataset.chapter];
+        if (context?.varianty?.[definition.id]) {
+          const selections = (contextSelections.get(article.dataset.chapter) || [])
+            .filter(id => id !== definition.id);
+          if (open) selections.push(definition.id);
+          contextSelections.set(article.dataset.chapter, selections);
+          updateContextGuide(article.dataset.chapter);
+        }
       }
       body.inert = !open;
       body.setAttribute('aria-hidden', String(!open));
@@ -141,8 +206,9 @@ export function createTreeAnnotations({ shell, model, createSeasonControl, setEl
       toggle.textContent = open ? '−' : '+';
       toggle.setAttribute('aria-expanded', String(open));
     }
-    toggle.addEventListener('click', () => expand(!expanded));
-    if (definition && (definition.viditelnyPrepinac || ['water', 'sugar'].includes(definition.tema))) h.addEventListener('click', () => expand(!expanded));
+    const userToggle = () => { dismissToggleHint(); expand(!expanded); };
+    toggle.addEventListener('click', userToggle);
+    if (definition && (definition.viditelnyPrepinac || ['water', 'sugar'].includes(definition.tema))) h.addEventListener('click', userToggle);
     expand(definition ? Boolean(definition.otevrene) : article.dataset.chapter === 'intro' || article.dataset.chapter === 'seasons');
     header.append(h, toggle);
     article.append(panel);
@@ -221,9 +287,10 @@ export function createTreeAnnotations({ shell, model, createSeasonControl, setEl
   }
 
   for (const article of content.querySelectorAll('article[data-chapter]')) {
+    if (kontextoveTexty[article.dataset.chapter]) addContextGuide(article, article.dataset.chapter);
     if (article.dataset.chapter === 'transpiration') {
       const guide = document.createElement('section');
-      guide.className = 'transpiration-guide';
+      guide.className = 'chapter-context-guide';
       guide.setAttribute('aria-label', 'Jak funguje transpirace');
       const title = document.createElement('h2');
       title.textContent = pruvodceTranspiraci.nadpis;
@@ -270,7 +337,7 @@ export function createTreeAnnotations({ shell, model, createSeasonControl, setEl
     // Only empty wrappers can be discarded; live outputs must remain in the DOM.
     const mainBody = article.querySelector('.annotation-body');
     for (const node of [...article.children]) {
-      if (node.classList.contains('tree-annotation') || node.classList.contains('transpiration-guide') || node.classList.contains('transpiration-prompt')) continue;
+      if (node.classList.contains('tree-annotation') || node.classList.contains('chapter-context-guide') || node.classList.contains('transpiration-prompt')) continue;
       if (node.classList.contains('chapter-metrics') && !node.children.length) node.remove();
       else if (mainBody) mainBody.append(node);
     }

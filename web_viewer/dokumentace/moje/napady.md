@@ -1,20 +1,39 @@
+---
+history:
+  - thread_id: 01a19445-cca8-7da2-a034-14d5bea3af17
+    date: 2026-11-01
+    change: Doplněny možné otázky k ověření porozumění fotosyntéze.
+  - thread_id: 01a19445-cca8-7da2-a034-14d5bea3af17
+    date: 2026-11-01
+    change: Doplněn návrh pořadí pravých oken Fotosyntézy podle příčiny a následku.
+---
+
 # Nápady
 
 - Návrhy k dalšímu posouzení podle [Strategie](strategie.md); samy nezadávají změnu webu.
 
 ## Transpirace
 
-### Propojení oken s místem děje
+### ❗ Propojení oken s místem děje
 
-- Návrh: Příjem vody zvýrazní kořeny, Transpirace odpar v listech a vodní trasu, Chlazení místo odparu.
-- Cíl: student rozliší příjem, transport a odpar místo stejného zvýraznění celé linky u více témat.
-- Stav: Nápad; prostorové rozlišení těchto vazeb není implementované.
 
-### Jednoduchý pokus s vodou
+TVORBA KAPITOLY SANBOX
 
-- Návrh: přes existující ovládání změnit dostupnost vody a sledovat souvislost mezi odparem a chlazením.
-- Cíl: student sám vysvětlí příčinu a následek; před návrhem úkolu ověřit reakce modelu.
-- Stav: Nápad; nový výukový pokus ani jeho vyhodnocování nejsou implementované.
+ Naznačit klikatelnost názvů oken a přítomnost vysvětlujícího textu.PRACUJU
+
+
+### Možné otázky k ověření porozumění
+
+- Návrh: ptát se „Odkud se bere většina hmoty nového dřeva a listů?“.
+- Návrh: ptát se „Co se stane s vodou a CO₂ v listu?“.
+- Návrh: očekávat vysvětlení, že za pomoci světla list vyrábí cukry a uvolňuje kyslík.
+- Cíl: ověřit, zda student chápe vztah mezi vstupy fotosyntézy a výslednými látkami, ne jen jejich názvy.
+- Stav: Nápad; otázky nejsou implementované ani ověřené na žácích.
+
+
+
+
+
 
 ## Pravidla struktury
 

@@ -29,14 +29,47 @@ history:
 
 - Pochopila fungování a ovládání Období; kruh fungoval srozumitelně.
 
+
+
+
+
+## Test s Pavlem — 1. 11. 2026
+
+- Kontext: neformální komentovaná ukázka webu jednomu účastníkovi, kterého autor označuje jako Pavla; automatický přepis nerozlišuje mluvčí. Nejde o samostatný test na cílové skupině ani o měření očních pohybů.
+- Zdroj: přepis „1. 11. 19.19_ - prepis s casy.txt“, hlavně 00:18:16–00:28:18; související debata o predikci pozornosti 00:15:27–00:17:45. Automatický přepis může obsahovat chyby; časové odkazy označují začátky úseků.
+- Omezení: záznam zachycuje komentáře při ukázce, nikoli přesný průběh klikání. Zmínka o mámině nejistotě při prvním použití je zprostředkovaná zkušenost z jiného testu, ne další Pavlovo pozorování. Jeden účastník neprokazuje četnost problémů.
+
+### Pozorované potíže
+
+- **Vizuální hierarchie:** texty, čísla a strom soupeří o pozornost; zaznívá, že není jasné, kam se dřív podívat. Nadpis Fotosyntéza odvádí pozornost od hlavního vysvětlení. (00:21:15–00:22:51)
+- **Souběžná změna textů:** při otevření detailu vpravo se současně mění hlavní text vlevo; v rozhovoru je toto chování označeno za matoucí. (00:19:19–00:20:00)
+- **Odborné pojmy:** během ukázky zazní otázka, co znamená transpirace. Z přepisu nelze určit, zda účastník následně našel vysvětlení samostatně. (00:19:19)
+- **Kontrast:** žluté prvky nejsou na aktuálním pozadí dobře vidět. (00:23:58–00:24:29)
+- **Aktuální období:** poloha popisku léta na kruhu neodpovídá očekávání vyvolanému vzhledem stromu; autor vysvětluje, že je duben. Aktivní období není z kruhu jasné. (00:26:32–00:27:10)
+- **Rychlé ovládání období:** při rychlém otáčení zaznívá upozornění na sekání a neproběhlou animaci. Není rozlišeno, zda jde o výkon, nebo přechody mezi stavy. (00:27:41)
+- **Kořeny:** vzniká pochybnost o věrnosti jejich hloubky a rozsahu vůči koruně; rozhovor ji neuzavírá. Nejde o prokázanou biologickou chybu modelu. (00:24:29–00:25:01)
+
+### Co fungovalo
+
+- Font i celkové vizuální zpracování dostávají pozitivní komentář; výhrady se týkají především orientace v obsahu. (00:18:16, 00:21:15)
+- Tvrzení o původu hmoty stromu vyvolává překvapení a zájem. To samo neprokazuje pochopení učiva ani správnost uvedeného procenta. (00:21:15)
+
 ### Podněty k řešení a ověření
 
-- Zřetelněji ukázat aktuální kapitolu, zejména Úvod při prvním otevření.
-- Prověřit větší částice O₂ a CO₂ a viditelnější reakci elementu po kliknutí.
-- Naznačit klikatelnost názvů oken a přítomnost vysvětlujícího textu.
-- Doplnit srozumitelné označení prvků fotosyntézy a vysvětlení jejich vazby na okna.
-- Zvážit mírné zvětšení ovládání Období; jde o námět, nikoli pozorované selhání kruhu.
-- Stav podnětů: K řešení. Při dalším testu sledovat rozpoznání aktuální kapitoly, samostatné otevření detailu a přiřazení elementu k tématu.
+- Ujasnit pořadí čtení: nejdřív krátké hlavní vysvětlení, potom sledování děje na stromu. Zvážit menší nadpis kapitoly a přiblížení vysvětlení k hornímu menu; při dalším testu sledovat, kde účastník začne číst. (00:21:49–00:22:51)
+- Prověřit srozumitelnost souběžných změn vlevo a vpravo; při dalším testu sledovat, zda účastník změny zaznamená a rozumí jejich vztahu. (00:19:19–00:20:00)
+- Zajistit srozumitelný výklad odborných pojmů a ověřit ho převyprávěním vlastními slovy, například u transpirace. (00:19:19)
+ ověřit čitelnost žlutých prvků na obou pozadích. (00:23:58–00:24:29)
+- Zřetelně označit aktuální období a ověřit, zda ho účastník správně určí bez nápovědy. Zvlášť prověřit průběh animací při rychlé změně období. (00:26:32–00:27:41)
+- Před použitím v učebním obsahu ověřit tvrzení o „90 % hmoty ze vzduchu“ a věrnost kořenů; rozhovor není odborným zdrojem. (00:21:15, 00:24:29–00:25:01)
+- Stav podnětů: Čeká. Tento zápis nedokládá provedení oprav ani jejich následné ověření.
+
+### Další témata z rozhovoru
+
+- **Výukový záměr:** autor vysvětluje zaměření na mylné představy, například že strom vyrábí cukry pro vlastní růst a „nejí hlínu“. Jde o popis záměru, nikoli výsledek testu porozumění. (00:20:00–00:21:15)
+- **Rozsah:** zaznívá možnost odložit detail buněk na další semestr a dokončit projekt pouze s fotosyntézou. Jde o úvahy, nikoli schválené omezení. (00:25:31, 00:26:32)
+- **Volné nápady:** sandbox s kácením nebo požárem a zobrazením uvolněného uhlíku; dále sníh. Nejde o požadavky ani doložené potřeby účastníka. (00:25:31–00:26:32, 00:28:18)
+- **UNISAL:** autor popisuje dřívější zjištění málo výrazného úvodního menu pomocí predikce pozornosti ze snímku. V rozhovoru se zároveň zpochybňuje přesnost a reakce na pohyb. Výstup není skutečným měřením Pavlova pohledu ani ověřením použitelnosti. (00:15:27–00:17:45)
 
 ## Pravidla struktury
 

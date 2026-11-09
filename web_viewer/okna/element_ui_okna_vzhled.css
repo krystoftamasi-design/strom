@@ -42,7 +42,7 @@ body.scene-night .tree-overlay { --ui-ink: #f0f2e9; }
 
 .tree-overlay .element-ui-okno {
   --ui-topic: var(--ui-ink);
-  box-sizing: border-box; width: 29%; height: 14%; min-height: 85px;
+  box-sizing: border-box; width: 29%; height: 17%; min-height: 85px;
   display: grid; grid-template-columns: max-content minmax(0, 1fr);
   grid-template-rows: minmax(0, 1fr);
   column-gap: var(--ui-column-gap); align-content: start; padding: 0 0 0 20px;
@@ -62,10 +62,10 @@ body.scene-night .tree-overlay { --ui-ink: #f0f2e9; }
   left: 6%; top: 65%; width: 55%; height: 21%; min-height: 140px;
   grid-template-columns: max-content minmax(0, 1fr);
 }
-.tree-overlay .element-ui-okno:is([data-window-id="kyslik"], [data-window-id="prijem-vody"]) { top: 28%; }
+.tree-overlay .element-ui-okno:is([data-window-id="kyslik"], [data-window-id="prijem-vody"]) { top: 25%; }
 .tree-overlay .element-ui-okno:is([data-window-id="co2"], [data-window-id="chlazeni"]) { top: 42%; }
-.tree-overlay .element-ui-okno:is([data-window-id="cukry"], [data-window-id="teplota"]) { top: 58%; }
-.tree-overlay .element-ui-okno[data-window-id="voda"] { top: 74%; height: 18%; }
+.tree-overlay .element-ui-okno:is([data-window-id="cukry"], [data-window-id="teplota"]) { top: 59%; }
+.tree-overlay .element-ui-okno[data-window-id="voda"] { top: 76%; height: 18%; }
 .tree-overlay .element-ui-okno .element-ui-readout > header {
   min-height: 0; padding: 0;
   justify-content: flex-start; border: 0;
@@ -104,9 +104,13 @@ body.scene-night .tree-overlay { --ui-ink: #f0f2e9; }
 .tree-overlay .element-ui-okno .chapter-link {
   margin: 0 0 8px; color: var(--ui-ink); font: var(--ui-text-style);
 }
+.tree-overlay .element-ui-okno .annotation-body p {
+  font-weight: 500; font-size: clamp(16px, 1.05vw, 20px); line-height: 1.4;
+}
 .tree-overlay .element-ui-okno .annotation-body > :last-child { margin-bottom: 0; }
 .tree-overlay .element-ui-values { padding: 0; }
 .tree-overlay .element-ui-values:empty { display: none; }
+.tree-overlay .element-ui-values { position: relative; }
 .tree-overlay .element-ui-values .chapter-metric {
   display: flex; flex-direction: row; align-items: baseline; gap: 5px;
   padding: 0; margin: 0; border: 0; background: none; white-space: nowrap;
@@ -156,6 +160,7 @@ body.scene-night .tree-overlay .element-ui-okno .ui-word {
 /* Narrow screens keep the same fixed columns, with details below the readout. */
 @media (max-width: 700px) {
   .tree-overlay { --ui-text-size: 11px; --ui-formula-size: 9px; --ui-heading-size: clamp(22px, 5vw, 32px); --ui-main-heading-size: clamp(18px, 4.5vw, 31px); --ui-main-value-size: 35px; }
+  .tree-overlay .element-ui-okno .annotation-body p { font-weight: 500; font-size: 14px; line-height: 1.4; }
   .tree-overlay .tree-annotation { left: 4%; top: 23%; width: 44%; height: 55%; }
   .tree-overlay .tree-annotation[data-side="right"] { left: 52%; width: 44%; }
   .tree-overlay .element-ui-okno { display: block; padding-left: 12px; width: 44%; height: 17%; min-height: 0; }
@@ -177,23 +182,23 @@ body.scene-night .tree-overlay .element-ui-okno .ui-word {
 }
 
 /* The chapter guide sits outside the shared window layout. */
-.transpiration-guide, .transpiration-prompt { position: absolute; color: var(--ui-ink); font: var(--ui-text-style); }
-.transpiration-guide { left: 6%; top: 23%; width: 29%; max-width: 420px; }
-.transpiration-guide h2 { margin: 10px 0; font: 500 clamp(22px, 2vw, 36px)/1.12 var(--ui-font-display); letter-spacing: -.025em; }
-.transpiration-guide p { margin: 0 0 12px; }
-.transpiration-guide .transpiration-eyebrow { font-size: 11px; text-transform: uppercase; letter-spacing: .12em; }
+.chapter-context-guide, .transpiration-prompt { position: absolute; color: var(--ui-ink); font: var(--ui-text-style); }
+.chapter-context-guide { left: 6%; top: 23%; width: 29%; max-width: 420px; }
+.chapter-context-guide h2 { margin: 10px 0; font: 500 clamp(22px, 2vw, 36px)/1.12 var(--ui-font-display); letter-spacing: -.025em; }
+.chapter-context-guide p { margin: 0 0 12px; }
+.chapter-context-guide .transpiration-eyebrow { font-size: 11px; text-transform: uppercase; letter-spacing: .12em; }
 .transpiration-steps { display: flex; flex-direction: column-reverse; list-style: none; padding: 0 0 0 17px; margin: 18px 0; border-left: 3px solid var(--ui-water); }
 .transpiration-steps li { padding: 3px 0; }
 .transpiration-steps li + li::before { content: '↑ '; color: var(--ui-water); }
-.transpiration-guide .transpiration-legend { color: var(--ui-water); font-weight: 600; }
+.chapter-context-guide .transpiration-legend { color: var(--ui-water); font-weight: 600; }
 .transpiration-prompt { left: 68%; top: 12%; width: 29%; }
 .transpiration-prompt h2 { font: 600 12px/1.3 var(--ui-font-text); text-transform: uppercase; letter-spacing: .08em; margin: 0 0 6px; }
 .transpiration-prompt p { margin: 0; max-width: 330px; }
 @media (max-width: 700px) {
-  .transpiration-guide { left: 4%; top: 17%; width: 44%; }
-  .transpiration-guide h2 { font-size: 19px; }
-  .transpiration-guide .transpiration-eyebrow { font-size: 9px; }
-  .transpiration-guide p { font-size: 11px; margin-bottom: 8px; }
+  .chapter-context-guide { left: 4%; top: 17%; width: 44%; }
+  .chapter-context-guide h2 { font-size: 19px; }
+  .chapter-context-guide .transpiration-eyebrow { font-size: 9px; }
+  .chapter-context-guide p { font-size: 11px; margin-bottom: 8px; }
   .transpiration-steps { margin: 8px 0; }
   .transpiration-prompt { left: 52%; top: 13%; width: 44%; }
   .transpiration-prompt h2 { font-size: 10px; }
@@ -206,25 +211,31 @@ body.scene-night .tree-overlay .element-ui-okno .ui-word {
   .tree-overlay .element-ui-okno[data-toggle-visible="true"] .element-ui-readout > .ui-window-formula { display: block; }
 }
 
-body.scene-night .transpiration-guide .transpiration-legend { color: #a9baff; }
+body.scene-night .chapter-context-guide .transpiration-legend { color: #a9baff; }
 
 /* Explicit detail toggle, using the existing accessible button and state. */
-.tree-overlay .element-ui-okno[data-toggle-visible="true"] .element-ui-readout > header { display: grid; grid-template-columns: max-content var(--ui-toggle-size); align-items: start; gap: var(--ui-toggle-gap); min-width: 0; }
+.tree-overlay .element-ui-okno[data-toggle-visible="true"] .element-ui-readout > header { display: grid; grid-template-columns: max-content var(--ui-toggle-size); align-items: start; gap: var(--ui-toggle-gap); width: 100%; min-width: 0; }
 .tree-overlay .element-ui-okno[data-toggle-visible="true"] .element-ui-readout > header > :is(h2,h3) { min-width: 0; white-space: nowrap; overflow-wrap: normal; }
 .tree-overlay .element-ui-okno[data-toggle-visible="true"] .element-ui-trigger {
   position: static; flex: 0 0 var(--ui-toggle-size); width: var(--ui-toggle-size); height: var(--ui-toggle-size);
   display: inline-flex; align-items: center; justify-content: center;
   color: var(--ui-ink); border: 1px solid currentColor; border-radius: 50%;
+  position: relative; top: -1px;
   font: 400 24px/1 var(--ui-font-text);
 }
 .tree-overlay .element-ui-okno[data-toggle-visible="true"] .element-ui-trigger:hover { color: var(--ui-topic); }
+@media (hover: hover) {
+  .tree-overlay .element-ui-okno[data-toggle-visible="true"]:not([data-main-window="true"]):hover .element-ui-trigger { color: var(--ui-topic); }
+}
 
 /* Reserve vertical breathing room between fixed topic windows. */
+.tree-overlay .element-ui-okno[data-chapter="transpiration"][data-window-id="teplota"] { top: 28%; }
 .tree-overlay .element-ui-okno[data-chapter="transpiration"][data-window-id="chlazeni"] { top: 48%; }
-.tree-overlay .element-ui-okno[data-chapter="transpiration"][data-window-id="teplota"] { top: 68%; }
+.tree-overlay .element-ui-okno[data-chapter="transpiration"][data-window-id="prijem-vody"] { top: 68%; }
 @media (max-width: 700px) {
+  .tree-overlay .element-ui-okno[data-chapter="transpiration"][data-window-id="teplota"] { top: 26%; }
   .tree-overlay .element-ui-okno[data-chapter="transpiration"][data-window-id="chlazeni"] { top: 46%; }
-  .tree-overlay .element-ui-okno[data-chapter="transpiration"][data-window-id="teplota"] { top: 70%; }
+  .tree-overlay .element-ui-okno[data-chapter="transpiration"][data-window-id="prijem-vody"] { top: 70%; }
 }
 
 .tree-overlay .element-ui-okno[data-toggle-visible="true"][data-side="right"] { grid-template-columns: max-content minmax(0, 1fr); }
@@ -243,16 +254,19 @@ body.scene-night .transpiration-guide .transpiration-legend { color: #a9baff; }
   .tree-overlay .element-ui-okno[data-main-window="true"] .annotation-reveal { left: auto; top: auto; flex: 1 1 auto; height: auto; margin-top: 8px; }
 }
 
-/* Main-window variant: details open upward without moving the readout. */
+/* Main-window details open below the fixed window without resizing it. */
 .tree-overlay .element-ui-okno[data-main-window="true"] .annotation-reveal {
-  position: absolute; grid-column: auto; grid-row: auto; left: 20px; right: auto; top: auto; bottom: calc(100% + 14px);
-  width: min(44ch, calc(100% - 20px)); height: auto; max-height: 24vh;
+  position: absolute; grid-column: 1 / -1; grid-row: 1;
+  left: 0; right: auto; top: calc(100% + 14px); bottom: auto;
+  width: min(44ch, 100%); height: auto; max-height: 10vh;
   margin: 0; overflow: auto;
 }
 .tree-overlay .element-ui-okno[data-main-window="true"] .annotation-reveal-inner,
 .tree-overlay .element-ui-okno[data-main-window="true"] .annotation-body { height: auto; }
 @media (max-width: 700px) {
-  .tree-overlay .element-ui-okno[data-main-window="true"] .annotation-reveal { left: 12px; width: calc(100% - 12px); max-height: 20vh; margin: 0; }
+  .tree-overlay .element-ui-okno[data-main-window="true"] .annotation-reveal {
+    left: 12px; width: calc(100% - 12px); top: calc(100% + 8px); max-height: 8vh;
+  }
 }
 
 /* Keep the complete toggle border inside its reserved box. */
@@ -260,3 +274,50 @@ body.scene-night .transpiration-guide .transpiration-legend { color: #a9baff; }
   position: static; top: auto; box-sizing: border-box; padding: 0; margin: 0;
   min-width: var(--ui-toggle-size); min-height: var(--ui-toggle-size);
 }
+
+/* Scale toward the header gap; keep the top and right edges fixed. */
+.tree-overlay .element-ui-okno[data-toggle-visible="true"] .element-ui-trigger {
+  transform-origin: 100% 0; transition: transform 160ms ease;
+}
+@keyframes window-toggle-pulse {
+  0%, 12%, 100% { transform: scale(1); }
+  6% { transform: scale(1.08); }
+}
+.tree-overlay.window-toggle-hint .element-ui-okno[data-toggle-visible="true"] .element-ui-trigger {
+  animation: window-toggle-pulse 8s ease-in-out infinite;
+}
+@media (hover: hover) {
+  .tree-overlay .element-ui-okno[data-toggle-visible="true"] .element-ui-trigger:hover {
+    animation: none; transform: scale(1.08);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .tree-overlay .element-ui-okno[data-toggle-visible="true"] .element-ui-trigger {
+    animation: none !important; transition: none; transform: none !important;
+  }
+}
+
+/* Photosynthesis starts level with the first topic window; context follows below. */
+.tree-overlay [data-chapter="photosynthesis"] {
+  --photosynthesis-top: 25%;
+  --photosynthesis-height: max(21%, 140px);
+}
+.tree-overlay .element-ui-okno[data-chapter="photosynthesis"][data-main-window="true"] {
+  top: var(--photosynthesis-top); height: var(--photosynthesis-height);
+}
+.tree-overlay [data-chapter="photosynthesis"] .chapter-context-guide {
+  top: calc(var(--photosynthesis-top) + var(--photosynthesis-height) + 15vh);
+  max-height: max(0px, calc(83% - var(--photosynthesis-top) - var(--photosynthesis-height) - 15vh));
+  overflow-y: auto; pointer-events: auto;
+}
+.tree-overlay [data-chapter="photosynthesis"] .chapter-context-guide h2 { margin-top: 0; }
+.chapter-context-guide h2 { opacity: 1; transition: opacity 3s ease; }
+.chapter-context-guide h2.context-fading { opacity: 0; }
+@media (max-width: 700px) {
+  .tree-overlay [data-chapter="photosynthesis"] {
+    --photosynthesis-top: 22%; --photosynthesis-height: 24%;
+  }
+}
+
+/* Chapter layout variants: the guide sits between the main window and time. */
+.tree-overlay [data-chapter="transpiration"] .chapter-context-guide { top: 32%; max-height: 27%; overflow-y: auto; pointer-events: auto; }

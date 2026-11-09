@@ -1,6 +1,6 @@
 import { zobrazitHodnotu } from '../okna/element_ui_okna_veliciny.js?v=transpiration-vapour-1';
 import { SEASONS } from '../ekologie/tree_ecology.js?v=active-leaves-3&checks=1';
-import { createTreeAnnotations } from '../okna/tree_annotations.js?v=photosynthesis-template-1';
+import { createTreeAnnotations } from '../okna/tree_annotations.js?v=window-hover-1';
 
 const chapters = [
   ['seasons', 'Období'], ['photosynthesis', 'Fotosyntéza'], ['transpiration', 'Transpirace'],
@@ -188,10 +188,8 @@ export function createChapters({ model, applySeason, setSun, setAzimuth, setVisu
     titleTestButton.hidden = id !== 'photosynthesis';
     shell.querySelectorAll('[data-chapter]').forEach(a => { a.hidden = a.dataset.chapter !== id; });
     shell.querySelector('#chapterShared').hidden = id === 'intro' || id === 'seasons';
-    // The Manager button controls these elements even when the active chapter changes.
-    const managerOpen = document.getElementById('btnManager')?.getAttribute('aria-pressed') === 'true';
-    titleTestButton.classList.toggle('manager-hidden', !managerOpen);
-    shell.querySelector('#chapterShared').classList.toggle('manager-hidden', !managerOpen);
+    titleTestButton.classList.add('manager-hidden');
+    shell.querySelector('#chapterShared').classList.add('manager-hidden');
     shell.querySelector('.shared-sun').hidden = false;
     nav.querySelectorAll('button').forEach(b => {
       b.setAttribute('aria-current', b.dataset.openChapter === id ? 'page' : 'false');

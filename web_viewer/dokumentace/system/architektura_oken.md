@@ -37,9 +37,9 @@ history:
 
 ### Rozložení
 
-- Hlavní okna používají stejnou komponentu s variantou detailu nad blokem údajů podle [šablony hlavního okna](../moje/vzhled_oken.md#šablona-hlavního-okna); příznak `hlavni` určuje vzhled, `otevrene` výchozí stav.
+- Hlavní okna používají stejnou komponentu s variantou samostatného detailu pod oknem podle [šablony hlavního okna](../moje/vzhled_oken.md#šablona-hlavního-okna); příznak `hlavni` určuje vzhled, `otevrene` výchozí stav.
 
-- Komponenta má dva nezávislé bloky: `.element-ui-readout` skládá nadpis, hodnotu a vzorec pod sebe pomocí flexu; `.annotation-reveal` obsahuje pouze detail ve druhém sloupci s omezenou výškou a posuvem. Detail nesdílí řádky s údaji a nemění jejich rozestupy. Na úzké obrazovce je tematický detail pod blokem údajů; hlavní detail zůstává nad ním.
+- Komponenta má dva nezávislé bloky: `.element-ui-readout` skládá nadpis, hodnotu a vzorec pod sebe pomocí flexu; `.annotation-reveal` obsahuje pouze detail ve druhém sloupci s omezenou výškou a posuvem. Detail nesdílí řádky s údaji a nemění jejich rozestupy. Na úzké obrazovce je tematický detail pod blokem údajů; hlavní detail je samostatně pod pevným oknem.
 
 - Okno je společná komponenta vytvářená `configuredCard` a `createElementUiOkno`; nadpis, hodnota, vzorec a detail mají jednu strukturu a společné styly pro všechny záznamy Fotosyntézy a Transpirace.
 - Typografii a odstupy upravuj v `okna/element_ui_okna_vzhled.css`: `--ui-heading-size`, `--ui-main-heading-size`, `--ui-value-size`, `--ui-main-value-size`, `--ui-formula-size`, `--ui-column-gap`, `--ui-toggle-size` a `--ui-toggle-gap`. Změna sdílené proměnné platí pro všechna okna příslušné role; úzká obrazovka používá společnou sadu hodnot.

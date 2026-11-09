@@ -71,6 +71,10 @@ history:
 
 - Při převodu podle jiné kapitoly převezmi vzhled i členění obsahu, hlavní a tematická okna, vazby elementů a dokumentaci; zachovej platné výpočty. Respektuj výslovné omezení pouze na vzhled.
 
+# AI model oční pozornosti
+
+- Když uživatel řekne „hoď mi to do AI modelu očního“ nebo obdobně, pořiď aktuální snímek požadovaného webu v Google Chrome, spusť lokální UNISAL a vrať výsledný heatmapový výstup s jasným označením, že jde o predikci vizuální pozornosti, ne o skutečné měření očí.
+
 # Commity
 
 - Po dokončené logické změně ulož kód a odpovídající dokumentaci společně do lokálního commitu. Push pouze na výslovný pokyn.

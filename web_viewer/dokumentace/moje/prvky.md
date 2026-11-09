@@ -19,8 +19,8 @@ history:
 
 #### Kapitoly
 
-- Vodorovná textová navigace v horní pravé části podle [Untitled.svg](../../web_assets/ui_from_af/Untitled.svg).
-- Menu začíná na levém okraji pravého sloupce oken a je nad ním s volným odstupem; na úzké obrazovce se položky zalamují.
+- Vodorovná textová navigace vlevo nahoře podle [Untitled.svg](../../web_assets/ui_from_af/Untitled.svg).
+- V kapitolách začíná menu u levého okraje nad okny; v Úvodu zůstává vpravo uprostřed výšky obrazovky. Na úzké obrazovce se položky zalamují.
 - Pořadí: Období, Fotosyntéza, Transpirace, Semenace, Kořeny.
 - Průvodce Transpirací výslovně pojmenovává aktuální kapitolu.
 - Aktivní kapitola i položka pod kurzorem jsou zvýrazněny pouze tučným písmem bez podtržení. Šířka počítá s tučným písmem předem; přechod řezu trvá 300 ms a při omezení pohybu je vypnutý. Položky nemají viditelnou výplň ani rámeček; fokus je viditelný.
@@ -29,16 +29,14 @@ history:
 
 #### Manager
 
-- Tlačítko vpravo nahoře zobrazí nebo skryje rozšířené ovládání.
-- V Úvodu se tlačítko Manager nezobrazuje.
-- Patří pod něj nastavení, uložení pohledu, podmínky stromu a přepínač barev nadpisů.
-- Skrývá také posuvník času, údaj o čase, FPS a výšku stromu.
+- Tlačítko Manager se nezobrazuje; rozšířené ovládání zůstává skryté.
 
 #### Ovládání času
 
-- Pauza, rychlost 2× a rychlost 4× jsou vpravo dole.
+- Pauza, rychlost 2× a rychlost 4× jsou vpravo dole bez výplně panelu; tlačítka mají 38 × 38 px, aktivní stav kruhový obrys a barva se přizpůsobuje dni a noci. Na široké obrazovce jsou 3 % od pravého a 5 % od spodního okraje, do šířky 700 px 4 % a 3 %.
+- Pauza zastaví běh času a dalším stiskem jej obnoví. Volba 2× nebo 4× obnoví běh danou rychlostí; opětovný stisk aktivní rychlosti vrátí 1×.
 - V Úvodu se pauza ani rychlosti 2× a 4× nezobrazují; úvodní animace běží automaticky.
-- V ostatních kapitolách tato tlačítka zůstávají viditelná i při vypnutém Manageru.
+- V ostatních kapitolách jsou tlačítka viditelná a přístupná klávesnicí; fokus má viditelný obrys.
 
 [Zpět na architekturu obsahu](../architektura_obsahu.md)
 

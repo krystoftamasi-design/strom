@@ -20,6 +20,9 @@ history:
 
 # Elementy
 
+- Zvýrazněné linky jsou světlejší a výraznější, zvýrazněné částice větší.
+- Definované zvýraznění spojení se spouští také při najetí na související okno. Trvá po dobu najetí nebo otevření alespoň jednoho souvisejícího detailu v aktivní kapitole; po skončení obou stavů se obnoví původní vzhled.
+
 ### Voda linka
 
 **Tag:** 🔵 `water`
@@ -28,7 +31,6 @@ Definice spojení
 - Okna: [Voda](okna.md#voda) ve Fotosyntéze; [Transpirace](okna.md#transpirace), [Příjem vody](okna.md#příjem-vody) v Transpiraci.
 - **Zvýraznění**
 - při otevření okna modrá linka výrazně ztloustne a po její trase začne putovat pulzující vlna tloušťky.
-- Zvýraznění trvá, dokud je v aktivní kapitole otevřen alespoň jeden související detail; po zavření všech se vrátí původní vzhled.
 
 **Chování elementu**
 
@@ -47,7 +49,6 @@ Definice spojení
 - Okno: [Cukry](okna.md#cukry).
 - **Zvýraznění**
 - Otevřený detail výrazně zesílí tloušťku celé fialové linky v kapitole Fotosyntéza a spustí po její trase putující pulzaci, včetně výchozího otevření.
-- Při zavření se vrátí původní vzhled.
 - Mimo kapitolu Fotosyntéza se zvýraznění vypne.
 
 **Chování elementu**
@@ -91,9 +92,9 @@ Definice spojení
 **Chování elementu**
 
 - Modré nápisy H₂O představují vodní páru, nikoli kyslík vznikající při fotosyntéze.
-- V Transpiraci vycházejí přímo z konce vodní linky v koruně, stoupají a rozptylují se; při vzniku rostou a při zániku se zmenšují stejně jako ostatní plynové částice.
+- V Transpiraci vznikají s odstupem od konce vodní linky v koruně, stoupají a rozptylují se; při vzniku rostou a při zániku se zmenšují stejně jako ostatní plynové částice.
 - Emise probíhá při kladném modelovém odparu a plně rozvinuté vodní lince; při jejím stažení se nové částice nevytvářejí. Mimo Transpiraci jsou skryté.
-- Částice používají společnou velikost a přehrávání částicového systému; počet částic je schematický, nikoli měřítko litrů vody.
+- Částice používají tři malované PNG textury H₂O, společnou velikost a přehrávání částicového systému; počet částic je schematický, nikoli měřítko litrů vody.
 
 ### O₂
 
