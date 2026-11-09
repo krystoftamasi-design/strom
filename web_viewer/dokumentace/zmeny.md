@@ -36,6 +36,13 @@ history:
 
 ## Implementováno
 
+#### Z115 — Růst květu a vypadnutí semen
+
+- Zadání: nechat květ vyrůst z malého poupěte a uvolnit semena z dutiny.
+- Výsledek: květ roste od začátku dozrávání. Dvě semena z dodaných textur postupně vypadnou na konci a posuvníkem je lze vrátit do dutiny.
+- Stav: Implementováno.
+- Ověření: geometrická kontrola drah obou semen, dopadu a návratu na začátek. Vizuální kontrola čeká na uživatele.
+
 #### Z113 — Alfa v celé animaci semene
 
 - Zadání: zachovat průhlednost textury od začátku dozrávání.

@@ -7,6 +7,10 @@ const HEIGHT = 2.3;
 const OPEN_START = 0.42;
 const OPEN_ANGLE = 54;
 const PLAY_DURATION = 6000;
+const SEED_DETAILS = [
+  { file: '1.png', crop: [40, 32, 22, 36], height: 0.31, direction: 0.17, release: 0.84, land: 0.97, distance: 1.95 },
+  { file: '2.png', crop: [36, 30, 24, 30], height: 0.27, direction: 2.33, release: 0.88, land: 1, distance: 1.75 }
+];
 
 function openingAt(maturity) {
   return OPEN_ANGLE * THREE.MathUtils.smoothstep(maturity, OPEN_START, 1);
@@ -33,6 +37,37 @@ function makeOuterMaterial(map, ripeness) {
   return material;
 }
 
+function makeSeed(map, details, anisotropy) {
+  const [left, top, cropWidth, cropHeight] = details.crop;
+  const { width, height } = map.image;
+  map.colorSpace = THREE.SRGBColorSpace;
+  map.anisotropy = anisotropy;
+  map.offset.set(left / width, 1 - (top + cropHeight) / height);
+  map.repeat.set(cropWidth / width, cropHeight / height);
+
+  const seedWidth = details.height * cropWidth / cropHeight;
+  const geometry = new THREE.PlaneGeometry(seedWidth, details.height);
+  const material = makeOuterMaterial(map, { value: 1 });
+  const seed = new THREE.Group();
+  const cross = new THREE.Mesh(geometry, material);
+  cross.rotation.y = Math.PI / 2;
+  seed.add(new THREE.Mesh(geometry, material), cross);
+  return { seed, width: seedWidth, ...details };
+}
+
+function poseSeed({ seed, width, height, direction, release, land, distance }, maturity) {
+  const fall = THREE.MathUtils.clamp((maturity - release) / (land - release), 0, 1);
+  const radius = THREE.MathUtils.lerp(0.14, distance, THREE.MathUtils.smoothstep(fall, 0, 0.9));
+  const roll = Math.PI * 2.5 * fall;
+  const clearance = (Math.abs(Math.sin(roll)) * width + Math.abs(Math.cos(roll)) * height) / 2;
+  seed.position.set(
+    radius * Math.cos(direction),
+    Math.max(clearance - 0.025, 0.72 * (1 - fall * fall)),
+    radius * Math.sin(direction)
+  );
+  seed.rotation.set(0, direction + fall * Math.PI, roll, 'YXZ');
+}
+
 async function init() {
   const stage = document.querySelector('#stage');
   const canvas = document.querySelector('#model');
@@ -48,9 +83,10 @@ async function init() {
   renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
   const anisotropy = Math.min(8, renderer.capabilities.getMaxAnisotropy());
   const loader = new THREE.TextureLoader();
-  const [model, ...maps] = await Promise.all([
+  const [model, maps, seedMaps] = await Promise.all([
     new GLTFLoader().loadAsync('./web_assets/semena/kvet.glb'),
-    ...swatches.map(swatch => loader.loadAsync(swatch.querySelector('img').src))
+    Promise.all(swatches.map(swatch => loader.loadAsync(swatch.querySelector('img').src))),
+    Promise.all(SEED_DETAILS.map(({ file }) => loader.loadAsync(`./web_assets/semena/smena/${file}`)))
   ]);
   for (const map of maps) {
     map.colorSpace = THREE.SRGBColorSpace;
@@ -84,6 +120,7 @@ async function init() {
   scene.add(grid);
 
   const ripeness = { value: 0 };
+  const flower = new THREE.Group();
   const shells = [];
   const lining = new THREE.Group();
   const liningMaterial = new THREE.MeshStandardMaterial({ roughness: 0.88 });
@@ -103,12 +140,14 @@ async function init() {
     const axis = new THREE.Vector3(partCenter.z, 0, -partCenter.x).normalize();
     const shell = new THREE.Mesh(geometry, makeOuterMaterial(maps[shells.length], ripeness));
     shell.userData.openAxis = axis;
-    scene.add(shell);
+    flower.add(shell);
     shells.push(shell);
     lining.add(new THREE.Mesh(geometry, liningMaterial));
   });
   if (shells.length !== PARTS) throw new Error('Model must contain three parts');
-  scene.add(lining);
+  const seeds = seedMaps.map((map, index) => makeSeed(map, SEED_DETAILS[index], anisotropy));
+  flower.add(lining, ...seeds.map(({ seed }) => seed));
+  scene.add(flower);
 
   const render = () => renderer.render(scene, camera);
   controls.addEventListener('change', render);
@@ -132,6 +171,7 @@ async function init() {
     maturity = value;
     const amount = value / 100;
     const angle = openingAt(amount);
+    flower.scale.setScalar(THREE.MathUtils.lerp(0.12, 1, THREE.MathUtils.smoothstep(amount, 0, 0.65)));
     ripeness.value = THREE.MathUtils.smoothstep(amount, 0, 1);
     // The inset lining covers the closed seams behind the painted edges and
     // recedes into the base as the cavity opens.
@@ -144,6 +184,7 @@ async function init() {
     for (const shell of shells) {
       shell.quaternion.setFromAxisAngle(shell.userData.openAxis, THREE.MathUtils.degToRad(angle));
     }
+    for (const seed of seeds) poseSeed(seed, amount);
     slider.value = Math.round(value);
     progress.value = `${slider.value} %`;
     opening.textContent = `Otevření ${Math.round(angle)}°`;
