@@ -29,7 +29,7 @@ body.scene-night .tree-overlay { --ui-ink: #f0f2e9; }
   left: 6%; top: 28%; width: 28%; height: 50%;
   transform: none; will-change: auto; transition: none; animation: none;
 }
-.tree-overlay .tree-annotation[data-side="right"] { left: 68%; width: 29%; }
+.tree-overlay .tree-annotation[data-side="right"] { left: 70%; width: 27%; }
 .tree-overlay .tree-annotation > header { position: relative; }
 .tree-overlay .tree-annotation .annotation-reveal,
 .tree-overlay .tree-annotation.collapsed .annotation-reveal {

@@ -29,6 +29,13 @@ history:
 
 ## Implementováno
 
+#### Z099 — Posun postranních oken
+
+- Zadání: posunout postranní okna trochu doprava.
+- Výsledek: pravá okna začínají na 70 % šířky; jejich pravá hrana zůstává na místě. Na úzkých obrazovkách zůstává dosavadní rozložení.
+- Stav: Implementováno.
+- Ověření: kontrola CSS a dokumentace; vizuální kontrola čeká na uživatele.
+
 #### Z098 — Silnější linky bez zesvětlení
 
 - Zadání: zesílit zvýrazněné linky a nezesvětlovat jejich barvu.

@@ -34,6 +34,7 @@ history:
 ### Obecný obsah
 
 - Údaje tvoří svislý blok: nadpis → hodnota s jednotkou → vzorec nebo přehled vstupů.
+- Pravá tematická okna začínají na 70 % šířky a mají šířku 27 %; do šířky 700 px začínají na 52 % a mají šířku 44 %.
 - Tematické okno má detail vpravo, zarovnaný k hornímu okraji, s vlastním posuvem a mezerou 15 px. Hlavní okno používá variantu detailu pod údaji.
 - Nadpis zůstává na jednom řádku bez zmenšování podle délky; při nedostatku místa je dostupný vodorovný posuv.
 - Viditelné tlačítko +/− je kruhové, široké 28 px, s odstupem 8 px od nadpisu a vlastním prostorem; fokus je viditelný.
