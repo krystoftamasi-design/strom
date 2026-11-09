@@ -315,16 +315,18 @@ export class PhotolysisSystem {
         b.active = true;
         b.age = 0;
         const rx = this.getReactionPoint();
-        // Water vapour leaves the crown: use the radial direction away from
-        // the trunk and add a gentle upward component, with small variation.
-        this._vWaterOut.set(rx.x, 0, rx.z);
-        if (this._vWaterOut.lengthSq() < 0.0001) this._vWaterOut.set(0, 0, 1);
-        this._vWaterOut.normalize();
-        b.velocity.copy(this._vWaterOut).multiplyScalar(0.9).add(this._vUp).normalize();
-        b.velocity.x += (Math.random() - 0.5) * 0.25;
-        b.velocity.y += Math.random() * 0.25;
-        b.velocity.z += (Math.random() - 0.5) * 0.25;
-        b.velocity.normalize().multiplyScalar(this.bubbleSpeed * (0.85 + Math.random() * 0.30));
+        // Match oxygen's dispersing cone and outward trajectory.
+        const baseDir = this._baseBubbleDir;
+        const coneAngle = 0.48;
+        const randTheta = Math.random() * Math.PI * 2;
+        const randR = Math.sin(Math.random() * coneAngle);
+        this._vPerp.set(-baseDir.z, 0, baseDir.x).normalize();
+        if (this._vPerp.lengthSq() < 0.1) this._vPerp.set(1, 0, 0);
+        this._vPerp2.crossVectors(baseDir, this._vPerp).normalize();
+        b.velocity.copy(baseDir)
+          .addScaledVector(this._vPerp, Math.cos(randTheta) * randR)
+          .addScaledVector(this._vPerp2, Math.sin(randTheta) * randR)
+          .normalize().multiplyScalar(this.bubbleSpeed * (0.85 + Math.random() * 0.30));
         const spawnDirection = this._vDir.copy(b.velocity).normalize();
         const spawnDistance = this._getBubbleSpawnDistance(spawnDirection, rx);
         b.mesh.position.copy(rx).addScaledVector(spawnDirection, spawnDistance);

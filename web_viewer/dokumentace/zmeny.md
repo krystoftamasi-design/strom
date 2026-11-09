@@ -29,6 +29,13 @@ history:
 
 ## Implementováno
 
+#### Z100 — Rozptyl vodní páry
+
+- Zadání: sjednotit rozptyl částic H₂O v Transpiraci s O₂.
+- Výsledek: vodní pára používá stejný směr a rozptylový kužel jako částice O₂.
+- Stav: Implementováno.
+- Ověření: cílený test částic vodní páry; vizuální kontrola čeká na uživatele.
+
 #### Z099 — Posun postranních oken
 
 - Zadání: posunout postranní okna trochu doprava.

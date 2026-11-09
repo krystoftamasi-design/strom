@@ -92,7 +92,7 @@ Definice spojení
 **Chování elementu**
 
 - Modré nápisy H₂O představují vodní páru, nikoli kyslík vznikající při fotosyntéze.
-- V Transpiraci vznikají s odstupem od konce vodní linky v koruně, stoupají a rozptylují se; při vzniku rostou a při zániku se zmenšují stejně jako ostatní plynové částice.
+- V Transpiraci vznikají s odstupem od konce vodní linky v koruně, stoupají a rozptylují se ve stejném kuželu jako O₂; při vzniku rostou a při zániku se zmenšují stejně jako ostatní plynové částice.
 - Emise probíhá při kladném modelovém odparu a plně rozvinuté vodní lince; při jejím stažení se nové částice nevytvářejí. Mimo Transpiraci jsou skryté.
 - Částice používají tři malované PNG textury H₂O, společnou velikost a přehrávání částicového systému; počet částic je schematický, nikoli měřítko litrů vody.
 
