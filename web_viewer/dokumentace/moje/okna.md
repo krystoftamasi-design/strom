@@ -191,7 +191,7 @@ history:
 - Nadpis: `Bukvice`; role: tematické okno; strana: vpravo uprostřed.
 - Stav podle období: jaro `Po opylení`, léto `Vyvíjejí se`, podzim `Dozrávají`, zima `Mimo období`.
 - Detail: „Bukvice vznikají po opylení. Bohatá úroda není každý rok.“
-- Zvýraznění bukvic čeká na dodání assetů; zatím není element propojen.
+- Vývoj bukvic znázorňuje [model v koruně](elementy.md#padající-semena).
 
 #### Semena
 

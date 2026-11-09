@@ -34,6 +34,7 @@ Soubor `spustit_web_viewer.bat` spouští projekt.
 - `obdobi` obsahuje kalendář, kruh období a úvod.
 - `vykreslovani` obsahuje materiály, zakrytí světla, linky a částice.
 - `kapitoly` obsahuje přepínání kapitol, nabídky a kód samostatných stránek fotosyntézy a semene.
+- `kapitoly/seed_model.js` sdílí model květu a semen mezi ladicí stránkou a kapitolou Semenace. `kapitoly/seed_chapter.js` jej umisťuje do koruny a řídí podle období.
 
 Související JavaScript a CSS jsou ve stejné složce.
 Importy mezi složkami používají relativní cesty.

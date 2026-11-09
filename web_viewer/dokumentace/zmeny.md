@@ -36,6 +36,13 @@ history:
 
 ## Implementováno
 
+#### Z118 — Model květu a semen v Semenaci
+
+- Zadání: zapojit hotový model do kapitoly Semenace u stromu.
+- Výsledek: modely na větvích rostou podle období, na podzim se rozevřou a vypustí semena. Okno Semena zvětšuje uvolněná semena a omezení pohybu ukazuje statický dopad.
+- Stav: Implementováno.
+- Ověření: test definic oken a cílená kontrola umístění na větve, sezonních stavů, pádu, zvýraznění a omezení pohybu. Vizuální kontrola čeká na uživatele.
+
 #### Z117 — Volná dutina květu a užší spodek
 
 - Zadání: odstranit vnitřní výplň a přiblížit spodní hrany dílů.

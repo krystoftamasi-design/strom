@@ -154,14 +154,14 @@ Definice spojení
 
 - Okno: [Semena](okna.md#semena).
 - **Zvýraznění**
-- Při najetí na okno nebo otevření jeho detailu se viditelné částice semen zvětší; společné pravidlo nahoře určuje návrat do běžného vzhledu. Zvýraznění samo nespouští pád mimo podzim.
+- Při najetí na okno nebo otevření jeho detailu se uvolněná semena zvětší. Zvýraznění řídí společné pravidlo nahoře.
 
 **Chování elementu**
 
-- V Semenaci na podzim částicový systém znázorňuje bukvice padající z koruny k zemi poblíž stromu. Počet částic je schematický, nepředstavuje skutečný počet ani podíl přežití.
-- V jiných obdobích a kapitolách se semena nevytvářejí ani nezobrazují; při změně období či kapitoly se existující částice skryjí. Opětovný podzim obnoví emisi.
-- Živočichové ani šíření do dálky se částicemi nesimulují; vysvětluje je související okno.
-- Dočasné hnědé tvary nahrazují assety, které dodá uživatel; jejich konečný vzhled, měřítko a četnost se upřesní. Při omezení pohybu se místo animovaného pádu zobrazí statické znázornění semen pod korunou.
+- Ve druhé polovině jara se na větvích v koruně objeví malé modely. Přes léto rostou a na podzim hnědnou, rozevírají se a vypouštějí po dvou semenech.
+- Semena padají k zemi poblíž stromu a v zimě tam zůstávají. Při omezení pohybu se na podzim zobrazí rovnou na zemi.
+- Průběh určuje ovládání období. Modely se zobrazují v Semenaci a jejich počet i měřítko jsou schematické.
+- Šíření živočichy vysvětluje související okno.
 
 ### Pravidlo propojení
 
