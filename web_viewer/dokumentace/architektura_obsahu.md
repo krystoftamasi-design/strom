@@ -97,13 +97,26 @@ history:
 
 ### Text
 
+- [Kontext počtu semen](moje/texty.md#kontext-počtu-semen)
+
 ### Okna
+
+- [Semenace](moje/okna.md#semenace)
+- [Vznik bukvic](moje/okna.md#vznik-bukvic)
+- [Šíření semen](moje/okna.md#šíření-semen)
 
 ### Vzhled
 
+- [Okna](moje/vzhled_oken.md)
+
 ### Ovládací prvky
 
+- [Kapitoly](moje/prvky.md#kapitoly)
+- [Kruh ročních období](moje/prvky.md#kruh-ročních-období)
+
 ### Elementy
+
+- [Padající semena](moje/elementy.md#padající-semena)
 
 # **KOŘENY**
 

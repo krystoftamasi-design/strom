@@ -147,6 +147,22 @@ Definice spojení
 - Stálý přehled ukazuje kořeny dole, kmen uprostřed a listy nahoře; popisky rozlišují příjem, proudění vzhůru a odpar s chlazením.
 - Je statické; šipky neudávají rychlost ani měřený průtok.
 
+### Padající semena
+
+**Tag:** 🟤 `seeds`
+Definice spojení
+
+- Okno: [Šíření semen](okna.md#šíření-semen).
+- **Zvýraznění**
+- Při najetí na okno nebo otevření jeho detailu se viditelné částice semen zvětší; společné pravidlo nahoře určuje návrat do běžného vzhledu. Zvýraznění samo nespouští pád mimo podzim.
+
+**Chování elementu**
+
+- Návrh k realizaci: v Semenaci na podzim částicový systém znázorňuje bukvice padající z koruny k zemi poblíž stromu. Počet částic je schematický, nepředstavuje skutečný počet ani podíl přežití.
+- V jiných obdobích a kapitolách se semena nevytvářejí ani nezobrazují; při změně období či kapitoly se existující částice skryjí. Opětovný podzim obnoví emisi.
+- Živočichové ani šíření do dálky se částicemi nesimulují; vysvětluje je související okno.
+- Konkrétní vzhled, měřítko a četnost se určí po dodání assetů uživatelem. Při omezení pohybu se místo animovaného pádu zobrazí statické znázornění semen pod korunou.
+
 ### Pravidlo propojení
 
 - Okno a související element spojuje stejný tag; barva tagu odpovídá barevnému tématu.
@@ -162,7 +178,7 @@ Definice spojení
 - Před úpravou tohoto dokumentu přečti pravidla na jeho konci.
 - Každý element zapisuj ve stejném pořadí podle následující šablony.
 - Název elementu má úroveň `###`.
-- Před názvem tagu použij barevnou značku tématu: 🔵 `water`, 🟣 `sugar`, 🔹 `oxygen`, 🔶 `co2`, 🟡 `light`.
+- Před názvem tagu použij barevnou značku tématu: 🔵 `water`, 🟣 `sugar`, 🔹 `oxygen`, 🔶 `co2`, 🟡 `light`, 🟤 `seeds`.
 - Používej běžný Markdown bez HTML stylů; značky rozlišují témata, nereprodukují přesné odstíny webu.
 - Pokud tag, okno nebo reakce nejsou určené, výslovně to uveď; vazbu nevymýšlej.
 - Typ reakce v definici spojení pojmenuj podle zadání; zvýraznění není povinné. Uváděj jen podmínky a reakce, které jsou definované.

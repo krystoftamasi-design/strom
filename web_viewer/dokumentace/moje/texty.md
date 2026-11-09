@@ -36,6 +36,12 @@ history:
 - Fotosyntéza zobrazuje výchozí text a po otevření oken CO₂, Cukry, Voda nebo O₂ zobrazí příslušnou tematickou variantu. Definice textů jsou v [Kontextových textech](kontextove_texty.md#fotosyntéza).
 - Transpirace zobrazuje text „Odpar v listech táhne vodu vzhůru.“.
 
+#### Kontext počtu semen
+
+- Návrh pro [Semenaci](okna.md#kapitola-semenace): samostatný kontext pod hlavním oknem stručně vysvětluje, že strom vytváří mnoho semen, ale jen část vyklíčí a menší část přežije až do dospělosti.
+- Kontext není počítanou hodnotou stromu ani novým ovládacím prvkem. Přesný počet bukvic, časové období a podíl přežití doplnit až po ověření zdroje, životní fáze a podmínek; do té doby nezobrazovat vymyšlená čísla.
+- Část semen spotřebují živočichové; některá nevyklíčí a část semenáčků nepřežije. Živočichové mohou semena také šířit.
+
 [Zpět na obsah](../architektura_obsahu.md)
 
 ## Pravidla struktury

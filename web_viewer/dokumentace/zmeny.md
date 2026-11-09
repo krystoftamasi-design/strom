@@ -25,6 +25,13 @@ history:
 
 ## Čeká
 
+#### Z103 — Návrh kapitoly Semenace
+
+- Zadání: navrhnout kapitolu s ročním cyklem, kontextem počtu a úspěšnosti semen, vazbou oken a částicemi padajících semen.
+- Výsledek: zapsán cíl, obsah, ovládání obdobím, kontext a návrh zvýraznění i chování částic; assety dodá uživatel, číselné údaje vyžadují zdroje.
+- Stav: Čeká.
+- Ověření: kontrola návaznosti dokumentace a existujícího ročního přehledu; web ani částice nebyly změněny.
+
 ## Rozpracováno
 
 ## Implementováno

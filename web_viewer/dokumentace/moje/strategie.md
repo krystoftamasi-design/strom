@@ -73,6 +73,12 @@ Podle českých didaktických výzkumů na ZŠ a SŠ (např. *Brčáková 2022*,
 - Implementuj pomocí společných komponent vzoru, odstraň překonané souběžné bloky a ověř zachování výpočtů, jednotek a podstatných informací.
 - Proveď průběžné kontroly, zapiš skutečné ověření a ulož společný commit podle [Pracovního postupu](../../../AGENTS.md#pracovní-postup). Vizuální test a test porozumění nezaměňuj za kontrolu syntaxe.
 
+## Uplatnění v Semenaci
+
+- Návrh cíle: student vysvětlí vývoj bukvic po opylení, možné osudy semen a rozdíl mezi množstvím vytvořených semen a malou částí, která doroste. Popíše, že část semen zůstává poblíž mateřského stromu a část se může dostat dál; šíření v dalších generacích umožňuje druhu osidlovat nová místa při změnách klimatu.
+- [Roční fáze a okna](okna.md#kapitola-semenace) používají stávající ovládání období; dlouhodobé šíření je vysvětleno odděleně. [Kontext počtu semen](texty.md#kontext-počtu-semen) čeká na doložená čísla a [částice](elementy.md#padající-semena) na assety.
+- Návrh ověření: „Jak se z květu stane semeno a co se s ním může stát?“, „Proč z mnoha bukvic vyroste málo dospělých stromů?“ a „Jak může druh postupně osídlit nové místo?“ Porozumění zatím nebylo ověřeno.
+
 ## Uplatnění v Transpiraci
 
 - Cíl: student vysvětlí, že odpar v listech pomáhá táhnout vodu od kořenů a spotřebovává teplo; strom nepumpuje vodu jako srdce.

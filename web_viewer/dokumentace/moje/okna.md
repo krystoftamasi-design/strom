@@ -162,6 +162,39 @@ history:
 - Chlazení převádí odpar v `l/h` na výkon v `kW` pomocí modelového skupenského tepla 2450 kJ/kg a převodu hodin na sekundy.
 - Teplota u koruny je teplota okolí snížená o modelový účinek odparu a zvýšená o noční efekt olistěné koruny; jde o výukový odhad.
 
+## Kapitola Semenace
+
+### Okna
+
+- Návrh k realizaci; stávající kapitola zatím používá roční textový přehled. Cíl a ověření určuje [Strategie](strategie.md#uplatnění-v-semenaci).
+- Okna navazují na [šablonu Transpirace](vzhled_oken.md#šablona-jednoho-okna-podle-transpirace). Hlavní detail je výchozí otevřený, tematické zavřené; nadpis nebo tlačítko +/− přepíná detail a stav zůstává při změně kapitoly zachovaný.
+- Stávající ovládání období určuje zobrazenou fázi, bez další časové osy. Fáze jsou typickým přehledem, nikoli přesným kalendářem či simulací jednotlivých let.
+
+#### Semenace
+
+- Nadpis: `Semenace`; role: hlavní okno; strana: vlevo.
+- Shrnutí: „Z opylených květů vznikají bukvice. Z některých semen mohou vyrůst nové stromy.“
+- Přehled období: jaro — kvetení a opylení, případně klíčení semen z předchozího roku; léto — vývoj bukvic; podzim — dozrávání, pád a šíření; zima — přezimování semen.
+- Detail: vysvětluje návaznost fází; [kontext počtu semen](texty.md#kontext-počtu-semen) doplňuje jejich množství a přežití.
+- Hodnota: název aktuální fáze; žádný vypočtený počet ani procento.
+
+#### Vznik bukvic
+
+- Nadpis: `Vznik bukvic`; role: tematické okno; strana: vpravo.
+- Shrnutí: po opylení větrem se vyvíjejí plody se semeny.
+- Detail: na jaře buk kvete; po opylení se během léta vyvíjejí bukvice v číškách a na podzim dozrávají.
+- Vazba na element: není určena; assety květů a bukvic dodá uživatel a jejich použití se upřesní.
+
+#### Šíření semen
+
+**Tag:** 🟤 `seeds`
+
+- Nadpis: `Šíření semen`; role: tematické okno; strana: vpravo.
+- Shrnutí: bukvice padají ke stromu; část semen přenesou živočichové dál.
+- Detail: některá semena vyklíčí a jen část mladých stromků přežije. V dalších generacích může šíření semen umožnit osidlování nových míst při změnách klimatu; výsledek závisí na podmínkách a šíření nemusí změnám stačit.
+- Roční přehled znázorňuje jeden rok; posun druhu probíhá přes mnoho generací a není součástí roční simulace.
+- Související element: [Padající semena](elementy.md#padající-semena).
+
 ## Související dokumenty
 
 - [Vzhled oken](vzhled_oken.md)
