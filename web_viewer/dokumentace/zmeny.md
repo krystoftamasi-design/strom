@@ -34,7 +34,7 @@ history:
 - Zadání: zmenšit částice H₂O na velikost O₂.
 - Výsledek: při výchozím otevření hlavního okna jsou stejně velké jako nezvýrazněné O₂; zvýraznění nadále funguje.
 - Stav: Implementováno.
-- Ověření: cílený test částic; vizuální kontrola čeká na uživatele.
+- Ověření: prošel test test_water_vapour.mjs; vizuální kontrola velikosti čeká na uživatele.
 
 #### Z101 — Středy období na kruhu
 
