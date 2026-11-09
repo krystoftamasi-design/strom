@@ -36,6 +36,13 @@ history:
 
 ## Implementováno
 
+#### Z109 — Model semene podle Blenderu
+
+- Zadání: převzít tvar ze souboru kvet.blend a použít průhlednost podle listů.
+- Výsledek: ladicí stránka načítá tři exportované díly s původním UV mapováním a texturami; okraje používají stejný princip alfa masky jako listy.
+- Stav: Implementováno.
+- Ověření: kontrola exportu tří sítí s UV a syntaxe JavaScriptu; vizuální a funkční kontrola čeká na uživatele.
+
 #### Z108 — Hranatý model semene
 
 - Zadání: zjednodušit tvar semene na rovné plochy s ostrými hranami.

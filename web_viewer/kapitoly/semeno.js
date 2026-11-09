@@ -1,5 +1,7 @@
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+import { applyGasLeafStyle } from '../vykreslovani/gas_material.js';
 
 const PARTS = 3;
 const HEIGHT = 2.3;
@@ -12,92 +14,12 @@ function openingAt(maturity) {
   return OPEN_ANGLE * THREE.MathUtils.smoothstep(maturity, OPEN_START, 1);
 }
 
-function makeShellGeometry() {
-  const geometry = new THREE.BufferGeometry();
-  const positions = [];
-  const uvs = [];
-  const shoulder = 0.63;
-  const base = [0, 0, 0, 0.5, 0];
-  const tip = [0, HEIGHT, 0, 0.5, 1];
-
-  function corners(radius) {
-    const x = radius * Math.sin(SECTOR / 2);
-    const z = radius * Math.cos(SECTOR / 2);
-    return [
-      [-x, HEIGHT * shoulder, z, 0, shoulder],
-      [x, HEIGHT * shoulder, z, 1, shoulder]
-    ];
-  }
-
-  function addFaces(material, triangles) {
-    const start = positions.length / 3;
-    for (const triangle of triangles) {
-      for (const [x, y, z, u, v] of triangle) {
-        positions.push(x, y, z);
-        uvs.push(u, v);
-      }
-    }
-    geometry.addGroup(start, positions.length / 3 - start, material);
-  }
-
-  const [left, right] = corners(1.02);
-  const [innerLeft, innerRight] = corners(0.9);
-  // Each triangle has its own vertices, keeping normals flat at the folds and rims.
-  addFaces(0, [[base, right, left], [left, right, tip]]);
-  addFaces(1, [[base, innerLeft, innerRight], [innerRight, innerLeft, tip]]);
-  addFaces(2, [
-    [base, innerLeft, left], [left, innerLeft, tip],
-    [base, right, innerRight], [right, tip, innerRight]
-  ]);
-  geometry.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
-  geometry.setAttribute('uv', new THREE.Float32BufferAttribute(uvs, 2));
-  geometry.computeVertexNormals();
-  return geometry;
-}
-
-async function makeTexture(img, anisotropy) {
-  await img.decode();
-  const source = document.createElement('canvas');
-  source.width = img.naturalWidth;
-  source.height = img.naturalHeight;
-  const sourceContext = source.getContext('2d');
-  sourceContext.drawImage(img, 0, 0);
-  const { width, height } = source;
-  const { data } = sourceContext.getImageData(0, 0, width, height);
-  const rows = [];
-
-  // Fit the painted body to the shell and keep its transparent margin out of the seams.
-  for (let y = 0; y < height; y++) {
-    let left = width;
-    let right = -1;
-    for (let x = 0; x < width; x++) {
-      if (data[4 * (y * width + x) + 3] >= 205) {
-        left = Math.min(left, x);
-        right = x;
-      }
-    }
-    if (right - left >= 8) rows.push({ y, left, width: right - left + 1 });
-  }
-  if (!rows.length) throw new Error('Seed texture has no opaque area');
-
-  const surface = document.createElement('canvas');
-  surface.width = surface.height = 128;
-  const context = surface.getContext('2d', { alpha: false });
-  context.fillStyle = '#925122';
-  context.fillRect(0, 0, surface.width, surface.height);
-  for (let y = 0; y < surface.height; y++) {
-    const row = rows[Math.round(y * (rows.length - 1) / (surface.height - 1))];
-    context.drawImage(source, row.left, row.y, row.width, 1, 0, y, surface.width, 1);
-  }
-  const texture = new THREE.CanvasTexture(surface);
-  texture.colorSpace = THREE.SRGBColorSpace;
-  texture.anisotropy = anisotropy;
-  return texture;
-}
-
 function makeOuterMaterial(map, ripeness) {
-  const material = new THREE.MeshStandardMaterial({ map, roughness: 0.88 });
+  const material = applyGasLeafStyle(new THREE.MeshStandardMaterial({ map, roughness: 0.88, side: THREE.DoubleSide }));
+  const addAlpha = material.onBeforeCompile;
+  material.customProgramCacheKey = () => 'seed_leaf_alpha_color_v1';
   material.onBeforeCompile = shader => {
+    addAlpha(shader);
     shader.uniforms.seedRipeness = ripeness;
     shader.fragmentShader = 'uniform float seedRipeness;\n' + shader.fragmentShader.replace(
       '#include <map_fragment>',
@@ -124,7 +46,16 @@ async function init() {
   const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
   renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
   const anisotropy = Math.min(8, renderer.capabilities.getMaxAnisotropy());
-  const maps = await Promise.all(swatches.map(swatch => makeTexture(swatch.querySelector('img'), anisotropy)));
+  const loader = new THREE.TextureLoader();
+  const [model, ...maps] = await Promise.all([
+    new GLTFLoader().loadAsync('./web_assets/semena/kvet.glb'),
+    ...swatches.map(swatch => loader.loadAsync(swatch.querySelector('img').src))
+  ]);
+  for (const map of maps) {
+    map.colorSpace = THREE.SRGBColorSpace;
+    map.flipY = false;
+    map.anisotropy = anisotropy;
+  }
 
   const scene = new THREE.Scene();
   const camera = new THREE.PerspectiveCamera(34, 1, 0.1, 30);
@@ -151,21 +82,27 @@ async function init() {
   grid.material.opacity = 0.22;
   scene.add(grid);
 
-  const geometry = makeShellGeometry();
   const ripeness = { value: 0 };
-  const inside = new THREE.MeshStandardMaterial({ roughness: 0.92 });
-  const rim = new THREE.MeshStandardMaterial({ roughness: 0.92 });
-  const insideColors = [new THREE.Color('#78924e'), new THREE.Color('#985a32')];
-  const rimColors = [new THREE.Color('#9db768'), new THREE.Color('#bb8255')];
   const shells = [];
-  for (let index = 0; index < PARTS; index++) {
-    const base = new THREE.Group();
-    base.rotation.y = index * SECTOR;
-    const shell = new THREE.Mesh(geometry, [makeOuterMaterial(maps[index], ripeness), inside, rim]);
-    base.add(shell);
-    scene.add(base);
+  const source = model.scene;
+  source.updateMatrixWorld(true);
+  const bounds = new THREE.Box3().setFromObject(source);
+  const center = bounds.getCenter(new THREE.Vector3());
+  const scale = HEIGHT / (bounds.max.y - bounds.min.y);
+  source.traverse(object => {
+    if (!object.isMesh) return;
+    const geometry = object.geometry.clone().applyMatrix4(object.matrixWorld);
+    geometry.translate(-center.x, -bounds.min.y, -center.z);
+    geometry.scale(scale, scale, scale);
+    geometry.computeBoundingBox();
+    const partCenter = geometry.boundingBox.getCenter(new THREE.Vector3());
+    const axis = new THREE.Vector3(partCenter.z, 0, -partCenter.x).normalize();
+    const shell = new THREE.Mesh(geometry, makeOuterMaterial(maps[shells.length], ripeness));
+    shell.userData.openAxis = axis;
+    scene.add(shell);
     shells.push(shell);
-  }
+  });
+  if (shells.length !== PARTS) throw new Error('Model must contain three parts');
 
   const render = () => renderer.render(scene, camera);
   controls.addEventListener('change', render);
@@ -190,9 +127,9 @@ async function init() {
     const amount = value / 100;
     const angle = openingAt(amount);
     ripeness.value = THREE.MathUtils.smoothstep(amount, 0, 1);
-    inside.color.copy(insideColors[0]).lerp(insideColors[1], ripeness.value);
-    rim.color.copy(rimColors[0]).lerp(rimColors[1], ripeness.value);
-    for (const shell of shells) shell.rotation.x = THREE.MathUtils.degToRad(angle);
+    for (const shell of shells) {
+      shell.quaternion.setFromAxisAngle(shell.userData.openAxis, THREE.MathUtils.degToRad(angle));
+    }
     slider.value = Math.round(value);
     progress.value = `${slider.value} %`;
     opening.textContent = `Otevření ${Math.round(angle)}°`;
@@ -234,7 +171,7 @@ async function init() {
       const reserve = part >= PARTS;
       swatch.toggleAttribute('data-reserve', reserve);
       swatch.querySelector('span').textContent = reserve ? 'Rezerva' : `Díl ${part + 1}`;
-      if (!reserve) shells[part].material[0].map = maps[index];
+      if (!reserve) shells[part].material.map = maps[index];
     });
     render();
   });
