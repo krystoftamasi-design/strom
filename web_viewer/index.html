@@ -3860,7 +3860,8 @@
     const seedChapter = createSeedChapter({
       scene,
       anisotropy: Math.min(8, renderer.capabilities.getMaxAnisotropy()),
-      reducedMotion: window.matchMedia('(prefers-reduced-motion: reduce)')
+      reducedMotion: window.matchMedia('(prefers-reduced-motion: reduce)'),
+      illumination: shaderUniforms.uSceneIllumination
     });
     let seedHighlight = false;
     const chapterApp = createChapters({
@@ -4101,7 +4102,7 @@
       if (typeof updateSapWaterLabel === 'function') updateSapWaterLabel(playbackDelta, simulationNow);
       camera.updateMatrixWorld();
       chapterApp.updateScene(playbackDelta);
-      seedChapter.update(chapterApp.chapter === 'seeds', ecology.seasonPosition, trunkMesh, seedHighlight);
+      seedChapter.update(chapterApp.chapter === 'seeds', ecology.seasonPosition, trunkMesh, seedHighlight, playbackDelta);
       introForest.update();
       renderer.render(scene, camera);
     }

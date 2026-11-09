@@ -36,6 +36,13 @@ history:
 
 ## Implementováno
 
+#### Z120 — Zavěšení květů a pád v Semenaci
+
+- Zadání: rozevírat květy směrem dolů, sladit osvětlení s korunou a zobrazit pád semen i prázdných obalů.
+- Výsledek: květy visí špičkou u větví a přijímají stín koruny. Podzim spustí postupný pád semen a na přelomu podzimu a zimy padají také obaly.
+- Stav: Implementováno.
+- Ověření: v Google Chrome ověřen směr zavěšení, pohyb semen i obalů z koruny k zemi a vykreslení bez chyb shaderu. Vizuální kontrola čeká na uživatele.
+
 #### Z118 — Model květu a semen v Semenaci
 
 - Zadání: zapojit hotový model do kapitoly Semenace u stromu.
