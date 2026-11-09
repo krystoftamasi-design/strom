@@ -36,6 +36,13 @@ history:
 
 ## Implementováno
 
+#### Z106 — Okna Semenace podle elementů
+
+- Zadání: převést tematická okna na Květy, Bukvice a Semena s aktuálním stavem a návazností na elementy.
+- Výsledek: tři okna ukazují typický stav podle období; Semena zvýrazňují padající částice. Květy a bukvice čekají na assety a propojení.
+- Stav: Implementováno.
+- Ověření: test definic oken a kontrola při commitu; vizuální a funkční kontrola webu čeká na uživatele.
+
 #### Z105 — Stručné texty Semenace
 
 - Zadání: zkrátit popisy, stanovit pravidlo stručnosti a odstranit posuvníky oken.

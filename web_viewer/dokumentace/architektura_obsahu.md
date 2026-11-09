@@ -102,8 +102,9 @@ history:
 ### Okna
 
 - [Semenace](moje/okna.md#semenace)
-- [Vznik bukvic](moje/okna.md#vznik-bukvic)
-- [Šíření semen](moje/okna.md#šíření-semen)
+- [Květy](moje/okna.md#květy)
+- [Bukvice](moje/okna.md#bukvice)
+- [Semena](moje/okna.md#semena)
 
 ### Vzhled
 

@@ -179,18 +179,27 @@ history:
 - [Kontext počtu semen](texty.md#kontext-počtu-semen) doplňuje jejich množství a přežití.
 - Hodnota: název aktuální fáze; žádný vypočtený počet ani procento.
 
-#### Vznik bukvic
+#### Květy
 
-- Nadpis: `Vznik bukvic`; role: tematické okno; strana: vpravo.
-- Detail: „Vítr přenáší pyl. Bukvice dozrávají na podzim; bohatá úroda není každý rok.“
-- Vazba na element: není určena; assety květů a bukvic dodá uživatel a jejich použití se upřesní.
+- Nadpis: `Květy`; role: tematické okno; strana: vpravo nahoře.
+- Stav podle období: jaro `Kvetou`, léto `Po odkvětu`, podzim a zima `Mimo období`.
+- Detail: „Na jaře vítr přenáší pyl mezi květy.“
+- Zvýraznění květů čeká na dodání assetů; zatím není element propojen.
 
-#### Šíření semen
+#### Bukvice
+
+- Nadpis: `Bukvice`; role: tematické okno; strana: vpravo uprostřed.
+- Stav podle období: jaro `Po opylení`, léto `Vyvíjejí se`, podzim `Dozrávají`, zima `Mimo období`.
+- Detail: „Bukvice vznikají po opylení. Bohatá úroda není každý rok.“
+- Zvýraznění bukvic čeká na dodání assetů; zatím není element propojen.
+
+#### Semena
 
 **Tag:** 🟤 `seeds`
 
-- Nadpis: `Šíření semen`; role: tematické okno; strana: vpravo.
-- Detail: „Bukvice padají poblíž stromu, živočichové část přenesou dál. Za generace se tak druh může šířit při změnách klimatu.“
+- Nadpis: `Semena`; role: tematické okno; strana: vpravo dole.
+- Stav podle období: jaro `Mohou klíčit`, léto `Ve vývoji`, podzim `Padají`, zima `Přezimují`. Jaro a zima se vztahují k semenům předchozí úrody.
+- Detail: „Bukvice padají poblíž stromu; živočichové část přenesou dál. Za generace se tak druh může šířit při změnách klimatu.“
 - Roční přehled znázorňuje jeden rok; posun druhu probíhá přes mnoho generací a není součástí roční simulace.
 - Související element: [Padající semena](elementy.md#padající-semena).
 

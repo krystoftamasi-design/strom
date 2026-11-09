@@ -324,14 +324,16 @@ body.scene-night .chapter-context-guide .transpiration-legend { color: #a9baff; 
 
 /* Semenace uses the shared window layout. */
 .tree-overlay .element-ui-okno[data-chapter="seeds"][data-main-window="true"] { top: 25%; }
-.tree-overlay .element-ui-okno[data-window-id="vznik-bukvic"] { top: 28%; }
-.tree-overlay .element-ui-okno[data-window-id="sireni-semen"] { top: 56%; }
+.tree-overlay .element-ui-okno[data-chapter="seeds"][data-window-id="kvety"] { top: 22%; }
+.tree-overlay .element-ui-okno[data-chapter="seeds"][data-window-id="bukvice"] { top: 45%; }
+.tree-overlay .element-ui-okno[data-chapter="seeds"][data-window-id="semena"] { top: 68%; }
 .tree-overlay .element-ui-okno[data-topic="seeds"] { --ui-topic: #865126; }
 .tree-overlay [data-chapter="seeds"] .chapter-context-guide { top: 66%; max-height: none; overflow: visible; pointer-events: auto; }
 @media (max-width: 700px) {
   .tree-overlay .element-ui-okno[data-chapter="seeds"][data-main-window="true"] { top: 22%; }
-  .tree-overlay .element-ui-okno[data-window-id="vznik-bukvic"] { top: 26%; }
-  .tree-overlay .element-ui-okno[data-window-id="sireni-semen"] { top: 56%; }
+  .tree-overlay .element-ui-okno[data-chapter="seeds"][data-window-id="kvety"] { top: 22%; }
+  .tree-overlay .element-ui-okno[data-chapter="seeds"][data-window-id="bukvice"] { top: 44%; }
+  .tree-overlay .element-ui-okno[data-chapter="seeds"][data-window-id="semena"] { top: 66%; }
 }
 
 .tree-overlay .element-ui-okno[data-chapter="seeds"][data-main-window="true"] :is(strong, output) { font-size: clamp(18px, 2vw, 32px); white-space: normal; }
@@ -340,7 +342,7 @@ body.scene-night .chapter-context-guide .transpiration-legend { color: #a9baff; 
 
 /* Short seed texts remain readable without scrollbars or clipping. */
 .tree-overlay .element-ui-okno[data-chapter="seeds"] :is(.element-ui-readout, .annotation-reveal, .annotation-reveal-inner, .annotation-body) { overflow: visible; max-height: none; }
-.tree-overlay .element-ui-okno[data-chapter="seeds"][data-side="right"] .annotation-reveal { position: absolute; top: 3em; left: 20px; right: auto; width: calc(100% - 20px); height: auto; }
+.tree-overlay .element-ui-okno[data-chapter="seeds"][data-side="right"] .annotation-reveal { position: absolute; top: 5em; left: 20px; right: auto; width: calc(100% - 20px); height: auto; }
 .tree-overlay .element-ui-okno[data-chapter="seeds"] .annotation-reveal-inner,
 .tree-overlay .element-ui-okno[data-chapter="seeds"] .annotation-body { height: auto; }
 .tree-overlay .element-ui-okno[data-chapter="seeds"] .element-ui-readout > header { overflow: visible; }

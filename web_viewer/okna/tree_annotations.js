@@ -1,4 +1,4 @@
-import { oknaPodleKapitol, kontextoveTexty, pruvodceTranspiraci } from './element_ui_okna_obsah.js?v=seeds-2';
+import { oknaPodleKapitol, kontextoveTexty, pruvodceTranspiraci } from './element_ui_okna_obsah.js?v=seeds-3';
 import { veliciny, vstupyVzorce, ohlasitChybuOken } from './element_ui_okna_veliciny.js?v=transpiration-vapour-1';
 import { zkontrolovatOkna } from './element_ui_okna_kontrola.js?v=seeds-1';
 
@@ -265,12 +265,12 @@ export function createTreeAnnotations({ shell, model, createSeasonControl, setEl
       metric.append(strong);
       nodes.push(metric);
     }
-    if (definition.fazeSemene) {
+    if (definition.stavObdobi) {
       const metric = document.createElement('div');
       metric.className = 'chapter-metric';
       const strong = document.createElement('strong');
       const output = document.createElement('output');
-      output.id = 'seedPhase';
+      output.dataset.stavObdobi = definition.id;
       strong.append(output);
       metric.append(strong);
       nodes.push(metric);
@@ -355,6 +355,10 @@ export function createTreeAnnotations({ shell, model, createSeasonControl, setEl
   return {
     update(chapter, playbackDelta = 0) {
       activeChapter = chapter;
+      for (const definition of oknaPodleKapitol.seeds) {
+        const output = shell.querySelector(`output[data-stav-obdobi="${definition.id}"]`);
+        if (output) output.textContent = definition.stavObdobi[model.season] || '—';
+      }
       syncHighlights();
       seasonRow.hidden = chapter === 'intro';
       seasonControl.update(chapter, playbackDelta);

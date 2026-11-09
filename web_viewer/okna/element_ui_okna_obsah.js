@@ -3,11 +3,17 @@
 export const oknaPodleKapitol = {
   seeds: [
     { id: 'semenace', nadpis: 'Semenace', tema: 'neutral', viditelnyPrepinac: true, strana: 'left', hlavni: true, otevrene: true,
-      fazeSemene: true, text: ['Z opylených květů vznikají bukvice. Na jaře mohou semena vyklíčit.'] },
-    { id: 'vznik-bukvic', nadpis: 'Vznik bukvic', tema: 'neutral', viditelnyPrepinac: true, strana: 'right',
-      text: ['Vítr přenáší pyl. Bukvice dozrávají na podzim; bohatá úroda není každý rok.'] },
-    { id: 'sireni-semen', nadpis: 'Šíření semen', tema: 'seeds', viditelnyPrepinac: true, strana: 'right',
-      text: ['Bukvice padají poblíž stromu, živočichové část přenesou dál.', 'Za generace se tak druh může šířit při změnách klimatu.'] },
+      stavObdobi: { spring: 'Kvetení', summer: 'Vývoj bukvic', autumn: 'Šíření semen', latefall: 'Přezimování' },
+      text: ['Z opylených květů vznikají bukvice. Na jaře mohou semena vyklíčit.'] },
+    { id: 'kvety', nadpis: 'Květy', tema: 'neutral', viditelnyPrepinac: true, strana: 'right',
+      stavObdobi: { spring: 'Kvetou', summer: 'Po odkvětu', autumn: 'Mimo období', latefall: 'Mimo období' },
+      text: ['Na jaře vítr přenáší pyl mezi květy.'] },
+    { id: 'bukvice', nadpis: 'Bukvice', tema: 'neutral', viditelnyPrepinac: true, strana: 'right',
+      stavObdobi: { spring: 'Po opylení', summer: 'Vyvíjejí se', autumn: 'Dozrávají', latefall: 'Mimo období' },
+      text: ['Bukvice vznikají po opylení. Bohatá úroda není každý rok.'] },
+    { id: 'semena', nadpis: 'Semena', tema: 'seeds', viditelnyPrepinac: true, strana: 'right',
+      stavObdobi: { spring: 'Mohou klíčit', summer: 'Ve vývoji', autumn: 'Padají', latefall: 'Přezimují' },
+      text: ['Bukvice padají poblíž stromu; živočichové část přenesou dál.', 'Za generace se tak druh může šířit při změnách klimatu.'] },
   ],
   transpiration: [
     { id: 'transpirace', nadpis: 'Transpirace', tema: 'water', viditelnyPrepinac: true, strana: 'left', hlavni: true, otevrene: true,

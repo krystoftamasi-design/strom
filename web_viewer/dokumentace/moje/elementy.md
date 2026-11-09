@@ -152,7 +152,7 @@ Definice spojení
 **Tag:** 🟤 `seeds`
 Definice spojení
 
-- Okno: [Šíření semen](okna.md#šíření-semen).
+- Okno: [Semena](okna.md#semena).
 - **Zvýraznění**
 - Při najetí na okno nebo otevření jeho detailu se viditelné částice semen zvětší; společné pravidlo nahoře určuje návrat do běžného vzhledu. Zvýraznění samo nespouští pád mimo podzim.
 
