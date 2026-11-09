@@ -12,20 +12,18 @@ function openingAt(maturity) {
   return OPEN_ANGLE * THREE.MathUtils.smoothstep(maturity, OPEN_START, 1);
 }
 
-function makeOuterMaterial(map, ripeness, freeEdges) {
+function makeOuterMaterial(map, ripeness) {
   const material = new THREE.MeshStandardMaterial({
     map, roughness: 0.88, side: THREE.DoubleSide, alphaToCoverage: true
   });
   material.onBeforeCompile = shader => {
     shader.uniforms.seedRipeness = ripeness;
-    shader.uniforms.seedFreeEdges = freeEdges;
-    shader.fragmentShader = 'uniform float seedRipeness;\nuniform float seedFreeEdges;\n' +
+    shader.fragmentShader = 'uniform float seedRipeness;\n' +
       shader.fragmentShader.replace('#include <map_fragment>', `#include <map_fragment>
-        // Keep the joined shell solid. Use the source coverage on free edges.
         float seedAlpha = diffuseColor.a;
         vec3 shellColor = texture2D(map, vec2(0.5)).rgb;
         diffuseColor.rgb = mix(shellColor, diffuseColor.rgb, smoothstep(0.0, 0.8, seedAlpha));
-        diffuseColor.a = mix(1.0, smoothstep(0.02, 0.9, seedAlpha), seedFreeEdges);
+        diffuseColor.a = smoothstep(0.02, 0.9, seedAlpha);
         if (diffuseColor.a <= 0.0) discard;
         float seedTone = dot(diffuseColor.rgb, vec3(0.2126, 0.7152, 0.0722));
         vec3 greenSeed = seedTone * vec3(0.72, 1.75, 0.33);
@@ -86,8 +84,11 @@ async function init() {
   scene.add(grid);
 
   const ripeness = { value: 0 };
-  const freeEdges = { value: 0 };
   const shells = [];
+  const lining = new THREE.Group();
+  const liningMaterial = new THREE.MeshStandardMaterial({ roughness: 0.88 });
+  const greenLining = new THREE.Color('#538138');
+  const brownLining = new THREE.Color('#85502b');
   const source = model.scene;
   source.updateMatrixWorld(true);
   const bounds = new THREE.Box3().setFromObject(source);
@@ -100,12 +101,14 @@ async function init() {
     geometry.computeBoundingBox();
     const partCenter = geometry.boundingBox.getCenter(new THREE.Vector3());
     const axis = new THREE.Vector3(partCenter.z, 0, -partCenter.x).normalize();
-    const shell = new THREE.Mesh(geometry, makeOuterMaterial(maps[shells.length], ripeness, freeEdges));
+    const shell = new THREE.Mesh(geometry, makeOuterMaterial(maps[shells.length], ripeness));
     shell.userData.openAxis = axis;
     scene.add(shell);
     shells.push(shell);
+    lining.add(new THREE.Mesh(geometry, liningMaterial));
   });
   if (shells.length !== PARTS) throw new Error('Model must contain three parts');
+  scene.add(lining);
 
   const render = () => renderer.render(scene, camera);
   controls.addEventListener('change', render);
@@ -130,7 +133,14 @@ async function init() {
     const amount = value / 100;
     const angle = openingAt(amount);
     ripeness.value = THREE.MathUtils.smoothstep(amount, 0, 1);
-    freeEdges.value = THREE.MathUtils.smoothstep(angle, 2, 14);
+    // The inset lining covers the closed seams behind the painted edges and
+    // recedes into the base as the cavity opens.
+    const liningAmount = 1 - THREE.MathUtils.smoothstep(angle, 0, 12);
+    const liningScale = 0.76 * liningAmount;
+    lining.visible = liningAmount > 0;
+    lining.scale.setScalar(liningScale);
+    lining.position.y = (1 - liningScale) * HEIGHT * 0.44 * liningAmount;
+    liningMaterial.color.copy(greenLining).lerp(brownLining, ripeness.value);
     for (const shell of shells) {
       shell.quaternion.setFromAxisAngle(shell.userData.openAxis, THREE.MathUtils.degToRad(angle));
     }

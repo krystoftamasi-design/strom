@@ -36,6 +36,13 @@ history:
 
 ## Implementováno
 
+#### Z113 — Alfa v celé animaci semene
+
+- Zadání: zachovat průhlednost textury od začátku dozrávání.
+- Výsledek: alfa vnějších dílů je aktivní při každém úhlu. Menší vnitřní skořápka kryje zavřené spoje a při rozevření ustupuje k základně.
+- Stav: Implementováno.
+- Ověření: kontrola průniků vnitřní skořápky se zavřeným modelem v Blenderu. Vizuální kontrola čeká na uživatele.
+
 #### Z110 — Dosednutí dílů a alfa okrajů semene
 
 - Zadání: zmírnit ořez textur a uzavřít mezery mezi stranami.
