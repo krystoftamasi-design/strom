@@ -15,6 +15,7 @@ history:
 
 Hlavní stránka je `index.html`.
 Projekt spustíš souborem `spustit_web_viewer.bat`.
+Samostatná [ladicí stránka semene](semeno.html) umožňuje prohlédnout model během dozrávání.
 
 ## Kde co najdeš
 

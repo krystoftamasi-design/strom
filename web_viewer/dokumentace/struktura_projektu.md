@@ -23,6 +23,7 @@ history:
 Hlavní stránka `index.html` zůstává přímo ve `web_viewer`.
 Stránka `strom_web_viewer.html` je další existující vstup.
 Stránka `fotosynteza.html` zobrazuje samostatné schéma fotosyntézy.
+Stránka `semeno.html` slouží k ladění 3D modelu semene.
 Soubor `spustit_web_viewer.bat` spouští projekt.
 
 ## Kód
@@ -32,7 +33,7 @@ Soubor `spustit_web_viewer.bat` spouští projekt.
 - `listy` obsahuje ovládání a animace listů.
 - `obdobi` obsahuje kalendář, kruh období a úvod.
 - `vykreslovani` obsahuje materiály, zakrytí světla, linky a částice.
-- `kapitoly` obsahuje přepínání kapitol, nabídky a schéma fotosyntézy.
+- `kapitoly` obsahuje přepínání kapitol, nabídky a kód samostatných stránek fotosyntézy a semene.
 
 Související JavaScript a CSS jsou ve stejné složce.
 Importy mezi složkami používají relativní cesty.

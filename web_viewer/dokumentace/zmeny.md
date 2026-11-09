@@ -36,6 +36,13 @@ history:
 
 ## Implementováno
 
+#### Z107 — Ladicí stránka semene
+
+- Zadání: vytvořit z dodaných textur 3D model se třemi stranami a ovládaným dozráváním.
+- Výsledek: samostatná stránka zobrazuje zelený až hnědý model. Tři díly se vyklápějí kolem společné špičky a odhalují dutinu. Čtyři textury lze střídat.
+- Stav: Implementováno.
+- Ověření: kontrola uzavřených hran, společné špičky a otevřené dutiny v geometrii. Vizuální kontrola čeká na uživatele.
+
 #### Z106 — Okna Semenace podle elementů
 
 - Zadání: převést tematická okna na Květy, Bukvice a Semena s aktuálním stavem a návazností na elementy.

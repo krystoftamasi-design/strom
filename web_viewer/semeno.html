@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="cs">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#e8eae0">
+  <title>Ladění 3D modelu semene</title>
+  <link rel="stylesheet" href="./kapitoly/semeno.css">
+  <script type="importmap">
+    {
+      "imports": {
+        "three": "./web_assets/vendor/three.module.js",
+        "three/addons/": "./web_assets/jsm/"
+      }
+    }
+  </script>
+  <script type="module" src="./kapitoly/semeno.js"></script>
+</head>
+<body>
+  <main>
+    <header class="page-header">
+      <a href="./index.html">↖ Zpět ke stromu</a>
+      <h1>Ladění semene</h1>
+    </header>
+
+    <div class="workspace">
+      <figure class="viewer">
+        <div class="stage" id="stage">
+          <canvas id="model" tabindex="0" aria-label="Otočný 3D model semene" aria-describedby="view-help"></canvas>
+          <p id="scene-status" role="status">Načítám model…</p>
+        </div>
+        <figcaption>
+          <span id="view-help">Tahem nebo šipkami otočíš model. Kolečkem nebo klávesami + a − měníš přiblížení.</span>
+          <button id="reset-view" type="button" disabled>Výchozí pohled</button>
+        </figcaption>
+      </figure>
+
+      <aside class="controls" aria-label="Nastavení modelu">
+        <section class="maturity" aria-labelledby="maturity-title">
+          <h2 id="maturity-title">Dozrávání</h2>
+          <div class="readout">
+            <output id="progress" for="maturity" aria-hidden="true">0 %</output>
+            <span id="opening">Otevření 0°</span>
+          </div>
+          <input id="maturity" type="range" min="0" max="100" value="0" aria-labelledby="maturity-title" disabled>
+          <div class="range-labels" aria-hidden="true">
+            <span>Zelené</span>
+            <span>Dozrálé</span>
+          </div>
+          <button class="primary" id="play" type="button" disabled>Přehrát dozrávání</button>
+        </section>
+
+        <section class="textures" aria-labelledby="textures-title">
+          <h2 id="textures-title">Textury</h2>
+          <ul id="texture-list" class="swatches">
+            <li><img src="./web_assets/semena/1.png" alt="Textura 1"><span>Díl 1</span></li>
+            <li><img src="./web_assets/semena/2.png" alt="Textura 2"><span>Díl 2</span></li>
+            <li><img src="./web_assets/semena/3.png" alt="Textura 3"><span>Díl 3</span></li>
+            <li data-reserve><img src="./web_assets/semena/4.png" alt="Textura 4"><span>Rezerva</span></li>
+          </ul>
+          <button id="cycle-textures" type="button" disabled>Obměnit textury</button>
+        </section>
+      </aside>
+    </div>
+  </main>
+</body>
+</html>
