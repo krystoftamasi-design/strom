@@ -77,7 +77,8 @@ function poseSeed({ seed, width, height, direction, release, land, distance }, m
   const roll = Math.PI * 2.5 * fall;
   const emphasis = highlight && maturity >= release ? 2 : 1;
   const flightScale = hanging ? THREE.MathUtils.smoothstep(fall, 0, 0.14) * (0.9 - 0.35 * descent) : 0;
-  const size = emphasis * (1 + flightScale);
+  const visibilityScale = hanging ? 1 + THREE.MathUtils.smoothstep(fall, 0, 0.08) : 1;
+  const size = emphasis * (1 + flightScale) * visibilityScale;
   seed.scale.setScalar(size);
   const clearance = size * (Math.abs(Math.sin(roll)) * width + Math.abs(Math.cos(roll)) * height) / 2;
   const exitHeight = THREE.MathUtils.lerp(0.72, 1.35, THREE.MathUtils.smoothstep(fall, 0, 0.25));

@@ -36,6 +36,13 @@ history:
 
 ## Implementováno
 
+#### Z123 — Větší uvolněná semena
+
+- Zadání: zvětšit semena, aby byla v koruně a pod stromem viditelná.
+- Výsledek: uvolněná semena se při pádu postupně zvětší na dvojnásobek původní velikosti a zůstanou větší po dopadu.
+- Stav: Implementováno.
+- Ověření: kontrola při commitu. Vizuální kontrola čeká na uživatele.
+
 #### Z122 — Více květů v koruně
 
 - Zadání: zvýšit počet květů v Semenaci.
