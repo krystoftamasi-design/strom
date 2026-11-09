@@ -26,6 +26,13 @@ history:
 
 ## Implementováno
 
+#### Z092 — Jednotné plynulé zvýraznění menu
+
+- Zadání: odstranit podtržení a sjednotit zvýraznění všech kapitol.
+- Výsledek: aktivní položka i položka pod kurzorem jsou tučné; řez se plynule mění bez zvětšení a podtržení.
+- Stav: Implementováno.
+- Ověření: kontrola změn a pravidel stylu; finální vizuální a funkční kontrola uživatelem.
+
 #### Z081 — Neořezané tlačítko detailu
 
 - Zadání: minimální oprava tlačítka plus/minus ve společné šabloně.

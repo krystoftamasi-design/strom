@@ -177,7 +177,6 @@ body.scene-night .tree-overlay .element-ui-okno .ui-word {
 }
 
 /* The chapter guide sits outside the shared window layout. */
-body[data-chapter="transpiration"] [data-open-chapter="transpiration"] { text-decoration: underline; text-underline-offset: 7px; }
 .transpiration-guide, .transpiration-prompt { position: absolute; color: var(--ui-ink); font: var(--ui-text-style); }
 .transpiration-guide { left: 6%; top: 23%; width: 29%; max-width: 420px; }
 .transpiration-guide h2 { margin: 10px 0; font: 500 clamp(22px, 2vw, 36px)/1.12 var(--ui-font-display); letter-spacing: -.025em; }

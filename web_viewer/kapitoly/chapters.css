@@ -134,7 +134,7 @@ body.has-chapters .chapter-nav button {
 }
 body.has-chapters .chapter-nav button[aria-current="page"] { font-weight: 900; background: none; }
 body.scene-night .chapter-nav button { color: #f0f2e9; }
-body.has-chapters .chapter-nav button:hover { text-decoration: underline; text-underline-offset: 4px; }
+
 body.has-chapters .chapter-nav .ui-test-window-button { flex-basis: 100%; text-align: right; }
 @media (max-width: 700px) {
   body.has-chapters .chapter-nav { left: 52%; right: 4%; top: 7%; max-width: none; gap: 8px; justify-content: flex-start; }
@@ -144,3 +144,15 @@ body.has-chapters .chapter-nav .ui-test-window-button { flex-basis: 100%; text-a
 /* The intro animation has no user-facing time controls. */
 body.has-chapters:has(.chapter-content > article[data-chapter="intro"]:not([hidden])) .time-playback-panel,
 body.has-chapters:has(.chapter-content > article[data-chapter="intro"]:not([hidden])) #btnManager { display: none; }
+
+/* Reserve bold text width and animate the variable font weight. */
+body.has-chapters .chapter-nav [data-open-chapter] { display: grid; text-decoration: none; transition: font-weight 300ms ease; }
+body.has-chapters .chapter-nav [data-open-chapter]::after,
+body.has-chapters .chapter-nav [data-open-chapter] > span { grid-area: 1 / 1; }
+body.has-chapters .chapter-nav [data-open-chapter]::after { content: attr(data-label); font-weight: 900; visibility: hidden; pointer-events: none; }
+@media (hover: hover) {
+  body.has-chapters .chapter-nav [data-open-chapter]:hover { font-weight: 900; }
+}
+@media (prefers-reduced-motion: reduce) {
+  body.has-chapters .chapter-nav [data-open-chapter] { transition: none; }
+}

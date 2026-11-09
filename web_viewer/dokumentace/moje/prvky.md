@@ -22,8 +22,8 @@ history:
 - Vodorovná textová navigace v horní pravé části podle [Untitled.svg](../../web_assets/ui_from_af/Untitled.svg).
 - Menu začíná na levém okraji pravého sloupce oken a je nad ním s volným odstupem; na úzké obrazovce se položky zalamují.
 - Pořadí: Období, Fotosyntéza, Transpirace, Semenace, Kořeny.
-- Aktivní Transpirace je navíc podtržená a její průvodce výslovně pojmenovává aktuální kapitolu.
-- Aktivní kapitola je zvýrazněna tučným písmem; položky nemají viditelnou výplň ani rámeček.
+- Průvodce Transpirací výslovně pojmenovává aktuální kapitolu.
+- Aktivní kapitola i položka pod kurzorem jsou zvýrazněny pouze tučným písmem bez podtržení. Šířka počítá s tučným písmem předem; přechod řezu trvá 300 ms a při omezení pohybu je vypnutý. Položky nemají viditelnou výplň ani rámeček; fokus je viditelný.
 - Písmo: Satoshi; v podkladu přibližně 21 px.
 - Kliknutí přepne příslušnou kapitolu.
 

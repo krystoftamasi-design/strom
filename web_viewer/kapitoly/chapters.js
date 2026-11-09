@@ -147,7 +147,7 @@ export function createChapters({ model, applySeason, setSun, setAzimuth, setVisu
   const nav = document.createElement('nav');
   nav.className = 'chapter-nav';
   nav.setAttribute('aria-label', 'Kapitoly');
-  nav.innerHTML = '<p>Kapitoly</p>' + chapters.map(([id, label]) => `<button type="button" data-open-chapter="${id}" aria-controls="chapter-${id}">${label}</button>`).join('');
+  nav.innerHTML = '<p>Kapitoly</p>' + chapters.map(([id, label]) => `<button type="button" data-open-chapter="${id}" data-label="${label}" aria-controls="chapter-${id}"><span>${label}</span></button>`).join('');
   document.body.append(nav);
   shell.querySelectorAll('[data-chapter]').forEach(a => { a.id = `chapter-${a.dataset.chapter}`; });
   shell.classList.add('tree-overlay');
