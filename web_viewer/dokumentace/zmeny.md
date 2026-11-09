@@ -36,6 +36,13 @@ history:
 
 ## Implementováno
 
+#### Z122 — Více květů v koruně
+
+- Zadání: zvýšit počet květů v Semenaci.
+- Výsledek: do koruny se rozmísťuje 48 květů.
+- Stav: Implementováno.
+- Ověření: kontrola při commitu. Vizuální kontrola čeká na uživatele.
+
 #### Z121 — Menší květy a společný opad s listy
 
 - Zadání: zmenšit květy, zvýšit jejich počet a načasovat opad podle listů.

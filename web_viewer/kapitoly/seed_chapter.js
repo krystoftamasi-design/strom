@@ -2,7 +2,7 @@ import * as THREE from 'three';
 import { createSeedModel, loadSeedAssets } from './seed_model.js';
 import { beechLeafFallProgress } from '../obdobi/beech_phenology.js';
 
-const FLOWER_COUNT = 24;
+const FLOWER_COUNT = 48;
 const FLOWER_SCALE = 0.27;
 const SEED_FALL_SECONDS = 3.6;
 const SHELL_FALL_SECONDS = 2.4;
