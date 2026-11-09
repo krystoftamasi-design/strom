@@ -36,6 +36,13 @@ history:
 
 ## Implementováno
 
+#### Z108 — Hranatý model semene
+
+- Zadání: zjednodušit tvar semene na rovné plochy s ostrými hranami.
+- Výsledek: každý díl má dvě rovné vnější plochy. Složený model má trojúhelníkový průřez a tři díly se otevírají ze společné spodní špičky.
+- Stav: Implementováno.
+- Ověření: kontrola rovinnosti ploch, napojení zavřených hran, společné špičky a otevřené dutiny. Vizuální kontrola čeká na uživatele.
+
 #### Z107 — Ladicí stránka semene
 
 - Zadání: vytvořit z dodaných textur 3D model se třemi stranami a ovládaným dozráváním.

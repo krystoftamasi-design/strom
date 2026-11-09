@@ -2,8 +2,6 @@ import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 
 const PARTS = 3;
-const ROWS = 36;
-const COLUMNS = 24;
 const HEIGHT = 2.3;
 const SECTOR = 2 * Math.PI / PARTS;
 const OPEN_START = 0.42;
@@ -18,57 +16,41 @@ function makeShellGeometry() {
   const geometry = new THREE.BufferGeometry();
   const positions = [];
   const uvs = [];
-  const indices = [];
-  const stride = COLUMNS + 1;
-  const surfaceSize = (ROWS + 1) * stride;
+  const shoulder = 0.63;
+  const base = [0, 0, 0, 0.5, 0];
+  const tip = [0, HEIGHT, 0, 0.5, 1];
 
-  function addQuad(a, b, c, d, reverse) {
-    if (reverse) indices.push(a, c, b, b, c, d);
-    else indices.push(a, b, c, b, d, c);
+  function corners(radius) {
+    const x = radius * Math.sin(SECTOR / 2);
+    const z = radius * Math.cos(SECTOR / 2);
+    return [
+      [-x, HEIGHT * shoulder, z, 0, shoulder],
+      [x, HEIGHT * shoulder, z, 1, shoulder]
+    ];
   }
 
-  for (const inner of [false, true]) {
-    const offset = inner ? surfaceSize : 0;
-    const groupStart = indices.length;
-    for (let row = 0; row <= ROWS; row++) {
-      const t = row / ROWS;
-      const profile = row === 0 || row === ROWS ? 0 : Math.sin(Math.PI * t);
-      const thickness = inner ? 0.055 : 0;
-      const radius = profile * (0.92 * (0.58 + 0.62 * t) - thickness);
-      for (let column = 0; column <= COLUMNS; column++) {
-        const u = column / COLUMNS;
-        const angle = (u - 0.5) * SECTOR;
-        positions.push(radius * Math.sin(angle), t * HEIGHT, radius * Math.cos(angle));
-        uvs.push(u, t);
-        if (row < ROWS && column < COLUMNS) {
-          const a = offset + row * stride + column;
-          addQuad(a, a + 1, a + stride, a + stride + 1, inner);
-        }
+  function addFaces(material, triangles) {
+    const start = positions.length / 3;
+    for (const triangle of triangles) {
+      for (const [x, y, z, u, v] of triangle) {
+        positions.push(x, y, z);
+        uvs.push(u, v);
       }
     }
-    geometry.addGroup(groupStart, indices.length - groupStart, inner ? 1 : 0);
+    geometry.addGroup(start, positions.length / 3 - start, material);
   }
 
-  // Close the two long edges with separate vertices so the rims keep sharp normals.
-  const rimStart = indices.length;
-  for (const column of [0, COLUMNS]) {
-    const rimOffset = positions.length / 3;
-    for (let row = 0; row <= ROWS; row++) {
-      const outer = row * stride + column;
-      for (const index of [outer, outer + surfaceSize]) {
-        positions.push(...positions.slice(index * 3, index * 3 + 3));
-        uvs.push(0, row / ROWS);
-      }
-      if (row < ROWS) {
-        const a = rimOffset + 2 * row;
-        addQuad(a, a + 1, a + 2, a + 3, column === COLUMNS);
-      }
-    }
-  }
-  geometry.addGroup(rimStart, indices.length - rimStart, 2);
+  const [left, right] = corners(1.02);
+  const [innerLeft, innerRight] = corners(0.9);
+  // Each triangle has its own vertices, keeping normals flat at the folds and rims.
+  addFaces(0, [[base, right, left], [left, right, tip]]);
+  addFaces(1, [[base, innerLeft, innerRight], [innerRight, innerLeft, tip]]);
+  addFaces(2, [
+    [base, innerLeft, left], [left, innerLeft, tip],
+    [base, right, innerRight], [right, tip, innerRight]
+  ]);
   geometry.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
   geometry.setAttribute('uv', new THREE.Float32BufferAttribute(uvs, 2));
-  geometry.setIndex(indices);
   geometry.computeVertexNormals();
   return geometry;
 }
