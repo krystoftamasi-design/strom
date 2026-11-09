@@ -36,6 +36,13 @@ history:
 
 ## Implementováno
 
+#### Z117 — Volná dutina květu a užší spodek
+
+- Zadání: odstranit vnitřní výplň a přiblížit spodní hrany dílů.
+- Výsledek: v dutině zůstávají semena a spodní hrany leží blíž společné špičce.
+- Stav: Implementováno.
+- Ověření: v Blenderu ověřeny upravené spodní vrcholy, počet ploch, hladké stínování a UV. Vizuální kontrola čeká na uživatele.
+
 #### Z116 — Hladké stínování květu
 
 - Zadání: použít Shade Smooth na květ.

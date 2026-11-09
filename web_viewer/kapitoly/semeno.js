@@ -122,10 +122,6 @@ async function init() {
   const ripeness = { value: 0 };
   const flower = new THREE.Group();
   const shells = [];
-  const lining = new THREE.Group();
-  const liningMaterial = new THREE.MeshStandardMaterial({ roughness: 0.88 });
-  const greenLining = new THREE.Color('#538138');
-  const brownLining = new THREE.Color('#85502b');
   const source = model.scene;
   source.updateMatrixWorld(true);
   const bounds = new THREE.Box3().setFromObject(source);
@@ -142,11 +138,10 @@ async function init() {
     shell.userData.openAxis = axis;
     flower.add(shell);
     shells.push(shell);
-    lining.add(new THREE.Mesh(geometry, liningMaterial));
   });
   if (shells.length !== PARTS) throw new Error('Model must contain three parts');
   const seeds = seedMaps.map((map, index) => makeSeed(map, SEED_DETAILS[index], anisotropy));
-  flower.add(lining, ...seeds.map(({ seed }) => seed));
+  flower.add(...seeds.map(({ seed }) => seed));
   scene.add(flower);
 
   const render = () => renderer.render(scene, camera);
@@ -173,14 +168,6 @@ async function init() {
     const angle = openingAt(amount);
     flower.scale.setScalar(THREE.MathUtils.lerp(0.12, 1, THREE.MathUtils.smoothstep(amount, 0, 0.65)));
     ripeness.value = THREE.MathUtils.smoothstep(amount, 0, 1);
-    // The inset lining covers the closed seams behind the painted edges and
-    // recedes into the base as the cavity opens.
-    const liningAmount = 1 - THREE.MathUtils.smoothstep(angle, 0, 12);
-    const liningScale = 0.76 * liningAmount;
-    lining.visible = liningAmount > 0;
-    lining.scale.setScalar(liningScale);
-    lining.position.y = (1 - liningScale) * HEIGHT * 0.44 * liningAmount;
-    liningMaterial.color.copy(greenLining).lerp(brownLining, ripeness.value);
     for (const shell of shells) {
       shell.quaternion.setFromAxisAngle(shell.userData.openAxis, THREE.MathUtils.degToRad(angle));
     }
