@@ -36,6 +36,13 @@ history:
 
 ## Implementováno
 
+#### Z110 — Dosednutí dílů a alfa okrajů semene
+
+- Zadání: zmírnit ořez textur a uzavřít mezery mezi stranami.
+- Výsledek: hrany a konce tří dílů v zavřené poloze dosedají. Po rozevření mají volné okraje měkkou průhlednost podle textury.
+- Stav: Implementováno.
+- Ověření: kontrola párování všech hran exportu, společného bodu otáčení a UV. Vizuální kontrola čeká na uživatele.
+
 #### Z109 — Model semene podle Blenderu
 
 - Zadání: převzít tvar ze souboru kvet.blend a použít průhlednost podle listů.

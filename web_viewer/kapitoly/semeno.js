@@ -1,11 +1,9 @@
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
-import { applyGasLeafStyle } from '../vykreslovani/gas_material.js';
 
 const PARTS = 3;
 const HEIGHT = 2.3;
-const SECTOR = 2 * Math.PI / PARTS;
 const OPEN_START = 0.42;
 const OPEN_ANGLE = 54;
 const PLAY_DURATION = 6000;
@@ -14,20 +12,25 @@ function openingAt(maturity) {
   return OPEN_ANGLE * THREE.MathUtils.smoothstep(maturity, OPEN_START, 1);
 }
 
-function makeOuterMaterial(map, ripeness) {
-  const material = applyGasLeafStyle(new THREE.MeshStandardMaterial({ map, roughness: 0.88, side: THREE.DoubleSide }));
-  const addAlpha = material.onBeforeCompile;
-  material.customProgramCacheKey = () => 'seed_leaf_alpha_color_v1';
+function makeOuterMaterial(map, ripeness, freeEdges) {
+  const material = new THREE.MeshStandardMaterial({
+    map, roughness: 0.88, side: THREE.DoubleSide, alphaToCoverage: true
+  });
   material.onBeforeCompile = shader => {
-    addAlpha(shader);
     shader.uniforms.seedRipeness = ripeness;
-    shader.fragmentShader = 'uniform float seedRipeness;\n' + shader.fragmentShader.replace(
-      '#include <map_fragment>',
-      `#include <map_fragment>
-      float seedTone = dot(diffuseColor.rgb, vec3(0.2126, 0.7152, 0.0722));
-      vec3 greenSeed = seedTone * vec3(0.72, 1.75, 0.33);
-      diffuseColor.rgb = mix(greenSeed, diffuseColor.rgb, seedRipeness);`
-    );
+    shader.uniforms.seedFreeEdges = freeEdges;
+    shader.fragmentShader = 'uniform float seedRipeness;\nuniform float seedFreeEdges;\n' +
+      shader.fragmentShader.replace('#include <map_fragment>', `#include <map_fragment>
+        // Keep the joined shell solid. Use the source coverage on free edges.
+        float seedAlpha = diffuseColor.a;
+        vec3 shellColor = texture2D(map, vec2(0.5)).rgb;
+        diffuseColor.rgb = mix(shellColor, diffuseColor.rgb, smoothstep(0.0, 0.8, seedAlpha));
+        diffuseColor.a = mix(1.0, smoothstep(0.02, 0.9, seedAlpha), seedFreeEdges);
+        if (diffuseColor.a <= 0.0) discard;
+        float seedTone = dot(diffuseColor.rgb, vec3(0.2126, 0.7152, 0.0722));
+        vec3 greenSeed = seedTone * vec3(0.72, 1.75, 0.33);
+        diffuseColor.rgb = mix(greenSeed, diffuseColor.rgb, seedRipeness);`
+      ).replace('#include <opaque_fragment>', '#undef OPAQUE\n#include <opaque_fragment>');
   };
   return material;
 }
@@ -83,21 +86,21 @@ async function init() {
   scene.add(grid);
 
   const ripeness = { value: 0 };
+  const freeEdges = { value: 0 };
   const shells = [];
   const source = model.scene;
   source.updateMatrixWorld(true);
   const bounds = new THREE.Box3().setFromObject(source);
-  const center = bounds.getCenter(new THREE.Vector3());
   const scale = HEIGHT / (bounds.max.y - bounds.min.y);
   source.traverse(object => {
     if (!object.isMesh) return;
+    // The export places the shared bottom tip at the model origin.
     const geometry = object.geometry.clone().applyMatrix4(object.matrixWorld);
-    geometry.translate(-center.x, -bounds.min.y, -center.z);
     geometry.scale(scale, scale, scale);
     geometry.computeBoundingBox();
     const partCenter = geometry.boundingBox.getCenter(new THREE.Vector3());
     const axis = new THREE.Vector3(partCenter.z, 0, -partCenter.x).normalize();
-    const shell = new THREE.Mesh(geometry, makeOuterMaterial(maps[shells.length], ripeness));
+    const shell = new THREE.Mesh(geometry, makeOuterMaterial(maps[shells.length], ripeness, freeEdges));
     shell.userData.openAxis = axis;
     scene.add(shell);
     shells.push(shell);
@@ -127,6 +130,7 @@ async function init() {
     const amount = value / 100;
     const angle = openingAt(amount);
     ripeness.value = THREE.MathUtils.smoothstep(amount, 0, 1);
+    freeEdges.value = THREE.MathUtils.smoothstep(angle, 2, 14);
     for (const shell of shells) {
       shell.quaternion.setFromAxisAngle(shell.userData.openAxis, THREE.MathUtils.degToRad(angle));
     }
