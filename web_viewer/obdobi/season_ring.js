@@ -35,7 +35,7 @@ export function createSeasonRing({ scene, camera, controls, canvas, model }) {
     const base = positions.length / 3;
     // One continuous brush stroke per season; only season boundaries have gaps.
     for (let step = 0; step <= stepsPerSection; step++) {
-      const angle = section * sectionAngle + gapAngle / 2
+      const angle = (section - 0.5) * sectionAngle + gapAngle / 2
         + step / stepsPerSection * (sectionAngle - gapAngle);
       for (let side = 0; side < 2; side++) {
         const r = radius + (side - 0.5) * ribbonWidth;

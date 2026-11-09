@@ -27,6 +27,10 @@ history:
 - Písmo: Satoshi; v podkladu přibližně 21 px.
 - Kliknutí přepne příslušnou kapitolu.
 
+#### Kruh ročních období
+
+- Názvy období leží uprostřed odpovídajících úseků kruhu a označují střed období podle modelového data; jaro připadá přibližně na polovinu dubna.
+
 #### Manager
 
 - Tlačítko Manager se nezobrazuje; rozšířené ovládání zůstává skryté.

@@ -29,6 +29,20 @@ history:
 
 ## Implementováno
 
+#### Z102 — Menší částice vodní páry
+
+- Zadání: zmenšit částice H₂O na velikost O₂.
+- Výsledek: při výchozím otevření hlavního okna jsou stejně velké jako nezvýrazněné O₂; zvýraznění nadále funguje.
+- Stav: Implementováno.
+- Ověření: cílený test částic; vizuální kontrola čeká na uživatele.
+
+#### Z101 — Středy období na kruhu
+
+- Zadání: umístit jaro podle data doprostřed jarního úseku.
+- Výsledek: úseky kruhu jsou vystředěné na názvy období a jejich modelová středová data; jaro odpovídá polovině dubna.
+- Stav: Implementováno.
+- Ověření: kontrola převodu data, geometrie a syntaxe; finální vizuální kontrola uživatelem.
+
 #### Z100 — Rozptyl vodní páry
 
 - Zadání: sjednotit rozptyl částic H₂O v Transpiraci s O₂.
