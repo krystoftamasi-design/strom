@@ -36,6 +36,13 @@ history:
 
 ## Implementováno
 
+#### Z105 — Stručné texty Semenace
+
+- Zadání: zkrátit popisy, stanovit pravidlo stručnosti a odstranit posuvníky oken.
+- Výsledek: okna a kontext Semenace mají kratší texty; jejich obsah se zobrazuje bez posuvníků a dokumentace stanoví stručnost popisů.
+- Stav: Implementováno.
+- Ověření: kontrola změn a syntaktická kontrola při commitu; výsledné rozložení čeká na vizuální kontrolu uživatelem.
+
 #### Z104 — Semenace ve webu
 
 - Zadání: realizovat navržená okna, kontext a částice padajících semen s využitím období.

@@ -1,6 +1,6 @@
 import { zobrazitHodnotu } from '../okna/element_ui_okna_veliciny.js?v=transpiration-vapour-1';
 import { SEASONS } from '../ekologie/tree_ecology.js?v=active-leaves-3&checks=1';
-import { createTreeAnnotations } from '../okna/tree_annotations.js?v=seeds-1';
+import { createTreeAnnotations } from '../okna/tree_annotations.js?v=seeds-2';
 
 const chapters = [
   ['seasons', 'Období'], ['photosynthesis', 'Fotosyntéza'], ['transpiration', 'Transpirace'],

@@ -38,7 +38,7 @@ history:
 
 #### Kontext počtu semen
 
-- V [Semenaci](okna.md#kapitola-semenace) samostatný kontext pod hlavním oknem stručně vysvětluje, že strom vytváří mnoho semen, ale jen část vyklíčí a menší část přežije až do dospělosti.
+- V [Semenaci](okna.md#kapitola-semenace) kontext pod hlavním oknem říká: „Z mnoha bukvic jen malá část doroste ve strom.“
 - Kontext není počítanou hodnotou stromu ani novým ovládacím prvkem. Přesný počet bukvic, časové období a podíl přežití doplnit až po ověření zdroje, životní fáze a podmínek; do té doby nezobrazovat vymyšlená čísla.
 - Část semen spotřebují živočichové; některá nevyklíčí a část semenáčků nepřežije. Živočichové mohou semena také šířit.
 

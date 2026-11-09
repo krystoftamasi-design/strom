@@ -23,6 +23,7 @@ history:
 
 # Okna
 
+- Popisné texty oken piš co nejstručněji, aby se vešly do dostupného prostoru a zachovaly hlavní sdělení.
 - Nápověda +/− se aktivuje 30 sekund po načtení stránky, pokud uživatel dosud ručně nepřepnul žádné okno; první přepnutí tlačítkem, nadpisem či klávesnicí ji vypne všude až do obnovení stránky. Automatické výchozí otevření ji nevypíná. Animaci určuje [Vzhled oken](vzhled_oken.md).
 
 ## Kapitola Fotosyntéza
@@ -173,16 +174,15 @@ history:
 #### Semenace
 
 - Nadpis: `Semenace`; role: hlavní okno; strana: vlevo.
-- Shrnutí: „Z opylených květů vznikají bukvice. Z některých semen mohou vyrůst nové stromy.“
+- Detail: „Z opylených květů vznikají bukvice. Na jaře mohou semena vyklíčit.“
 - Přehled období: jaro — kvetení a opylení, případně klíčení semen z předchozího roku; léto — vývoj bukvic; podzim — dozrávání, pád a šíření; zima — přezimování semen.
-- Detail: vysvětluje návaznost fází; [kontext počtu semen](texty.md#kontext-počtu-semen) doplňuje jejich množství a přežití.
+- [Kontext počtu semen](texty.md#kontext-počtu-semen) doplňuje jejich množství a přežití.
 - Hodnota: název aktuální fáze; žádný vypočtený počet ani procento.
 
 #### Vznik bukvic
 
 - Nadpis: `Vznik bukvic`; role: tematické okno; strana: vpravo.
-- Shrnutí: po opylení větrem se vyvíjejí plody se semeny.
-- Detail: na jaře buk kvete; po opylení se během léta vyvíjejí bukvice v číškách a na podzim dozrávají.
+- Detail: „Vítr přenáší pyl. Bukvice dozrávají na podzim; bohatá úroda není každý rok.“
 - Vazba na element: není určena; assety květů a bukvic dodá uživatel a jejich použití se upřesní.
 
 #### Šíření semen
@@ -190,8 +190,7 @@ history:
 **Tag:** 🟤 `seeds`
 
 - Nadpis: `Šíření semen`; role: tematické okno; strana: vpravo.
-- Shrnutí: bukvice padají ke stromu; část semen přenesou živočichové dál.
-- Detail: některá semena vyklíčí a jen část mladých stromků přežije. V dalších generacích může šíření semen umožnit osidlování nových míst při změnách klimatu; výsledek závisí na podmínkách a šíření nemusí změnám stačit.
+- Detail: „Bukvice padají poblíž stromu, živočichové část přenesou dál. Za generace se tak druh může šířit při změnách klimatu.“
 - Roční přehled znázorňuje jeden rok; posun druhu probíhá přes mnoho generací a není součástí roční simulace.
 - Související element: [Padající semena](elementy.md#padající-semena).
 

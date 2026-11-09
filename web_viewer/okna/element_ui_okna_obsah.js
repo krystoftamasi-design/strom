@@ -3,11 +3,11 @@
 export const oknaPodleKapitol = {
   seeds: [
     { id: 'semenace', nadpis: 'Semenace', tema: 'neutral', viditelnyPrepinac: true, strana: 'left', hlavni: true, otevrene: true,
-      fazeSemene: true, text: ['Z opylených květů vznikají bukvice. Z některých semen mohou vyrůst nové stromy.', 'Jaro: květy a opylení. Léto: vývoj bukvic. Podzim: dozrávání a šíření. Zima: semena přezimují a mohou na jaře vyklíčit.'] },
+      fazeSemene: true, text: ['Z opylených květů vznikají bukvice. Na jaře mohou semena vyklíčit.'] },
     { id: 'vznik-bukvic', nadpis: 'Vznik bukvic', tema: 'neutral', viditelnyPrepinac: true, strana: 'right',
-      text: ['Na jaře buk kvete a vítr přenáší pyl. Po opylení se během léta vyvíjejí bukvice v číškách, na podzim dozrávají. Bohatá úroda bukvic přichází jen v některých letech.'] },
+      text: ['Vítr přenáší pyl. Bukvice dozrávají na podzim; bohatá úroda není každý rok.'] },
     { id: 'sireni-semen', nadpis: 'Šíření semen', tema: 'seeds', viditelnyPrepinac: true, strana: 'right',
-      text: ['Bukvice padají poblíž stromu; část semen přenesou živočichové dál. Některá vyklíčí a část mladých stromků přežije.', 'V mnoha generacích může šíření semen pomoci druhu osídlit nová místa při změnách klimatu. Záleží na podmínkách a rychlost šíření nemusí změnám stačit.'] },
+      text: ['Bukvice padají poblíž stromu, živočichové část přenesou dál.', 'Za generace se tak druh může šířit při změnách klimatu.'] },
   ],
   transpiration: [
     { id: 'transpirace', nadpis: 'Transpirace', tema: 'water', viditelnyPrepinac: true, strana: 'left', hlavni: true, otevrene: true,
@@ -97,7 +97,7 @@ export const oknaPodleKapitol = {
 
 export const kontextoveTexty = {
   seeds: {
-    vychozi: 'Buk vytvoří mnoho semen. Některá vyklíčí, ale jen malá část doroste v dospělý strom. Semena mohou sníst živočichové; někteří je také přenášejí dál.',
+    vychozi: 'Z mnoha bukvic jen malá část doroste ve strom.',
     varianty: {},
   },
   photosynthesis: {
