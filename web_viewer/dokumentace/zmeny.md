@@ -29,6 +29,13 @@ history:
 
 ## Implementováno
 
+#### Z098 — Silnější linky bez zesvětlení
+
+- Zadání: zesílit zvýrazněné linky a nezesvětlovat jejich barvu.
+- Výsledek: zvýrazněné linky jsou silnější a zachovávají barvu.
+- Stav: Implementováno.
+- Ověření: kontrola změn a syntaxe; finální vizuální kontrola uživatelem.
+
 #### Z097 — Výraznější zvýraznění elementů
 
 - Zadání: zvýšit zřetelnost zvýraznění propojených elementů.
