@@ -36,6 +36,13 @@ history:
 
 ## Implementováno
 
+#### Z116 — Hladké stínování květu
+
+- Zadání: použít Shade Smooth na květ.
+- Výsledek: všechny tři díly mají hladké stínování a zachovávají původní obrys.
+- Stav: Implementováno.
+- Ověření: v Blenderu ověřeno hladké stínování, počet ploch a UV všech dílů. Vizuální kontrola čeká na uživatele.
+
 #### Z115 — Růst květu a vypadnutí semen
 
 - Zadání: nechat květ vyrůst z malého poupěte a uvolnit semena z dutiny.
