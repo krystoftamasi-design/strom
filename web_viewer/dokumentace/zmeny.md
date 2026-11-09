@@ -36,6 +36,13 @@ history:
 
 ## Implementováno
 
+#### Z104 — Semenace ve webu
+
+- Zadání: realizovat navržená okna, kontext a částice padajících semen s využitím období.
+- Výsledek: společná okna a kontext ukazují fázi a souvislosti; na podzim padají schematické částice, které reagují na okno Šíření semen. Použity jsou dočasné tvary do dodání assetů.
+- Stav: Implementováno.
+- Ověření: prošel test definic oken test_ui_okna_kontrola.mjs; finální vizuální a funkční kontrola čeká na uživatele, číselné údaje na zdroje.
+
 #### Z102 — Menší částice vodní páry
 
 - Zadání: zmenšit částice H₂O na velikost O₂.

@@ -653,7 +653,7 @@
   </style>
   <link rel="stylesheet" href="./kapitoly/chapters.css?v=menu-bold-4">
   <link rel="stylesheet" href="./okna/tree_annotations.css?v=menu-date-3">
-  <link rel="stylesheet" href="./okna/element_ui_okna_vzhled.css?v=menu-bold-4">
+  <link rel="stylesheet" href="./okna/element_ui_okna_vzhled.css?v=seeds-1">
 </head>
 
 <body>
@@ -1115,7 +1115,7 @@
     import { CanopyOcclusion } from './vykreslovani/canopy_occlusion.js?v=sky-1';
     import { createWaterBrushMaterial, addWaterBrushAttributes } from './vykreslovani/water_brush.js?v=highlight-width-2';
     import { TreeEcology, SEASONS, MODEL_MINUTES_PER_SECOND } from './ekologie/tree_ecology.js?v=active-leaves-3&checks=1';
-    import { createChapters } from './kapitoly/chapters.js?v=window-hover-1';
+    import { createChapters } from './kapitoly/chapters.js?v=seeds-1';
     import { createSeasonRing } from './obdobi/season_ring.js?v=season-midpoint-1';
     import { createIntroForest } from './obdobi/intro_forest.js?v=intro-closer-camera-2';
     import { seasonColorForPosition } from './obdobi/season_timeline.js?v=beech-calendar-1';
@@ -3856,8 +3856,46 @@
       scene, camera, controls, sun: sun1, getHeight: () => ecology.height,
       invalidateShadows
     });
+    // Temporary seed shapes until the supplied beech assets are available.
+    const seedGroup = new THREE.Group();
+    scene.add(seedGroup);
+    const seedGeometry = new THREE.OctahedronGeometry(0.14, 0);
+    const seedMaterial = new THREE.MeshBasicMaterial({ color: 0x865126 });
+    const seedParticles = Array.from({ length: 24 }, () => {
+      const mesh = new THREE.Mesh(seedGeometry, seedMaterial);
+      seedGroup.add(mesh);
+      return { mesh, speed: 2 + Math.random() * 2 };
+    });
+    const reducedSeedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+    let seedHighlight = false;
+    let seedsWereVisible = false;
+    function resetSeed(particle, initial = false) {
+      const angle = Math.random() * Math.PI * 2;
+      const radius = Math.sqrt(Math.random()) * 6;
+      particle.mesh.position.set(Math.cos(angle) * radius, initial ? Math.random() * (ecology.height || 24.5) * 0.7 : (ecology.height || 24.5) * (0.55 + Math.random() * 0.3), Math.sin(angle) * radius);
+      particle.mesh.rotation.set(Math.random() * Math.PI, Math.random() * Math.PI, 0);
+    }
+    function updateSeeds(delta) {
+      const visible = chapterApp.chapter === 'seeds' && ecology.season === 'autumn';
+      seedGroup.visible = visible;
+      if (!visible) { seedsWereVisible = false; return; }
+      for (const particle of seedParticles) {
+        if (!seedsWereVisible) resetSeed(particle, true);
+        particle.mesh.scale.setScalar(seedHighlight ? 2 : 1);
+        if (reducedSeedMotion.matches) {
+          particle.mesh.position.y = 0.16;
+        } else if (delta > 0) {
+          particle.mesh.position.y -= particle.speed * delta;
+          particle.mesh.rotation.z += delta;
+          if (particle.mesh.position.y < 0.1) resetSeed(particle);
+        }
+      }
+      seedsWereVisible = true;
+    }
+    reducedSeedMotion.addEventListener('change', () => { seedsWereVisible = false; });
     const chapterApp = createChapters({
       setElementHighlight: (tag, active) => {
+        if (tag === 'seeds') seedHighlight = active;
         if (flowSelections[tag]) flowSelections[tag].value = active ? 1.0 : 0.0;
         if (photolysisSystem) photolysisSystem.setElementHighlight(tag, active);
       },
@@ -4093,6 +4131,7 @@
       if (typeof updateSapWaterLabel === 'function') updateSapWaterLabel(playbackDelta, simulationNow);
       camera.updateMatrixWorld();
       chapterApp.updateScene(playbackDelta);
+      updateSeeds(playbackDelta);
       introForest.update();
       renderer.render(scene, camera);
     }

@@ -158,10 +158,10 @@ Definice spojení
 
 **Chování elementu**
 
-- Návrh k realizaci: v Semenaci na podzim částicový systém znázorňuje bukvice padající z koruny k zemi poblíž stromu. Počet částic je schematický, nepředstavuje skutečný počet ani podíl přežití.
+- V Semenaci na podzim částicový systém znázorňuje bukvice padající z koruny k zemi poblíž stromu. Počet částic je schematický, nepředstavuje skutečný počet ani podíl přežití.
 - V jiných obdobích a kapitolách se semena nevytvářejí ani nezobrazují; při změně období či kapitoly se existující částice skryjí. Opětovný podzim obnoví emisi.
 - Živočichové ani šíření do dálky se částicemi nesimulují; vysvětluje je související okno.
-- Konkrétní vzhled, měřítko a četnost se určí po dodání assetů uživatelem. Při omezení pohybu se místo animovaného pádu zobrazí statické znázornění semen pod korunou.
+- Dočasné hnědé tvary nahrazují assety, které dodá uživatel; jejich konečný vzhled, měřítko a četnost se upřesní. Při omezení pohybu se místo animovaného pádu zobrazí statické znázornění semen pod korunou.
 
 ### Pravidlo propojení
 

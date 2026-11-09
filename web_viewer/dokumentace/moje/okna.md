@@ -166,7 +166,7 @@ history:
 
 ### Okna
 
-- Návrh k realizaci; stávající kapitola zatím používá roční textový přehled. Cíl a ověření určuje [Strategie](strategie.md#uplatnění-v-semenaci).
+- Cíl a navržené ověření určuje [Strategie](strategie.md#uplatnění-v-semenaci).
 - Okna navazují na [šablonu Transpirace](vzhled_oken.md#šablona-jednoho-okna-podle-transpirace). Hlavní detail je výchozí otevřený, tematické zavřené; nadpis nebo tlačítko +/− přepíná detail a stav zůstává při změně kapitoly zachovaný.
 - Stávající ovládání období určuje zobrazenou fázi, bez další časové osy. Fáze jsou typickým přehledem, nikoli přesným kalendářem či simulací jednotlivých let.
 

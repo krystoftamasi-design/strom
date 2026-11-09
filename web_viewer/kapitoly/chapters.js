@@ -1,6 +1,6 @@
 import { zobrazitHodnotu } from '../okna/element_ui_okna_veliciny.js?v=transpiration-vapour-1';
 import { SEASONS } from '../ekologie/tree_ecology.js?v=active-leaves-3&checks=1';
-import { createTreeAnnotations } from '../okna/tree_annotations.js?v=window-hover-1';
+import { createTreeAnnotations } from '../okna/tree_annotations.js?v=seeds-1';
 
 const chapters = [
   ['seasons', 'Období'], ['photosynthesis', 'Fotosyntéza'], ['transpiration', 'Transpirace'],
@@ -64,13 +64,7 @@ export function createChapters({ model, applySeason, setSun, setAzimuth, setVisu
         <p>Rostoucí kořeny reagují na gravitaci, překážky i rozdíly ve vlhkosti. Směr růstu mění díky spolupráci buněk špičky a přilehlých růstových oblastí.</p>
         <details><summary>Jak reakce vzniká</summary><p>Čepička chrání konec kořene a podílí se na vnímání gravitace. Změna rozložení auxinu ovlivňuje prodlužování buněk a zakřivení kořene. Dotyk s překážkou může změnit jeho růst.</p><p>Reakce na vlhkost se nazývá hydrotropismus. Pokusy na huseníčku ukázaly také účast buněk kůry prodlužovací oblasti. Přesný průběh u buku zde nesimulujeme.</p><p>„Mozek kořene“ je historická, diskutovaná metafora. Rostliny nemají mozek ani neurony. Pulz ve schématu znázorňuje signalizaci a pohyb je zrychlený.</p><a href="https://www.nature.com/articles/nplants201757" target="_blank" rel="noopener">Výzkum hydrotropismu ↗</a></details>
       </article>
-      <article data-chapter="seeds" hidden>
-        <p class="chapter-eyebrow">05 / Další generace</p><h2>Semenace</h2>
-        <div class="chapter-tags"><span>Roční období</span></div>
-        <p>Život buku pokračuje v bukvicích. Jejich vývoj souvisí s ročním obdobím; bohatá úroda semen přichází jen v některých letech.</p>
-        <ol class="seed-cycle"><li data-seed-season="spring"><strong>Jaro</strong><span>Rašení listů a kvetení. Pyl přenáší vítr.</span></li><li data-seed-season="summer"><strong>Léto</strong><span>Po opylení se vyvíjejí plody v číškách.</span></li><li data-seed-season="autumn"><strong>Podzim</strong><span>Číšky se otevírají a zralé bukvice padají. Část semen přenášejí živočichové.</span></li><li data-seed-season="latefall"><strong>Zima</strong><span>Semena přezimují. Vhodné podmínky umožní na jaře klíčení.</span></li></ol>
-        <p class="chapter-note">Vyberte období dole a sledujte příslušnou fázi. Jde o přehled typického ročního cyklu.</p>
-      </article>
+      <article data-chapter="seeds" hidden></article>
     </div>
     <section class="chapter-shared manager-controlled manager-hidden" id="chapterShared" aria-label="Společné podmínky stromu" hidden>
       <div class="shared-heading"><h3>Podmínky stromu</h3><output id="ecoSeasonLabel">—</output><button type="button" class="shared-toggle" aria-expanded="true" aria-label="Skrýt podmínky stromu">−</button></div>
@@ -315,11 +309,7 @@ export function createChapters({ model, applySeason, setSun, setAzimuth, setVisu
     }
     capturedLabel.textContent = `${hourly(model.waterInput)} l/h`;
     if (document.activeElement !== waterInput) waterInput.value = model.waterInput * 60;
-    shell.querySelectorAll('[data-seed-season]').forEach(li => {
-      const active = li.dataset.seedSeason === model.season;
-      li.classList.toggle('current', active);
-      if (active) li.setAttribute('aria-current', 'step'); else li.removeAttribute('aria-current');
-    });
+    out('seedPhase', ({ spring: 'Kvetení', summer: 'Vývoj bukvic', autumn: 'Šíření semen', latefall: 'Přezimování' })[model.season] || '—');
   }
   select('intro');
   return {

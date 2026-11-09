@@ -1,6 +1,6 @@
-import { oknaPodleKapitol, kontextoveTexty, pruvodceTranspiraci } from './element_ui_okna_obsah.js?v=context-guides-1';
+import { oknaPodleKapitol, kontextoveTexty, pruvodceTranspiraci } from './element_ui_okna_obsah.js?v=seeds-1';
 import { veliciny, vstupyVzorce, ohlasitChybuOken } from './element_ui_okna_veliciny.js?v=transpiration-vapour-1';
-import { zkontrolovatOkna } from './element_ui_okna_kontrola.js?v=transpiration-vapour-1';
+import { zkontrolovatOkna } from './element_ui_okna_kontrola.js?v=seeds-1';
 
 // Original embedded assets from ui_new.svg, at their exported stroke widths.
 const strokes = {
@@ -265,6 +265,16 @@ export function createTreeAnnotations({ shell, model, createSeasonControl, setEl
       metric.append(strong);
       nodes.push(metric);
     }
+    if (definition.fazeSemene) {
+      const metric = document.createElement('div');
+      metric.className = 'chapter-metric';
+      const strong = document.createElement('strong');
+      const output = document.createElement('output');
+      output.id = 'seedPhase';
+      strong.append(output);
+      metric.append(strong);
+      nodes.push(metric);
+    }
     if (definition.ovladani) {
       const input = document.getElementById(definition.ovladani.id);
       const control = input.closest('.slider-group');
@@ -323,15 +333,7 @@ export function createTreeAnnotations({ shell, model, createSeasonControl, setEl
       detail.insertBefore(article.querySelector('.root-diagram'), detail.querySelector('p'));
       card(article, 'roots', 'left', 'Kořeny', [eyebrow, tags, paragraphs[1], article.querySelector('#btnRootCamera')], heading);
       card(article, 'rootTip', 'right', 'Kořenová špička', [paragraphs[2], detail], tipHeading);
-    } else if (article.dataset.chapter === 'seeds') {
-      const cycle = article.querySelector('.seed-cycle');
-      const all = document.createElement('details');
-      const summary = document.createElement('summary');
-      summary.textContent = 'Celý roční cyklus';
-      const fullCycle = cycle.cloneNode(true);
-      fullCycle.classList.add('all-seasons');
-      all.append(summary, fullCycle);
-      card(article, 'seeds', 'right', 'Semenace', [eyebrow, tags, paragraphs[1], cycle, all, paragraphs[2]], heading);
+
     }
     // Preserve additional fields when chapter content gains another metric.
     // Only empty wrappers can be discarded; live outputs must remain in the DOM.

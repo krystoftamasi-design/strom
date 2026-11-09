@@ -1,6 +1,14 @@
 // Obsah oken: jeden záznam pro každé okno, bez vykreslování a výpočtů.
 // ID určuje pevnou pozici v UI; téma odkazuje na barvy v CSS.
 export const oknaPodleKapitol = {
+  seeds: [
+    { id: 'semenace', nadpis: 'Semenace', tema: 'neutral', viditelnyPrepinac: true, strana: 'left', hlavni: true, otevrene: true,
+      fazeSemene: true, text: ['Z opylených květů vznikají bukvice. Z některých semen mohou vyrůst nové stromy.', 'Jaro: květy a opylení. Léto: vývoj bukvic. Podzim: dozrávání a šíření. Zima: semena přezimují a mohou na jaře vyklíčit.'] },
+    { id: 'vznik-bukvic', nadpis: 'Vznik bukvic', tema: 'neutral', viditelnyPrepinac: true, strana: 'right',
+      text: ['Na jaře buk kvete a vítr přenáší pyl. Po opylení se během léta vyvíjejí bukvice v číškách, na podzim dozrávají. Bohatá úroda bukvic přichází jen v některých letech.'] },
+    { id: 'sireni-semen', nadpis: 'Šíření semen', tema: 'seeds', viditelnyPrepinac: true, strana: 'right',
+      text: ['Bukvice padají poblíž stromu; část semen přenesou živočichové dál. Některá vyklíčí a část mladých stromků přežije.', 'V mnoha generacích může šíření semen pomoci druhu osídlit nová místa při změnách klimatu. Záleží na podmínkách a rychlost šíření nemusí změnám stačit.'] },
+  ],
   transpiration: [
     { id: 'transpirace', nadpis: 'Transpirace', tema: 'water', viditelnyPrepinac: true, strana: 'left', hlavni: true, otevrene: true,
       vypocet: 'transpiration', zobrazitVzorec: true, vzorecText: 'min(základ × listy × světlo × voda; spotřeba)', zobrazitHodnotu: true,
@@ -88,6 +96,10 @@ export const oknaPodleKapitol = {
 };
 
 export const kontextoveTexty = {
+  seeds: {
+    vychozi: 'Buk vytvoří mnoho semen. Některá vyklíčí, ale jen malá část doroste v dospělý strom. Semena mohou sníst živočichové; někteří je také přenášejí dál.',
+    varianty: {},
+  },
   photosynthesis: {
     vychozi: 'Strom si vytváří cukry pro vlastní růst. Kyslík je odpad tohoto procesu.',
     varianty: {

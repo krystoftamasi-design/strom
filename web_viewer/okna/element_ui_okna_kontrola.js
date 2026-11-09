@@ -1,7 +1,7 @@
 import { vzorce, konstanty } from '../ekologie/tree_ecology_vzorce.js?v=5';
 import { veliciny, vstupyVzorce } from './element_ui_okna_veliciny.js?v=transpiration-vapour-1';
 
-const temata = new Set(['neutral', 'light', 'water', 'leaves', 'co2', 'temperature', 'sugar', 'oxygen', 'roots']);
+const temata = new Set(['neutral', 'light', 'water', 'leaves', 'co2', 'temperature', 'sugar', 'oxygen', 'roots', 'seeds']);
 const ma = (objekt, klic) => objekt != null && Object.hasOwn(objekt, klic);
 const text = hodnota => typeof hodnota === 'string' && hodnota.trim().length > 0;
 
