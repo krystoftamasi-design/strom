@@ -12,6 +12,14 @@ history:
 
 - Návrhy k dalšímu posouzení podle [Strategie](strategie.md); samy nezadávají změnu webu.
 
+## Okna
+
+### Čárky jako posuvníky a ukazatele hodnot
+
+- Návrh: použít barevné čárky vedle oken jako posuvníky a současně na nich zobrazovat hodnotu vzhledem k teoretickému maximu.
+- Cíl: propojit ovládání hodnot s přehledným znázorněním jejich velikosti.
+- Stav: Nápad.
+
 ## Transpirace
 
 ### ❗ Propojení oken s místem děje
