@@ -36,6 +36,13 @@ history:
 
 ## Implementováno
 
+#### Z121 — Menší květy a společný opad s listy
+
+- Zadání: zmenšit květy, zvýšit jejich počet a načasovat opad podle listů.
+- Výsledek: v koruně je 24 menších květů. Prázdné obaly padají po uvolnění semen v období opadu listů.
+- Stav: Implementováno.
+- Ověření: ověřen začátek opadu podle společného kalendáře a návaznost na dopad semen. Vizuální kontrola čeká na uživatele.
+
 #### Z120 — Zavěšení květů a pád v Semenaci
 
 - Zadání: rozevírat květy směrem dolů, sladit osvětlení s korunou a zobrazit pád semen i prázdných obalů.

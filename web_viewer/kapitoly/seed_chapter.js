@@ -1,8 +1,9 @@
 import * as THREE from 'three';
 import { createSeedModel, loadSeedAssets } from './seed_model.js';
+import { beechLeafFallProgress } from '../obdobi/beech_phenology.js';
 
-const FLOWER_COUNT = 12;
-const FLOWER_SCALE = 0.42;
+const FLOWER_COUNT = 24;
+const FLOWER_SCALE = 0.27;
 const SEED_FALL_SECONDS = 3.6;
 const SHELL_FALL_SECONDS = 2.4;
 const LAST_RELEASE_DELAY = 0.45;
@@ -91,7 +92,7 @@ export function createSeedChapter({ scene, anisotropy, reducedMotion, illuminati
       else if (phase >= 3 || settled) seedTime = seedEnd;
       else seedTime = Math.min(seedTime + delta, seedEnd);
 
-      const dropShells = phase >= 3 || (phase >= 2.82 && seedTime >= seedEnd);
+      const dropShells = phase >= 2 && beechLeafFallProgress(seasonPosition) > 0 && seedTime >= seedEnd;
       if (!dropShells) shellTime = 0;
       else shellTime = settled ? shellEnd : Math.min(shellTime + delta, shellEnd);
 

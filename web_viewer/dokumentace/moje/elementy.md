@@ -159,7 +159,7 @@ Definice spojení
 **Chování elementu**
 
 - Ve druhé polovině jara se na větvích v koruně objeví malé modely. Přes léto rostou a na podzim hnědnou a rozevírají se směrem k zemi. Světlo a stín koruny ovlivňují jejich vzhled.
-- V podzimní fázi se spustí pád dvou semen z každého modelu. Na konci podzimu nebo po výběru zimy spadnou i prázdné obaly. Semena a obaly zůstávají pod stromem přes zimu.
+- V podzimní fázi se spustí pád dvou semen z každého modelu. Prázdné obaly padají v období opadu listů. Semena a obaly zůstávají pod stromem přes zimu.
 - Průběh určuje ovládání období. Pauza zastaví pád a při omezení pohybu se výsledek zobrazí rovnou. Modely se zobrazují v Semenaci a jejich počet i měřítko jsou schematické.
 - Šíření živočichy vysvětluje související okno.
 
