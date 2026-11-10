@@ -12,6 +12,22 @@ history:
 
 - Návrhy k dalšímu posouzení podle [Strategie](strategie.md); samy nezadávají změnu webu.
 
+## Obecné
+
+### Sound design
+
+- Návrh: promyslet zvukový design webu.
+- Cíl: zvážit, jak může zvuk podpořit uživatelský zážitek.
+- Stav: Nápad.
+
+## Období
+
+### Umístění testu kapitoly
+
+- Návrh: posoudit, zda test kapitoly Období nepatří spíše do kapitoly Ovládání.
+- Cíl: najít pro test vhodné místo.
+- Stav: Nápad.
+
 ## Okna
 
 ### Čárky jako posuvníky a ukazatele hodnot
