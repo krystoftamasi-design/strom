@@ -1,5 +1,5 @@
 import { zobrazitHodnotu } from '../okna/element_ui_okna_veliciny.js?v=transpiration-vapour-1';
-import { SEASONS } from '../ekologie/tree_ecology.js?v=window-flows-2';
+import { SEASONS } from '../ekologie/tree_ecology.js?v=water-supply-1';
 import { createTreeAnnotations } from '../okna/tree_annotations.js?v=window-flows-3';
 
 const chapters = [

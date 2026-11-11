@@ -36,6 +36,13 @@ history:
 
 ## Implementováno
 
+#### Z127 — Nižší automatický přísun vody
+
+- Zadání: ponechat prostor pro zvýšení dostupné vody.
+- Výsledek: automatický přísun odpovídá 90 % sezónního limitu příjmu kořenů.
+- Stav: Implementováno.
+- Ověření: cílené testy vody a definic oken prošly. Vizuální a funkční kontrola čeká na uživatele.
+
 #### Z126 — Původní textura vodorovných pruhů
 
 - Zadání: vrátit pruhům ve Fotosyntéze původní texturu.

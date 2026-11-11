@@ -12,6 +12,7 @@ export const MODEL_MINUTES_PER_SECOND = 24; // One displayed day (60 s) advances
 // Parameter evidence and remaining uncertainty: EKOLOGIE_PODKLADY.md.
 const FULL_CANOPY_LEAF_AREA_INDEX = 4;
 const AVAILABLE_WATER_LITRES_PER_M3 = 8; // Uncalibrated teaching reserve, not measured beech capacity.
+const AUTOMATIC_WATER_SUPPLY_FRACTION = 0.9;
 // ČHMÚ: national monthly mean temperature normals, 1991–2020 (°C).
 // https://www.chmi.cz/namerena-data/historicka-data/uzemni-teplota-a-srazky
 const CZECH_MONTHLY_MEAN = [-1.4, -0.4, 3.2, 8.5, 13.1, 16.5, 18.3, 17.9, 13.0, 8.2, 3.5, -0.4];
@@ -96,7 +97,7 @@ export class TreeEcology {
     // Actual daily use is integrated with daylight, foliage and hydration.
     this.baseTranspiration = this.leafArea * 0.9 / 720;
     this.reserve = this.capacity * oldFraction;
-    if (!this.ready) this.waterInput = this.baseTranspiration * SEASONS[this.season].waterSupply;
+    if (!this.ready) this.waterInput = this.baseTranspiration * SEASONS[this.season].waterSupply * AUTOMATIC_WATER_SUPPLY_FRACTION;
     this.ready = true;
     this.evaluate(0);
   }
@@ -121,7 +122,7 @@ export class TreeEcology {
     }
     if (resetWater) this.manualWaterInput = false;
     if (this.ready) {
-      if (!this.manualWaterInput) this.waterInput = this.baseTranspiration * this.seasonState.waterSupply;
+      if (!this.manualWaterInput) this.waterInput = this.baseTranspiration * this.seasonState.waterSupply * AUTOMATIC_WATER_SUPPLY_FRACTION;
       this.evaluate(0);
     }
   }

@@ -4,6 +4,9 @@ import { konstanty } from '../ekologie/tree_ecology_vzorce.js';
 
 const tree = new TreeEcology();
 tree.configure({ height: 26, woodVolume: 4, crownArea: 100 });
+assert.ok(Math.abs(tree.waterInput - tree.seasonalWaterLimit * 0.9) < 1e-10, 'Automatic supply leaves room below the root limit');
+tree.setSeason('spring');
+assert.ok(Math.abs(tree.waterInput - tree.seasonalWaterLimit * 0.9) < 1e-10, 'A season change restores the reduced automatic supply');
 assert.ok(Math.abs(tree.oxygenGramsPerMinute - tree.glucoseGramsPerMinute * konstanty.oxygenPerGlucose) < 1e-10);
 assert.ok(Math.abs(tree.co2GramsPerMinute - tree.activeLeafArea * tree.photosynthesisEfficiency * konstanty.co2Conversion) < 1e-10);
 const supplied = tree.baseTranspiration * 2;
