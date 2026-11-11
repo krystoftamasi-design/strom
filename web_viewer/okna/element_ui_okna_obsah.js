@@ -35,7 +35,7 @@ export const oknaPodleKapitol = {
       viditelnyPrepinac: true,
       nadpis: 'Světlo',
       tema: 'light',
-      strana: 'left',
+      strana: 'right',
       otevrene: false,
       vypocet: 'activity',
       zobrazitVzorec: true,

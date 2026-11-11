@@ -1,4 +1,4 @@
-import { oknaPodleKapitol, kontextoveTexty, pruvodceTranspiraci } from './element_ui_okna_obsah.js?v=light-window-1';
+import { oknaPodleKapitol, kontextoveTexty, pruvodceTranspiraci } from './element_ui_okna_obsah.js?v=right-windows-1';
 import { veliciny, vstupyVzorce, ohlasitChybuOken } from './element_ui_okna_veliciny.js?v=transpiration-vapour-1';
 import { zkontrolovatOkna } from './element_ui_okna_kontrola.js?v=seeds-1';
 

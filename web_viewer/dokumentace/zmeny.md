@@ -36,6 +36,13 @@ history:
 
 ## Implementováno
 
+#### Z131 — Okna Fotosyntézy vpravo
+
+- Zadání: přesunout Světlo a ostatní okna doprava, tlačítka vlevo od nadpisů a detaily vlevo od oken.
+- Výsledek: všech pět tematických oken je zarovnaných vpravo a používá požadované umístění tlačítek a detailů.
+- Stav: Implementováno.
+- Ověření: test definic oken prošel. Vizuální a funkční kontrola čeká na uživatele.
+
 #### Z130 — Nadpis Fotosyntéza a okno Světlo
 
 - Zadání: změnit Fotosyntézu na nadpis a zobrazit spotřebu i dostupnost světla v samostatném okně; fotony navázat na dostupnost.

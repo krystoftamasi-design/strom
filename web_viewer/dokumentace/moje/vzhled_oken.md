@@ -36,18 +36,18 @@ history:
 
 - Údaje tvoří svislý blok: nadpis → hodnota s jednotkou → vzorec nebo přehled vstupů.
 - Pravá tematická okna začínají na 70 % šířky a mají šířku 27 %; do šířky 700 px začínají na 52 % a mají šířku 44 %.
-- Tematické okno má detail vpravo, zarovnaný k hornímu okraji, s vlastním posuvem a mezerou 15 px. Hlavní okno používá variantu detailu pod údaji.
+- Tematické okno má detail vpravo, zarovnaný k hornímu okraji, s vlastním posuvem a mezerou 15 px. Ve Fotosyntéze se detail otevírá vlevo od okna. Hlavní okno používá variantu detailu pod údaji.
 - Nadpis zůstává na jednom řádku bez zmenšování podle délky; při nedostatku místa je dostupný vodorovný posuv.
 - Viditelné tlačítko +/− je kruhové, široké 28 px, s odstupem 8 px od nadpisu a vlastním prostorem; fokus je viditelný.
 - Konkrétní texty, hodnoty, ovládání a výchozí otevření detailů určuje [Obsah oken](okna.md).
 
 ### Rozložení
 
-- Fotosyntéza má vlevo samostatný nadpis kapitoly na úrovni prvního pravého okna (25 %, do šířky 700 px 22 %) a pod ním tematické okno Světlo (43 %, do šířky 700 px 39 %). Kontextový průvodce je pod oknem, má stejný levý okraj a vlastní svislý posuv; čas je pod ním u spodního okraje. Při změně věty se 15 sekund čeká, pak text 3 sekundy mizí a nový se 3 sekundy objevuje.
+- Fotosyntéza má vlevo samostatný nadpis kapitoly a pod ním kontextového průvodce s vlastním svislým posuvem; čas je pod ním u spodního okraje. Při změně věty se 15 sekund čeká, pak text 3 sekundy mizí a nový se 3 sekundy objevuje.
 
 - Aktuální vzor oken: Transpirace; původní grafický podklad: [podklad rozhraní](../../web_assets/ui_from_af/Untitled.svg), přibližně 2020 × 1143 px; procenta se vztahují k ploše rozhraní.
 - Transpirace má vlevo shora ovládání času (16 % výšky), průvodce (32 %) a hlavní okno dole; tematická okna jsou vpravo a střed zůstává volný pro strom.
-- Fotosyntéza: vpravo shora O₂, CO₂, Cukry a Voda; stejně jako u Transpirace se první sloupec přizpůsobuje nadpisu a tlačítku. Pravá okna mají horní okraje 28 / 42 / 58 / 74 %, poslední výšku 18 %; ostatní sdílené rozměry zůstávají.
+- Fotosyntéza: vpravo zarovnaná okna Světlo, O₂, CO₂, Cukry a Voda, shora na 14 / 30 / 46 / 62 / 78 % výšky. Tlačítko +/− je vlevo od nadpisu, otevřený detail vlevo od okna.
 - Transpirace: vpravo shora Teplota, Chlazení a Příjem vody; první sloupec se přizpůsobuje nezalomenému nadpisu a tlačítku.
 - Hlavní okno Transpirace: levý okraj 6 %, horní okraj 65 %, šířka 55 %, výška 21 %, nejméně 140 px.
 - Pravá okna Transpirace: levý okraj 68 %, šířka 29 %, horní okraje 28 / 48 / 68 %, výška 14 %, nejméně 85 px.
@@ -60,7 +60,7 @@ history:
 - Pravý sloupec začíná na 52 % a má šířku 44 %; okna Transpirace mají horní okraje 26 / 46 / 70 % a výšku 17 %.
 - Hlavní okno: levý okraj 4 %, horní 65 %, šířka 44 %, výška 24 %; minimální výška oken se ruší. Odsazení obsahu je 12 px, tematický tah má šířku 5 px a hlavní 6 px. Tematický detail má nad sebou mezeru 8 px.
 - Používá se společná typografická škála pro úzkou obrazovku, bez výjimek podle délky nadpisu.
-- Vzorce i přehledy vstupů obou kapitol zůstávají viditelné a mohou se zalomit. Fotosyntéza má pravá okna na 22 / 40 / 58 / 76 %, poslední výšku 20 %.
+- Vzorce i přehledy vstupů obou kapitol zůstávají viditelné a mohou se zalomit. Okna Fotosyntézy zůstávají vpravo a detaily se otevírají vlevo.
 
 ### Písmo
 
