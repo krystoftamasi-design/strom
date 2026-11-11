@@ -247,7 +247,7 @@ body.scene-night .chapter-context-guide .transpiration-legend { color: #a9baff; 
 }
 .tree-overlay .element-ui-okno[data-toggle-visible="true"] .element-ui-trigger:hover { color: var(--ui-topic); }
 @media (hover: hover) {
-  .tree-overlay .element-ui-okno[data-toggle-visible="true"]:not([data-main-window="true"]):hover .element-ui-trigger { color: var(--ui-topic); }
+  .tree-overlay .element-ui-okno[data-toggle-visible="true"]:not([data-main-window="true"]):is(:hover, .is-pointer-over) .element-ui-trigger { color: var(--ui-topic); }
 }
 
 /* Reserve vertical breathing room between fixed topic windows. */

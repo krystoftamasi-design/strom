@@ -36,6 +36,13 @@ history:
 
 ## Implementováno
 
+#### Z146 — Zvýraznění nad celým oknem
+
+- Zadání: spustit zvýraznění při najetí na celou plochu okna.
+- Výsledek: najetí funguje i nad prázdnou plochou a otevřeným detailem; prázdná plocha dále propouští ovládání stromu.
+- Stav: Implementováno.
+- Ověření: existující test definic oken prošel; funkční a vizuální kontrola čeká na uživatele.
+
 #### Z145 — Užší místo pro hodnoty
 
 - Zadání: zmenšit místo pro hodnotu podle délky 100 %.

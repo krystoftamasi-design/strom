@@ -142,6 +142,33 @@ export function createTreeAnnotations({ shell, model, createSeasonControl, setEl
       setElementHighlight(tag, states.some(state => state.tag === tag && state.chapter === activeChapter && (state.open || state.hovered)));
     }
   }
+  let pointerPosition = null;
+  function syncWindowHover() {
+    let changed = false;
+    for (const [panel, state] of linkedWindows) {
+      const inRect = element => {
+        const rect = element.getBoundingClientRect();
+        return pointerPosition && pointerPosition.x >= rect.left && pointerPosition.x <= rect.right
+          && pointerPosition.y >= rect.top && pointerPosition.y <= rect.bottom;
+      };
+      const reveal = panel.querySelector('.annotation-reveal');
+      const hovered = Boolean(state.chapter === activeChapter && pointerPosition
+        && (inRect(panel) || (state.open && reveal && inRect(reveal))));
+      panel.classList.toggle('is-pointer-over', hovered);
+      if (state.hovered !== hovered) { state.hovered = hovered; changed = true; }
+    }
+    if (changed) syncHighlights();
+  }
+  window.addEventListener('pointermove', event => {
+    if (event.pointerType === 'touch') return;
+    pointerPosition = { x: event.clientX, y: event.clientY };
+    syncWindowHover();
+  }, { passive: true });
+  window.addEventListener('pointerout', event => {
+    if (event.relatedTarget) return;
+    pointerPosition = null;
+    syncWindowHover();
+  });
   const content = shell.querySelector('.chapter-content');
   const kontrola = zkontrolovatOkna({
     okna: oknaPodleKapitol,
@@ -237,15 +264,6 @@ export function createTreeAnnotations({ shell, model, createSeasonControl, setEl
     body.append(...nodes.filter(Boolean));
     panel.append(header, reveal);
     if (definition) createElementUiOkno({ panel, body, reveal, toggle, model, definition });
-    if (definition) {
-      for (const [eventName, hovered] of [['pointerenter', true], ['pointerleave', false]]) {
-        panel.addEventListener(eventName, event => {
-          if (event.pointerType === 'touch') return;
-          const state = linkedWindows.get(panel);
-          if (state) { state.hovered = hovered; syncHighlights(); }
-        });
-      }
-    }
     let expanded = false;
     function expand(open) {
       expanded = open;
@@ -433,7 +451,9 @@ export function createTreeAnnotations({ shell, model, createSeasonControl, setEl
           photosynthesisIntroTimer = setTimeout(() => { photosynthesisIntro.hidden = true; }, 20000);
         }
       }
+      const chapterChanged = chapter !== activeChapter;
       activeChapter = chapter;
+      if (chapterChanged) syncWindowHover();
       for (const bar of shell.querySelectorAll('.element-ui-flow-bar')) {
         const panel = bar.closest('.element-ui-okno');
         const slider = bar.querySelector('input');
