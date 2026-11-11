@@ -145,7 +145,7 @@ body.scene-night .tree-overlay .season-date-card { color: #f0f2e9; }
 }
 
 /* Place the date against the right edge. */
-.tree-overlay .season-date-card { left: auto; right: 3%; }
+.tree-overlay .season-date-card { left: auto; right: 6%; }
 @media (max-width: 700px) {
   .tree-overlay .season-date-card { left: auto; right: 4%; top: 7%; }
 }

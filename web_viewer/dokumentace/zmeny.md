@@ -36,6 +36,13 @@ history:
 
 ## Implementováno
 
+#### Z134 — Zarovnání data
+
+- Zadání: posunout datum na stejný pravý okraj jako okna Fotosyntézy.
+- Výsledek: datum má pravé odsazení 6 %, na úzké obrazovce 4 %.
+- Stav: Implementováno.
+- Ověření: kontrola při commitu. Vizuální kontrola čeká na uživatele.
+
 #### Z133 — Sjednocení okrajů Fotosyntézy
 
 - Zadání: sjednotit pravý okraj oken s levým okrajem nadpisu.
