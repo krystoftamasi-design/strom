@@ -36,6 +36,13 @@ history:
 
 ## Implementováno
 
+#### Z140 — Silnější pruhy a rozestupy
+
+- Zadání: zesílit pruhy a zvětšit rozestupy mezi pruhy a texty.
+- Výsledek: pruhy mají 12 px a údaje větší svislé odstupy.
+- Stav: Implementováno.
+- Ověření: kontrola při commitu; vizuální kontrola čeká na uživatele.
+
 #### Z139 — Sjednocení velikosti částic
 
 - Zadání: zmenšit částice O₂ a CO₂ na velikost částic H₂O.

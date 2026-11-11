@@ -147,10 +147,10 @@ body.scene-night .tree-overlay .element-ui-okno .ui-word {
 .tree-overlay .element-ui-okno[data-main-window="true"] .element-ui-edge { height: 100%; width: 12px; }
 .tree-overlay .element-ui-flow-window .element-ui-edge { display: none; }
 .tree-overlay .element-ui-flow-window .element-ui-values { padding-top: 3px; }
-.tree-overlay .element-ui-flow-window .chapter-metric { flex-wrap: wrap; gap: 2px 5px; margin: 2px 0 4px; }
+.tree-overlay .element-ui-flow-window .chapter-metric { flex-wrap: wrap; gap: 2px 5px; margin: 6px 0 10px; }
 .tree-overlay .element-ui-flow-window .element-ui-unavailable > span:last-child { font-size: 12px; }
 .tree-overlay .element-ui-flow-window .element-ui-availability { font: 600 var(--ui-value-size)/1.1 var(--ui-font-display); color: var(--ui-topic); }
-.tree-overlay .element-ui-flow-bar { position: relative; height: 8px; width: 100%; }
+.tree-overlay .element-ui-flow-bar { position: relative; height: 12px; width: 100%; }
 .tree-overlay .element-ui-flow-fill {
   position: absolute; inset: 0; pointer-events: none;
   background: linear-gradient(var(--flow-direction, to right),
