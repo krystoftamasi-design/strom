@@ -36,6 +36,13 @@ history:
 
 ## Implementováno
 
+#### Z136 — Plynulé přibližování stromu
+
+- Zadání: odstranit skokové přibližování a oddalování.
+- Výsledek: výpočet kolečka zůstává konečný i při měřítku obrazovky pod 100 %.
+- Stav: Implementováno.
+- Ověření: cílený test kolečka pro několik měřítek obrazovky prošel; vizuální a funkční kontrola čeká na uživatele.
+
 #### Z135 — Úvodní text Fotosyntézy
 
 - Zadání: přidat pod nadpis krátký text, který se po 20 sekundách skryje.
