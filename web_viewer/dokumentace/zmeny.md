@@ -36,6 +36,13 @@ history:
 
 ## Implementováno
 
+#### Z133 — Sjednocení okrajů Fotosyntézy
+
+- Zadání: sjednotit pravý okraj oken s levým okrajem nadpisu.
+- Výsledek: oba okraje mají stejné odsazení na široké i úzké obrazovce.
+- Stav: Implementováno.
+- Ověření: kontrola při commitu. Vizuální kontrola čeká na uživatele.
+
 #### Z132 — Výpočty v detailech oken
 
 - Zadání: zobrazovat výpočty až po rozkliknutí okna.

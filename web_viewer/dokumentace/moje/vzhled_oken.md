@@ -47,7 +47,7 @@ history:
 
 - Aktuální vzor oken: Transpirace; původní grafický podklad: [podklad rozhraní](../../web_assets/ui_from_af/Untitled.svg), přibližně 2020 × 1143 px; procenta se vztahují k ploše rozhraní.
 - Transpirace má vlevo shora ovládání času (16 % výšky), průvodce (32 %) a hlavní okno dole; tematická okna jsou vpravo a střed zůstává volný pro strom.
-- Fotosyntéza: vpravo zarovnaná okna Světlo, O₂, CO₂, Cukry a Voda, shora na 14 / 30 / 46 / 62 / 78 % výšky. Tlačítko +/− je vlevo od nadpisu, otevřený detail vlevo od okna.
+- Fotosyntéza: vpravo zarovnaná okna Světlo, O₂, CO₂, Cukry a Voda, shora na 14 / 30 / 46 / 62 / 78 % výšky. Pravý okraj oken odpovídá levému okraji nadpisu kapitoly: 6 %, do šířky 700 px 4 %. Tlačítko +/− je vlevo od nadpisu, otevřený detail vlevo od okna.
 - Transpirace: vpravo shora Teplota, Chlazení a Příjem vody; první sloupec se přizpůsobuje nezalomenému nadpisu a tlačítku.
 - Hlavní okno Transpirace: levý okraj 6 %, horní okraj 65 %, šířka 55 %, výška 21 %, nejméně 140 px.
 - Pravá okna Transpirace: levý okraj 68 %, šířka 29 %, horní okraje 28 / 48 / 68 %, výška 14 %, nejméně 85 px.

@@ -331,7 +331,7 @@ body.scene-night .chapter-context-guide .transpiration-legend { color: #a9baff; 
   letter-spacing: -.035em;
 }
 .tree-overlay .element-ui-okno[data-chapter="photosynthesis"][data-side="right"] {
-  display: block; left: auto; right: 3%; width: max-content; max-width: 29%; text-align: right;
+  display: block; left: auto; right: 6%; width: max-content; max-width: 29%; text-align: right;
 }
 .tree-overlay .element-ui-okno[data-chapter="photosynthesis"][data-side="right"] .element-ui-readout {
   grid-column: 2; align-items: stretch;
