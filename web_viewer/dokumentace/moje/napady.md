@@ -14,6 +14,12 @@ history:
 
 ## Obecné
 
+### Čitelnost částic při zvýraznění
+
+- Návrh: ponechat částice malé a nečitelné, dokud je uživatel nezvýrazní.
+- Cíl: omezit vizuální zahlcení a zvýraznit vybrané částice.
+- Stav: Nápad.
+
 ### Sound design
 
 - Návrh: promyslet zvukový design webu.
