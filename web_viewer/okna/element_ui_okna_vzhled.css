@@ -150,9 +150,15 @@ body.scene-night .tree-overlay .element-ui-okno .ui-word {
 .tree-overlay .element-ui-flow-window .chapter-metric { flex-wrap: wrap; gap: 2px 5px; margin: 2px 0 4px; }
 .tree-overlay .element-ui-flow-window .element-ui-unavailable > span:last-child { font-size: 10px; }
 .tree-overlay .element-ui-flow-window .element-ui-availability { font: 600 var(--ui-value-size)/1.1 var(--ui-font-display); color: var(--ui-topic); }
-.tree-overlay .element-ui-flow-bar { position: relative; height: 5px; width: 100%; background: color-mix(in srgb, var(--ui-topic) 22%, transparent); }
-.tree-overlay .element-ui-flow-fill { position: absolute; inset: 0 auto 0 0; width: var(--flow-level, 0%); background: var(--ui-topic); }
-.tree-overlay .element-ui-flow-bar.is-reversed .element-ui-flow-fill { left: auto; right: 0; }
+.tree-overlay .element-ui-flow-bar { position: relative; height: 5px; width: 100%; }
+.tree-overlay .element-ui-flow-fill {
+  position: absolute; inset: 0; pointer-events: none;
+  background: linear-gradient(var(--flow-direction, to right),
+    var(--ui-topic) var(--flow-level, 0%),
+    color-mix(in srgb, var(--ui-topic) 22%, transparent) var(--flow-level, 0%));
+  mask: var(--ui-flow-variant) center / 100% 100% no-repeat;
+}
+.tree-overlay .element-ui-flow-bar.is-reversed { --flow-direction: to left; }
 .tree-overlay .element-ui-flow-slider {
   appearance: none; position: absolute; z-index: 2; inset: -10px 0; width: 100%; height: 25px;
   margin: 0; padding: 0; border: 0; background: transparent; cursor: ew-resize;

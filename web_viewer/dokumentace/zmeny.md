@@ -36,6 +36,13 @@ history:
 
 ## Implementováno
 
+#### Z126 — Původní textura vodorovných pruhů
+
+- Zadání: vrátit pruhům ve Fotosyntéze původní texturu.
+- Výsledek: oba směry vyplnění používají nepravidelný obrys z původních vodorovných tahů.
+- Stav: Implementováno.
+- Ověření: kontrola při commitu a ověření dostupnosti tří obrazových masek. Vizuální kontrola čeká na uživatele.
+
 #### Z125 — Vodorovné ukazatele toků
 
 - Zadání: zobrazit v tematických oknech Fotosyntézy dva protisměrné vodorovné pruhy a ovládat dostupnost vody.

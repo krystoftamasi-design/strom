@@ -11,9 +11,13 @@ const strokes = {
     { file: 'ui_linka_svisla_4.png', width: 8, height: 32 },
     { file: 'ui_linka_svisla_5.png', width: 7, height: 69 },
   ],
-
+  horizontal: [
+    { file: 'ui_linka_vodorovna_1.png', width: 200, height: 5 },
+    { file: 'ui_linka_vodorovna_2.png', width: 201, height: 6 },
+    { file: 'ui_linka_vodorovna_3.png', width: 250, height: 6 },
+  ],
 };
-const strokeBags = { vertical: [] };
+const strokeBags = { vertical: [], horizontal: [] };
 function pickUiWindowStroke(direction) {
   const bag = strokeBags[direction];
   if (!bag.length) {
@@ -79,6 +83,8 @@ function createElementUiOkno({ panel, body, reveal, toggle, model, definition })
       bar.dataset.flow = role;
       const fill = document.createElement('span');
       fill.className = 'element-ui-flow-fill';
+      const stroke = pickUiWindowStroke('horizontal');
+      fill.style.setProperty('--ui-flow-variant', `url("${stroke.url}")`);
       bar.append(fill);
       if (interactive) {
         const slider = document.createElement('input');
