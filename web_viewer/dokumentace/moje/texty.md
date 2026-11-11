@@ -23,6 +23,10 @@ history:
 - Barva: ve dne tmavá, v noci světlá.
 - Zdroj: [chapters.js](../../kapitoly/chapters.js), blok `intro`.
 
+#### Úvod Fotosyntézy
+
+- Pod nadpisem se po vstupu do kapitoly zobrazí „Listy využívají světlo k tvorbě cukrů.“ a po 20 sekundách se skryje. Při dalším vstupu se zobrazí znovu.
+
 #### Datum
 
 - Zobrazuje datum modelového roku.

@@ -36,6 +36,13 @@ history:
 
 ## Implementováno
 
+#### Z135 — Úvodní text Fotosyntézy
+
+- Zadání: přidat pod nadpis krátký text, který se po 20 sekundách skryje.
+- Výsledek: věta o světle a cukrech se zobrazí při vstupu do kapitoly a po 20 sekundách zmizí.
+- Stav: Implementováno.
+- Ověření: kontrola při commitu; vizuální a funkční kontrola čeká na uživatele.
+
 #### Z134 — Zarovnání data
 
 - Zadání: posunout datum na stejný pravý okraj jako okna Fotosyntézy.
