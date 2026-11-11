@@ -36,6 +36,13 @@ history:
 
 ## Implementováno
 
+#### Z128 — Stálá šířka linek
+
+- Zadání: vypnout rozšiřování linek podle přísunu vody.
+- Výsledek: voda i glukóza mají stálou základní šířku; zvýraznění souvisejících oken zůstává.
+- Stav: Implementováno.
+- Ověření: kontrola při commitu. Existující test linky vyžaduje Edge a starý vstup, proto nebyl spuštěn; vizuální kontrola čeká na uživatele.
+
 #### Z127 — Nižší automatický přísun vody
 
 - Zadání: ponechat prostor pro zvýšení dostupné vody.

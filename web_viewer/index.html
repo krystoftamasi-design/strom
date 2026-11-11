@@ -3050,17 +3050,6 @@
       const photosynthesisRunning = ecology.ready && ecology.activity > 0.0001;
       sapUniforms.uSpeed.value = photosynthesisRunning ? userSpeed * waterFlowMult : 0;
 
-      // Water and glucose always share the same width, driven by water input.
-      const waterAmount = ecology.ready
-        ? THREE.MathUtils.clamp(ecology.waterInput / Math.max(0.001, ecology.baseTranspiration), 0, 2)
-        : 1;
-      sapUniforms.uWidthScale.value = 1.4 * (0.12 + 0.88 * waterAmount);
-      greenRootFlowMesh?.traverse(node => {
-        if (node.material?.uniforms?.uWidthScale) {
-          node.material.uniforms.uWidthScale.value = sapUniforms.uWidthScale.value;
-        }
-      });
-
       const glowInput = document.getElementById('sliderSapGlow');
       const userGlow = parseFloat(glowInput ? glowInput.value : 100) / 100.0;
       const waterGlowMult = normWater <= 0.001 ? 0.30 : Math.min(1.2, 0.45 + 0.55 * normWater);

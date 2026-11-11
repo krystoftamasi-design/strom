@@ -76,10 +76,7 @@ Definice spojení
 
 #### Šířka linek
 
-
-- Vyšší přísun vody rozšiřuje obě linky.
-- zakladní šířka linek je setjná
-- Při nulovém přísunu zůstávají obě velmi tenké.
+- Voda i glukóza mají stejnou základní šířku nezávisle na přísunu vody. Zvýraznění linky se řídí společným pravidlem elementů.
 
 ### H₂O
 
