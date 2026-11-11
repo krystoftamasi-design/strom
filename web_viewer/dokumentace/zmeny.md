@@ -36,6 +36,13 @@ history:
 
 ## Implementováno
 
+#### Z144 — Roztažení oken Fotosyntézy do výšky
+
+- Zadání: zarovnat pravá okna mezi horní nabídku a spodní řádek s datem.
+- Výsledek: na dostatečně vysoké široké obrazovce jsou okna rovnoměrněji rozložená po výšce; na menších obrazovkách zůstávají původní pozice.
+- Stav: Implementováno.
+- Ověření: kontrola upravených pravidel; vizuální kontrola čeká na uživatele.
+
 #### Z143 — Pevné místo pro hodnoty
 
 - Zadání: zabránit poskakování popisků při změně hodnot.
