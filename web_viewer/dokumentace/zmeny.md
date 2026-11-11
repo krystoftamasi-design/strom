@@ -36,6 +36,13 @@ history:
 
 ## Implementováno
 
+#### Z139 — Sjednocení velikosti částic
+
+- Zadání: zmenšit částice O₂ a CO₂ na velikost částic H₂O.
+- Výsledek: částice všech tří látek sdílejí stejnou základní velikost i poměr zvýraznění.
+- Stav: Implementováno.
+- Ověření: cílené porovnání velikostí a zvýraznění částic; vizuální kontrola čeká na uživatele.
+
 #### Z138 — Stejná velikost data a menu
 
 - Zadání: sjednotit velikost písma menu a data.

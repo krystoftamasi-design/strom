@@ -91,7 +91,7 @@ Definice spojení
 - Modré nápisy H₂O představují vodní páru, nikoli kyslík vznikající při fotosyntéze.
 - V Transpiraci vznikají s odstupem od konce vodní linky v koruně, stoupají a rozptylují se ve stejném kuželu jako O₂; při vzniku rostou a při zániku se zmenšují stejně jako ostatní plynové částice.
 - Emise probíhá při kladném modelovém odparu a plně rozvinuté vodní lince; při jejím stažení se nové částice nevytvářejí. Mimo Transpiraci jsou skryté.
-- Částice používají tři malované PNG textury H₂O a přehrávání částicového systému; při otevřeném hlavním okně mají stejnou velikost jako nezvýrazněné O₂; počet částic je schematický, nikoli měřítko litrů vody.
+- Částice používají tři malované PNG textury H₂O a přehrávání částicového systému; jejich běžná velikost odpovídá O₂ a CO₂. Počet částic je schematický, nikoli měřítko litrů vody.
 
 ### O₂
 
@@ -103,7 +103,7 @@ Definice spojení
 
 **Chování elementu**
 
-- Světle modré částice odlétají od listů; běžná velikost je zvětšená a při otevření detailu se dále zvýrazní.
+- Světle modré částice odlétají od listů; jejich běžná velikost odpovídá H₂O.
 
 ### CO₂
 
@@ -115,7 +115,7 @@ Definice spojení
 
 **Chování elementu**
 
-- Červenooranžové částice přicházejí ke koruně; běžná velikost je zvětšená a při otevření detailu se dále zvýrazní.
+- Červenooranžové částice přicházejí ke koruně; jejich běžná velikost odpovídá H₂O.
 
 ### Fotony
 
