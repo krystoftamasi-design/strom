@@ -145,19 +145,22 @@ body.scene-night .tree-overlay .element-ui-okno .ui-word {
   mask: var(--ui-edge-variant) center / 100% 100% no-repeat;
 }
 .tree-overlay .element-ui-okno[data-main-window="true"] .element-ui-edge { height: 100%; width: 12px; }
-.tree-overlay .element-ui-okno[data-chapter="photosynthesis"] .element-ui-edge {
-  background: linear-gradient(to top, var(--ui-topic) 0 var(--ui-edge-level, 0%), color-mix(in srgb, var(--ui-topic) 22%, transparent) var(--ui-edge-level, 0%) 100%);
+.tree-overlay .element-ui-flow-window .element-ui-edge { display: none; }
+.tree-overlay .element-ui-flow-window .element-ui-values { padding-top: 3px; }
+.tree-overlay .element-ui-flow-window .chapter-metric { flex-wrap: wrap; gap: 2px 5px; margin: 2px 0 4px; }
+.tree-overlay .element-ui-flow-window .element-ui-unavailable > span:last-child { font-size: 10px; }
+.tree-overlay .element-ui-flow-window .element-ui-availability { font: 600 var(--ui-value-size)/1.1 var(--ui-font-display); color: var(--ui-topic); }
+.tree-overlay .element-ui-flow-bar { position: relative; height: 5px; width: 100%; background: color-mix(in srgb, var(--ui-topic) 22%, transparent); }
+.tree-overlay .element-ui-flow-fill { position: absolute; inset: 0 auto 0 0; width: var(--flow-level, 0%); background: var(--ui-topic); }
+.tree-overlay .element-ui-flow-bar.is-reversed .element-ui-flow-fill { left: auto; right: 0; }
+.tree-overlay .element-ui-flow-slider {
+  appearance: none; position: absolute; z-index: 2; inset: -10px 0; width: 100%; height: 25px;
+  margin: 0; padding: 0; border: 0; background: transparent; cursor: ew-resize;
+  pointer-events: auto; direction: rtl; touch-action: none;
 }
-.tree-overlay .element-ui-edge-slider {
-  appearance: none; position: absolute; z-index: 2; left: -10px; top: 0;
-  width: 28px; height: 65%; margin: 0; padding: 0; border: 0;
-  background: transparent; cursor: ns-resize; pointer-events: auto;
-  writing-mode: vertical-lr; direction: rtl; touch-action: none;
-}
-.tree-overlay .element-ui-okno[data-main-window="true"] .element-ui-edge-slider { height: 100%; }
-.tree-overlay .element-ui-edge-slider::-webkit-slider-runnable-track { background: transparent; width: 100%; }
-.tree-overlay .element-ui-edge-slider::-webkit-slider-thumb { appearance: none; width: 28px; height: 12px; background: transparent; border: 0; }
-.tree-overlay .element-ui-edge-slider:focus-visible { outline: 2px solid var(--ui-topic); outline-offset: 2px; }
+.tree-overlay .element-ui-flow-slider::-webkit-slider-runnable-track { height: 100%; background: transparent; }
+.tree-overlay .element-ui-flow-slider::-webkit-slider-thumb { appearance: none; width: 12px; height: 25px; background: transparent; border: 0; }
+.tree-overlay .element-ui-flow-slider:focus-visible { outline: 2px solid var(--ui-topic); outline-offset: 2px; }
 .tree-overlay .element-ui-okno .ui-word-light { color: var(--ui-light); }
 .tree-overlay .element-ui-okno .ui-word-water { color: var(--ui-water); }
 .tree-overlay .element-ui-okno .ui-word-temperature { color: var(--ui-temperature); }
@@ -260,6 +263,7 @@ body.scene-night .chapter-context-guide .transpiration-legend { color: #a9baff; 
 .tree-overlay .element-ui-okno.collapsed .annotation-reveal { display: none; }
 
 .tree-overlay .element-ui-readout { grid-column: 1; grid-row: 1; display: flex; flex-direction: column; align-self: start; min-width: 0; max-height: 100%; overflow: auto; }
+.tree-overlay .element-ui-flow-window .element-ui-readout { max-height: none; overflow: visible; }
 @media (max-width: 700px) {
   .tree-overlay .element-ui-okno { display: flex; flex-direction: column; }
   .tree-overlay .element-ui-readout { flex: 0 0 auto; max-width: 100%; }

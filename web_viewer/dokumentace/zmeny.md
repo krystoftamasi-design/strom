@@ -36,6 +36,13 @@ history:
 
 ## Implementováno
 
+#### Z125 — Vodorovné ukazatele toků
+
+- Zadání: zobrazit v tematických oknech Fotosyntézy dva protisměrné vodorovné pruhy a ovládat dostupnost vody.
+- Výsledek: O₂, CO₂, Cukry a Voda mají dva údaje; chybějící výpočty jsou označené. Spodní pruh vody nastavuje přísun ke kořenům a ostatní pruhy ukazují výpočty.
+- Stav: Implementováno.
+- Ověření: cílený test vazeb fotosyntézy a omezení příjmu vody i existující test definic oken prošly. Vizuální a funkční kontrola čeká na uživatele.
+
 #### Z124 — Čárky jako posuvníky ve Fotosyntéze
 
 - Zadání: zobrazit hodnoty vůči maximu a umožnit jejich nastavení pomocí čárek oken.

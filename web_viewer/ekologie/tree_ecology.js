@@ -80,8 +80,6 @@ export class TreeEcology {
     this.oxygenGramsPerMinute = 0;
     this.co2GramsPerMinute = 0;
     this.hydration = 1;
-    this.manualPhotosynthesis = null;
-    this.manualConsumption = null;
   }
 
   configure({ height, woodVolume, crownArea }) {
@@ -134,16 +132,6 @@ export class TreeEcology {
     if (this.ready) this.evaluate(0);
   }
 
-  // A temporary intervention returns smoothly to the environmental model.
-  setWindowValue(kind, fraction) {
-    if (!this.ready || !Number.isFinite(fraction)) return;
-    const setting = { value: clamp(fraction, 0, 1), weight: 1 };
-    if (kind === 'water') this.manualConsumption = setting;
-    else if (kind === 'photosynthesis') this.manualPhotosynthesis = setting;
-    else return;
-    this.evaluate(0);
-  }
-
   evaluate(minutes) {
     const season = this.seasonState;
     this.seasonalWaterLimit = this.baseTranspiration * season.waterSupply;
@@ -175,11 +163,7 @@ export class TreeEcology {
     const potentialTranspiration = this.baseTranspiration * foliage * this.light;
     // Residual loss remains in the dark and in winter. No negative store is possible.
     const maintenance = this.baseTranspiration * 0.015 * (0.2 + foliage * 0.8);
-    let requested = potentialTranspiration * this.hydration + maintenance;
-    if (this.manualConsumption) {
-      const manual = this.manualConsumption;
-      requested += (this.baseTranspiration * 1.015 * manual.value - requested) * manual.weight;
-    }
+    const requested = potentialTranspiration * this.hydration + maintenance;
     const availableRate = minutes > 0 ? this.reserve / minutes + this.inflow : (this.reserve > 0 ? Infinity : this.inflow);
     this.consumption = Math.min(requested, availableRate);
     this.waterConsumption = this.consumption;
@@ -210,15 +194,6 @@ export class TreeEcology {
     this.glucoseGramsPerMinute = vypocitatVzorec('glucoseGramsPerMinute', this);
     this.oxygenGramsPerMinute = vypocitatVzorec('oxygenGramsPerMinute', this);
     this.co2GramsPerMinute = vypocitatVzorec('co2GramsPerMinute', this);
-    if (this.manualPhotosynthesis) {
-      const manual = this.manualPhotosynthesis;
-      this.activity += (manual.value - this.activity) * manual.weight;
-      // Preserve the model's stoichiometric relationship for the full canopy.
-      const effectiveModel = { ...this, activeLeafArea: this.leafArea, photosynthesisEfficiency: this.activity };
-      this.glucoseGramsPerMinute = vypocitatVzorec('glucoseGramsPerMinute', effectiveModel);
-      this.oxygenGramsPerMinute = vypocitatVzorec('oxygenGramsPerMinute', { ...effectiveModel, glucoseGramsPerMinute: this.glucoseGramsPerMinute });
-      this.co2GramsPerMinute = vypocitatVzorec('co2GramsPerMinute', effectiveModel);
-    }
     return this;
   }
 
@@ -227,11 +202,6 @@ export class TreeEcology {
     if (!this.ready) return this;
     minutes = Math.max(0, Number(minutes) || 0);
     const modelDays = minutes / 1440;
-    for (const key of ['manualPhotosynthesis', 'manualConsumption']) {
-      if (!this[key]) continue;
-      this[key].weight *= Math.exp(-minutes / 60);
-      if (this[key].weight < 0.001) this[key] = null;
-    }
     // Small substeps keep stress feedback stable near an empty reservoir.
     const steps = Math.max(1, Math.ceil(minutes / 1));
     for (let i = 0; i < steps; i++) {

@@ -56,18 +56,51 @@ function createElementUiOkno({ panel, body, reveal, toggle, model, definition })
   const stroke = pickUiWindowStroke('vertical');
   panel.style.setProperty('--ui-edge-variant', `url("${stroke.url}")`);
   edge.dataset.variant = stroke.file;
-  if (panel.dataset.chapter === 'photosynthesis' && definition?.vypocet) {
-    const slider = document.createElement('input');
-    slider.type = 'range';
-    slider.min = '0';
-    slider.max = '1000';
-    slider.step = '1';
-    slider.className = 'element-ui-edge-slider';
-    slider.setAttribute('aria-label', `${definition.nadpis}: podíl teoretického maxima`);
-    slider.addEventListener('input', () => {
-      model.setWindowValue(definition.id === 'voda' ? 'water' : 'photosynthesis', Number(slider.value) / 1000);
-    });
-    panel.append(slider);
+  if (panel.dataset.chapter === 'photosynthesis' && !definition.hlavni) {
+    const current = footer.querySelector('.chapter-metric');
+    const unavailable = document.createElement('div');
+    unavailable.className = 'chapter-metric element-ui-unavailable';
+    const label = document.createElement('span');
+    label.textContent = definition.id === 'co2' ? 'produkce' : 'spotřeba';
+    const message = document.createElement('span');
+    message.textContent = 'Zatím nemáme hodnotu';
+    unavailable.append(label, message);
+    const availability = document.createElement('div');
+    availability.className = 'chapter-metric';
+    const availabilityLabel = document.createElement('span');
+    availabilityLabel.textContent = 'dostupnost';
+    const availabilityValue = document.createElement('strong');
+    availabilityValue.className = 'element-ui-availability';
+    availabilityValue.textContent = '—';
+    availability.append(availabilityLabel, availabilityValue);
+    const makeBar = (metric, role, reverse, interactive = false) => {
+      const bar = document.createElement('div');
+      bar.className = `element-ui-flow-bar${reverse ? ' is-reversed' : ''}`;
+      bar.dataset.flow = role;
+      const fill = document.createElement('span');
+      fill.className = 'element-ui-flow-fill';
+      bar.append(fill);
+      if (interactive) {
+        const slider = document.createElement('input');
+        slider.type = 'range';
+        slider.min = '0'; slider.max = '1000'; slider.step = '1';
+        slider.className = 'element-ui-flow-slider';
+        slider.setAttribute('aria-label', 'Dostupnost vody pro kořeny');
+        slider.addEventListener('input', () => {
+          const max = Number(document.getElementById('sliderTreeWater').max) / 60;
+          if (Number.isFinite(max) && max > 0) model.setWaterInput(max * Number(slider.value) / 1000);
+        });
+        bar.append(slider);
+      }
+      footer.append(bar, metric);
+    };
+    if (current) {
+      footer.replaceChildren();
+      makeBar(definition.id === 'co2' ? unavailable : current, definition.id === 'co2' ? 'unknown' : 'measured', false);
+      makeBar(definition.id === 'co2' ? current : definition.id === 'voda' ? availability : unavailable,
+        definition.id === 'co2' ? 'measured' : definition.id === 'voda' ? 'availability' : 'unknown', true, definition.id === 'voda');
+      panel.classList.add('element-ui-flow-window');
+    }
   }
   toggle.classList.add('element-ui-trigger');
   toggle.setAttribute('aria-controls', reveal.id = `${body.id}-reveal`);
@@ -368,16 +401,23 @@ export function createTreeAnnotations({ shell, model, createSeasonControl, setEl
   return {
     update(chapter, playbackDelta = 0) {
       activeChapter = chapter;
-      for (const slider of shell.querySelectorAll('.element-ui-edge-slider')) {
-        const panel = slider.closest('.element-ui-okno');
-        const fraction = panel.dataset.windowId === 'voda'
-          ? model.waterConsumption / (model.baseTranspiration * 1.015)
+      for (const bar of shell.querySelectorAll('.element-ui-flow-bar')) {
+        const panel = bar.closest('.element-ui-okno');
+        const maxWater = Number(document.getElementById('sliderTreeWater').max) / 60;
+        const fraction = bar.dataset.flow === 'unknown' ? 0
+          : bar.dataset.flow === 'availability' ? model.waterInput / maxWater
+          : panel.dataset.windowId === 'voda' ? model.waterConsumption / (model.baseTranspiration * 1.015)
           : model.activity;
         const level = Number.isFinite(fraction) ? Math.max(0, Math.min(1, fraction)) : 0;
-        panel.style.setProperty('--ui-edge-level', `${level * 100}%`);
-        if (document.activeElement !== slider || !slider.matches(':active')) slider.value = String(Math.round(level * 1000));
-        slider.setAttribute('aria-valuetext', `${Math.round(level * 100)} % teoretického maxima`);
-        slider.disabled = !model.ready;
+        bar.style.setProperty('--flow-level', `${level * 100}%`);
+        const slider = bar.querySelector('input');
+        if (slider) {
+          if (!slider.matches(':active')) slider.value = String(Math.round(level * 1000));
+          const displayed = Number.isFinite(model.waterInput) ? (model.waterInput * 60).toLocaleString('cs-CZ', { maximumFractionDigits: 1, minimumFractionDigits: 1 }) : '—';
+          panel.querySelector('.element-ui-availability').textContent = `${displayed} l/h`;
+          slider.setAttribute('aria-valuetext', `${displayed} litrů za hodinu`);
+          slider.disabled = !model.ready;
+        }
       }
       for (const definition of oknaPodleKapitol.seeds) {
         const output = shell.querySelector(`output[data-stav-obdobi="${definition.id}"]`);
