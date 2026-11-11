@@ -155,7 +155,7 @@ export class PhotolysisSystem {
     const growth = entrance * entrance * (3 - 2 * entrance);
     const exit = Math.max(0, Math.min(1, (b.maxLifetime - b.age) / 0.25));
     const shrink = exit * exit * (3 - 2 * exit);
-    const highlight = 1 + 1.1 * this.highlightedGases[b.kind];
+    const highlight = 1 + 1.5 * this.highlightedGases[b.kind];
     b.mesh.scale.setScalar(b.baseScale * 1.6 / 2.1 * this.bubbleSize * highlight * (0.02 + 0.98 * growth) * shrink);
   }
   setBubbleSpawnDistance(distance) {

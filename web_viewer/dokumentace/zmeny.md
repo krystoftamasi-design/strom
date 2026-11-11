@@ -36,6 +36,13 @@ history:
 
 ## Implementováno
 
+#### Z142 — Síla zvýraznění částic a linek
+
+- Zadání: více zvětšit zvýrazněné částice a méně zesílit zvýrazněné linky.
+- Výsledek: částice H₂O, O₂ a CO₂ se při zvýraznění zvětší více; vodní a cukrová linka se zesílí méně.
+- Stav: Implementováno.
+- Ověření: kontrola změněných hodnot; vizuální kontrola čeká na uživatele.
+
 #### Z141 — Datum a čas vlevo dole
 
 - Zadání: přesunout datum a tlačítka času do vyznačeného místa.

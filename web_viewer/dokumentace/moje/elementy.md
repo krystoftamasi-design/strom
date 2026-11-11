@@ -20,7 +20,7 @@ history:
 
 # Elementy
 
-- Zvýrazněné linky jsou silnější při zachování barvy, zvýrazněné částice větší. Zvýraznění i návrat trvají přibližně 180 ms; při omezení pohybu jsou okamžité.
+- Zvýrazněné linky jsou přibližně tří- až 3,4násobně silné při zachování barvy; zvýrazněné částice H₂O, O₂ a CO₂ mají 2,5násobnou velikost. Zvýraznění i návrat trvají přibližně 180 ms; při omezení pohybu jsou okamžité.
 - Definované zvýraznění spojení se spouští také při najetí na související okno. Trvá po dobu najetí nebo otevření alespoň jednoho souvisejícího detailu v aktivní kapitole; po skončení obou stavů se obnoví původní vzhled.
 
 ### Voda linka
@@ -30,7 +30,7 @@ Definice spojení
 
 - Okna: [Voda](okna.md#voda) ve Fotosyntéze; [Transpirace](okna.md#transpirace), [Příjem vody](okna.md#příjem-vody) v Transpiraci.
 - **Zvýraznění**
-- při otevření okna modrá linka výrazně ztloustne a po její trase začne putovat pulzující vlna tloušťky.
+- při otevření okna modrá linka zesílí a po její trase začne putovat pulzující vlna tloušťky.
 
 **Chování elementu**
 
@@ -48,7 +48,7 @@ Definice spojení
 
 - Okno: [Cukry](okna.md#cukry).
 - **Zvýraznění**
-- Otevřený detail výrazně zesílí tloušťku celé fialové linky v kapitole Fotosyntéza a spustí po její trase putující pulzaci, včetně výchozího otevření.
+- Otevřený detail zesílí tloušťku celé fialové linky v kapitole Fotosyntéza a spustí po její trase putující pulzaci, včetně výchozího otevření.
 - Mimo kapitolu Fotosyntéza se zvýraznění vypne.
 
 **Chování elementu**
