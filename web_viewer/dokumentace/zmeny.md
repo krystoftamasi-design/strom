@@ -36,6 +36,13 @@ history:
 
 ## Implementováno
 
+#### Z143 — Pevné místo pro hodnoty
+
+- Zadání: zabránit poskakování popisků při změně hodnot.
+- Výsledek: číselné hodnoty a jednotky mají ve Fotosyntéze vyhrazenou šířku.
+- Stav: Implementováno.
+- Ověření: kontrola při commitu; vizuální kontrola čeká na uživatele.
+
 #### Z142 — Síla zvýraznění částic a linek
 
 - Zadání: více zvětšit zvýrazněné částice a méně zesílit zvýrazněné linky.

@@ -28,7 +28,7 @@ history:
 - Při najetí na vedlejší okno se tlačítko +/− zvýrazní barvou tématu. Při najetí přímo na tlačítko se zvětší o 8 % s přechodem 160 ms. Aktivní nápověda provede jemný pulz zvětšení a návratu každých 8 sekund; hover má přednost. Při systémovém omezení pohybu se animace vypínají. Aktivaci a ukončení určuje [Obsah oken](okna.md).
 
 - Okna mají pevné místo v rozhraní, nezávisle na stromu a kameře; nemají pohybové animace ani spojnice ke stromu.
-- Změny hodnot a otevření detailu neposouvají údaje ani sousední okna. Prázdná plocha společných oken propouští myš ke stromu; nadpis, tlačítko a otevřený detail zůstávají ovladatelné.
+- Změny hodnot a otevření detailu neposouvají údaje ani sousední okna. Ve Fotosyntéze má číselná hodnota s jednotkou vyhrazené pevné místo, aby se popisek při změně počtu číslic neposouval. Prázdná plocha společných oken propouští myš ke stromu; nadpis, tlačítko a otevřený detail zůstávají ovladatelné.
 - Bloky jsou bez výplně a rámečku, s nepravidelným svislým tahem vlevo v barvě tématu.
 - Tematická okna Fotosyntézy mají místo svislého tahu dva vodorovné pruhy vysoké 12 px s původní nepravidelnou texturou. Mezi pruhem a údajem je 6 px, mezi údajem a dalším pruhem 10 px. Horní pruh se plní zleva; spodní zprava. Zbytek každého pruhu zůstává zeslabený. Ovládání dostupnosti vody má rozšířenou plochu a viditelný klávesnicový fokus.
 
