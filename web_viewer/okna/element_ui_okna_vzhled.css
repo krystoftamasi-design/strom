@@ -145,6 +145,19 @@ body.scene-night .tree-overlay .element-ui-okno .ui-word {
   mask: var(--ui-edge-variant) center / 100% 100% no-repeat;
 }
 .tree-overlay .element-ui-okno[data-main-window="true"] .element-ui-edge { height: 100%; width: 12px; }
+.tree-overlay .element-ui-okno[data-chapter="photosynthesis"] .element-ui-edge {
+  background: linear-gradient(to top, var(--ui-topic) 0 var(--ui-edge-level, 0%), color-mix(in srgb, var(--ui-topic) 22%, transparent) var(--ui-edge-level, 0%) 100%);
+}
+.tree-overlay .element-ui-edge-slider {
+  appearance: none; position: absolute; z-index: 2; left: -10px; top: 0;
+  width: 28px; height: 65%; margin: 0; padding: 0; border: 0;
+  background: transparent; cursor: ns-resize; pointer-events: auto;
+  writing-mode: vertical-lr; direction: rtl; touch-action: none;
+}
+.tree-overlay .element-ui-okno[data-main-window="true"] .element-ui-edge-slider { height: 100%; }
+.tree-overlay .element-ui-edge-slider::-webkit-slider-runnable-track { background: transparent; width: 100%; }
+.tree-overlay .element-ui-edge-slider::-webkit-slider-thumb { appearance: none; width: 28px; height: 12px; background: transparent; border: 0; }
+.tree-overlay .element-ui-edge-slider:focus-visible { outline: 2px solid var(--ui-topic); outline-offset: 2px; }
 .tree-overlay .element-ui-okno .ui-word-light { color: var(--ui-light); }
 .tree-overlay .element-ui-okno .ui-word-water { color: var(--ui-water); }
 .tree-overlay .element-ui-okno .ui-word-temperature { color: var(--ui-temperature); }

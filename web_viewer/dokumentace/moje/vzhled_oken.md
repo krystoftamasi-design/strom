@@ -30,6 +30,7 @@ history:
 - Okna mají pevné místo v rozhraní, nezávisle na stromu a kameře; nemají pohybové animace ani spojnice ke stromu.
 - Změny hodnot a otevření detailu neposouvají údaje ani sousední okna. Prázdná plocha společných oken propouští myš ke stromu; nadpis, tlačítko a otevřený detail zůstávají ovladatelné.
 - Bloky jsou bez výplně a rámečku, s nepravidelným svislým tahem vlevo v barvě tématu.
+- Ve Fotosyntéze zůstává celá délka tahu viditelná jako maximum; plná barva stoupá zdola podle aktuálního podílu a zbytek je zeslabený. Čárka má rozšířenou plochu pro ovládání a viditelný klávesnicový fokus.
 
 ### Obecný obsah
 

@@ -36,6 +36,13 @@ history:
 
 ## Implementováno
 
+#### Z124 — Čárky jako posuvníky ve Fotosyntéze
+
+- Zadání: zobrazit hodnoty vůči maximu a umožnit jejich nastavení pomocí čárek oken.
+- Výsledek: čárky zachovávají délku maxima, zobrazují aktuální podíl a ovládají navázané veličiny nebo spotřebu vody; po zásahu se obnovuje vliv podmínek.
+- Stav: Implementováno.
+- Ověření: cílený test vazeb, vodní bilance a návratu k automatice a existující test definic oken prošly. Vizuální a funkční kontrola čeká na uživatele; existující test ekologie selhal na zásobě vody.
+
 #### Z123 — Větší uvolněná semena
 
 - Zadání: zvětšit semena, aby byla v koruně a pod stromem viditelná.

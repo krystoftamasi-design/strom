@@ -32,13 +32,16 @@ history:
 
 - Všechna okna používají [šablonu Transpirace](vzhled_oken.md#šablona-jednoho-okna-podle-transpirace), včetně velikostí písma, tahů a viditelného tlačítka +/−. Nadpis i tlačítko přepínají detail; stav se zachovává při změně kapitoly.
 - Hlavní detail je pod údaji a výchozí otevřený; tematické detaily jsou výchozí zavřené, vpravo od údajů a na úzké obrazovce pod nimi.
+- Čárky oken zobrazují podíl hodnoty vůči maximu modelu a fungují jako svislé posuvníky: dole je nula, nahoře maximum. Ovládají se myší, dotykem i klávesnicí.
+- Nastavení fotosyntézy, cukrů, CO₂ nebo O₂ společně přepočte jejich vzájemně navázané hodnoty; voda mění spotřebu a vodní bilanci. Po zásahu se hodnoty postupně vracejí k automatickému výpočtu podle podmínek během modelového času; při pozastavení se návrat zastaví.
+- Ruční zásah je názorný hypotetický stav a může přechodně převýšit výsledek odpovídající aktuálním podmínkám. Maximum fotosyntézy vychází z plné koruny a účinnosti modelu; maximum spotřeby vody ze základního odparu včetně udržovací spotřeby.
 
 #### Fotosyntéza
 
 **Tag:** 🟡 `light`
 
 - Nadpis: `Fotosyntéza`.
-- Ovládání přívodu vody: posuvník se na webu nezobrazuje.
+- Ovládání: čárka nastavuje aktivitu fotosyntézy podle společného pravidla oken kapitoly.
 - Téma: světlo; strana: vlevo; hlavní okno.
 - Detailní text: „Listy využívají světlo, vodu a CO₂ k tvorbě cukrů; při fotosyntéze se uvolňuje O₂.“
 - Hodnota: `activity`, zobrazená v procentech.
@@ -95,7 +98,7 @@ history:
 - Detailní text: „Voda proudí do listů, ochlazuje korunu odparem a pomáhá udržovat listy zavodněné.“
 - Vstup výpočtu: `voda`.
 - Hodnota: spotřeba vody v `l/h`, zobrazena na jedno desetinné místo.
-- Ovládání: vypnuté; posuvník se v okně nezobrazuje.
+- Ovládání: čárka nastavuje spotřebu vody podle společného pravidla oken kapitoly.
 - Výchozí stav detailu: zavřený.
 - Související element: [Voda linka](elementy.md#voda-linka).
 

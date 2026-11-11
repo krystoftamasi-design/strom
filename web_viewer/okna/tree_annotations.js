@@ -26,7 +26,7 @@ function pickUiWindowStroke(direction) {
   const stroke = bag.pop();
   return { ...stroke, url: new URL(`../web_assets/${stroke.file}`, import.meta.url).href };
 }
-function createElementUiOkno({ panel, body, reveal, toggle }) {
+function createElementUiOkno({ panel, body, reveal, toggle, model, definition }) {
   panel.classList.add('element-ui-okno');
   panel.dataset.topic ||= 'neutral';
   const footer = document.createElement('div');
@@ -56,6 +56,19 @@ function createElementUiOkno({ panel, body, reveal, toggle }) {
   const stroke = pickUiWindowStroke('vertical');
   panel.style.setProperty('--ui-edge-variant', `url("${stroke.url}")`);
   edge.dataset.variant = stroke.file;
+  if (panel.dataset.chapter === 'photosynthesis' && definition?.vypocet) {
+    const slider = document.createElement('input');
+    slider.type = 'range';
+    slider.min = '0';
+    slider.max = '1000';
+    slider.step = '1';
+    slider.className = 'element-ui-edge-slider';
+    slider.setAttribute('aria-label', `${definition.nadpis}: podíl teoretického maxima`);
+    slider.addEventListener('input', () => {
+      model.setWindowValue(definition.id === 'voda' ? 'water' : 'photosynthesis', Number(slider.value) / 1000);
+    });
+    panel.append(slider);
+  }
   toggle.classList.add('element-ui-trigger');
   toggle.setAttribute('aria-controls', reveal.id = `${body.id}-reveal`);
 }
@@ -175,7 +188,7 @@ export function createTreeAnnotations({ shell, model, createSeasonControl, setEl
     }
     body.append(...nodes.filter(Boolean));
     panel.append(header, reveal);
-    if (definition) createElementUiOkno({ panel, body, reveal, toggle });
+    if (definition) createElementUiOkno({ panel, body, reveal, toggle, model, definition });
     if (definition) {
       for (const [eventName, hovered] of [['pointerenter', true], ['pointerleave', false]]) {
         panel.addEventListener(eventName, event => {
@@ -355,6 +368,17 @@ export function createTreeAnnotations({ shell, model, createSeasonControl, setEl
   return {
     update(chapter, playbackDelta = 0) {
       activeChapter = chapter;
+      for (const slider of shell.querySelectorAll('.element-ui-edge-slider')) {
+        const panel = slider.closest('.element-ui-okno');
+        const fraction = panel.dataset.windowId === 'voda'
+          ? model.waterConsumption / (model.baseTranspiration * 1.015)
+          : model.activity;
+        const level = Number.isFinite(fraction) ? Math.max(0, Math.min(1, fraction)) : 0;
+        panel.style.setProperty('--ui-edge-level', `${level * 100}%`);
+        if (document.activeElement !== slider || !slider.matches(':active')) slider.value = String(Math.round(level * 1000));
+        slider.setAttribute('aria-valuetext', `${Math.round(level * 100)} % teoretického maxima`);
+        slider.disabled = !model.ready;
+      }
       for (const definition of oknaPodleKapitol.seeds) {
         const output = shell.querySelector(`output[data-stav-obdobi="${definition.id}"]`);
         if (output) output.textContent = definition.stavObdobi[model.season] || '—';
