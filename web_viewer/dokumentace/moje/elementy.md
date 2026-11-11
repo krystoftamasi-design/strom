@@ -20,7 +20,7 @@ history:
 
 # Elementy
 
-- Zvýrazněné linky jsou silnější při zachování barvy, zvýrazněné částice větší.
+- Zvýrazněné linky jsou silnější při zachování barvy, zvýrazněné částice větší. Zvýraznění i návrat trvají přibližně 180 ms; při omezení pohybu jsou okamžité.
 - Definované zvýraznění spojení se spouští také při najetí na související okno. Trvá po dobu najetí nebo otevření alespoň jednoho souvisejícího detailu v aktivní kapitole; po skončení obou stavů se obnoví původní vzhled.
 
 ### Voda linka

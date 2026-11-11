@@ -64,6 +64,13 @@ history:
 - Stav: Implementováno.
 - Ověření: v Google Chrome ověřen směr zavěšení, pohyb semen i obalů z koruny k zemi a vykreslení bez chyb shaderu. Vizuální kontrola čeká na uživatele.
 
+#### Z119 — Obnovení načítání stromu
+
+- Zadání: opravit zastavení načítání hlavní stránky.
+- Výsledek: zvýraznění má při vytváření oken dostupný počáteční stav a průběžnou aktualizaci. Okno Semena opět předává stav modelu.
+- Stav: Implementováno.
+- Ověření: v Google Chrome se načetl strom i model Semenace a výběr podzimu proběhl bez chyb stránky.
+
 #### Z118 — Model květu a semen v Semenaci
 
 - Zadání: zapojit hotový model do kapitoly Semenace u stromu.
@@ -98,6 +105,20 @@ history:
 - Výsledek: alfa vnějších dílů je aktivní při každém úhlu. Menší vnitřní skořápka kryje zavřené spoje a při rozevření ustupuje k základně.
 - Stav: Implementováno.
 - Ověření: kontrola průniků vnitřní skořápky se zavřeným modelem v Blenderu. Vizuální kontrola čeká na uživatele.
+
+#### Z114 — Otáčení stromu přes plochu oken
+
+- Zadání: umožnit otáčení stromu přes prázdnou plochu oken a začlenit pravidlo do šablony hlavního okna.
+- Výsledek: prázdné plochy společných oken propouštějí myš, nadpisy, tlačítka a otevřené detaily zůstávají přístupné.
+- Stav: Implementováno.
+- Ověření: v Google Chrome tažení přes dříve blokované místo otočilo kameru ve Fotosyntéze i Semenaci; tlačítka hlavních detailů fungovala.
+
+#### Z111 — Plynulé kolečko období
+
+- Zadání: zrychlit a vyhladit otáčení kruhu kolečkem myši.
+- Výsledek: krok kolečka v obou směrech posune kruh dopředu plynule přibližně o čtyři procenta otočení; omezení pohybu provede posun ihned.
+- Stav: Implementováno.
+- Ověření: syntaktická kontrola prošla; doplňkový test ekologie selhal na zásobě vody a chování v prohlížeči nebylo ověřeno.
 
 #### Z110 — Dosednutí dílů a alfa okrajů semene
 

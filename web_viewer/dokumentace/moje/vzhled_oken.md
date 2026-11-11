@@ -28,7 +28,7 @@ history:
 - Při najetí na vedlejší okno se tlačítko +/− zvýrazní barvou tématu. Při najetí přímo na tlačítko se zvětší o 8 % s přechodem 160 ms. Aktivní nápověda provede jemný pulz zvětšení a návratu každých 8 sekund; hover má přednost. Při systémovém omezení pohybu se animace vypínají. Aktivaci a ukončení určuje [Obsah oken](okna.md).
 
 - Okna mají pevné místo v rozhraní, nezávisle na stromu a kameře; nemají pohybové animace ani spojnice ke stromu.
-- Změny hodnot a otevření detailu neposouvají údaje ani sousední okna.
+- Změny hodnot a otevření detailu neposouvají údaje ani sousední okna. Prázdná plocha společných oken propouští myš ke stromu; nadpis, tlačítko a otevřený detail zůstávají ovladatelné.
 - Bloky jsou bez výplně a rámečku, s nepravidelným svislým tahem vlevo v barvě tématu.
 
 ### Obecný obsah
@@ -88,7 +88,7 @@ history:
 
 ### Šablona hlavního okna
 
-- Nadpis, hodnota a vzorec zůstávají na pevném místě vlevo dole.
+- Nadpis, hodnota a vzorec zůstávají na pevném místě vlevo dole. Prázdná plocha hlavního okna propouští tažení ke stromu podle společného pravidla statických oken.
 - Detail se otevírá pod spodním okrajem pevného okna zarovnaný k levému okraji údajů, s odstupem 14 px, na úzké obrazovce 8 px; šířka je nejvýše 44 znakových jednotek a zároveň uvnitř šířky okna.
 - Detail nezvětšuje okno, má vlastní posuv a maximální výšku 10 % obrazovky, na úzké obrazovce 8 %.
 - Otevření ani délka textu neposouvá údaje a sousední okna. Stejná varianta platí pro hlavní okna všech kapitol.

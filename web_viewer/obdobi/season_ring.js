@@ -130,7 +130,9 @@ export function createSeasonRing({ scene, camera, controls, canvas, model }) {
   let drag = null;
   let interactive = false;
   let suppressClick = false;
-  let lastWheelStep = 0;
+  let wheelRemaining = 0;
+  let lastUpdate = performance.now();
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
   function hit(event, anywhere = false) {
     const box = canvas.getBoundingClientRect();
     pointer.set((event.clientX - box.left) / box.width * 2 - 1, -(event.clientY - box.top) / box.height * 2 + 1);
@@ -151,6 +153,7 @@ export function createSeasonRing({ scene, camera, controls, canvas, model }) {
     if (!target) return;
     event.preventDefault();
     event.stopImmediatePropagation();
+    wheelRemaining = 0;
     drag = { pointerId: event.pointerId, angle: target.angle, x: event.clientX, y: event.clientY,
       season: target.season, moved: false, previousControls: controls.enabled };
     controls.enabled = false;
@@ -197,10 +200,12 @@ export function createSeasonRing({ scene, camera, controls, canvas, model }) {
     if (!group.visible || !interactive || !hit(event)) return;
     event.preventDefault();
     event.stopImmediatePropagation();
-    if (event.deltaY > 0 && performance.now() - lastWheelStep > 70) {
-      timeline.moveTo(timeline.position + 0.04);
-      group.rotation.y = rotationForDate(timeline.position);
-      lastWheelStep = performance.now();
+    const delta = Math.abs(event.deltaY);
+    if (delta > 0) {
+      // Either wheel direction advances a small fraction of a season.
+      const steps = event.deltaMode === 1 ? delta / 3
+        : event.deltaMode === 2 ? delta : delta / 100;
+      wheelRemaining += Math.min(steps, 4) * 0.16;
     }
   }, { capture: true, passive: false });
 
@@ -214,6 +219,16 @@ export function createSeasonRing({ scene, camera, controls, canvas, model }) {
         lightInk = nextLightInk;
         ink.set(lightInk ? 0xf2f3e9 : 0x171813);
         labels.forEach(label => label.userData.draw());
+      }
+      const now = performance.now();
+      const elapsed = Math.min(0.1, Math.max(0, (now - lastUpdate) / 1000));
+      lastUpdate = now;
+      if (chapter === 'intro') wheelRemaining = 0;
+      else if (!drag && wheelRemaining > 0) {
+        const step = reduceMotion.matches ? wheelRemaining : wheelRemaining * (1 - Math.exp(-2.5 * elapsed));
+        const advance = wheelRemaining - step < 0.001 ? wheelRemaining : step;
+        timeline.moveTo(timeline.position + advance);
+        wheelRemaining -= advance;
       }
       timeline.update(chapter, Boolean(drag), playbackDelta);
       group.visible = chapter !== 'intro';
