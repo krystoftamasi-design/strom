@@ -43,7 +43,7 @@ history:
 
 ### Rozložení
 
-- Výjimka Fotosyntézy: hlavní okno je vlevo nahoře na úrovni prvního pravého okna (25 %, do šířky 700 px 22 %). Kontextový průvodce začíná 15 % výšky obrazovky pod hlavním oknem, má stejný levý okraj a vlastní svislý posuv; čas je pod ním u spodního okraje. Při změně věty se 15 sekund čeká, pak text 3 sekundy mizí a nový se 3 sekundy objevuje. Ostatní rozměry a poloha detailu hlavního okna zůstávají podle společné šablony.
+- Fotosyntéza má vlevo samostatný nadpis kapitoly na úrovni prvního pravého okna (25 %, do šířky 700 px 22 %) a pod ním tematické okno Světlo (43 %, do šířky 700 px 39 %). Kontextový průvodce je pod oknem, má stejný levý okraj a vlastní svislý posuv; čas je pod ním u spodního okraje. Při změně věty se 15 sekund čeká, pak text 3 sekundy mizí a nový se 3 sekundy objevuje.
 
 - Aktuální vzor oken: Transpirace; původní grafický podklad: [podklad rozhraní](../../web_assets/ui_from_af/Untitled.svg), přibližně 2020 × 1143 px; procenta se vztahují k ploše rozhraní.
 - Transpirace má vlevo shora ovládání času (16 % výšky), průvodce (32 %) a hlavní okno dole; tematická okna jsou vpravo a střed zůstává volný pro strom.
@@ -92,7 +92,7 @@ history:
 - Nadpis, hodnota a vzorec zůstávají na pevném místě vlevo dole. Prázdná plocha hlavního okna propouští tažení ke stromu podle společného pravidla statických oken.
 - Detail se otevírá pod spodním okrajem pevného okna zarovnaný k levému okraji údajů, s odstupem 14 px, na úzké obrazovce 8 px; šířka je nejvýše 44 znakových jednotek a zároveň uvnitř šířky okna.
 - Detail nezvětšuje okno, má vlastní posuv a maximální výšku 10 % obrazovky, na úzké obrazovce 8 %.
-- Otevření ani délka textu neposouvá údaje a sousední okna. Stejná varianta platí pro hlavní okna všech kapitol.
+- Otevření ani délka textu neposouvá údaje a sousední okna. Varianta platí pro kapitoly s hlavním oknem.
 - Výchozí otevření určuje obsah okna, nikoli šablona.
 
 [Obsah oken](okna.md) · [Obsah](../architektura_obsahu.md)

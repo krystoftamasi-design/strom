@@ -653,7 +653,7 @@
   </style>
   <link rel="stylesheet" href="./kapitoly/chapters.css?v=menu-bold-4">
   <link rel="stylesheet" href="./okna/tree_annotations.css?v=menu-date-3">
-  <link rel="stylesheet" href="./okna/element_ui_okna_vzhled.css?v=window-flows-4">
+  <link rel="stylesheet" href="./okna/element_ui_okna_vzhled.css?v=light-window-1">
 </head>
 
 <body>
@@ -1107,7 +1107,7 @@
     import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
     import { setupLeafBreeze } from './listy/leaf_breeze.js?v=3';
     import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
-    import { PhotolysisSystem } from './vykreslovani/photolysis_system.js?v=highlight-fade-1';
+    import { PhotolysisSystem } from './vykreslovani/photolysis_system.js?v=light-availability-1';
     import { loadBarkReference, loadBarkAttributes, attachBarkAttributes, createBarkMaterial } from './vykreslovani/bark_material.js?v=stable-shadow-4';
     import { loadLeafReference, loadLeafAttributes, attachLeafAttributes, createLeafMaterial, createLeafDepthMaterial, setLeafEdgeTransition } from './vykreslovani/leaf_material.js?v=narrow-canopy-shade-6';
     import { LeafControls } from './listy/leaf_controls.js?v=beech-calendar-1';
@@ -1115,7 +1115,7 @@
     import { CanopyOcclusion } from './vykreslovani/canopy_occlusion.js?v=sky-1';
     import { createWaterBrushMaterial, addWaterBrushAttributes } from './vykreslovani/water_brush.js?v=highlight-width-2';
     import { TreeEcology, SEASONS, MODEL_MINUTES_PER_SECOND } from './ekologie/tree_ecology.js?v=water-supply-1';
-    import { createChapters } from './kapitoly/chapters.js?v=window-flows-4';
+    import { createChapters } from './kapitoly/chapters.js?v=light-window-1';
     import { createSeedChapter } from './kapitoly/seed_chapter.js';
     import { createSeasonRing } from './obdobi/season_ring.js?v=wheel-smooth-1';
     import { createIntroForest } from './obdobi/intro_forest.js?v=intro-closer-camera-2';
@@ -2541,6 +2541,7 @@
       if (photolysisSystem) {
         photolysisSystem.setWaterVolume(treeWaterLiters);
         photolysisSystem.setActivity(ecology.activity);
+        photolysisSystem.setLightAvailability(ecology.light);
         photolysisSystem.setTranspiration(sapFlowRetraction < 0.01 ? ecology.transpiration : 0);
         photolysisSystem.setSunElevation(sunElevationDeg);
         photolysisSystem.update(delta);

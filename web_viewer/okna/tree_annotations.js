@@ -1,4 +1,4 @@
-import { oknaPodleKapitol, kontextoveTexty, pruvodceTranspiraci } from './element_ui_okna_obsah.js?v=seeds-3';
+import { oknaPodleKapitol, kontextoveTexty, pruvodceTranspiraci } from './element_ui_okna_obsah.js?v=light-window-1';
 import { veliciny, vstupyVzorce, ohlasitChybuOken } from './element_ui_okna_veliciny.js?v=transpiration-vapour-1';
 import { zkontrolovatOkna } from './element_ui_okna_kontrola.js?v=seeds-1';
 
@@ -110,8 +110,8 @@ function createElementUiOkno({ panel, body, reveal, toggle, model, definition })
     if (current) {
       footer.replaceChildren();
       makeBar(definition.id === 'co2' ? unavailable : current, definition.id === 'co2' ? 'unknown' : 'measured', false);
-      makeBar(definition.id === 'co2' ? current : definition.id === 'voda' ? availability : unavailable,
-        definition.id === 'co2' ? 'measured' : definition.id === 'voda' ? 'availability' : 'unknown', true, definition.id === 'voda');
+      makeBar(definition.id === 'co2' ? current : ['voda', 'svetlo'].includes(definition.id) ? availability : unavailable,
+        definition.id === 'co2' ? 'measured' : definition.id === 'voda' ? 'availability' : definition.id === 'svetlo' ? 'light-availability' : 'unknown', true, definition.id === 'voda');
       panel.classList.add('element-ui-flow-window');
     }
   }
@@ -311,7 +311,7 @@ export function createTreeAnnotations({ shell, model, createSeasonControl, setEl
       metric.className = `chapter-metric ${value.druh || 'value'}-metric`;
       if (value.popisHodnoty) {
         const label = document.createElement('span');
-        label.textContent = value.popisHodnoty;
+        label.textContent = definition.id === 'svetlo' ? 'spotřeba' : value.popisHodnoty;
         metric.append(label);
       }
       const strong = document.createElement('strong');
@@ -356,6 +356,12 @@ export function createTreeAnnotations({ shell, model, createSeasonControl, setEl
   }
 
   for (const article of content.querySelectorAll('article[data-chapter]')) {
+    if (article.dataset.chapter === 'photosynthesis') {
+      const title = document.createElement('h2');
+      title.className = 'photosynthesis-title';
+      title.textContent = 'Fotosyntéza';
+      article.append(title);
+    }
     if (kontextoveTexty[article.dataset.chapter]) addContextGuide(article, article.dataset.chapter);
     if (article.dataset.chapter === 'transpiration') {
       const guide = document.createElement('section');
@@ -398,7 +404,7 @@ export function createTreeAnnotations({ shell, model, createSeasonControl, setEl
     // Only empty wrappers can be discarded; live outputs must remain in the DOM.
     const mainBody = article.querySelector('.annotation-body');
     for (const node of [...article.children]) {
-      if (node.classList.contains('tree-annotation') || node.classList.contains('chapter-context-guide') || node.classList.contains('transpiration-prompt')) continue;
+      if (node.classList.contains('tree-annotation') || node.classList.contains('chapter-context-guide') || node.classList.contains('transpiration-prompt') || node.classList.contains('photosynthesis-title')) continue;
       if (node.classList.contains('chapter-metrics') && !node.children.length) node.remove();
       else if (mainBody) mainBody.append(node);
     }
@@ -420,10 +426,14 @@ export function createTreeAnnotations({ shell, model, createSeasonControl, setEl
         const maxWater = Number(slider?.dataset.scaleMax) || waterAvailabilityMax(model);
         const fraction = bar.dataset.flow === 'unknown' ? 0
           : bar.dataset.flow === 'availability' ? model.waterInput / maxWater
+          : bar.dataset.flow === 'light-availability' ? model.light
           : panel.dataset.windowId === 'voda' ? model.waterConsumption / (model.baseTranspiration * 1.015)
           : model.activity;
         const level = Number.isFinite(fraction) ? Math.max(0, Math.min(1, fraction)) : 0;
         bar.style.setProperty('--flow-level', `${level * 100}%`);
+        if (bar.dataset.flow === 'light-availability') {
+          panel.querySelector('.element-ui-availability').textContent = `${Math.round(level * 100)} %`;
+        }
         if (slider) {
           if (!slider.matches(':active')) slider.value = String(Math.round(level * 1000));
           const displayed = Number.isFinite(model.waterInput) ? (model.waterInput * 60).toLocaleString('cs-CZ', { maximumFractionDigits: 1, minimumFractionDigits: 1 }) : '—';

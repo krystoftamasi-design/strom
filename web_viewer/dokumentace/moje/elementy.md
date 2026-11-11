@@ -122,12 +122,12 @@ Definice spojení
 **Tag:** nepřiřazený
 Definice spojení
 
-- Okno: nepřiřazené.
+- Okno: [Světlo](okna.md#světlo).
 - Reakce na okno: není definovaná.
 
 **Chování elementu**
 
-- Žluté částice putují od slunce k listům.
+- Žluté částice putují od slunce k listům podle dostupnosti světla, nezávisle na vodě. Vznik kyslíku a spotřebu CO₂ nadále řídí aktivita fotosyntézy.
 
 ### Cesta vody
 

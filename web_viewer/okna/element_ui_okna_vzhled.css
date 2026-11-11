@@ -325,9 +325,12 @@ body.scene-night .chapter-context-guide .transpiration-legend { color: #a9baff; 
   --photosynthesis-top: 25%;
   --photosynthesis-height: max(21%, 140px);
 }
-.tree-overlay .element-ui-okno[data-chapter="photosynthesis"][data-main-window="true"] {
-  top: var(--photosynthesis-top); height: var(--photosynthesis-height);
+.tree-overlay .photosynthesis-title {
+  position: absolute; left: 6%; top: var(--photosynthesis-top); margin: 0;
+  color: var(--ui-ink); font: 500 var(--ui-main-heading-size)/1.05 var(--ui-font-display);
+  letter-spacing: -.035em;
 }
+.tree-overlay .element-ui-okno[data-window-id="svetlo"] { left: 6%; top: 43%; }
 .tree-overlay [data-chapter="photosynthesis"] .chapter-context-guide {
   top: calc(var(--photosynthesis-top) + var(--photosynthesis-height) + 15vh);
   max-height: max(0px, calc(83% - var(--photosynthesis-top) - var(--photosynthesis-height) - 15vh));
@@ -337,6 +340,8 @@ body.scene-night .chapter-context-guide .transpiration-legend { color: #a9baff; 
 .chapter-context-guide h2 { opacity: 1; transition: opacity 3s ease; }
 .chapter-context-guide h2.context-fading { opacity: 0; }
 @media (max-width: 700px) {
+  .tree-overlay .photosynthesis-title { left: 4%; }
+  .tree-overlay .element-ui-okno[data-window-id="svetlo"] { left: 4%; top: 39%; }
   .tree-overlay [data-chapter="photosynthesis"] {
     --photosynthesis-top: 22%; --photosynthesis-height: 24%;
   }

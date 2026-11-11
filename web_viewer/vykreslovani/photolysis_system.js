@@ -44,6 +44,7 @@ export class PhotolysisSystem {
     this.treeWaterLiters = options.treeWaterLiters !== undefined ? options.treeWaterLiters : 800;
     this.sunElevationDeg = options.sunElevationDeg !== undefined ? options.sunElevationDeg : 45.8;
     this.activity = null; // Optional shared whole-tree model; legacy users retain their cutoff.
+    this.lightAvailability = null;
 
     // Simulation tuning
     this.streamDistance = options.streamDistance || 15.0; // Distance from reaction point towards Sun
@@ -117,6 +118,10 @@ export class PhotolysisSystem {
 
   setActivity(value) {
     this.activity = Math.max(0, Math.min(1, Number(value) || 0));
+  }
+
+  setLightAvailability(value) {
+    this.lightAvailability = Math.max(0, Math.min(1, Number(value) || 0));
   }
 
   // Setters for dynamic environmental parameters
@@ -497,6 +502,8 @@ export class PhotolysisSystem {
     if (!this.isPhotolysisActive()) {
       return;
     }
+    if (this.lightAvailability !== null && this.activity !== null
+        && Math.random() >= Math.min(1, this.activity / Math.max(this.lightAvailability, 0.0001))) return;
 
     this.totalPhotonsAbsorbed++;
     this.absorbedPhotonsCount++;
@@ -517,9 +524,12 @@ export class PhotolysisSystem {
     this._updateWaterVapour(dt);
 
     // 1. Emission logic (only emit when conditions are met)
-    if (this.isPhotolysisActive() && this.photonsPerSecond > 0) {
+    const incomingLight = this.lightAvailability === null
+      ? this.isPhotolysisActive() : this.isSunAboveHorizon() && this.lightAvailability > 0.0001;
+    if (incomingLight && this.photonsPerSecond > 0) {
       // Keep the first photons visible even while photosynthesis is just starting.
-      const emissionActivity = this.activity === null ? 1 : Math.max(0.2, Math.sqrt(this.activity));
+      const emissionActivity = this.lightAvailability !== null ? Math.sqrt(this.lightAvailability)
+        : this.activity === null ? 1 : Math.max(0.2, Math.sqrt(this.activity));
       const emitInterval = 1.0 / (this.photonsPerSecond * emissionActivity);
       this.emitTimer += dt;
       while (this.emitTimer >= emitInterval) {

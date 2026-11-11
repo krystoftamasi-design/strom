@@ -31,18 +31,17 @@ export const oknaPodleKapitol = {
   ],
   photosynthesis: [
     {
-      id: 'fotosynteza',
+      id: 'svetlo',
       viditelnyPrepinac: true,
-      nadpis: 'Fotosyntéza',
+      nadpis: 'Světlo',
       tema: 'light',
       strana: 'left',
-      hlavni: true,
-      otevrene: true,
+      otevrene: false,
       vypocet: 'activity',
       zobrazitVzorec: true,
       zobrazitHodnotu: true,
       text: [
-        'Listy využívají světlo, vodu a CO₂ k tvorbě cukrů; při fotosyntéze se uvolňuje O₂.',
+        'Dostupné světlo dopadá na listy. Jeho využití při fotosyntéze závisí také na vodě a dalších podmínkách.',
       ],
     },
     {

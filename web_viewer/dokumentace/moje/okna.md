@@ -31,23 +31,23 @@ history:
 ### Okna
 
 - Všechna okna používají [šablonu Transpirace](vzhled_oken.md#šablona-jednoho-okna-podle-transpirace), včetně velikostí písma, tahů a viditelného tlačítka +/−. Nadpis i tlačítko přepínají detail; stav se zachovává při změně kapitoly.
-- Hlavní detail je pod údaji a výchozí otevřený; tematické detaily jsou výchozí zavřené, vpravo od údajů a na úzké obrazovce pod nimi.
-- Okna O₂, CO₂, Cukry a Voda obsahují dva údaje s ukazateli. O₂ a Cukry zobrazují produkci a spotřebu; CO₂ produkci a spotřebu; Voda spotřebu a dostupnost, v tomto pořadí. Neznámá hodnota se označí „Zatím nemáme hodnotu“ bez vyplnění ukazatele.
+- Fotosyntéza je samostatný nadpis kapitoly bez okna. Tematické detaily jsou výchozí zavřené, vpravo od údajů a na úzké obrazovce pod nimi.
+- Okna Světlo, O₂, CO₂, Cukry a Voda obsahují dva údaje s ukazateli. Světlo a Voda zobrazují spotřebu a dostupnost; O₂, CO₂ a Cukry produkci a spotřebu, v tomto pořadí. Neznámá hodnota se označí „Zatím nemáme hodnotu“ bez vyplnění ukazatele.
 - Spodní ukazatel vody nastavuje dostupný přísun ke kořenům v l/h, myší, dotykem i klávesnicí. Automatický přísun činí 90 % sezónní kapacity příjmu. Ruční nastavení přetrvá při automatickém běhu; ruční změna období obnoví automatický přísun. Příjem stromu omezuje sezónní kapacita a stav kořenů. Ostatní ukazatele hodnoty pouze zobrazují.
 - Ukazatele fotosyntetických toků používají maximum modelu pro plnou korunu a plnou účinnost; ukazatel spotřeby vody používá základní odpar včetně udržovací spotřeby. Rozsah dostupnosti vody sahá ke dvojnásobku sezónní kapacity kořenů, případně k aktuálně nastavenému přísunu, je-li vyšší.
 
-#### Fotosyntéza
+#### Světlo
 
 **Tag:** 🟡 `light`
 
-- Nadpis: `Fotosyntéza`.
-- Ovládání: aktivita se vypočítává podle podmínek.
-- Téma: světlo; strana: vlevo; hlavní okno.
-- Detailní text: „Listy využívají světlo, vodu a CO₂ k tvorbě cukrů; při fotosyntéze se uvolňuje O₂.“
-- Hodnota: `activity`, zobrazená v procentech.
+- Nadpis: `Světlo`.
+- Téma: světlo; strana: vlevo; tematické okno.
+- Detailní text: „Dostupné světlo dopadá na listy. Jeho využití při fotosyntéze závisí také na vodě a dalších podmínkách.“
+- Spotřeba: aktivita fotosyntézy v procentech jako výukový ukazatel využití světla, nikoli měření energie.
+- Dostupnost: intenzita světla modelu v procentech, nezávislá na vodě.
 - Vstupy výpočtu: zapnuté.
 - Výsledná hodnota: zapnutá.
-- Výchozí stav detailu: otevřený; detail je pod hlavními údaji.
+- Výchozí stav detailu: zavřený.
 
 #### O₂
 

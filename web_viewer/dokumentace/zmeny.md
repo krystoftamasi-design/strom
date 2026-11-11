@@ -36,6 +36,13 @@ history:
 
 ## Implementováno
 
+#### Z130 — Nadpis Fotosyntéza a okno Světlo
+
+- Zadání: změnit Fotosyntézu na nadpis a zobrazit spotřebu i dostupnost světla v samostatném okně; fotony navázat na dostupnost.
+- Výsledek: kapitola má samostatný nadpis a společné tematické okno Světlo. Dostupnost světla řídí příchozí fotony, zatímco aktivita fotosyntézy ovlivňuje vznik plynů.
+- Stav: Implementováno.
+- Ověření: testy definic oken, částic a vodního modelu prošly. V Chrome při nulovém přísunu vody klesla spotřeba světla na 0 %, dostupnost zůstala kladná a fotony přicházely.
+
 #### Z129 — Čitelnější pruhy a dostupnost vody
 
 - Zadání: zvýraznit pruhy a zpřesnit ovládání vody kolem schopnosti příjmu kořenů.
