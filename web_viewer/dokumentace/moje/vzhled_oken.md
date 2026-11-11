@@ -34,7 +34,7 @@ history:
 
 ### Obecný obsah
 
-- Údaje tvoří svislý blok: nadpis → hodnota s jednotkou → vzorec nebo přehled vstupů.
+- Údaje tvoří svislý blok: nadpis → hodnota s jednotkou → vzorec nebo přehled vstupů. Ve Fotosyntéze je vzorec nebo přehled vstupů v detailu.
 - Pravá tematická okna začínají na 70 % šířky a mají šířku 27 %; do šířky 700 px začínají na 52 % a mají šířku 44 %.
 - Tematické okno má detail vpravo, zarovnaný k hornímu okraji, s vlastním posuvem a mezerou 15 px. Ve Fotosyntéze se detail otevírá vlevo od okna. Hlavní okno používá variantu detailu pod údaji.
 - Nadpis zůstává na jednom řádku bez zmenšování podle délky; při nedostatku místa je dostupný vodorovný posuv.
@@ -60,7 +60,7 @@ history:
 - Pravý sloupec začíná na 52 % a má šířku 44 %; okna Transpirace mají horní okraje 26 / 46 / 70 % a výšku 17 %.
 - Hlavní okno: levý okraj 4 %, horní 65 %, šířka 44 %, výška 24 %; minimální výška oken se ruší. Odsazení obsahu je 12 px, tematický tah má šířku 5 px a hlavní 6 px. Tematický detail má nad sebou mezeru 8 px.
 - Používá se společná typografická škála pro úzkou obrazovku, bez výjimek podle délky nadpisu.
-- Vzorce i přehledy vstupů obou kapitol zůstávají viditelné a mohou se zalomit. Okna Fotosyntézy zůstávají vpravo a detaily se otevírají vlevo.
+- Vzorce i přehledy vstupů se mohou zalomit. Okna Fotosyntézy zůstávají vpravo a jejich detaily se otevírají vlevo.
 
 ### Písmo
 

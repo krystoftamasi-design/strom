@@ -36,6 +36,13 @@ history:
 
 ## Implementováno
 
+#### Z132 — Výpočty v detailech oken
+
+- Zadání: zobrazovat výpočty až po rozkliknutí okna.
+- Výsledek: vzorce a přehledy vstupů oken Fotosyntézy jsou součástí detailu.
+- Stav: Implementováno.
+- Ověření: kontrola při commitu; vizuální a funkční kontrola čeká na uživatele.
+
 #### Z131 — Okna Fotosyntézy vpravo
 
 - Zadání: přesunout Světlo a ostatní okna doprava, tlačítka vlevo od nadpisů a detaily vlevo od oken.

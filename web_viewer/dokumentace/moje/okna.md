@@ -32,6 +32,7 @@ history:
 
 - Všechna okna používají [šablonu Transpirace](vzhled_oken.md#šablona-jednoho-okna-podle-transpirace), včetně velikostí písma, tahů a viditelného tlačítka +/−. Nadpis i tlačítko přepínají detail; stav se zachovává při změně kapitoly.
 - Fotosyntéza je samostatný nadpis kapitoly bez okna. Tematická okna jsou vpravo; jejich detaily jsou výchozí zavřené a otevírají se vlevo od údajů.
+- Vzorec nebo přehled vstupů se u oken Fotosyntézy zobrazuje až v otevřeném detailu.
 - Okna Světlo, O₂, CO₂, Cukry a Voda obsahují dva údaje s ukazateli. Světlo a Voda zobrazují spotřebu a dostupnost; O₂, CO₂ a Cukry produkci a spotřebu, v tomto pořadí. Neznámá hodnota se označí „Zatím nemáme hodnotu“ bez vyplnění ukazatele.
 - Spodní ukazatel vody nastavuje dostupný přísun ke kořenům v l/h, myší, dotykem i klávesnicí. Automatický přísun činí 90 % sezónní kapacity příjmu. Ruční nastavení přetrvá při automatickém běhu; ruční změna období obnoví automatický přísun. Příjem stromu omezuje sezónní kapacita a stav kořenů. Ostatní ukazatele hodnoty pouze zobrazují.
 - Ukazatele fotosyntetických toků používají maximum modelu pro plnou korunu a plnou účinnost; ukazatel spotřeby vody používá základní odpar včetně udržovací spotřeby. Rozsah dostupnosti vody sahá ke dvojnásobku sezónní kapacity kořenů, případně k aktuálně nastavenému přísunu, je-li vyšší.

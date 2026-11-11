@@ -53,7 +53,7 @@ function createElementUiOkno({ panel, body, reveal, toggle, model, definition })
   const header = panel.querySelector(':scope > header');
   const formula = body.querySelector('.ui-window-formula');
   readout.append(header, footer);
-  if (formula) readout.append(formula);
+  if (formula && panel.dataset.chapter !== 'photosynthesis') readout.append(formula);
   panel.insertBefore(readout, reveal);
   const edge = panel.querySelector('.annotation-frame-left');
   for (const frame of panel.querySelectorAll('.annotation-frame')) if (frame !== edge) frame.remove();
