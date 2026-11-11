@@ -34,7 +34,7 @@ history:
 - Hlavní detail je pod údaji a výchozí otevřený; tematické detaily jsou výchozí zavřené, vpravo od údajů a na úzké obrazovce pod nimi.
 - Okna O₂, CO₂, Cukry a Voda obsahují dva údaje s ukazateli. O₂ a Cukry zobrazují produkci a spotřebu; CO₂ produkci a spotřebu; Voda spotřebu a dostupnost, v tomto pořadí. Neznámá hodnota se označí „Zatím nemáme hodnotu“ bez vyplnění ukazatele.
 - Spodní ukazatel vody nastavuje dostupný přísun ke kořenům v l/h, myší, dotykem i klávesnicí. Automatický přísun činí 90 % sezónní kapacity příjmu. Ruční nastavení přetrvá při automatickém běhu; ruční změna období obnoví automatický přísun. Příjem stromu omezuje sezónní kapacita a stav kořenů. Ostatní ukazatele hodnoty pouze zobrazují.
-- Ukazatele fotosyntetických toků používají maximum modelu pro plnou korunu a plnou účinnost; ukazatel spotřeby vody používá základní odpar včetně udržovací spotřeby. Dostupnost vody používá rozsah jejího ovládání.
+- Ukazatele fotosyntetických toků používají maximum modelu pro plnou korunu a plnou účinnost; ukazatel spotřeby vody používá základní odpar včetně udržovací spotřeby. Rozsah dostupnosti vody sahá ke dvojnásobku sezónní kapacity kořenů, případně k aktuálně nastavenému přísunu, je-li vyšší.
 
 #### Fotosyntéza
 

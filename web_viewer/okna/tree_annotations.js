@@ -18,6 +18,7 @@ const strokes = {
   ],
 };
 const strokeBags = { vertical: [], horizontal: [] };
+const waterAvailabilityMax = model => Math.max(model.seasonalWaterLimit * 2, model.waterInput, 0.001);
 function pickUiWindowStroke(direction) {
   const bag = strokeBags[direction];
   if (!bag.length) {
@@ -92,8 +93,14 @@ function createElementUiOkno({ panel, body, reveal, toggle, model, definition })
         slider.min = '0'; slider.max = '1000'; slider.step = '1';
         slider.className = 'element-ui-flow-slider';
         slider.setAttribute('aria-label', 'Dostupnost vody pro kořeny');
+        slider.addEventListener('pointerdown', () => {
+          slider.dataset.scaleMax = String(waterAvailabilityMax(model));
+        });
+        for (const eventName of ['pointerup', 'pointercancel', 'lostpointercapture']) {
+          slider.addEventListener(eventName, () => { delete slider.dataset.scaleMax; });
+        }
         slider.addEventListener('input', () => {
-          const max = Number(document.getElementById('sliderTreeWater').max) / 60;
+          const max = Number(slider.dataset.scaleMax) || waterAvailabilityMax(model);
           if (Number.isFinite(max) && max > 0) model.setWaterInput(max * Number(slider.value) / 1000);
         });
         bar.append(slider);
@@ -409,14 +416,14 @@ export function createTreeAnnotations({ shell, model, createSeasonControl, setEl
       activeChapter = chapter;
       for (const bar of shell.querySelectorAll('.element-ui-flow-bar')) {
         const panel = bar.closest('.element-ui-okno');
-        const maxWater = Number(document.getElementById('sliderTreeWater').max) / 60;
+        const slider = bar.querySelector('input');
+        const maxWater = Number(slider?.dataset.scaleMax) || waterAvailabilityMax(model);
         const fraction = bar.dataset.flow === 'unknown' ? 0
           : bar.dataset.flow === 'availability' ? model.waterInput / maxWater
           : panel.dataset.windowId === 'voda' ? model.waterConsumption / (model.baseTranspiration * 1.015)
           : model.activity;
         const level = Number.isFinite(fraction) ? Math.max(0, Math.min(1, fraction)) : 0;
         bar.style.setProperty('--flow-level', `${level * 100}%`);
-        const slider = bar.querySelector('input');
         if (slider) {
           if (!slider.matches(':active')) slider.value = String(Math.round(level * 1000));
           const displayed = Number.isFinite(model.waterInput) ? (model.waterInput * 60).toLocaleString('cs-CZ', { maximumFractionDigits: 1, minimumFractionDigits: 1 }) : '—';

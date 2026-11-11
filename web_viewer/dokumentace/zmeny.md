@@ -36,6 +36,13 @@ history:
 
 ## Implementováno
 
+#### Z129 — Čitelnější pruhy a dostupnost vody
+
+- Zadání: zvýraznit pruhy a zpřesnit ovládání vody kolem schopnosti příjmu kořenů.
+- Výsledek: pruhy jsou vyšší, prázdná část zřetelnější a rozsah přísunu vychází ze sezónního limitu.
+- Stav: Implementováno.
+- Ověření: cílené testy vody a oken prošly; v Chrome ověřeno načtení, čitelnost a tažení dostupnosti vody.
+
 #### Z128 — Stálá šířka linek
 
 - Zadání: vypnout rozšiřování linek podle přísunu vody.
