@@ -42,7 +42,7 @@ history:
 
 #### Ovládání času
 
-- Pauza, rychlost 2× a rychlost 4× jsou vlevo před datem vpravo nahoře, bez výplně panelu; tlačítka mají 38 × 38 px, aktivní stav kruhový obrys a barva se přizpůsobuje dni a noci.
+- Pauza, rychlost 2× a rychlost 4× jsou vlevo před datem vlevo dole, bez výplně panelu; tlačítka mají 38 × 38 px, aktivní stav kruhový obrys a barva se přizpůsobuje dni a noci.
 - Pauza zastaví běh času a dalším stiskem jej obnoví. Volba 2× nebo 4× obnoví běh danou rychlostí; opětovný stisk aktivní rychlosti vrátí 1×.
 - V Úvodu se pauza ani rychlosti 2× a 4× nezobrazují; úvodní animace běží automaticky.
 - V ostatních kapitolách jsou tlačítka viditelná a přístupná klávesnicí; fokus má viditelný obrys.

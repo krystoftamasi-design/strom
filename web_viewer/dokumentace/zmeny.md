@@ -36,6 +36,13 @@ history:
 
 ## Implementováno
 
+#### Z141 — Datum a čas vlevo dole
+
+- Zadání: přesunout datum a tlačítka času do vyznačeného místa.
+- Výsledek: společný řádek data a času je vlevo dole.
+- Stav: Implementováno.
+- Ověření: kontrola při commitu; vizuální kontrola čeká na uživatele.
+
 #### Z140 — Silnější pruhy a rozestupy
 
 - Zadání: zesílit pruhy a zvětšit rozestupy mezi pruhy a texty.

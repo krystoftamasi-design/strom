@@ -144,8 +144,8 @@ body.scene-night .tree-overlay .season-date-card { color: #f0f2e9; }
   .has-chapters .hud-bottom { left: 10px; right: auto; top: 74px; bottom: auto; }
 }
 
-/* Place the date against the right edge. */
-.tree-overlay .season-date-card { left: auto; right: 6%; align-items: center; }
+/* Keep the date and playback controls together in the lower left. */
+.tree-overlay .season-date-card { left: 6%; right: auto; top: auto; bottom: 6%; align-items: center; }
 @media (max-width: 700px) {
-  .tree-overlay .season-date-card { left: auto; right: 4%; top: 7%; }
+  .tree-overlay .season-date-card { left: 4%; right: auto; top: auto; bottom: 4%; }
 }
