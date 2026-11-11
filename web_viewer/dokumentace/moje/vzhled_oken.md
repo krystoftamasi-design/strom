@@ -43,10 +43,10 @@ history:
 
 ### Rozložení
 
-- Fotosyntéza má vlevo samostatný nadpis kapitoly a pod ním kontextového průvodce s vlastním svislým posuvem; čas je pod ním u spodního okraje. Při změně věty se 15 sekund čeká, pak text 3 sekundy mizí a nový se 3 sekundy objevuje.
+- Fotosyntéza má vlevo samostatný nadpis kapitoly a pod ním kontextového průvodce s vlastním svislým posuvem. Při změně věty se 15 sekund čeká, pak text 3 sekundy mizí a nový se 3 sekundy objevuje.
 
 - Aktuální vzor oken: Transpirace; původní grafický podklad: [podklad rozhraní](../../web_assets/ui_from_af/Untitled.svg), přibližně 2020 × 1143 px; procenta se vztahují k ploše rozhraní.
-- Transpirace má vlevo shora ovládání času (16 % výšky), průvodce (32 %) a hlavní okno dole; tematická okna jsou vpravo a střed zůstává volný pro strom.
+- Transpirace má vlevo průvodce (32 % výšky) a hlavní okno dole; tematická okna jsou vpravo a střed zůstává volný pro strom.
 - Fotosyntéza: vpravo zarovnaná okna Světlo, O₂, CO₂, Cukry a Voda, shora na 14 / 30 / 46 / 62 / 78 % výšky. Pravý okraj oken odpovídá levému okraji nadpisu kapitoly: 6 %, do šířky 700 px 4 %. Tlačítko +/− je vlevo od nadpisu, otevřený detail vlevo od okna.
 - Transpirace: vpravo shora Teplota, Chlazení a Příjem vody; první sloupec se přizpůsobuje nezalomenému nadpisu a tlačítku.
 - Hlavní okno Transpirace: levý okraj 6 %, horní okraj 65 %, šířka 55 %, výška 21 %, nejméně 140 px.

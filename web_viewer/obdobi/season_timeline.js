@@ -23,6 +23,8 @@ export function createSeasonTimeline(model) {
   dateCard.className = 'season-date-card';
   dateCard.setAttribute('aria-label', 'Datum modelového roku');
   dateCard.innerHTML = '<span>Datum</span><output></output>';
+  const playback = document.querySelector('.time-playback-panel');
+  if (playback) dateCard.prepend(playback);
   document.querySelector('.chapter-panel').append(dateCard);
   const button = clock.querySelector('button');
   const output = dateCard.querySelector('output');

@@ -36,6 +36,13 @@ history:
 
 ## Implementováno
 
+#### Z137 — Ovládání času u data
+
+- Zadání: přesunout tlačítka času před datum.
+- Výsledek: pauza a rychlosti jsou vlevo od data v horním řádku.
+- Stav: Implementováno.
+- Ověření: test definic oken a kontrola při commitu; vizuální a funkční kontrola čeká na uživatele.
+
 #### Z136 — Plynulé přibližování stromu
 
 - Zadání: odstranit skokové přibližování a oddalování.
