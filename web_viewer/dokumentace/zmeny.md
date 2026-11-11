@@ -36,6 +36,13 @@ history:
 
 ## Implementováno
 
+#### Z138 — Stejná velikost data a menu
+
+- Zadání: sjednotit velikost písma menu a data.
+- Výsledek: datum používá stejnou responzivní velikost písma jako položky menu.
+- Stav: Implementováno.
+- Ověření: kontrola při commitu. Vizuální kontrola čeká na uživatele.
+
 #### Z137 — Ovládání času u data
 
 - Zadání: přesunout tlačítka času před datum.

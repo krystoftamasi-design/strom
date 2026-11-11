@@ -90,9 +90,9 @@ body.scene-night .tree-overlay [data-chapter="intro"] .intro-title { color: #f0f
 .shared-toggle { border: 0; border-radius: 50%; background: #ffffff0c; color: #c5dda4; width: 22px; height: 22px; flex: 0 0 auto; font-size: 18px; cursor: pointer; }
 .shared-toggle:hover { background: #ffffff20; }
 .chapter-shared.collapsed .shared-body { display: none; }
-.tree-overlay .season-date-card { position: absolute; top: 7%; left: 6%; z-index: 2; display: flex; align-items: baseline; gap: 11px; padding: 0; border: 0; border-radius: 0; background: transparent; color: #252b25; font: 400 14px 'Satoshi', sans-serif; pointer-events: none; }
+.tree-overlay .season-date-card { position: absolute; top: 7%; left: 6%; z-index: 2; display: flex; align-items: baseline; gap: 11px; padding: 0; border: 0; border-radius: 0; background: transparent; color: #252b25; font: 400 clamp(11px, 1.03vw, 21px)/1.2 'Satoshi', sans-serif; pointer-events: none; }
 .tree-overlay .season-date-card[hidden] { display: none; }
-.tree-overlay .season-date-card output { color: inherit; font: 500 17px 'Satoshi', sans-serif; }
+.tree-overlay .season-date-card output { color: inherit; font: inherit; font-weight: 500; }
 body.scene-night .tree-overlay .season-date-card { color: #f0f2e9; }
 .tree-overlay .temperature-comparison { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; margin-bottom: 8px; }
 .tree-overlay .temperature-comparison > div { min-width: 0; padding: 7px; border: 1px solid #ffffff20; border-radius: 8px; }

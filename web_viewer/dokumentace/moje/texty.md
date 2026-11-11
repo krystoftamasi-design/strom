@@ -31,7 +31,7 @@ history:
 
 - Zobrazuje datum modelového roku.
 - Umístění: vpravo nahoře, pravý okraj 6 % šířky; do šířky 700 px 4 %.
-- Písmo: Satoshi, bez pozadí.
+- Písmo: Satoshi, stejná velikost jako položky menu, bez pozadí.
 - Barva: ve dne tmavá, v noci světlá.
 - Vzhled: [tree_annotations.css](../../okna/tree_annotations.css), `.season-date-card`.
 
