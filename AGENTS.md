@@ -77,7 +77,7 @@ history:
 
 # Commity
 
-- U větších funkcí nabídni samostatnou větev a worktree; drobné opravy kvůli tomu zbytečně neodděluj.
+- U větších funkcí nabídni samostatnou větev a worktree. Drobné opravy prováděj ve stávající pracovní větvi; novou větev ani worktree pro ně automaticky nezakládej.
 - Před sloučením zkontroluj stav obou pracovních složek, případné konflikty a připravenost výsledku. Sloučení proveď až na pokyn uživatele.
 - Po dokončené logické změně ulož kód a odpovídající dokumentaci společně do lokálního commitu. Push pouze na výslovný pokyn.
 - Ve sdíleném adresáři použij `git commit --only -m "Popis" -- cesta1 cesta2`; necommituj obecně celý společný index. Příkaz zahrnuje celé soubory: nejprve ověř, že neobsahují cizí změny.
