@@ -36,6 +36,13 @@ history:
 
 ## Implementováno
 
+#### Z145 — Užší místo pro hodnoty
+
+- Zadání: zmenšit místo pro hodnotu podle délky 100 %.
+- Výsledek: popisky jsou blíže hodnotám při zachování pevné šířky.
+- Stav: Implementováno.
+- Ověření: kontrola při commitu; vizuální kontrola čeká na uživatele.
+
 #### Z144 — Roztažení oken Fotosyntézy do výšky
 
 - Zadání: zarovnat pravá okna mezi horní nabídku a spodní řádek s datem.
