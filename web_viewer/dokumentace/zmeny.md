@@ -36,6 +36,13 @@ history:
 
 ## Implementováno
 
+#### Z147 — Mírný posun 3D modelu stromu doprava
+
+- Zadání: posunout 3D model stromu trochu doprava.
+- Výsledek: pohled kamery posouvá zobrazení stromu o 4 % šířky obrazovky doprava při zachování osy otáčení v kmeni.
+- Stav: Implementováno.
+- Ověření: kontrola při commitu; vizuální kontrola čeká na uživatele.
+
 #### Z146 — Zvýraznění nad celým oknem
 
 - Zadání: spustit zvýraznění při najetí na celou plochu okna.

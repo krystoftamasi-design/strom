@@ -1173,6 +1173,13 @@
     // 2. CAMERA SETUP (EXACT BLENDER CAMERA PARAMETERS)
     // Blender: loc = [37.91, -28.07, 18.18], Blender Z-up -> glTF Y-up: [37.91, 18.18, 28.07]
     const camera = new THREE.PerspectiveCamera(43, window.innerWidth / window.innerHeight, 0.5, 300);
+    const treeHorizontalShift = 0.04;
+    function updateCameraProjection() {
+      const width = window.innerWidth;
+      const height = window.innerHeight;
+      camera.setViewOffset(width, height, -Math.round(width * treeHorizontalShift), 0, width, height);
+    }
+    updateCameraProjection();
     const blenderCamPos = new THREE.Vector3(37.9, 18.2, 28.1);
     const treeTarget = new THREE.Vector3(0, 11.5, 0); // Tree center
     camera.position.copy(blenderCamPos);
@@ -4118,8 +4125,7 @@
 
     // 10. RESIZE LISTENER
     window.addEventListener('resize', () => {
-      camera.aspect = window.innerWidth / window.innerHeight;
-      camera.updateProjectionMatrix();
+      updateCameraProjection();
       renderer.setSize(window.innerWidth, window.innerHeight);
       introForest.resize();
     });
