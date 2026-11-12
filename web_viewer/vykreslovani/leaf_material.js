@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { leafFallDeclarations } from '../listy/leaf_fall.js?v=delayed-wind-5';
+import { leafFallDeclarations } from '../listy/leaf_fall.js?v=camera-gust-1';
 
 function createStableBrushAlpha(image, type, edgeTransition = 0) {
   // Bake stochastic coverage in leaf UV space once, then filter it with mipmaps.

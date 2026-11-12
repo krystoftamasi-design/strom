@@ -7,6 +7,7 @@ export const leafFallDeclarations = `
   attribute float leafFallStartTime;
   attribute vec3 leafFallCenter;
   attribute vec3 leafFallLanding;
+  attribute vec3 leafCameraDrift;
   varying float vLeafFallProgress;
 
   mat3 leafAxisRotation(vec3 axis, float angle) {
@@ -97,6 +98,10 @@ export const leafFallDeclarations = `
       + side * wander * 0.35 * windSpeed * release
       + side * gust * 1.15 * release
       + forward * sway * 1.25 * release;
+    if (dot(leafCameraDrift, leafCameraDrift) > 0.0001) {
+      float gustProgress = smoothstep(0.08, 0.82, t / flight);
+      drift = drift * 0.25 + leafCameraDrift * gustProgress;
+    }
     vec3 center = mix(leafFallCenter, leafFallLanding, descent) + drift;
     center += up * sin(t * 4.3 + phase) * 0.10 * release * airborne;
     vLeafFallProgress = smoothstep(flight + 4.0, flight + 7.0, age);

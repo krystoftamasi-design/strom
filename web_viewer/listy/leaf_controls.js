@@ -220,6 +220,7 @@ export class LeafControls {
       mesh.geometry.setAttribute('leafFallDelay', new THREE.BufferAttribute(fallDelays, 1));
       mesh.geometry.setAttribute('leafFallCenter', new THREE.BufferAttribute(fallCenters, 3));
       mesh.geometry.setAttribute('leafFallLanding', new THREE.BufferAttribute(fallLandings, 3));
+      mesh.geometry.setAttribute('leafCameraDrift', new THREE.BufferAttribute(new Float32Array(fallCenters.length), 3));
       mesh.frustumCulled = false; // Leaves can drift outside the original crown bounds.
       mesh.geometry.setAttribute('leafFallStartTime', new THREE.BufferAttribute(fallStartTimes, 1));
     });
@@ -232,7 +233,7 @@ export class LeafControls {
     this.photosyntheticFoliageCache = null;
   }
 
-  updateLeafFall(seasonProgress, time, { dryingSpeed, dryingSharpness, dryingFrontWidth, fallSpeed = 1, maxAirborne = 700, enabled, calendarFallProgress }) {
+  updateLeafFall(seasonProgress, time, { dryingSpeed, dryingSharpness, dryingFrontWidth, fallSpeed = 1, maxAirborne = 700, enabled, calendarFallProgress, cameraPosition }) {
     const hasCalendar = Number.isFinite(calendarFallProgress);
     const calendarProgress = hasCalendar ? THREE.MathUtils.clamp(calendarFallProgress, 0, 1) : 0;
     // Changing leaf colour during hydration must not restart a calendar-driven fall.
@@ -273,7 +274,29 @@ export class LeafControls {
 
     this.models.forEach(({ mesh, leaves, ends }) => {
       const startTimes = mesh.geometry.attributes.leafFallStartTime;
+      const cameraDrift = mesh.geometry.attributes.leafCameraDrift;
+      const drift = new THREE.Vector3();
       let changed = false;
+      let driftChanged = false;
+      const scheduleFall = (leaf, index, startTime) => {
+        leaf.fallStartTime = startTime;
+        this.hasScheduledFall = true;
+        drift.set(0, 0, 0);
+        // Store the gust at release so turning the camera cannot steer a leaf.
+        if (cameraPosition && hash(leaf.key + index * 104729 + 0x31ed270b) / 4294967296 < 0.005) {
+          const center = mesh.localToWorld(leaf.center.clone());
+          drift.subVectors(cameraPosition, center);
+          drift.y = 0;
+          drift.setLength(Math.min(13, drift.length() * 0.6));
+          mesh.worldToLocal(drift.add(center)).sub(leaf.center);
+        }
+        for (const vertex of leaf.vertices) {
+          startTimes.setX(vertex, startTime);
+          cameraDrift.setXYZ(vertex, drift.x, drift.y, drift.z);
+        }
+        changed = true;
+        driftChanged = true;
+      };
       leaves.forEach((leaf, index) => {
         const priority = THREE.MathUtils.clamp(leaf.dryingPriority, 0, 1);
         const regionPriority = THREE.MathUtils.clamp(leaf.dryingRegionPriority, 0, 1);
@@ -303,16 +326,10 @@ export class LeafControls {
         } else if (releasedByCalendar && leaf.fallStartTime > time) {
           // The calendar releases leaves; real time runs their full falling animation.
           // At winter this also starts every remaining leaf, regardless of the rate cap.
-          leaf.fallStartTime = time;
-          this.hasScheduledFall = true;
-          for (const vertex of leaf.vertices) startTimes.setX(vertex, time);
-          changed = true;
+          scheduleFall(leaf, index, time);
         } else if (leaf.fallStartTime === 1000000.0 && this.fallEmissionTokens >= 1) {
           this.fallEmissionTokens -= 1;
-          leaf.fallStartTime = time + leaf.fallDelay;
-          this.hasScheduledFall = true;
-          for (const vertex of leaf.vertices) startTimes.setX(vertex, leaf.fallStartTime);
-          changed = true;
+          scheduleFall(leaf, index, time + leaf.fallDelay);
         }
       });
       if (changed) {
@@ -320,6 +337,7 @@ export class LeafControls {
         this.foliageCache = null;
         this.photosyntheticFoliageCache = null;
       }
+      if (driftChanged) cameraDrift.needsUpdate = true;
       if (changed || leaves.some(leaf => time >= leaf.fallStartTime && time <= leaf.fallStartTime + leaf.fallDuration)) animating = true;
     });
     return animating;

@@ -148,6 +148,11 @@ Definice spojení
 - Stálý přehled ukazuje kořeny dole, kmen uprostřed a listy nahoře; popisky rozlišují příjem, proudění vzhůru a odpar s chlazením.
 - Je statické; šipky neudávají rychlost ani měřený průtok.
 
+### Opad listů
+
+- Při podzimním opadu zanese poryv několik listů z koruny do popředí směrem ke kameře. Listy se při letu převalují a pak dopadnou na zem.
+- Směr poryvu se určí při uvolnění listu. Při systémovém omezení pohybu se poryv ke kameře nepřidává.
+
 ### Padající semena
 
 **Tag:** 🟤 `seeds`

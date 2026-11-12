@@ -1109,8 +1109,8 @@
     import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
     import { PhotolysisSystem } from './vykreslovani/photolysis_system.js?v=highlight-fade-1';
     import { loadBarkReference, loadBarkAttributes, attachBarkAttributes, createBarkMaterial } from './vykreslovani/bark_material.js?v=water-surface-1';
-    import { loadLeafReference, loadLeafAttributes, attachLeafAttributes, createLeafMaterial, createLeafDepthMaterial, setLeafEdgeTransition } from './vykreslovani/leaf_material.js?v=narrow-canopy-shade-6';
-    import { LeafControls } from './listy/leaf_controls.js?v=beech-calendar-1';
+    import { loadLeafReference, loadLeafAttributes, attachLeafAttributes, createLeafMaterial, createLeafDepthMaterial, setLeafEdgeTransition } from './vykreslovani/leaf_material.js?v=camera-gust-1';
+    import { LeafControls } from './listy/leaf_controls.js?v=camera-gust-1';
     import { loadBranchDryingReference, branchDryingFrontWidth } from './listy/leaf_branch_drying.js?v=3';
     import { CanopyOcclusion } from './vykreslovani/canopy_occlusion.js?v=sky-1';
     import { createWaterBrushMaterial, addWaterBrushAttributes } from './vykreslovani/water_brush.js?v=highlight-width-2';
@@ -4119,7 +4119,8 @@
             fallSpeed: shaderUniforms.uLeafFallSpeed.value,
             maxAirborne: Number(document.getElementById('sliderLeafFallAmount').value),
             calendarFallProgress: seasonalRegrowthPending ? 1 : (seasonalNewLeaves ? 0 : beechLeafFallProgress(ecology.seasonPosition)),
-            enabled: shaderUniforms.uLeafFallEnabled.value > 0.5
+            enabled: shaderUniforms.uLeafFallEnabled.value > 0.5,
+            cameraPosition: reducedElementMotion.matches ? null : camera.position
           }
         );
         if (seasonalRegrowthPending && isLeafGrowthSeason() && !leafControls.hasUnfinishedLeafFall(leafFallAnimationTime)) {
