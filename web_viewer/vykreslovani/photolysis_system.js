@@ -29,7 +29,7 @@ export class PhotolysisSystem {
     this.getFrontDirection = options.getFrontDirection || (() => this._zAxis);
     this.totalCarbonDioxideEmitted = 0;
     this.totalCarbonDioxideAbsorbed = 0;
-    this.highlightedGases = { oxygen: false, co2: false, water: false };
+    this.highlightedGases = { oxygen: 0, co2: 0, water: 0 };
     this.waterGroup = options.waterGroup || null;
     this.transpiration = 0;
     this.waterEmitTimer = 0;
@@ -138,7 +138,8 @@ export class PhotolysisSystem {
 
   setElementHighlight(tag, active) {
     if (!(tag in this.highlightedGases)) return;
-    this.highlightedGases[tag] = Boolean(active);
+    this.highlightedGases[tag] = typeof active === 'number' && Number.isFinite(active)
+      ? Math.max(0, Math.min(1, active)) : Number(Boolean(active));
     const pool = tag === 'oxygen' ? this.bubblePool : tag === 'co2' ? this.carbonPool : this.waterPool;
     for (const bubble of pool) if (bubble.active) this._updateGasScale(bubble);
   }
@@ -149,7 +150,7 @@ export class PhotolysisSystem {
     const growth = entrance * entrance * (3 - 2 * entrance);
     const exit = Math.max(0, Math.min(1, (b.maxLifetime - b.age) / 0.25));
     const shrink = exit * exit * (3 - 2 * exit);
-    const highlight = this.highlightedGases[b.kind] ? 2.1 : 1;
+    const highlight = 1 + 1.1 * this.highlightedGases[b.kind];
     b.mesh.scale.setScalar(b.baseScale * 1.6 * this.bubbleSize * (b.kind === 'water' ? 1 / 2.1 : 1) * highlight * (0.02 + 0.98 * growth) * shrink);
   }
   setBubbleSpawnDistance(distance) {

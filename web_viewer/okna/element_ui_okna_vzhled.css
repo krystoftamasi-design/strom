@@ -352,3 +352,8 @@ body.scene-night .chapter-context-guide .transpiration-legend { color: #a9baff; 
   .tree-overlay .element-ui-okno[data-chapter="seeds"][data-toggle-visible="true"] .element-ui-readout > header { grid-template-columns: minmax(0, 1fr) var(--ui-toggle-size); }
   .tree-overlay .element-ui-okno[data-chapter="seeds"][data-toggle-visible="true"] .element-ui-readout > header > h3 { white-space: normal; }
 }
+
+/* Transparent window space does not intercept camera dragging. */
+.tree-overlay .element-ui-okno { pointer-events: none; }
+.tree-overlay .element-ui-okno .element-ui-readout > header > :is(h2, h3, button),
+.tree-overlay .element-ui-okno:not(.collapsed) .annotation-reveal { pointer-events: auto; }

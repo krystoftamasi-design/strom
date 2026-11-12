@@ -38,7 +38,7 @@ Zdroje: [kartotéka procesů](../../KARTOTEKA_STROMU.md), [dashboard biologický
 | Období | Změna stromu v průběhu roku a orientace v modelovém čase. | Ovládání kruhem je definované; obsahový rozcestník má dosud prázdné části. |
 | Fotosyntéza | Světlo, voda a CO₂ souvisejí s tvorbou cukrů a uvolňováním O₂. | Podrobně definovaná okna, linky, částice a tematické texty; evidence obsahuje řadu implementovaných úprav. |
 | Transpirace | Odpar v listech pomáhá táhnout vodu od kořenů a spotřebovává teplo. | Definovaná okna Transpirace, Příjem vody, Chlazení a Teplota, vodní trasa a částice páry. |
-| Semenace | Od opylení přes vývoj bukvic k pádu, přezimování a možnému klíčení. | Evidence již popisuje modely v koruně a pád semen; starší návrh stále zůstává mezi čekajícími záznamy. Přesné počty a přežití vyžadují zdroje. |
+| Semenace | Od opylení přes vývoj bukvic k pádu, přezimování a možnému klíčení. | Evidence popisuje modely v koruně a pád semen; původní návrh navazuje na záznamy implementace. Přesné počty a přežití vyžadují zdroje. |
 | Kořeny | Příjem, zásoby, vztahy s půdou a ukotvení. | Bohaté biologické podklady; samotný obsahový rozcestník kapitolu podrobně nerozepisuje. |
 
 Úvodní animace zůstává součástí zkušenosti, ale Úvod podle současné definice není položkou nabídky. Biologická kartotéka má širší rozsah než hlavní web: CODIT, kavitace, letokruhy, kořenové srůsty nebo veteráni jsou zásobníkem témat, nikoli automaticky hotovými kapitolami.
@@ -81,24 +81,13 @@ UNISAL předpovídá vizuální pozornost ze snímku nebo videa. Mapa doplněná
 
 Zdroje: [testy](moje/tests.md), [strategie](moje/strategie.md), [změny](zmeny.md), [UNISAL](../tools/UNISAL.md). Starý [report fotosyntézy](../../qa_fotosynteza_20261025/BUG_REPORT.md) výslovně uvádí opravu tehdejších tří závad; nelze je bez další kontroly označit za dnešní chyby.
 
-## Rozpory a místa k upřesnění
+## Stav zjištěných nesouladů
 
-Následující body jsou zjištění při čtení dokumentů, nikoli revize implementace:
-
-| Oblast | Nesoulad nebo omezení | Jak jej číst |
-| --- | --- | --- |
-| Kontextové texty | Přehled struktury je označuje za nenasazené; definice textů a Z080 už popisují nasazení variant Fotosyntézy. | Rozlišovat nasazené varianty a dosud navrhované stavy. |
-| O₂ a CO₂ | Systémová architektura uvádí detaily bez číselného výstupu; obsah oken definuje hodnoty v g/min. | Obsahová a technická dokumentace vyžadují sladění. |
-| Semenace | Z103 stále čeká, novější záznamy už popisují realizaci a úpravy modelů. | Čekající návrh nevystihuje stav celé kapitoly. |
-| Evidence | ID Z093 je použito dvakrát pro různé změny. | Odkaz pouze číslem není jednoznačný. |
-| Vzhled | Obecné rozměry pravých oken uvádějí 70 % / 27 %, část o Transpiraci 68 % / 29 %. | Je třeba vyjasnit výjimku nebo zastaralý údaj; syntéza nerozhoduje podle kódu. |
-| Biologické karty | Kartotéka a vault se liší ve stavu xylému a CODIT. | Barevný pracovní status není důkaz dokončení. |
-| Biologická čísla | Podklady porovnávají chlazení vůči různým povrchům; jeden text označuje kWh za výkon. | Čísla nepřebírat bez jednotek, kontextu a zdroje. |
-| Druhová specifika | Některé příklady letokruhů vycházejí z kruhovitě pórovitých druhů, zatímco podklady řadí buk mezi roztroušeně pórovité. | Příklady nepřenášet automaticky na buk. |
-| Starší architektura | Liší se nastavení vody, časová měřítka, počet světel i připoutání oken ke stromu. | Zachovat jako vývojové etapy; neslučovat jejich parametry. |
-| Pracovní postup | Starší texty vyžadují YAML historii či automatické revize. | Přednost mají nynější pravidla AGENTS.md: historie v Gitu a revize na vyžádání. |
-
-Kontrola obsahu potvrdila pět přesně shodných dvojic souborů: dvě kartotéky, tři biologické výpisky v paralelních složkách a dvě pracovní kopie `event_review_*_zmeny.md`. Vault dále tematicky rozepisuje kartotéku do procesních karet. Duplicity byly ponechány beze změny.
+- Kontextové texty a číselné výstupy O₂ a CO₂ jsou upřesněny v přehledu struktury a technické architektuře. Rozměry pravých oken Transpirace odpovídají společnému pravidlu 70 % / 27 %.
+- Evidence návrhu Semenace navazuje na novější implementaci; duplicitní označení záznamu zvýraznění je změněno na Z124.
+- U xylému a CODIT označují biologické karty stav jako neověřený. Nepodložená srovnání teplot a chybná jednotka výkonu byly odstraněny; příklad cév letokruhů je omezen na kruhovitě pórovité dřeviny.
+- Starší architektura a pracovní postupy zůstávají historickými podklady; aktuální pravidla určuje [AGENTS.md](../../AGENTS.md).
+- Pět dříve nalezených dvojic souborů představovalo kopie. Kartotéky byly upraveny souběžně, další archivní kopie zůstávají zachovány.
 
 ## Priority vyplývající ze syntézy
 

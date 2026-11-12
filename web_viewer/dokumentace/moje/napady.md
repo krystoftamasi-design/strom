@@ -14,12 +14,6 @@ history:
 
 ## Obecné
 
-### Čitelnost částic při zvýraznění
-
-- Návrh: ponechat částice malé a nečitelné, dokud je uživatel nezvýrazní.
-- Cíl: omezit vizuální zahlcení a zvýraznit vybrané částice.
-- Stav: Nápad.
-
 ### Sound design
 
 - Návrh: promyslet zvukový design webu.
@@ -36,21 +30,16 @@ history:
 
 ## Okna
 
-### Čárky jako posuvníky a ukazatele hodnot
+### Naznačit ovládání pruhů
 
-- Návrh: použít barevné čárky vedle oken jako posuvníky a současně na nich zobrazovat hodnotu vzhledem k teoretickému maximu.
-- Cíl: propojit ovládání hodnot s přehledným znázorněním jejich velikosti.
+- Návrh: naznačit, že spodní pruhy dostupnosti světla a vody se dají táhnout, například drobným úchytem.
+- Cíl: aby uživatel poznal, které pruhy může ovládat.
 - Stav: Nápad.
 
-## Transpirace
 
-### ❗ Propojení oken s místem děje
 
 
 TVORBA KAPITOLY SANBOX
-
- Naznačit klikatelnost názvů oken a přítomnost vysvětlujícího textu.PRACUJU
-
 
 ### Možné otázky k ověření porozumění
 

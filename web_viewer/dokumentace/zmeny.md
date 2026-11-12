@@ -23,18 +23,20 @@ history:
 
 # Změny
 
+- Historická evidence; nové drobné úpravy se sem nemusí zapisovat. Pracovní postup určuje AGENTS.md a má přednost před staršími pravidly níže. Ověření platí vždy jen v uvedeném rozsahu.
+
 ## Čeká
+
+## Rozpracováno
+
+## Implementováno
 
 #### Z103 — Návrh kapitoly Semenace
 
 - Zadání: navrhnout kapitolu s ročním cyklem, kontextem počtu a úspěšnosti semen, vazbou oken a částicemi padajících semen.
 - Výsledek: zapsán cíl, obsah, ovládání obdobím, kontext a návrh zvýraznění i chování částic; assety dodá uživatel, číselné údaje vyžadují zdroje.
-- Stav: Čeká.
-- Ověření: kontrola návaznosti dokumentace a existujícího ročního přehledu; web ani částice nebyly změněny.
-
-## Rozpracováno
-
-## Implementováno
+- Stav: Implementováno.
+- Ověření: návrh byl navázán na implementaci v Z104 a následný model v Z118; finální vizuální kontrola a číselné zdroje zůstávají otevřené.
 
 #### Z123 — Větší uvolněná semena
 
@@ -98,6 +100,20 @@ history:
 - Výsledek: alfa vnějších dílů je aktivní při každém úhlu. Menší vnitřní skořápka kryje zavřené spoje a při rozevření ustupuje k základně.
 - Stav: Implementováno.
 - Ověření: kontrola průniků vnitřní skořápky se zavřeným modelem v Blenderu. Vizuální kontrola čeká na uživatele.
+
+#### Z114 — Otáčení stromu přes plochu oken
+
+- Zadání: umožnit otáčení stromu přes prázdnou plochu oken a začlenit pravidlo do šablony hlavního okna.
+- Výsledek: prázdné plochy společných oken propouštějí myš, nadpisy, tlačítka a otevřené detaily zůstávají přístupné.
+- Stav: Implementováno.
+- Ověření: v Google Chrome tažení přes dříve blokované místo otočilo kameru ve Fotosyntéze i Semenaci; tlačítka hlavních detailů fungovala.
+
+#### Z111 — Plynulé kolečko období
+
+- Zadání: zrychlit a vyhladit otáčení kruhu kolečkem myši.
+- Výsledek: krok kolečka v obou směrech posune kruh dopředu plynule přibližně o čtyři procenta otočení; omezení pohybu provede posun ihned.
+- Stav: Implementováno.
+- Ověření: syntaktická kontrola prošla; doplňkový test ekologie selhal na zásobě vody a chování v prohlížeči nebylo ověřeno.
 
 #### Z110 — Dosednutí dílů a alfa okrajů semene
 
@@ -190,7 +206,7 @@ history:
 - Stav: Implementováno.
 - Ověření: cílený test částic a kontrola změn; finální vizuální kontrola uživatelem.
 
-#### Z093 — Zvýraznění elementů při najetí na okno
+#### Z124 — Zvýraznění elementů při najetí na okno
 
 - Zadání: rozšířit propojení oken a elementů o najetí.
 - Výsledek: najetí zvýrazní související element stejně jako otevřený detail; oba stavy se kombinují.
@@ -866,6 +882,14 @@ history:
 - Vizuální a závěrečné ověření: finální kontrola uživatelem.
 
 ## Ověřeno
+
+#### Z119 — Obnovení načítání stromu
+
+- Zadání: opravit zastavení načítání hlavní stránky.
+- Výsledek: zvýraznění má při vytváření oken dostupný počáteční stav a průběžnou aktualizaci. Okno Semena opět předává stav modelu.
+- Stav: Ověřeno.
+- Ověření: v Google Chrome se načetl strom i model Semenace a výběr podzimu proběhl bez chyb stránky. Ověřeno pouze načtení a uvedený výběr.
+
 
 ## K upřesnění
 

@@ -1107,7 +1107,7 @@
     import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
     import { setupLeafBreeze } from './listy/leaf_breeze.js?v=3';
     import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
-    import { PhotolysisSystem } from './vykreslovani/photolysis_system.js?v=highlight-bright-1';
+    import { PhotolysisSystem } from './vykreslovani/photolysis_system.js?v=highlight-fade-1';
     import { loadBarkReference, loadBarkAttributes, attachBarkAttributes, createBarkMaterial } from './vykreslovani/bark_material.js?v=stable-shadow-4';
     import { loadLeafReference, loadLeafAttributes, attachLeafAttributes, createLeafMaterial, createLeafDepthMaterial, setLeafEdgeTransition } from './vykreslovani/leaf_material.js?v=narrow-canopy-shade-6';
     import { LeafControls } from './listy/leaf_controls.js?v=beech-calendar-1';
@@ -1117,7 +1117,7 @@
     import { TreeEcology, SEASONS, MODEL_MINUTES_PER_SECOND } from './ekologie/tree_ecology.js?v=active-leaves-3&checks=1';
     import { createChapters } from './kapitoly/chapters.js?v=seeds-3';
     import { createSeedChapter } from './kapitoly/seed_chapter.js';
-    import { createSeasonRing } from './obdobi/season_ring.js?v=season-midpoint-1';
+    import { createSeasonRing } from './obdobi/season_ring.js?v=wheel-smooth-1';
     import { createIntroForest } from './obdobi/intro_forest.js?v=intro-closer-camera-2';
     import { seasonColorForPosition } from './obdobi/season_timeline.js?v=beech-calendar-1';
     import { BEECH_CALENDAR, seasonDayForPosition, beechLeafFallProgress, beechLeafGrowthProgress } from './obdobi/beech_phenology.js?v=1';
@@ -1193,7 +1193,7 @@
       controls.target.x = treeTarget.x;
       controls.target.z = treeTarget.z;
     });
-    controls.minDistance = 3;
+    controls.minDistance = 17;
     controls.maxDistance = 140;
     controls.maxPolarAngle = Math.PI - 0.02; // Allow viewing roots from below
     const savedCameraViewKey = 'strom.camera-view.v1';
@@ -3857,18 +3857,35 @@
       scene, camera, controls, sun: sun1, getHeight: () => ecology.height,
       invalidateShadows
     });
+    const reducedElementMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+    const highlightTargets = { water: 0, sugar: 0, oxygen: 0, co2: 0 };
+    const highlightLevels = { ...highlightTargets };
+    let highlightedPhotolysis = null;
+    function updateHighlights(delta) {
+      const step = reducedElementMotion.matches ? 1 : delta / 0.18;
+      for (const tag of Object.keys(highlightTargets)) {
+        const previous = highlightLevels[tag];
+        const target = highlightTargets[tag];
+        const level = previous + THREE.MathUtils.clamp(target - previous, -step, step);
+        if (level === previous && highlightedPhotolysis === photolysisSystem) continue;
+        highlightLevels[tag] = level;
+        if (flowSelections[tag]) flowSelections[tag].value = level;
+        photolysisSystem?.setElementHighlight(tag, level);
+      }
+      highlightedPhotolysis = photolysisSystem;
+    }
+
     const seedChapter = createSeedChapter({
       scene,
       anisotropy: Math.min(8, renderer.capabilities.getMaxAnisotropy()),
-      reducedMotion: window.matchMedia('(prefers-reduced-motion: reduce)'),
+      reducedMotion: reducedElementMotion,
       illumination: shaderUniforms.uSceneIllumination
     });
     let seedHighlight = false;
     const chapterApp = createChapters({
       setElementHighlight: (tag, active) => {
         if (tag === 'seeds') seedHighlight = active;
-        if (flowSelections[tag]) flowSelections[tag].value = active ? 1.0 : 0.0;
-        if (photolysisSystem) photolysisSystem.setElementHighlight(tag, active);
+        if (Object.hasOwn(highlightTargets, tag)) highlightTargets[tag] = active ? 1 : 0;
       },
       model: ecology,
       createSeasonControl: () => {
@@ -4102,6 +4119,7 @@
       if (typeof updateSapWaterLabel === 'function') updateSapWaterLabel(playbackDelta, simulationNow);
       camera.updateMatrixWorld();
       chapterApp.updateScene(playbackDelta);
+      updateHighlights(delta);
       seedChapter.update(chapterApp.chapter === 'seeds', ecology.seasonPosition, trunkMesh, seedHighlight, playbackDelta);
       introForest.update();
       renderer.render(scene, camera);

@@ -27,9 +27,14 @@ history:
 - Písmo: Satoshi; v podkladu přibližně 21 px.
 - Kliknutí přepne příslušnou kapitolu.
 
+#### Přiblížení stromu
+
+- Nejmenší vzdálenost kamery od cíle otáčení je 17 jednotek scény; hodnotu lze doladit po vizuálním ověření.
+
 #### Kruh ročních období
 
 - Názvy období leží uprostřed odpovídajících úseků kruhu a označují střed období podle modelového data; jaro připadá přibližně na polovinu dubna.
+- Kolečko nad kruhem posouvá rok dopředu plynulým doběhem při otáčení v obou směrech; běžný krok kolečka odpovídá přibližně čtyřem procentům otočení kruhu. Při omezení pohybu se posun provede ihned.
 
 #### Manager
 
