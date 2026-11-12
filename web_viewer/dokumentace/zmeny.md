@@ -36,6 +36,13 @@ history:
 
 ## Implementováno
 
+#### Z149 — Odhad dýchání stromu
+
+- Zadání: dopočítat chybějící spotřebu a produkci ve Fotosyntéze.
+- Výsledek: okna zobrazují výukový odhad spotřeby O₂ a cukrů a produkce CO₂ při dýchání podle teploty; předpoklady a omezení jsou v definici oken.
+- Stav: Implementováno.
+- Ověření: test vztahů fotosyntézy a dýchání a test definic oken prošly. Nesouvisející test vodní páry selhal na očekávaném zvětšení částic; vizuální kontrola čeká na uživatele.
+
 #### Z149 — Zarovnání okna Voda s datem
 
 - Zadání: zarovnat spodní okno s řádkem data.

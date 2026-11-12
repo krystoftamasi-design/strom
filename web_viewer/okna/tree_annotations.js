@@ -1,4 +1,4 @@
-import { oknaPodleKapitol, kontextoveTexty, pruvodceTranspiraci } from './element_ui_okna_obsah.js?v=right-windows-1';
+import { oknaPodleKapitol, kontextoveTexty, pruvodceTranspiraci } from './element_ui_okna_obsah.js?v=respiration-1';
 import { veliciny, vstupyVzorce, ohlasitChybuOken } from './element_ui_okna_veliciny.js?v=transpiration-vapour-1';
 import { zkontrolovatOkna } from './element_ui_okna_kontrola.js?v=seeds-1';
 
@@ -70,6 +70,20 @@ function createElementUiOkno({ panel, body, reveal, toggle, model, definition })
     const message = document.createElement('span');
     message.textContent = 'Zatím nemáme hodnotu';
     unavailable.append(label, message);
+    const respirationFields = { kyslik: 'respirationOxygen', co2: 'respirationCO2', cukry: 'respirationSugar' };
+    if (respirationFields[definition.id]) {
+      unavailable.classList.remove('element-ui-unavailable');
+      const value = document.createElement('strong');
+      value.title = 'Orientační výukový odhad dýchání';
+      const output = document.createElement('output');
+      output.dataset.respiration = respirationFields[definition.id];
+      output.textContent = '—';
+      const unit = document.createElement('span');
+      unit.className = 'element-ui-unit';
+      unit.textContent = 'g/min';
+      value.append(output, unit);
+      message.replaceWith(value);
+    }
     const availability = document.createElement('div');
     availability.className = 'chapter-metric';
     const availabilityLabel = document.createElement('span');
@@ -109,9 +123,9 @@ function createElementUiOkno({ panel, body, reveal, toggle, model, definition })
     };
     if (current) {
       footer.replaceChildren();
-      makeBar(definition.id === 'co2' ? unavailable : current, definition.id === 'co2' ? 'unknown' : 'measured', false);
+      makeBar(definition.id === 'co2' ? unavailable : current, definition.id === 'co2' ? 'respiration' : 'measured', false);
       makeBar(definition.id === 'co2' ? current : ['voda', 'svetlo'].includes(definition.id) ? availability : unavailable,
-        definition.id === 'co2' ? 'measured' : definition.id === 'voda' ? 'availability' : definition.id === 'svetlo' ? 'light-availability' : 'unknown', true, definition.id === 'voda');
+        definition.id === 'co2' ? 'measured' : definition.id === 'voda' ? 'availability' : definition.id === 'svetlo' ? 'light-availability' : 'respiration', true, definition.id === 'voda');
       panel.classList.add('element-ui-flow-window');
     }
   }
@@ -459,6 +473,7 @@ export function createTreeAnnotations({ shell, model, createSeasonControl, setEl
         const slider = bar.querySelector('input');
         const maxWater = Number(slider?.dataset.scaleMax) || waterAvailabilityMax(model);
         const fraction = bar.dataset.flow === 'unknown' ? 0
+          : bar.dataset.flow === 'respiration' ? model.respirationFraction
           : bar.dataset.flow === 'availability' ? model.waterInput / maxWater
           : bar.dataset.flow === 'light-availability' ? model.light
           : panel.dataset.windowId === 'voda' ? model.waterConsumption / (model.baseTranspiration * 1.015)
@@ -475,6 +490,10 @@ export function createTreeAnnotations({ shell, model, createSeasonControl, setEl
           slider.setAttribute('aria-valuetext', `${displayed} litrů za hodinu`);
           slider.disabled = !model.ready;
         }
+      }
+      for (const output of shell.querySelectorAll('[data-respiration]')) {
+        const value = model[output.dataset.respiration];
+        output.textContent = model.ready && Number.isFinite(value) ? value.toLocaleString('cs-CZ', { minimumFractionDigits: 1, maximumFractionDigits: 1 }) : '—';
       }
       for (const definition of oknaPodleKapitol.seeds) {
         const output = shell.querySelector(`output[data-stav-obdobi="${definition.id}"]`);

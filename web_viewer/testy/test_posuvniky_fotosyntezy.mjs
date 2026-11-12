@@ -17,4 +17,16 @@ assert.ok(tree.inflow < tree.waterInput, 'Extra availability does not force extr
 tree.step(5);
 assert.equal(tree.waterInput, supplied, 'The chosen availability remains set while the simulation runs');
 assert.ok(tree.reserve >= 0 && tree.reserve <= tree.capacity, 'Water reserve remains within bounds');
+tree.sunElevation = -20;
+tree.evaluate(0);
+assert.equal(tree.glucoseGramsPerMinute, 0, 'Photosynthesis stops in the dark');
+assert.ok(tree.respirationSugar > 0 && tree.respirationOxygen > 0 && tree.respirationCO2 > 0, 'Respiration continues in the dark');
+assert.ok(Math.abs(tree.respirationOxygen - tree.respirationSugar * konstanty.oxygenPerGlucose) < 1e-10);
+assert.ok(Math.abs(tree.respirationCO2 - tree.respirationSugar * konstanty.co2Conversion / konstanty.glucoseConversion) < 1e-10);
+const firstTemperature = tree.ambientTemperature;
+const firstRespiration = tree.respirationSugar;
+tree.hourOfDay = 15;
+tree.evaluate(0);
+const limited = t => Math.max(-10, Math.min(40, t));
+assert.ok(Math.abs(tree.respirationSugar / firstRespiration - 2 ** ((limited(tree.ambientTemperature) - limited(firstTemperature)) / 10)) < 1e-10, 'Respiration follows its temperature response');
 console.log('PASS: photosynthesis relationships and bounded water availability.');

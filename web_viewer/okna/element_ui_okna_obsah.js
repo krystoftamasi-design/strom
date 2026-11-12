@@ -55,7 +55,7 @@ export const oknaPodleKapitol = {
       zobrazitVzorec: true,
       zobrazitHodnotu: true,
       text: [
-        'Cukry ukládají energii ze světla a slouží jako palivo i stavební materiál pro růst stromu.',
+        'Cukry ukládají energii a slouží jako stavební materiál. Spotřeba je orientační odhad cukrů využitých při dýchání, bez zahrnutí růstu.',
       ],
     },
     {
@@ -81,7 +81,7 @@ export const oknaPodleKapitol = {
       zobrazitVzorec: true,
       zobrazitHodnotu: true,
       text: [
-        'CO₂ je vstupní látka fotosyntézy; průduchy regulují jeho příjem podle vody a podmínek prostředí.',
+        'CO₂ strom přijímá při fotosyntéze a uvolňuje při dýchání. Produkce je orientační výukový odhad.',
       ],
     },
     {
@@ -94,7 +94,7 @@ export const oknaPodleKapitol = {
       zobrazitVzorec: true,
       zobrazitHodnotu: true,
       text: [
-        'O₂ vzniká při štěpení vody a strom ho při fotosyntéze uvolňuje do vzduchu.',
+        'O₂ vzniká při fotosyntéze a strom ho spotřebovává při dýchání. Spotřeba je orientační výukový odhad.',
       ],
     },
   ],

@@ -36,6 +36,7 @@ history:
 - Okna Světlo, O₂, CO₂, Cukry a Voda obsahují dva údaje s ukazateli. Světlo a Voda zobrazují spotřebu a dostupnost; O₂, CO₂ a Cukry produkci a spotřebu, v tomto pořadí. Neznámá hodnota se označí „Zatím nemáme hodnotu“ bez vyplnění ukazatele.
 - Spodní ukazatel vody nastavuje dostupný přísun ke kořenům v l/h, myší, dotykem i klávesnicí. Automatický přísun činí 90 % sezónní kapacity příjmu. Ruční nastavení přetrvá při automatickém běhu; ruční změna období obnoví automatický přísun. Příjem stromu omezuje sezónní kapacita a stav kořenů. Ostatní ukazatele hodnoty pouze zobrazují.
 - Ukazatele fotosyntetických toků používají maximum modelu pro plnou korunu a plnou účinnost; ukazatel spotřeby vody používá základní odpar včetně udržovací spotřeby. Rozsah dostupnosti vody sahá ke dvojnásobku sezónní kapacity kořenů, případně k aktuálně nastavenému přísunu, je-li vyšší.
+- Dýchání je orientační výukový odhad celého stromu, probíhá ve dne i v noci a jeho ukazatele používají stejné škály jako odpovídající fotosyntetické toky. Při 20 °C je zvolená spotřeba cukru 15 % teoretické produkce plné koruny; každých 10 °C ji zdvojnásobí nebo sníží na polovinu, výpočet omezuje teplotu na −10 až 40 °C. Hodnoty O₂ a CO₂ vycházejí ze vztahu glukóza + 6 O₂ → 6 CO₂ + voda. Jde o zvolený příklad, nikoli kalibraci nebo měření buku. Model zatím nesleduje zásobu cukrů ani jejich spotřebu na růst, takže dýchání zásobou neomezuje. Teplotní závislost udržovacího dýchání je inspirována [modelem GO+](https://gmd.copernicus.org/articles/13/5973/2020/).
 
 #### Světlo
 
@@ -56,10 +57,10 @@ history:
 
 - Nadpis: `O₂`.
 - Téma: kyslík; strana: vpravo.
-- Detailní text: „O₂ vzniká při štěpení vody a strom ho při fotosyntéze uvolňuje do vzduchu.“
+- Detailní text: „O₂ vzniká při fotosyntéze a strom ho spotřebovává při dýchání. Spotřeba je orientační výukový odhad.“
 - Vstupy výpočtu: `Světlo × voda × listy × CO₂ × teplota`.
 - Hodnota: produkce O₂ v `g/min`, zobrazena na jedno desetinné místo.
-- Spotřeba O₂: zatím není vypočítána.
+- Spotřeba O₂: orientační odhad dýchání v `g/min`.
 - Výchozí stav detailu: zavřený.
 - Související element: [O₂ částice](elementy.md#o₂).
 
@@ -69,10 +70,10 @@ history:
 
 - Nadpis: `CO₂`.
 - Téma: CO₂; strana: vpravo.
-- Detailní text: „CO₂ je vstupní látka fotosyntézy; průduchy regulují jeho příjem podle vody a podmínek prostředí.“
+- Detailní text: „CO₂ strom přijímá při fotosyntéze a uvolňuje při dýchání. Produkce je orientační výukový odhad.“
 - Vstupy výpočtu: `Světlo × voda × listy × CO₂ × teplota`.
 - Hodnota: spotřeba CO₂ v `g/min`, zobrazena na jedno desetinné místo.
-- Produkce CO₂: zatím není vypočítána.
+- Produkce CO₂: orientační odhad dýchání v `g/min`.
 - Výchozí stav detailu: zavřený.
 - Související element: [CO₂ částice](elementy.md#co₂).
 
@@ -83,9 +84,9 @@ history:
 - Nadpis: `Cukry`.
 - Téma: cukry; strana: vpravo.
 - Popisek: „Tvorba cukrů ≈ glukóza“.
-- Detailní text: „Cukry ukládají energii ze světla a slouží jako palivo i stavební materiál pro růst stromu.“
+- Detailní text: „Cukry ukládají energii a slouží jako stavební materiál. Spotřeba je orientační odhad cukrů využitých při dýchání, bez zahrnutí růstu.“
 - Hodnota: `glucoseGramsPerMinute`, jednotka `g/min`, jedno desetinné místo.
-- Spotřeba cukrů: zatím není vypočítána.
+- Spotřeba cukrů: orientační odhad dýchání v `g/min`.
 - Vstupy výpočtu: zapnuté.
 - Výsledná hodnota: zapnutá.
 - Výchozí stav detailu: zavřený.

@@ -1,4 +1,4 @@
-import { vypocitatVzorec } from './tree_ecology_vzorce.js?v=5';
+import { vypocitatVzorec, konstanty } from './tree_ecology_vzorce.js?v=5';
 
 // One water store for every chapter. Rates use litres/minute of model time.
 // Species-inspired teaching presets, not a calibrated prediction of this tree.
@@ -80,6 +80,10 @@ export class TreeEcology {
     this.glucoseGramsPerMinute = 0;
     this.oxygenGramsPerMinute = 0;
     this.co2GramsPerMinute = 0;
+    this.respirationFraction = 0;
+    this.respirationSugar = 0;
+    this.respirationOxygen = 0;
+    this.respirationCO2 = 0;
     this.hydration = 1;
   }
 
@@ -195,6 +199,12 @@ export class TreeEcology {
     this.glucoseGramsPerMinute = vypocitatVzorec('glucoseGramsPerMinute', this);
     this.oxygenGramsPerMinute = vypocitatVzorec('oxygenGramsPerMinute', this);
     this.co2GramsPerMinute = vypocitatVzorec('co2GramsPerMinute', this);
+    // Illustrative whole-tree maintenance respiration, not calibrated for this tree.
+    // Reference demand is 15% of full-canopy glucose production at 20 °C.
+    this.respirationFraction = 0.15 * Math.pow(2, (clamp(this.ambientTemperature, -10, 40) - 20) / 10);
+    this.respirationSugar = this.leafArea * konstanty.glucoseConversion * this.respirationFraction;
+    this.respirationOxygen = this.respirationSugar * konstanty.oxygenPerGlucose;
+    this.respirationCO2 = this.leafArea * konstanty.co2Conversion * this.respirationFraction;
     return this;
   }
 
