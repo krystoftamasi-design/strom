@@ -34,7 +34,7 @@ Definice spojení
 
 **Chování elementu**
 
-- V režimu X-Ray pokrývá kořeny, kmen a větve průhledná modrá vrstva. Její záře se v prostoru mění podle šumové masky, která se pohybuje od kořenů ke koruně. Kresba kůry je přes vrstvu viditelná.
+- V režimu X-Ray pokrývá kořeny, kmen a větve průhledná vrstva s výraznou modrou září. Jemné i větší detaily šumové masky mění jas záře a plynule postupují od kořenů vzhůru ke koruně. Kresba kůry je přes vrstvu viditelná.
 - Vypnutí X-Ray vrátí prostorovou vodní linku. Parametr `?water=classic` obnoví i původní způsob prosvítání linky skrz dřevo.
 - Při fotosyntéze proudí nahoru.
 - Při červenání prvního listu se stahuje od kořenů k listům.

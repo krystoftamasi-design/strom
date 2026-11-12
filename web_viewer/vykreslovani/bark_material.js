@@ -37,7 +37,7 @@ export function createBarkMaterial(reference, leafReference, uniforms, water) {
   const material = new THREE.MeshLambertMaterial({ color: 0xffffff, side: THREE.FrontSide });
   material.name = 'Bark_GraphML_Tree (Blender reference)';
   material.toneMapped = false;
-  material.customProgramCacheKey = () => 'blender_bark_reference_emissive_water';
+  material.customProgramCacheKey = () => 'blender_bark_reference_emissive_water_v2';
   material.onBeforeCompile = shader => {
     Object.assign(shader.uniforms, {
       uBarkDiffuse: { value: leafReference.diffuse },
@@ -141,13 +141,17 @@ export function createBarkMaterial(reference, leafReference, uniforms, water) {
         float visibleFlow = uWaterSurface.w > 0.0 ? aboveFront : 1.0 - aboveFront;
         float coverage = uWaterSurface.x * visibleFlow;
         // Use the wood's 3D coordinates so the mask has no bark UV seams.
-        vec3 noisePosition = vBarkWaterPosition * vec3(1.9, 0.35, 1.9);
-        noisePosition.y += distanceAlongWood * 17.0 - uWaterSurface.z * 0.38;
-        float mask = waterNoise(noisePosition) * 0.75 + waterNoise(noisePosition * 2.4) * 0.25;
-        float emission = mix(0.025, 0.52, smoothstep(0.22, 0.78, mask));
+        vec3 noisePosition = vBarkWaterPosition * vec3(2.7, 0.5, 2.7);
+        // Subtract time so bright features travel toward increasing flow distance.
+        noisePosition.y += distanceAlongWood * 19.0 - uWaterSurface.z * 1.1;
+        float mask = waterNoise(noisePosition) * 0.52
+          + waterNoise(noisePosition * 2.1 + 13.7) * 0.27
+          + waterNoise(noisePosition * 4.4 + 31.2) * 0.14
+          + waterNoise(noisePosition * 8.8 + 57.4) * 0.07;
+        float emission = mix(0.05, 0.95, smoothstep(0.23, 0.74, mask));
         // Transparency is uniform across the film. The mask only shapes emission.
         outgoingLight = mix(outgoingLight, vec3(0.01, 0.08, 0.24), coverage * 0.12);
-        outgoingLight += vec3(0.015, 0.28, 1.0) * emission * uWaterSurface.y * coverage;
+        outgoingLight += vec3(0.025, 0.43, 1.0) * emission * uWaterSurface.y * coverage;
       }
     `);
   };
