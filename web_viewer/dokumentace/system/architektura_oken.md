@@ -72,7 +72,7 @@ history:
 - `ekologie/tree_ecology_vzorce.js` obsahuje společné výpočty a jejich vstupy.
 - `okna/element_ui_okna_veliciny.js` určuje popisky, témata, jednotky a formát čísel.
 - Fotosyntéza používá `activity`, Cukry `glucoseGramsPerMinute` a posuvník Vody `sliderTreeWater`.
-- O₂ a CO₂ mají textové detaily bez samostatného číselného výstupu; čísla ze SVG jsou pouze ukázková.
+- O₂ používá `oxygenGramsPerMinute` a CO₂ `co2GramsPerMinute`; obě veličiny se zobrazují v g/min.
 
 ### Vstupy výpočtu
 
