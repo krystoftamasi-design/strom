@@ -42,6 +42,7 @@ Přesun souboru vyžaduje opravu jeho importů a odkazů na assety.
 
 ## Dokumentace
 
+- [Syntéza projektu](synteza.md) propojuje Markdown podklady, rozlišuje jejich platnost a shrnuje otevřené otázky; nenahrazuje podrobné definice.
 - `FUNKCE` obsahuje krátké popisy chování pro uživatele.
 - `dokumentace/moje` obsahuje tvoje definice obsahu a vzhledu, strategii a uživatelské testy.
 - `dokumentace/system` obsahuje technickou architekturu oken a postup automatických kontrol pro práci agenta.

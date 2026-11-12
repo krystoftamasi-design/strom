@@ -37,6 +37,7 @@ Samostatná [ladicí stránka semene](semeno.html) umožňuje prohlédnout model
 
 ## Dokumenty
 
+- [Syntéza všech Markdown podkladů projektu](dokumentace/synteza.md)
 - [Fungování oken](FUNKCE/okna_u_stromu.md)
 - [Fungování vodní a glukózové linky](dokumentace/moje/elementy.md#voda)
 - [Technická architektura oken](dokumentace/system/architektura_oken.md)
