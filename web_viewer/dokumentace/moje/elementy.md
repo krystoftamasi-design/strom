@@ -30,11 +30,11 @@ Definice spojení
 
 - Okna: [Voda](okna.md#voda) ve Fotosyntéze; [Transpirace](okna.md#transpirace), [Příjem vody](okna.md#příjem-vody) v Transpiraci.
 - **Zvýraznění**
-- Otevření vodního okna zesílí modré proudy. Světlejší pulzy ukazují směr proudění.
+- Otevření vodního okna zesílí modrou záři vrstvy. V režimu prostorové linky zesílí linku.
 
 **Chování elementu**
 
-- V režimu X-Ray se modré proudy kreslí na kůru od kořenů přes kmen a větve ke koruně. Kresba kůry zůstává viditelná. Jde o schematické znázornění vnitřního transportu vody.
+- V režimu X-Ray pokrývá kořeny, kmen a větve průhledná modrá vrstva. Její záře se v prostoru mění podle šumové masky, která se pohybuje od kořenů ke koruně. Kresba kůry je přes vrstvu viditelná.
 - Vypnutí X-Ray vrátí prostorovou vodní linku. Parametr `?water=classic` obnoví i původní způsob prosvítání linky skrz dřevo.
 - Při fotosyntéze proudí nahoru.
 - Při červenání prvního listu se stahuje od kořenů k listům.
@@ -78,7 +78,7 @@ Definice spojení
 #### Šířka linek
 
 
-- Vyšší přísun vody rozšiřuje obě linky.
+- Vyšší přísun vody rozšiřuje prostorové linky a zesiluje záři vrstvy v režimu X-Ray.
 - zakladní šířka linek je setjná
 - Při nulovém přísunu zůstávají obě velmi tenké.
 

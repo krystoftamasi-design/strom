@@ -1108,7 +1108,7 @@
     import { setupLeafBreeze } from './listy/leaf_breeze.js?v=3';
     import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
     import { PhotolysisSystem } from './vykreslovani/photolysis_system.js?v=highlight-fade-1';
-    import { loadBarkReference, loadBarkAttributes, attachBarkAttributes, createBarkMaterial } from './vykreslovani/bark_material.js?v=water-surface-1';
+    import { loadBarkReference, loadBarkAttributes, attachBarkAttributes, createBarkMaterial } from './vykreslovani/bark_material.js?v=water-emission-1';
     import { loadLeafReference, loadLeafAttributes, attachLeafAttributes, createLeafMaterial, createLeafDepthMaterial, setLeafEdgeTransition } from './vykreslovani/leaf_material.js?v=camera-gust-1';
     import { LeafControls } from './listy/leaf_controls.js?v=camera-gust-1';
     import { loadBranchDryingReference, branchDryingFrontWidth } from './listy/leaf_branch_drying.js?v=3';
@@ -1427,7 +1427,7 @@
     const leafDepthMat1 = createLeafDepthMaterial(0, leafReference, shaderUniforms);
     const leafDepthMat2 = createLeafDepthMaterial(1, leafReference, shaderUniforms);
     const leafBreeze = setupLeafBreeze([leafToonMat1, leafToonMat2, leafDepthMat1, leafDepthMat2], { leafCenters: true });
-    // Opacity, strand width, pulse time, signed reveal/retraction front.
+    // Opacity, emission strength, flow time, signed reveal/retraction front.
     const waterSurface = { value: new THREE.Vector4() };
     const classicWater = new URLSearchParams(location.search).get('water') === 'classic';
     const barkToonMat = createBarkMaterial(barkReference,leafReference,shaderUniforms,waterSurface);
@@ -3157,10 +3157,10 @@
       if (sapJointMesh) sapJointMesh.visible = !useSurface;
       const reveal = sapUniforms.uFlowRevealBottom.value === 1;
       const front = THREE.MathUtils.lerp(-1.08, 1.08, reveal ? 1 - sapFlowRetraction : sapFlowRetraction);
-      const width = (0.024 + 0.031 * flowSelections.water.value) * sapUniforms.uWidthScale.value * currentSapRadius / 0.08;
+      const emission = (0.42 + 0.36 * flowSelections.water.value) * sapUniforms.uWidthScale.value * sapUniforms.uGlow.value;
       waterSurface.value.set(
         useSurface && sapGroup.visible ? sapUniforms.uOpacity.value : 0,
-        Math.min(0.16, width),
+        Math.min(1.4, emission),
         reducedElementMotion.matches ? 0 : sapUniforms.uTime.value * 2.2,
         (reveal ? -1 : 1) * (front + 2)
       );

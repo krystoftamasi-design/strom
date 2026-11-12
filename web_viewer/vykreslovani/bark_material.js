@@ -37,7 +37,7 @@ export function createBarkMaterial(reference, leafReference, uniforms, water) {
   const material = new THREE.MeshLambertMaterial({ color: 0xffffff, side: THREE.FrontSide });
   material.name = 'Bark_GraphML_Tree (Blender reference)';
   material.toneMapped = false;
-  material.customProgramCacheKey = () => 'blender_bark_reference_water_surface';
+  material.customProgramCacheKey = () => 'blender_bark_reference_emissive_water';
   material.onBeforeCompile = shader => {
     Object.assign(shader.uniforms, {
       uBarkDiffuse: { value: leafReference.diffuse },
@@ -59,11 +59,13 @@ export function createBarkMaterial(reference, leafReference, uniforms, water) {
       varying vec3 vBarkPattern;
       varying vec2 vBarkUv;
       varying float vBarkWaterDistance;
+      varying vec3 vBarkWaterPosition;
     ` + shader.vertexShader.replace('#include <begin_vertex>', `
       #include <begin_vertex>
       vBarkPattern = barkPattern;
       vBarkUv = uv;
       vBarkWaterDistance = barkWaterDistance;
+      vBarkWaterPosition = position;
     `);
     shader.fragmentShader = `
       uniform sampler2D uBarkDiffuse;
@@ -81,9 +83,27 @@ export function createBarkMaterial(reference, leafReference, uniforms, water) {
       varying vec3 vBarkPattern;
       varying vec2 vBarkUv;
       varying float vBarkWaterDistance;
+      varying vec3 vBarkWaterPosition;
     ` + shader.fragmentShader;
     shader.fragmentShader = shader.fragmentShader.replace('#include <common>', `
       #include <common>
+      float waterNoiseHash(vec3 cell) {
+        vec3 p = fract(cell * vec3(0.1031, 0.11369, 0.13787));
+        p += dot(p, p.yzx + 19.19);
+        return fract((p.x + p.y) * p.z);
+      }
+      float waterNoise(vec3 position) {
+        vec3 cell = floor(position);
+        vec3 f = fract(position);
+        f = f * f * (3.0 - 2.0 * f);
+        float z0 = mix(
+          mix(waterNoiseHash(cell), waterNoiseHash(cell + vec3(1, 0, 0)), f.x),
+          mix(waterNoiseHash(cell + vec3(0, 1, 0)), waterNoiseHash(cell + vec3(1, 1, 0)), f.x), f.y);
+        float z1 = mix(
+          mix(waterNoiseHash(cell + vec3(0, 0, 1)), waterNoiseHash(cell + vec3(1, 0, 1)), f.x),
+          mix(waterNoiseHash(cell + vec3(0, 1, 1)), waterNoiseHash(cell + vec3(1, 1, 1)), f.x), f.y);
+        return mix(z0, z1, f.z);
+      }
       vec3 barkDisplaySlice(vec3 color, float slice) {
         return texture2D(uBarkDisplay,vec2((slice*64.0+color.r*63.0+0.5)/4096.0,(color.g*63.0+0.5)/64.0)).rgb;
       }
@@ -113,23 +133,21 @@ export function createBarkMaterial(reference, leafReference, uniforms, water) {
       float moonFacing = max(dot(normalize(normal), normalize(uMoonDirection)), 0.0);
       outgoingLight += mix(barkDisplayTransform(result), vec3(1.0), 0.18)
         * vec3(0.72, 0.84, 1.0) * uMoonIntensity * (0.06 + 0.55 * moonFacing);
-      // The bark UV follows each woody branch. Tint longitudinal strands in
-      // the bark pass so they always stay inside the visible wood silhouette.
       if (uWaterSurface.x > 0.0) {
         float distanceAlongWood = vBarkWaterDistance;
-        float acrossWood = vBarkUv.x * 3.0 + 0.12 * sin(distanceAlongWood * 19.0);
-        float strandDistance = abs(fract(acrossWood + 0.5) - 0.5);
-        float edge = min(fwidth(acrossWood), 0.14);
-        float core = 1.0 - smoothstep(uWaterSurface.y, uWaterSurface.y + edge + 0.01, strandDistance);
-        float halo = 1.0 - smoothstep(0.02, uWaterSurface.y + 0.15, strandDistance);
-        float pulse = pow(0.5 + 0.5 * cos(distanceAlongWood * 32.0 - uWaterSurface.z), 5.0);
         // Positive front codes retraction, negative front codes revelation.
         float front = abs(uWaterSurface.w) - 2.0;
         float aboveFront = smoothstep(front, front + 0.04, distanceAlongWood);
         float visibleFlow = uWaterSurface.w > 0.0 ? aboveFront : 1.0 - aboveFront;
-        vec3 waterColor = mix(vec3(0.008, 0.23, 0.82), vec3(0.10, 0.68, 1.0), pulse);
-        float opacity = (core * (0.64 + 0.23 * pulse) + halo * 0.13) * uWaterSurface.x * visibleFlow;
-        outgoingLight = mix(outgoingLight, waterColor, clamp(opacity, 0.0, 0.88));
+        float coverage = uWaterSurface.x * visibleFlow;
+        // Use the wood's 3D coordinates so the mask has no bark UV seams.
+        vec3 noisePosition = vBarkWaterPosition * vec3(1.9, 0.35, 1.9);
+        noisePosition.y += distanceAlongWood * 17.0 - uWaterSurface.z * 0.38;
+        float mask = waterNoise(noisePosition) * 0.75 + waterNoise(noisePosition * 2.4) * 0.25;
+        float emission = mix(0.025, 0.52, smoothstep(0.22, 0.78, mask));
+        // Transparency is uniform across the film. The mask only shapes emission.
+        outgoingLight = mix(outgoingLight, vec3(0.01, 0.08, 0.24), coverage * 0.12);
+        outgoingLight += vec3(0.015, 0.28, 1.0) * emission * uWaterSurface.y * coverage;
       }
     `);
   };
