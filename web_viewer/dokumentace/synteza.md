@@ -29,7 +29,7 @@ Nedostatek vody proto není izolovaný efekt modré linky. V pojetí podkladů s
 
 Čas má několik měřítek: denní změny světla a vody, sezonní rašení a opad, růst letokruhů, dlouhodobé změny vitality a šíření druhu přes generace. Jedna roční animace nemůže současně představovat všechny tyto procesy ve skutečném měřítku.
 
-Zdroje: [kartotéka procesů](../../KARTOTEKA_STROMU.md), [dashboard biologických karet](../../STROM_VAULT/00_DASHBOARD.md), [anatomické podklady](../../dokumentace/Milos_Pejchal_Morfologie_a_Anatomie_Drevin_MENDELU.md), [biologický přehled](../../dokumentace/ISA_Tree_Biology_Chapter_1_Comprehensive_Guide.md), [obrana stromu](../../dokumentace/Alex_Shigo_Tree_Basics_Core_Principles.md).
+Zdroje: [dashboard biologických karet](../../STROM_VAULT/00_DASHBOARD.md), [knihovna literatury](../../DOKUMENTACE%20STROM/README.md), [anatomické podklady](../../DOKUMENTACE%20STROM/CZ/01_Pruvodce_a_Specifikace/Milos_Pejchal_Morfologie_a_Anatomie_Drevin_MENDELU.md), [biologický přehled](../../DOKUMENTACE%20STROM/ENG/03_Tree_Biology_Manuals/ISA_Tree_Biology_Chapter_1_Comprehensive_Guide.md), [obrana stromu](../../DOKUMENTACE%20STROM/ENG/01_Alex_Shigo_Teorie_a_CODIT/Alex_Shigo_Tree_Basics_Core_Principles.md).
 
 ## Jak se tento příběh promítá do webu
 
@@ -67,7 +67,7 @@ Výukový model je zjednodušení. Geometrický objem není měření skutečné
 
 Samostatnou experimentální větev tvoří sledování hlavy a asymetrická projekce v Blenderu, Unity a webu. Jejím tématem je monitor jako virtuální okno reagující na polohu pozorovatele. Dokumentace těchto variant nedokládá jejich zapojení do současného hlavního webu.
 
-Zdroje: [struktura projektu](struktura_projektu.md), [architektonický brief](../../architektura.md), [pracovní poznámky](../../architektura_pracovni_poznamky.md), [shadery](../../README_SHADER_EXPLANATION.md), [trasování](../../README_CEVNI_SYSTEM_TRASOVANI.md), [off-axis výklad](../../dokumentace/KOOIMA_OFF_AXIS_CESKY.md).
+Zdroje: [struktura projektu](struktura_projektu.md), [architektonický brief](../../architektura.md), [pracovní poznámky](../../old/architektura_pracovni_poznamky.md), [shadery](../../README_SHADER_EXPLANATION.md), [trasování](../../README_CEVNI_SYSTEM_TRASOVANI.md), [off-axis výklad](../../dokumentace/KOOIMA_OFF_AXIS_CESKY.md).
 
 ## Co skutečně víme z ověřování
 
@@ -87,7 +87,7 @@ Zdroje: [testy](moje/tests.md), [strategie](moje/strategie.md), [změny](zmeny.m
 - Evidence návrhu Semenace navazuje na novější implementaci; duplicitní označení záznamu zvýraznění je změněno na Z124.
 - U xylému a CODIT označují biologické karty stav jako neověřený. Nepodložená srovnání teplot a chybná jednotka výkonu byly odstraněny; příklad cév letokruhů je omezen na kruhovitě pórovité dřeviny.
 - Starší architektura a pracovní postupy zůstávají historickými podklady; aktuální pravidla určuje [AGENTS.md](../../AGENTS.md).
-- Pět dříve nalezených dvojic souborů představovalo kopie. Kartotéky byly upraveny souběžně, další archivní kopie zůstávají zachovány.
+- Pět dříve nalezených dvojic kopií v aktivních složkách bylo sloučeno do jediného kanonického umístění (`STROM_VAULT` a `DOKUMENTACE STROM`); historické zálohy v `old/` a `qa_*` zůstávají zachovány.
 
 ## Priority vyplývající ze syntézy
 
