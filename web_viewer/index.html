@@ -914,7 +914,7 @@
           <input type="range" id="sliderSapGlow" min="20" max="250" value="100">
         </div>
         <div class="toggle-row" style="margin-top: 8px;">
-          <span>✨ Prosvítání dřevem (X-Ray)</span>
+          <span>✨ Proudění na povrchu dřeva (X-Ray)</span>
           <label class="switch">
             <input type="checkbox" id="chkSapXray" checked>
             <span class="slider-switch"></span>
@@ -1108,7 +1108,7 @@
     import { setupLeafBreeze } from './listy/leaf_breeze.js?v=3';
     import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
     import { PhotolysisSystem } from './vykreslovani/photolysis_system.js?v=highlight-fade-1';
-    import { loadBarkReference, loadBarkAttributes, attachBarkAttributes, createBarkMaterial } from './vykreslovani/bark_material.js?v=stable-shadow-4';
+    import { loadBarkReference, loadBarkAttributes, attachBarkAttributes, createBarkMaterial } from './vykreslovani/bark_material.js?v=water-surface-1';
     import { loadLeafReference, loadLeafAttributes, attachLeafAttributes, createLeafMaterial, createLeafDepthMaterial, setLeafEdgeTransition } from './vykreslovani/leaf_material.js?v=narrow-canopy-shade-6';
     import { LeafControls } from './listy/leaf_controls.js?v=beech-calendar-1';
     import { loadBranchDryingReference, branchDryingFrontWidth } from './listy/leaf_branch_drying.js?v=3';
@@ -1427,7 +1427,10 @@
     const leafDepthMat1 = createLeafDepthMaterial(0, leafReference, shaderUniforms);
     const leafDepthMat2 = createLeafDepthMaterial(1, leafReference, shaderUniforms);
     const leafBreeze = setupLeafBreeze([leafToonMat1, leafToonMat2, leafDepthMat1, leafDepthMat2], { leafCenters: true });
-    const barkToonMat = createBarkMaterial(barkReference,leafReference,shaderUniforms);
+    // Opacity, strand width, pulse time, signed reveal/retraction front.
+    const waterSurface = { value: new THREE.Vector4() };
+    const classicWater = new URLSearchParams(location.search).get('water') === 'classic';
+    const barkToonMat = createBarkMaterial(barkReference,leafReference,shaderUniforms,waterSurface);
     const canopyOcclusion = new CanopyOcclusion(leafReference, shaderUniforms);
 
     // 6. GLTF TREE LOADER
@@ -1532,7 +1535,7 @@
               // ROOTS (Tree_Roots)
               else if (name.includes('roots')) {
                 rootsMesh = node;
-                attachBarkAttributes(node.geometry,barkAttributes.roots);
+                attachBarkAttributes(node.geometry,barkAttributes.roots,true);
                 node.material = barkToonMat;
               }
               // TRUNK & BRANCHES (Plane001_2)
@@ -3148,6 +3151,20 @@
     const sliderSapGlow = document.getElementById('sliderSapGlow');
     const valSapGlow = document.getElementById('valSapGlow');
     const chkSapXray = document.getElementById('chkSapXray');
+    function updateWaterSurface() {
+      const useSurface = !classicWater && chkSapXray.checked && trunkMesh && rootsMesh;
+      for (const mesh of sapMeshes) mesh.visible = !useSurface;
+      if (sapJointMesh) sapJointMesh.visible = !useSurface;
+      const reveal = sapUniforms.uFlowRevealBottom.value === 1;
+      const front = THREE.MathUtils.lerp(-1.08, 1.08, reveal ? 1 - sapFlowRetraction : sapFlowRetraction);
+      const width = (0.024 + 0.031 * flowSelections.water.value) * sapUniforms.uWidthScale.value * currentSapRadius / 0.08;
+      waterSurface.value.set(
+        useSurface && sapGroup.visible ? sapUniforms.uOpacity.value : 0,
+        Math.min(0.16, width),
+        reducedElementMotion.matches ? 0 : sapUniforms.uTime.value * 2.2,
+        (reveal ? -1 : 1) * (front + 2)
+      );
+    }
 
     if (chkSapFlow) {
       chkSapFlow.addEventListener('change', (e) => {
@@ -3273,7 +3290,7 @@
       chkSapXray.addEventListener('change', (e) => {
         sapMaterial.depthTest = !e.target.checked;
         sapMaterial.needsUpdate = true;
-        showToast(e.target.checked ? '✨ X-Ray režim zapnut (prosvítání)' : 'Standardní hloubkový test');
+        showToast(e.target.checked ? '✨ X-Ray režim vody zapnut' : 'Původní vodní linka');
       });
     }
 
@@ -4120,6 +4137,7 @@
       camera.updateMatrixWorld();
       chapterApp.updateScene(playbackDelta);
       updateHighlights(delta);
+      updateWaterSurface();
       seedChapter.update(chapterApp.chapter === 'seeds', ecology.seasonPosition, trunkMesh, seedHighlight, playbackDelta);
       introForest.update();
       renderer.render(scene, camera);

@@ -30,11 +30,12 @@ Definice spojení
 
 - Okna: [Voda](okna.md#voda) ve Fotosyntéze; [Transpirace](okna.md#transpirace), [Příjem vody](okna.md#příjem-vody) v Transpiraci.
 - **Zvýraznění**
-- při otevření okna modrá linka výrazně ztloustne a po její trase začne putovat pulzující vlna tloušťky.
+- Otevření vodního okna zesílí modré proudy. Světlejší pulzy ukazují směr proudění.
 
 **Chování elementu**
 
-- Modrá linka vede z kořenů přes kmen k listům.
+- V režimu X-Ray se modré proudy kreslí na kůru od kořenů přes kmen a větve ke koruně. Kresba kůry zůstává viditelná. Jde o schematické znázornění vnitřního transportu vody.
+- Vypnutí X-Ray vrátí prostorovou vodní linku. Parametr `?water=classic` obnoví i původní způsob prosvítání linky skrz dřevo.
 - Při fotosyntéze proudí nahoru.
 - Při červenání prvního listu se stahuje od kořenů k listům.
 - Při vstupu do kapitoly zachovává aktuální stav podle [Společného stahování linek](#společné-stahování-linek).

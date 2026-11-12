@@ -16,16 +16,28 @@ export async function loadBarkAttributes(modelUrl) {
   return { trunk: values[0], roots: values[1] };
 }
 
-export function attachBarkAttributes(geometry, data) {
+export function attachBarkAttributes(geometry, data, isRoot = false) {
   if (data.length !== geometry.attributes.position.count * 3) throw Error('Nesouhlasí kresba kůry s geometrií modelu');
   geometry.setAttribute('barkPattern',new THREE.BufferAttribute(data,3,true));
+  const positions = geometry.attributes.position;
+  const distances = new Float32Array(positions.count);
+  let extent = 1;
+  for (let i = 0; i < positions.count; i++) {
+    const distance = isRoot
+      ? Math.max(0, Math.hypot(positions.getX(i) - 0.12, positions.getZ(i) - 0.12) - 0.4)
+      : Math.max(0, positions.getY(i) - 0.32);
+    distances[i] = isRoot ? -distance : distance;
+    extent = Math.max(extent, distance);
+  }
+  for (let i = 0; i < distances.length; i++) distances[i] /= extent;
+  geometry.setAttribute('barkWaterDistance', new THREE.BufferAttribute(distances, 1));
 }
 
-export function createBarkMaterial(reference, leafReference, uniforms) {
+export function createBarkMaterial(reference, leafReference, uniforms, water) {
   const material = new THREE.MeshLambertMaterial({ color: 0xffffff, side: THREE.FrontSide });
   material.name = 'Bark_GraphML_Tree (Blender reference)';
   material.toneMapped = false;
-  material.customProgramCacheKey = () => 'blender_bark_reference_stable_shadow_v4';
+  material.customProgramCacheKey = () => 'blender_bark_reference_water_surface';
   material.onBeforeCompile = shader => {
     Object.assign(shader.uniforms, {
       uBarkDiffuse: { value: leafReference.diffuse },
@@ -38,10 +50,21 @@ export function createBarkMaterial(reference, leafReference, uniforms) {
       uBarkToonSteps: uniforms.uToonSteps,
       uSceneIllumination: uniforms.uSceneIllumination || { value: 1 },
       uMoonDirection: uniforms.uMoonDirection || { value: new THREE.Vector3(0, 1, 0) },
-      uMoonIntensity: uniforms.uMoonIntensity || { value: 0 }
+      uMoonIntensity: uniforms.uMoonIntensity || { value: 0 },
+      uWaterSurface: water
     });
-    shader.vertexShader = `attribute vec3 barkPattern; varying vec3 vBarkPattern; varying vec2 vBarkUv;\n` + shader.vertexShader.replace(
-      '#include <begin_vertex>', '#include <begin_vertex>\nvBarkPattern=barkPattern; vBarkUv=uv;');
+    shader.vertexShader = `
+      attribute vec3 barkPattern;
+      attribute float barkWaterDistance;
+      varying vec3 vBarkPattern;
+      varying vec2 vBarkUv;
+      varying float vBarkWaterDistance;
+    ` + shader.vertexShader.replace('#include <begin_vertex>', `
+      #include <begin_vertex>
+      vBarkPattern = barkPattern;
+      vBarkUv = uv;
+      vBarkWaterDistance = barkWaterDistance;
+    `);
     shader.fragmentShader = `
       uniform sampler2D uBarkDiffuse;
       uniform sampler2D uBarkDisplay;
@@ -54,8 +77,10 @@ export function createBarkMaterial(reference, leafReference, uniforms) {
       uniform float uMoonIntensity;
       uniform vec3 uBarkShadow;
       uniform vec3 uBarkLit;
+      uniform vec4 uWaterSurface;
       varying vec3 vBarkPattern;
       varying vec2 vBarkUv;
+      varying float vBarkWaterDistance;
     ` + shader.fragmentShader;
     shader.fragmentShader = shader.fragmentShader.replace('#include <common>', `
       #include <common>
@@ -88,6 +113,24 @@ export function createBarkMaterial(reference, leafReference, uniforms) {
       float moonFacing = max(dot(normalize(normal), normalize(uMoonDirection)), 0.0);
       outgoingLight += mix(barkDisplayTransform(result), vec3(1.0), 0.18)
         * vec3(0.72, 0.84, 1.0) * uMoonIntensity * (0.06 + 0.55 * moonFacing);
+      // The bark UV follows each woody branch. Tint longitudinal strands in
+      // the bark pass so they always stay inside the visible wood silhouette.
+      if (uWaterSurface.x > 0.0) {
+        float distanceAlongWood = vBarkWaterDistance;
+        float acrossWood = vBarkUv.x * 3.0 + 0.12 * sin(distanceAlongWood * 19.0);
+        float strandDistance = abs(fract(acrossWood + 0.5) - 0.5);
+        float edge = min(fwidth(acrossWood), 0.14);
+        float core = 1.0 - smoothstep(uWaterSurface.y, uWaterSurface.y + edge + 0.01, strandDistance);
+        float halo = 1.0 - smoothstep(0.02, uWaterSurface.y + 0.15, strandDistance);
+        float pulse = pow(0.5 + 0.5 * cos(distanceAlongWood * 32.0 - uWaterSurface.z), 5.0);
+        // Positive front codes retraction, negative front codes revelation.
+        float front = abs(uWaterSurface.w) - 2.0;
+        float aboveFront = smoothstep(front, front + 0.04, distanceAlongWood);
+        float visibleFlow = uWaterSurface.w > 0.0 ? aboveFront : 1.0 - aboveFront;
+        vec3 waterColor = mix(vec3(0.008, 0.23, 0.82), vec3(0.10, 0.68, 1.0), pulse);
+        float opacity = (core * (0.64 + 0.23 * pulse) + halo * 0.13) * uWaterSurface.x * visibleFlow;
+        outgoingLight = mix(outgoingLight, waterColor, clamp(opacity, 0.0, 0.88));
+      }
     `);
   };
   return material;
