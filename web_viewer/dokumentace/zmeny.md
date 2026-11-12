@@ -36,6 +36,13 @@ history:
 
 ## Implementováno
 
+#### Z148 — Zarovnání okna Světlo s menu
+
+- Zadání: posunout okno Světlo níže a zarovnat jeho horní okraj s menu.
+- Výsledek: na široké a vyšší obrazovce začíná okno stejně jako menu na 7 % výšky.
+- Stav: Implementováno.
+- Ověření: kontrola pravidel polohy; vizuální kontrola čeká na uživatele.
+
 #### Z147 — Mírný posun 3D modelu stromu doprava
 
 - Zadání: posunout 3D model stromu trochu doprava.
