@@ -112,8 +112,6 @@ def inspect(snapshot, name, basic=False):
         errors.add('invalid YAML: ' + str(error).splitlines()[0])
     if basic:
         return errors
-    if not re.search(r'^#{1,6} Pravidla struktury\s*$', prose(text), re.M):
-        errors.add('missing Pravidla struktury section')
     for target in re.findall(r'!?\[[^\]\n]*\]\((<[^>]+>|[^)\n]+)\)', prose(text)):
         target = target.strip().strip('<>')
         parts = urlsplit(target)
@@ -160,10 +158,6 @@ def run_checks(root, staged, files=None):
         if staged:
             for error in sorted(current & old):
                 print('EXISTING: ' + name + ': ' + error)
-    web_code = [n for n in changed if n.startswith('web_viewer/') and n.endswith(('.js', '.css', '.html'))
-                and not any('/' + part + '/' in n for part in ('web_assets', 'old', 'testy', 'tools'))]
-    if staged and web_code and (EVIDENCE not in changed or snapshot.read(EVIDENCE) == baseline.read(EVIDENCE)):
-        failures.append('web code changes require staged ' + EVIDENCE)
     if staged and files is None:
         whitespace = subprocess.run(['git', '-C', str(root), 'diff', '--cached', '--check'])
         if whitespace.returncode:

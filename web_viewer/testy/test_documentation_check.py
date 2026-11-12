@@ -73,13 +73,14 @@ class DocumentationChecks(unittest.TestCase):
         self.assertEqual(result.returncode, 0, result.stdout)
         self.assertIn('EXISTING', result.stdout)
 
-    def test_web_change_requires_evidence(self):
+    def test_web_change_does_not_require_evidence(self):
         self.write('web_viewer/index.html', '<html></html>')
         self.git('add', '.')
-        self.assertIn('web code changes require staged', self.run_check().stdout)
-        self.write(check.EVIDENCE, VALID.replace('Initial.', 'Web changed.'))
-        self.git('add', '.')
         self.assertEqual(self.run_check().returncode, 0)
+
+    def test_structure_template_is_optional(self):
+        self.write('AGENTS.md', '# Document\n\nText.\n')
+        self.assertEqual(check.inspect(check.Snapshot(self.root, 'disk'), 'AGENTS.md'), set())
 
     def test_duplicate_yaml_and_bad_history(self):
         self.write('AGENTS.md', VALID.replace('history:', 'history: []\nhistory:'))

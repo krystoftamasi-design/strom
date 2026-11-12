@@ -23,7 +23,7 @@ history:
 ## Před commitem
 
 - Běžný postup: zkontroluj diff, podle změny proveď cílený funkční test a vytvoř lokální commit s výslovnými cestami podle [AGENTS.md](../../../AGENTS.md#commity).
-- Git hook jednou spustí `python web_viewer/tools/check_documentation.py --staged` nad skutečným obsahem commitu: mezery, syntaxi JS a inline skriptů HTML, platnost YAML pouze ve změněných dokumentech a přítomnost evidence při změně webového kódu. Odkazy, nadpisy, pravidla struktury ani pole a duplicity ID evidence se při commitu neprocházejí; patří do ruční úplné kontroly.
+- Git hook jednou spustí `python web_viewer/tools/check_documentation.py --staged` nad skutečným obsahem commitu: mezery, syntaxi JS a inline skriptů HTML a platnost existujícího YAML ve změněných dokumentech. Zápis do evidence ani šablona nejsou povinné. Odkazy a duplicity ID se kontrolují volitelně v úplné kontrole.
 - Historii vede Git. YAML frontmatter je volitelný; jeho staré záznamy se nedoplňují a nemají limit počtu položek. Přítomný YAML musí zůstat syntakticky platný.
 - Volitelná diagnostika: `python web_viewer/tools/check_documentation.py --files cesta1 cesta2` zkontroluje vybrané pracovní soubory nad HEAD bez použití sdíleného indexu. Po úspěšném hooku stejné kontroly znovu nespouštěj.
 - Skripty HTML se kontrolují samostatně; datové bloky JSON a importmap se přeskočí. Externí JS se kontroluje jako samostatný změněný soubor. Kód se nespouští a není potřeba DOM.

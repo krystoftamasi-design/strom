@@ -16,6 +16,15 @@ history:
 ---
 # Texty
 
+#### Období stromu
+
+- Kapitola vysvětluje roční a denní změny stromu. Nabízí výběr období a ukázkového času, přehrávání roku a dne a ovládání denního cyklu slunce.
+
+#### Kořeny
+
+- Kapitola vysvětluje příjem vody a minerálů, mykorhizu a vliv sucha a zamokření. Orientační ukazatel popisuje zamokření a stav kořenů.
+- Schéma kořenové špičky vysvětluje reakci na překážky; detail upozorňuje, že výzkum huseníčku není simulací buku. Tlačítko přibližuje kořeny.
+
 #### Strom
 
 - Písmo: Nohemi.

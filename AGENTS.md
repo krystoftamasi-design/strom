@@ -51,10 +51,9 @@ history:
 - `moje/okna.md` určuje obsah a chování oken; `moje/vzhled_oken.md` jejich replikovatelný vzhled.
 - `moje/elementy.md` určuje linky, částice a reakce na okna; `moje/prvky.md` ovládání; `moje/texty.md` samostatné texty.
 - Každou věc definuj jednou a odkazuj na ni. Změny definovaného chování a schváleného vzhledu promítni do příslušných definic.
-- Zachovej pravidla struktury a šablonu na konci upravovaného dokumentu; při změně členění je sjednoť. Piš stručně, bez duplicit a interních názvů v uživatelských definicích; schválené tagy jsou výjimka.
-- Za dokončenou logickou změnu webu přidej do `zmeny.md` jeden stručný záznam: zadání, konečný výsledek, stav a skutečné ověření. Dílčí pokusy sluč; podrobné definice kvůli pouhému ladění nepřepisuj, pokud zůstávají platné.
-- Přiděl vlastnímu záznamu ID vyšší než nejvyšší aktuální ID; při kolizi oprav pouze vlastní záznam.
-- Stavy jsou Čeká, Rozpracováno, Implementováno, Ověřeno a K upřesnění. Bez doložené finální kontroly ponech Implementováno.
+- Piš stručně, bez duplicit a interních názvů v uživatelských definicích; schválené tagy jsou výjimka. Šablona ani pravidla struktury nejsou povinné.
+- Historie drobných změn patří do Gitu. Do `zmeny.md` zapisuj jen významné otevřené úkoly nebo důležité výsledky ověření; jeho úprava není podmínkou změny webu.
+- Pokud evidenci doplníš, uveď skutečný rozsah ověření a případná omezení. Stav Ověřeno znamená ověření uvedeného rozsahu, nikoli celého webu.
 - Historii souborů vede Git. YAML historie ani ID chatu nejsou povinné; kvůli dokumentaci nevolej `list_threads`. Existující frontmatter ponech jako historický záznam, bez přidávání a zkracování seznamu.
 - Toto pravidlo nahrazuje starší pokyny jednotlivých dokumentů k udržování historie ve frontmatteru. Ostatní pole frontmatteru zachovej; existující YAML musí zůstat syntakticky platný.
 

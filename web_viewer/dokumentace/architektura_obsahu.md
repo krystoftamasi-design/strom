@@ -23,11 +23,17 @@ history:
 
 ### Text
 
+- [Období stromu](moje/texty.md#období-stromu)
+
 ### Okna
 
 ### Vzhled
 
 ### Ovládací prvky
+
+- [Kruh ročních období](moje/prvky.md#kruh-ročních-období)
+- [Čas](moje/prvky.md#ovládání-času)
+- [Kapitoly](moje/prvky.md#kapitoly)
 
 ### Elementy
 
@@ -123,11 +129,16 @@ history:
 
 ### Text
 
+- [Kořeny](moje/texty.md#kořeny)
+
 ### Okna
 
 ### Vzhled
 
 ### Ovládací prvky
+
+- [Kapitoly](moje/prvky.md#kapitoly)
+- [Čas](moje/prvky.md#ovládání-času)
 
 ### Elementy
 
