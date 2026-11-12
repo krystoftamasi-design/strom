@@ -31,6 +31,13 @@ history:
 
 ## Implementováno
 
+#### Z136 — Plynulé přibližování stromu
+
+- Zadání: odstranit skokové přibližování a oddalování.
+- Výsledek: výpočet kolečka zůstává konečný i při měřítku obrazovky pod 100 %.
+- Stav: Implementováno.
+- Ověření: cílený test kolečka pro několik měřítek obrazovky prošel; vizuální a funkční kontrola čeká na uživatele.
+
 #### Z103 — Návrh kapitoly Semenace
 
 - Zadání: navrhnout kapitolu s ročním cyklem, kontextem počtu a úspěšnosti semen, vazbou oken a částicemi padajících semen.
