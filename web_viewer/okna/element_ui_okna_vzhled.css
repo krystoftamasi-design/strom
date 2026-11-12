@@ -365,7 +365,7 @@ body.scene-night .chapter-context-guide .transpiration-legend { color: #a9baff; 
   .tree-overlay .element-ui-okno[data-chapter="photosynthesis"][data-window-id="kyslik"] { top: 23%; }
   .tree-overlay .element-ui-okno[data-chapter="photosynthesis"][data-window-id="co2"] { top: 42%; }
   .tree-overlay .element-ui-okno[data-chapter="photosynthesis"][data-window-id="cukry"] { top: 61%; }
-  .tree-overlay .element-ui-okno[data-chapter="photosynthesis"][data-window-id="voda"] { top: 80%; }
+  .tree-overlay .element-ui-okno[data-chapter="photosynthesis"][data-window-id="voda"] { top: auto; bottom: 6%; height: auto; min-height: 0; }
 }
 .tree-overlay [data-chapter="photosynthesis"] .chapter-context-guide {
   top: calc(var(--photosynthesis-top) + var(--photosynthesis-height) + 15vh);

@@ -36,6 +36,13 @@ history:
 
 ## Implementováno
 
+#### Z149 — Zarovnání okna Voda s datem
+
+- Zadání: zarovnat spodní okno s řádkem data.
+- Výsledek: spodní okraj okna Voda má na široké a vyšší obrazovce stejné odsazení jako datum.
+- Stav: Implementováno.
+- Ověření: kontrola pravidel polohy; vizuální kontrola čeká na uživatele.
+
 #### Z148 — Zarovnání okna Světlo s menu
 
 - Zadání: posunout okno Světlo níže a zarovnat jeho horní okraj s menu.
