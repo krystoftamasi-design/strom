@@ -37,7 +37,7 @@ export function createBarkMaterial(reference, leafReference, uniforms, water) {
   const material = new THREE.MeshLambertMaterial({ color: 0xffffff, side: THREE.FrontSide });
   material.name = 'Bark_GraphML_Tree (Blender reference)';
   material.toneMapped = false;
-  material.customProgramCacheKey = () => 'blender_bark_reference_emissive_water_v2';
+  material.customProgramCacheKey = () => 'blender_bark_reference_emissive_water_v3';
   material.onBeforeCompile = shader => {
     Object.assign(shader.uniforms, {
       uBarkDiffuse: { value: leafReference.diffuse },
@@ -144,11 +144,16 @@ export function createBarkMaterial(reference, leafReference, uniforms, water) {
         vec3 noisePosition = vBarkWaterPosition * vec3(2.7, 0.5, 2.7);
         // Subtract time so bright features travel toward increasing flow distance.
         noisePosition.y += distanceAlongWood * 19.0 - uWaterSurface.z * 1.1;
-        float mask = waterNoise(noisePosition) * 0.52
-          + waterNoise(noisePosition * 2.1 + 13.7) * 0.27
-          + waterNoise(noisePosition * 4.4 + 31.2) * 0.14
-          + waterNoise(noisePosition * 8.8 + 57.4) * 0.07;
-        float emission = mix(0.05, 0.95, smoothstep(0.23, 0.74, mask));
+        // Bend the moving field before sampling the clouds and their ridges.
+        vec2 turbulence = vec2(waterNoise(noisePosition * 0.36),
+          waterNoise(noisePosition * 0.42 + 27.3)) - 0.5;
+        vec3 stormPosition = noisePosition + vec3(turbulence.x, turbulence.y, -turbulence.x) * 3.4;
+        float clouds = waterNoise(stormPosition * 0.64) * 0.67
+          + waterNoise(stormPosition * 1.9 + 13.7) * 0.23
+          + waterNoise(stormPosition * 5.3 + 31.2) * 0.10;
+        float ridge = abs(waterNoise(stormPosition * 3.3 + 57.4) - 0.5);
+        float veins = (1.0 - smoothstep(0.025, 0.075, ridge)) * smoothstep(0.38, 0.67, clouds);
+        float emission = mix(0.02, 0.74, smoothstep(0.28, 0.75, clouds)) + 0.38 * veins;
         // Transparency is uniform across the film. The mask only shapes emission.
         outgoingLight = mix(outgoingLight, vec3(0.01, 0.08, 0.24), coverage * 0.12);
         outgoingLight += vec3(0.025, 0.43, 1.0) * emission * uWaterSurface.y * coverage;
