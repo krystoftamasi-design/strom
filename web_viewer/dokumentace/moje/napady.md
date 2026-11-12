@@ -30,6 +30,15 @@ history:
 
 ## Okna
 
+### Pruh u Fotosyntézy
+
+- Návrh: přidat svislý pruh vlevo vedle nadpisu a textu Fotosyntézy podle vyznačení na snímku.
+- Cíl: vizuálně propojit nadpis a průvodní text.
+- Stav: Nápad.
+- Podklad: dodaný snímek s vyznačením.
+
+![Vyznačení pruhu u Fotosyntézy](../../nahledy/napad-pruh-fotosynteza.png)
+
 ### Okna blíže ke stromu
 
 - Návrh: přiblížit okna ke stromu.
