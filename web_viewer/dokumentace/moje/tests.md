@@ -71,6 +71,17 @@ history:
 - **Volné nápady:** sandbox s kácením nebo požárem a zobrazením uvolněného uhlíku; dále sníh. Nejde o požadavky ani doložené potřeby účastníka. (00:25:31–00:26:32, 00:28:18)
 - **UNISAL:** autor popisuje dřívější zjištění málo výrazného úvodního menu pomocí predikce pozornosti ze snímku. V rozhovoru se zároveň zpochybňuje přesnost a reakce na pohyb. Výstup není skutečným měřením Pavlova pohledu ani ověřením použitelnosti. (00:15:27–00:17:45)
 
+## Konzultace s Bobem — datum neuvedeno
+
+- Kontext: návrhy z konzultace zaznamenané podle sdělení autora projektu. Nejde o výsledek uživatelského testu ani o ověření srozumitelnosti.
+
+### Podněty k řešení a ověření
+
+- Zjednodušit okna a prozkoumat možnosti sloučení dvou pruhů do jednoho při zachování srozumitelnosti obou hodnot a ovládání dostupnosti.
+- Průvodce by mohl odkazovat na související okna a zvýrazňovat je.
+- Ve Fotosyntéze umístit kontextový text pod nadpis kapitoly.
+- Stav podnětů: Čeká; podobu a chování je potřeba navrhnout a následně ověřit.
+
 ## Pravidla struktury
 
 - Každý test má nadpis `##` s označením a datem, následuje kontext, zdroj pozorování a omezení závěrů.
