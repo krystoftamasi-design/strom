@@ -30,6 +30,15 @@ history:
 
 ## Okna
 
+### Okna blíže ke stromu
+
+- Návrh: přiblížit okna ke stromu.
+- Cíl: vizuálně propojit okna se stromem.
+- Stav: Nápad.
+- Podklad: dodaný snímek současného rozložení.
+
+![Snímek rozložení oken a stromu](../../nahledy/napad-okna-blize-stromu.png)
+
 ### Naznačit ovládání pruhů
 
 - Návrh: naznačit, že spodní pruhy dostupnosti světla a vody se dají táhnout, například drobným úchytem.
