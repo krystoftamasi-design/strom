@@ -39,7 +39,7 @@ history:
 
 #### Manager
 
-- Tlačítko Manager se nezobrazuje; rozšířené ovládání zůstává skryté.
+- Klávesa K otevře panel s pokročilými nastaveními modelu a scény. Další stisk K nebo Escape panel zavře.
 
 #### Ovládání času
 

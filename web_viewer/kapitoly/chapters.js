@@ -114,27 +114,48 @@ export function createChapters({ model, applySeason, setSun, setAzimuth, setVisu
   inflowLabel.htmlFor = 'sliderTreeWater';
   waterLabel.replaceChildren(inflowLabel, capturedLabel);
   waterRow.replaceChildren(waterLabel, waterInput);
-  for (const id of ['sliderLightRot', 'sliderSunElevation']) {
-    shell.querySelector('#sharedSun').append(document.getElementById(id).closest('.slider-group'));
-  }
+  const sunRows = ['sliderLightRot', 'sliderSunElevation'].map(id => {
+    const row = document.getElementById(id).closest('.slider-group');
+    const position = document.createComment('');
+    row.before(position);
+    shell.querySelector('#sharedSun').append(row);
+    return { row, position };
+  });
   const winterButton = document.querySelector('[data-season="latefall"]');
   winterButton.textContent = 'Zima';
   document.getElementById('btnRootCamera').addEventListener('click', event => {
     event.currentTarget.textContent = focusRoots() ? 'Zobrazit celý strom' : 'Přiblížit kořeny';
   });
   const toggleSettings = document.getElementById('btnTogglePanel');
+  const closeSettings = document.getElementById('btnClosePanel');
+  let settingsReturnFocus;
   function syncDrawer() {
     drawer.inert = drawer.classList.contains('collapsed');
     toggleSettings.setAttribute('aria-expanded', String(!drawer.inert));
+    for (const { row, position } of sunRows) {
+      if (drawer.inert) shell.querySelector('#sharedSun').append(row);
+      else position.after(row);
+    }
+    if (drawer.inert && settingsReturnFocus) {
+      settingsReturnFocus.focus({ preventScroll: true });
+      settingsReturnFocus = undefined;
+    }
   }
+  toggleSettings.setAttribute('aria-keyshortcuts', 'K');
   toggleSettings.addEventListener('click', syncDrawer);
-  document.getElementById('btnClosePanel').addEventListener('click', syncDrawer);
+  closeSettings.addEventListener('click', syncDrawer);
   document.addEventListener('keydown', event => {
-    if (event.key === 'Escape' && !drawer.inert) {
-      drawer.classList.add('collapsed');
-      toggleSettings.classList.remove('active');
-      syncDrawer();
-      toggleSettings.focus();
+    if (event.key === 'Escape' && !drawer.inert) closeSettings.click();
+    if (event.key.toLowerCase() !== 'k' || event.defaultPrevented || event.repeat ||
+        event.ctrlKey || event.altKey || event.metaKey || event.shiftKey ||
+        event.target.closest?.('input:not([type="range"]):not([type="checkbox"]), textarea, select, [contenteditable]')) return;
+
+    if (drawer.inert) {
+      settingsReturnFocus = document.activeElement;
+      toggleSettings.click();
+      closeSettings.focus({ preventScroll: true });
+    } else {
+      closeSettings.click();
     }
   });
 
