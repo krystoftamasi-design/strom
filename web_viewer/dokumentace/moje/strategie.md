@@ -57,8 +57,8 @@ Podle českých didaktických výzkumů na ZŠ a SŠ (např. *Brčáková 2022*,
 - Posaď studenta k otevřené kapitole [Fotosyntéza](okna.md#kapitola-fotosyntéza), dej mu 60 sekund na prozkoumání a nijak mu neraď.
 - Během minuty tiše sleduj: zda klikne na nadpisy oken ([Cukry](okna.md#cukry), [Voda](okna.md#voda), [O₂](okna.md#o₂), [CO₂](okna.md#co₂)) a zda si všimne zvýraznění linek na kmeni ([Voda linka](elementy.md#voda-linka), [Glukóza linka](elementy.md#glukóza-linka)).
 - Po 60 sekundách obrazovku skryj a polož 2 otázky:
-  1. „Které látky nebo prvky se tu fotosyntézy účastní?“
-  2. „Jak spolu v tom stromu souvisí alespoň dva z nich?“
+  1. [Souvislost mezi dvěma prvky, které si účastník sám vybere](test_structure.md#1-souvislost-mezi-dvěma-prvky).
+  2. „Které látky nebo prvky se tu fotosyntézy účastní?“
 - Zapiš pouze: splnil / nesplnil a kde se zasekl.
 
 ## Postup návrhu kapitoly podle vzoru

@@ -8,8 +8,13 @@
  * 4. Particle pool stability: No memory leaks or runaway particle counts during extended simulation loops.
  */
 
-import * as THREE from '../web_assets/vendor/three.module.js';
+import * as three from '../web_assets/vendor/three.module.js';
 import { PhotolysisSystem } from '../vykreslovani/photolysis_system.js';
+
+// Simulate real particles in Node without loading browser image assets.
+const THREE = { ...three, TextureLoader: class {
+  load() { return new three.Texture(); }
+} };
 
 let passedTests = 0;
 let totalTests = 0;
@@ -115,9 +120,7 @@ console.log('\nTEST 2: Photon Origin Tracks Changes to Sun Direction Vectors');
   assert(photon.origin.distanceTo(expectedOrigin) < 1e-4, 'Spawned photon origin matches active sun direction');
   assert(photon.target.distanceTo(rxPoint) < 1e-4, 'Spawned photon target terminates at water line endpoint');
 
-  // Check elongation: photon geometry scale along Z
-  const scale = photon.mesh.geometry.parameters ? null : true;
-  assert(scale !== false, 'Photon geometry is elongated along velocity vector');
+  assert(photon.mesh.isSprite && photon.mesh.material.map, 'Photon uses a textured sprite');
 }
 
 // -----------------------------------------------------------------------------
@@ -197,6 +200,16 @@ console.log('\nTEST 3: Environmental Cutoffs (Drought < 350 L & Sun Below Horizo
   assert(sys.totalPhotonsEmitted > 0, 'Photons emitted normally under optimal conditions');
   assert(sys.totalPhotonsAbsorbed > 0, 'Photons absorbed normally under optimal conditions');
   assert(sys.totalOxygenProduced > 0, 'Oxygen bubbles produced normally under optimal conditions');
+
+  sys.setLightAvailability(1);
+  sys.setActivity(0);
+  const emittedBefore = sys.totalPhotonsEmitted;
+  for (let f = 0; f < 120; f++) sys.update(0.016);
+  assert(sys.totalPhotonsEmitted === emittedBefore, 'Bright light alone emits no photons without photosynthetic activity');
+
+  sys.setActivity(0.2);
+  for (let f = 0; f < 120; f++) sys.update(0.016);
+  assert(sys.totalPhotonsEmitted > emittedBefore, 'Emission resumes when photosynthetic activity returns');
 }
 
 // -----------------------------------------------------------------------------

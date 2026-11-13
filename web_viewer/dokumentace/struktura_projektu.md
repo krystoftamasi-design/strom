@@ -42,7 +42,6 @@ Přesun souboru vyžaduje opravu jeho importů a odkazů na assety.
 
 ## Dokumentace
 
-- [Syntéza projektu](synteza.md) propojuje Markdown podklady, rozlišuje jejich platnost a shrnuje otevřené otázky; nenahrazuje podrobné definice.
 - `FUNKCE` obsahuje krátké popisy chování pro uživatele.
 - `dokumentace/moje` obsahuje tvoje definice obsahu a vzhledu, strategii a uživatelské testy.
 - `dokumentace/system` obsahuje technickou architekturu oken a postup automatických kontrol pro práci agenta.
@@ -60,8 +59,9 @@ Původní architekturu popisuje `starsi/ARCHITEKTURA_IMPLEMENTACE.md`.
 Produktovou strategii a metriky popisuje [Strategie](moje/strategie.md).
 Prioritní problémy porozumění vymezuje [Problémy k řešení](moje/strategi_problems.md).
 Záznamy uživatelského ověřování jsou v [Testech](moje/tests.md).
+Znění otázek pro účastníky je v [Test structure](moje/test_structure.md).
 Nerealizované návrhy jsou v [Nápadech](moje/napady.md); nejde o definice hotového webu.
-[Kontextové texty](moje/kontextove_texty.md) rozlišují nasazené varianty Fotosyntézy od návrhů k dopracování.
+Návrh průvodních vět pro Fotosyntézu a Transpiraci je v [Kontextových textech](moje/kontextove_texty.md); zatím není nasazený.
 Přehled původních přesunů souborů je v `starsi/presun_souboru.json`.
 
 ## Podklady a nástroje

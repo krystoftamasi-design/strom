@@ -1,0 +1,28 @@
+import assert from 'node:assert/strict';
+import * as THREE from '../web_assets/vendor/three.module.js';
+import { cloudCover, createSunClouds } from '../vykreslovani/sun_clouds.js';
+
+const day = { sunElevation: 60, sunIntensity: 1, manualLightAvailability: null };
+assert.equal(cloudCover(day), 0, 'Automatic sunlight does not create clouds');
+assert.equal(cloudCover({ ...day, manualLightAvailability: 1 }), 0);
+assert.ok(Math.abs(cloudCover({ ...day, manualLightAvailability: 0.5 }) - 0.5) < 1e-10);
+assert.equal(cloudCover({ ...day, manualLightAvailability: 0 }), 1);
+assert.equal(cloudCover({ ...day, sunElevation: -10, manualLightAvailability: 0 }), 0);
+assert.equal(cloudCover({ ...day, sunIntensity: 0, manualLightAvailability: 0 }), 0);
+const headlessThree = { ...THREE, TextureLoader: class { load() { return new THREE.Texture(); } } };
+const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera();
+camera.position.z = 20;
+camera.updateMatrixWorld();
+const sun = new THREE.Sprite(new THREE.SpriteMaterial());
+scene.add(sun);
+const system = createSunClouds({ THREE: headlessThree, scene, camera, sun });
+const clouds = scene.children.filter(object => object !== sun);
+assert.deepEqual(clouds.map(cloud => cloud.renderOrder), [100, 101, 102], 'Cloud layers keep a fixed order');
+const heavy = { ...day, manualLightAvailability: 0 };
+assert.ok(system.update(heavy, 0.1) > 0, 'Clouds appear gradually');
+for (let i = 0; i < 40; i++) system.update(heavy, 0.1);
+assert.ok(sun.material.opacity < 0.001, 'Clouds hide the sun at full cover');
+for (let i = 0; i < 40; i++) system.update(day, 0.1);
+assert.equal(sun.material.opacity, 1, 'Sun returns after clouds clear');
+console.log('PASS: clouds respond to manual light relative to natural daylight.');

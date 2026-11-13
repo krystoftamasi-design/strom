@@ -30,31 +30,15 @@ history:
 
 ## Okna
 
-### Pruh u Fotosyntézy
-
-- Návrh: přidat svislý pruh vlevo vedle nadpisu a textu Fotosyntézy podle vyznačení na snímku.
-- Cíl: vizuálně propojit nadpis a průvodní text.
-- Stav: Nápad.
-- Podklad: dodaný snímek s vyznačením.
-
-![Vyznačení pruhu u Fotosyntézy](../../nahledy/napad-pruh-fotosynteza.png)
-
-### Okna blíže ke stromu
-
-- Návrh: přiblížit okna ke stromu.
-- Cíl: vizuálně propojit okna se stromem.
-- Stav: Nápad.
-- Podklad: dodaný snímek současného rozložení.
-
-![Snímek rozložení oken a stromu](../../nahledy/napad-okna-blize-stromu.png)
-
 ### Naznačit ovládání pruhů
 
 - Návrh: naznačit, že spodní pruhy dostupnosti světla a vody se dají táhnout, například drobným úchytem.
 - Cíl: aby uživatel poznal, které pruhy může ovládat.
 - Stav: Nápad.
 
+## Transpirace
 
+### ❗ Propojení oken s místem děje
 
 
 TVORBA KAPITOLY SANBOX

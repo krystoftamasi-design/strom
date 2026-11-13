@@ -16,15 +16,6 @@ history:
 ---
 # Texty
 
-#### Období stromu
-
-- Kapitola vysvětluje roční a denní změny stromu. Nabízí výběr období a ukázkového času, přehrávání roku a dne a ovládání denního cyklu slunce.
-
-#### Kořeny
-
-- Kapitola vysvětluje příjem vody a minerálů, mykorhizu a vliv sucha a zamokření. Orientační ukazatel popisuje zamokření a stav kořenů.
-- Schéma kořenové špičky vysvětluje reakci na překážky; detail upozorňuje, že výzkum huseníčku není simulací buku. Tlačítko přibližuje kořeny.
-
 #### Strom
 
 - Písmo: Nohemi.
@@ -32,16 +23,21 @@ history:
 - Barva: ve dne tmavá, v noci světlá.
 - Zdroj: [chapters.js](../../kapitoly/chapters.js), blok `intro`.
 
+#### Úvod Fotosyntézy
+
+- Pod nadpisem se po vstupu do kapitoly zobrazí „Listy využívají světlo k tvorbě cukrů.“ a po 20 sekundách se skryje. Při dalším vstupu se zobrazí znovu.
+
 #### Datum
 
 - Zobrazuje datum modelového roku.
-- Umístění: vpravo nahoře.
-- Písmo: Satoshi, bez pozadí.
+- Umístění: vlevo dole společně s ovládáním času, odsazení 6 %; do šířky 700 px 4 %.
+- Písmo: Satoshi, stejná velikost jako položky menu, bez pozadí.
 - Barva: ve dne tmavá, v noci světlá.
 - Vzhled: [tree_annotations.css](../../okna/tree_annotations.css), `.season-date-card`.
 
 #### Průvodce Transpirací
 
+- Kontextový text v kapitolách používá běžnou váhu písma 400.
 - Fotosyntéza zobrazuje výchozí text a po otevření oken CO₂, Cukry, Voda nebo O₂ zobrazí příslušnou tematickou variantu. Definice textů jsou v [Kontextových textech](kontextove_texty.md#fotosyntéza).
 - Transpirace zobrazuje text „Odpar v listech táhne vodu vzhůru.“.
 

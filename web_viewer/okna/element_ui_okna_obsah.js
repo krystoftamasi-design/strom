@@ -31,18 +31,43 @@ export const oknaPodleKapitol = {
   ],
   photosynthesis: [
     {
-      id: 'fotosynteza',
+      id: 'svetlo',
       viditelnyPrepinac: true,
-      nadpis: 'Fotosyntéza',
+      nadpis: 'Světlo',
       tema: 'light',
-      strana: 'left',
-      hlavni: true,
-      otevrene: true,
+      strana: 'right',
+      otevrene: false,
       vypocet: 'activity',
       zobrazitVzorec: true,
       zobrazitHodnotu: true,
       text: [
-        'Listy využívají světlo, vodu a CO₂ k tvorbě cukrů; při fotosyntéze se uvolňuje O₂.',
+        'Dostupné světlo dopadá na listy. Jeho využití při fotosyntéze závisí také na vodě a dalších podmínkách.',
+      ],
+    },
+    {
+      id: 'kyslik',
+      viditelnyPrepinac: true,
+      nadpis: 'O₂',
+      tema: 'oxygen',
+      strana: 'right',
+      vypocet: 'oxygenGramsPerMinute',
+      zobrazitVzorec: true,
+      zobrazitHodnotu: true,
+      text: [
+        'O₂ vzniká při fotosyntéze a strom ho spotřebovává při dýchání. Spotřeba je orientační výukový odhad.',
+      ],
+    },
+    {
+      id: 'co2',
+      viditelnyPrepinac: true,
+      nadpis: 'CO₂',
+      tema: 'co2',
+      strana: 'right',
+      vypocet: 'co2GramsPerMinute',
+      zobrazitVzorec: true,
+      zobrazitHodnotu: true,
+      text: [
+        'CO₂ strom přijímá při fotosyntéze a uvolňuje při dýchání. Produkce je orientační výukový odhad.',
       ],
     },
     {
@@ -56,7 +81,7 @@ export const oknaPodleKapitol = {
       zobrazitVzorec: true,
       zobrazitHodnotu: true,
       text: [
-        'Cukry ukládají energii ze světla a slouží jako palivo i stavební materiál pro růst stromu.',
+        'Cukry ukládají energii a slouží jako stavební materiál. Spotřeba je orientační odhad cukrů využitých při dýchání, bez zahrnutí růstu.',
       ],
     },
     {
@@ -70,32 +95,6 @@ export const oknaPodleKapitol = {
       zobrazitHodnotu: true,
       text: [
         'Voda proudí do listů, ochlazuje korunu odparem a pomáhá udržovat listy zavodněné.',
-      ],
-    },
-    {
-      id: 'co2',
-      viditelnyPrepinac: true,
-      nadpis: 'CO₂',
-      tema: 'co2',
-      strana: 'right',
-      vypocet: 'co2GramsPerMinute',
-      zobrazitVzorec: true,
-      zobrazitHodnotu: true,
-      text: [
-        'CO₂ je vstupní látka fotosyntézy; průduchy regulují jeho příjem podle vody a podmínek prostředí.',
-      ],
-    },
-    {
-      id: 'kyslik',
-      viditelnyPrepinac: true,
-      nadpis: 'O₂',
-      tema: 'oxygen',
-      strana: 'right',
-      vypocet: 'oxygenGramsPerMinute',
-      zobrazitVzorec: true,
-      zobrazitHodnotu: true,
-      text: [
-        'O₂ vzniká při štěpení vody a strom ho při fotosyntéze uvolňuje do vzduchu.',
       ],
     },
   ],

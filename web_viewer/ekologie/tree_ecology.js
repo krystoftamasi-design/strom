@@ -1,4 +1,4 @@
-import { vypocitatVzorec } from './tree_ecology_vzorce.js?v=5';
+import { vypocitatVzorec, konstanty } from './tree_ecology_vzorce.js?v=5';
 
 // One water store for every chapter. Rates use litres/minute of model time.
 // Species-inspired teaching presets, not a calibrated prediction of this tree.
@@ -12,6 +12,7 @@ export const MODEL_MINUTES_PER_SECOND = 24; // One displayed day (60 s) advances
 // Parameter evidence and remaining uncertainty: EKOLOGIE_PODKLADY.md.
 const FULL_CANOPY_LEAF_AREA_INDEX = 4;
 const AVAILABLE_WATER_LITRES_PER_M3 = 8; // Uncalibrated teaching reserve, not measured beech capacity.
+const AUTOMATIC_WATER_SUPPLY_FRACTION = 0.9;
 // ČHMÚ: national monthly mean temperature normals, 1991–2020 (°C).
 // https://www.chmi.cz/namerena-data/historicka-data/uzemni-teplota-a-srazky
 const CZECH_MONTHLY_MEAN = [-1.4, -0.4, 3.2, 8.5, 13.1, 16.5, 18.3, 17.9, 13.0, 8.2, 3.5, -0.4];
@@ -48,6 +49,7 @@ export class TreeEcology {
     this.sunAzimuth = 0;
     this.dayCycleEnabled = true;
     this.sunIntensity = 1;
+    this.manualLightAvailability = null;
     this.hourOfDay = 12;
     this.waterInput = 0.1;
     this.waterConsumption = 0;
@@ -79,6 +81,10 @@ export class TreeEcology {
     this.glucoseGramsPerMinute = 0;
     this.oxygenGramsPerMinute = 0;
     this.co2GramsPerMinute = 0;
+    this.respirationFraction = 0;
+    this.respirationSugar = 0;
+    this.respirationOxygen = 0;
+    this.respirationCO2 = 0;
     this.hydration = 1;
   }
 
@@ -96,7 +102,7 @@ export class TreeEcology {
     // Actual daily use is integrated with daylight, foliage and hydration.
     this.baseTranspiration = this.leafArea * 0.9 / 720;
     this.reserve = this.capacity * oldFraction;
-    if (!this.ready) this.waterInput = this.baseTranspiration * SEASONS[this.season].waterSupply;
+    if (!this.ready) this.waterInput = this.baseTranspiration * SEASONS[this.season].waterSupply * AUTOMATIC_WATER_SUPPLY_FRACTION;
     this.ready = true;
     this.evaluate(0);
   }
@@ -106,7 +112,7 @@ export class TreeEcology {
     if (index >= 0) this.setSeasonPosition(index, true);
   }
 
-  setSeasonPosition(position, resetWater = false) {
+  setSeasonPosition(position, resetInputs = false) {
     if (!Number.isFinite(position)) return;
     this.seasonPosition = position;
     const keys = Object.keys(SEASONS);
@@ -119,9 +125,12 @@ export class TreeEcology {
     for (const key of ['waterSupply', 'demand', 'foliage', 'elevation']) {
       this.seasonState[key] = from[key] + (to[key] - from[key]) * blend;
     }
-    if (resetWater) this.manualWaterInput = false;
+    if (resetInputs) {
+      this.manualWaterInput = false;
+      this.manualLightAvailability = null;
+    }
     if (this.ready) {
-      if (!this.manualWaterInput) this.waterInput = this.baseTranspiration * this.seasonState.waterSupply;
+      if (!this.manualWaterInput) this.waterInput = this.baseTranspiration * this.seasonState.waterSupply * AUTOMATIC_WATER_SUPPLY_FRACTION;
       this.evaluate(0);
     }
   }
@@ -132,6 +141,12 @@ export class TreeEcology {
     if (this.ready) this.evaluate(0);
   }
 
+  setLightAvailability(fraction) {
+    if (!Number.isFinite(fraction)) return;
+    this.manualLightAvailability = clamp(fraction, 0, 1);
+    if (this.ready) this.evaluate(0);
+  }
+
   evaluate(minutes) {
     const season = this.seasonState;
     this.seasonalWaterLimit = this.baseTranspiration * season.waterSupply;
@@ -139,7 +154,8 @@ export class TreeEcology {
     // Surplus stays outside the tree and drains gradually; sustained
     // waterlogging damages roots and reduces uptake.
     this.inflow = Math.min(this.waterInput, this.seasonalWaterLimit * (1 - 0.8 * this.rootRot));
-    this.light = clamp(Math.sin(this.sunElevation * Math.PI / 180) * this.sunIntensity / Math.sin(Math.PI / 3), 0, 1);
+    const daylight = clamp(Math.sin(this.sunElevation * Math.PI / 180) * this.sunIntensity / Math.sin(Math.PI / 3), 0, 1);
+    this.light = this.sunElevation > 0 ? (this.manualLightAvailability ?? daylight) : 0;
     // Estimate air temperature for the display and photosynthesis response.
     const seasonPhase = ((this.seasonPosition % 4) + 4) % 4;
     const quarter = Math.floor(seasonPhase);
@@ -194,6 +210,12 @@ export class TreeEcology {
     this.glucoseGramsPerMinute = vypocitatVzorec('glucoseGramsPerMinute', this);
     this.oxygenGramsPerMinute = vypocitatVzorec('oxygenGramsPerMinute', this);
     this.co2GramsPerMinute = vypocitatVzorec('co2GramsPerMinute', this);
+    // Illustrative whole-tree maintenance respiration, not calibrated for this tree.
+    // Reference demand is 15% of full-canopy glucose production at 20 °C.
+    this.respirationFraction = 0.15 * Math.pow(2, (clamp(this.ambientTemperature, -10, 40) - 20) / 10);
+    this.respirationSugar = this.leafArea * konstanty.glucoseConversion * this.respirationFraction;
+    this.respirationOxygen = this.respirationSugar * konstanty.oxygenPerGlucose;
+    this.respirationCO2 = this.leafArea * konstanty.co2Conversion * this.respirationFraction;
     return this;
   }
 

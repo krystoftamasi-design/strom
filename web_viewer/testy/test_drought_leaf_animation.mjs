@@ -1,0 +1,23 @@
+import assert from 'node:assert/strict';
+import { advanceDroughtLeaves, droughtLeafFall } from '../listy/drought_leaf_animation.js';
+import { TreeEcology } from '../ekologie/tree_ecology.js';
+
+assert.equal(advanceDroughtLeaves(0, 1, 10), 0, 'A hydrated tree does not start drying');
+const tree = new TreeEcology();
+tree.configure({ height: 26, woodVolume: 4, crownArea: 100 });
+tree.setWaterInput(0);
+tree.evaluate(0);
+assert.equal(advanceDroughtLeaves(0, tree.hydration, 1), 0, 'Turning off the supply does not bypass the stored water');
+tree.reserve = 0;
+tree.evaluate(0);
+assert.ok(advanceDroughtLeaves(0, tree.hydration, 1) > 0, 'An exhausted reserve starts the visual sequence');
+assert.equal(advanceDroughtLeaves(0, 0.06, 1), 0, 'Drying waits for the water reserve to be almost empty');
+let progress = advanceDroughtLeaves(0, 0, 1);
+assert.ok(progress > 0 && progress < 0.45, 'The foliage begins changing colour first');
+assert.equal(droughtLeafFall(progress), 0, 'Leaves do not fall immediately');
+progress = advanceDroughtLeaves(progress, 0, 4);
+assert.ok(droughtLeafFall(progress) > 0, 'Dry leaves begin to fall');
+assert.equal(advanceDroughtLeaves(progress, 0, 100), 1, 'Drying reaches its full state');
+assert.equal(droughtLeafFall(1), 1, 'Full drought releases all leaves');
+assert.equal(advanceDroughtLeaves(0, 0, 0), 0, 'Paused animation does not advance');
+console.log('PASS: depleted water triggers gradual autumn-like leaf drying and fall.');

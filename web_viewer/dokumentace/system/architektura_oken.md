@@ -27,19 +27,17 @@ history:
 
 ### Obsah
 
-- `okna/element_ui_okna_obsah.js` obsahuje záznamy v seznamech `photosynthesis` a `transpiration`.
-- `pruvodceTranspiraci` ve stejném obsahovém modulu drží viditelné vysvětlení, názvy kroků, legendu a instrukci.
+- `okna/element_ui_okna_obsah.js` obsahuje záznamy oken Fotosyntézy, Transpirace a Semenace a texty průvodců.
 - Záznam určuje ID, nadpis, téma, stranu, text, výpočet, ovládání a výchozí otevření detailu.
 - `zobrazitVzorec` a `zobrazitHodnotu` zapínají přehled vstupů a výslednou hodnotu.
 
-- Obsah obou kapitol vytváří stejný `configuredCard` z definic; `kapitoly/chapters.js` aktualizuje živé výstupy. Transpirace nemá vlastní HTML bloky oken.
-- Průvodce kapitoly zobrazuje stálé schéma cesty vody.
+- Okna z definic vytváří `configuredCard`. Živé výstupy aktualizují `kapitoly/chapters.js` a u druhých údajů Fotosyntézy `okna/tree_annotations.js`.
 
 ### Rozložení
 
 - Hlavní okna používají stejnou komponentu s variantou samostatného detailu pod oknem podle [šablony hlavního okna](../moje/vzhled_oken.md#šablona-hlavního-okna); příznak `hlavni` určuje vzhled, `otevrene` výchozí stav.
 
-- Komponenta má dva nezávislé bloky: `.element-ui-readout` skládá nadpis, hodnotu a vzorec pod sebe pomocí flexu; `.annotation-reveal` obsahuje pouze detail ve druhém sloupci s omezenou výškou a posuvem. Detail nesdílí řádky s údaji a nemění jejich rozestupy. Na úzké obrazovce je tematický detail pod blokem údajů; hlavní detail je samostatně pod pevným oknem.
+- Komponenta má dva nezávislé bloky. `.element-ui-readout` skládá nadpis a údaje. `.annotation-reveal` drží vysvětlení a ve Fotosyntéze také vzorec. Detail při otevření neposouvá údaje. Polohu jednotlivých variant určuje [Vzhled oken](../moje/vzhled_oken.md).
 
 - Okno je společná komponenta vytvářená `configuredCard` a `createElementUiOkno`; nadpis, hodnota, vzorec a detail mají jednu strukturu a společné styly pro všechny záznamy Fotosyntézy a Transpirace.
 - Typografii a odstupy upravuj v `okna/element_ui_okna_vzhled.css`: `--ui-heading-size`, `--ui-main-heading-size`, `--ui-value-size`, `--ui-main-value-size`, `--ui-formula-size`, `--ui-column-gap`, `--ui-toggle-size` a `--ui-toggle-gap`. Změna sdílené proměnné platí pro všechna okna příslušné role; úzká obrazovka používá společnou sadu hodnot.
@@ -49,7 +47,7 @@ history:
 - Přenos vyžaduje renderer, společné CSS, převodník veličin a validátor; renderer přijímá model a callback zvýraznění. Průvodce a pozice konkrétní kapitoly nejsou přenositelnou částí okna.
 
 - `okna/tree_annotations.js` vytváří bloky, přepíná detaily a přebírá ovládací prvky s jejich událostmi.
-- `okna/element_ui_okna_vzhled.css` určuje pevné pozice podle ID a společného příznaku hlavního okna, rozměry, písmo a barvy.
+- `okna/element_ui_okna_vzhled.css` určuje rozložení kapitol, rozměry, písmo a barvy. Fotosyntéza skládá okna do mřížky v pořadí definic.
 - `okna/tree_annotations.css` obsahuje společný základ bloků kapitol.
 - Rozložení pracuje v souřadnicích rozhraní; aktualizace za snímek obsluhuje ovládání období a synchronizaci zvýraznění s aktivní kapitolou.
 - `kapitoly/chapters.js` určuje pořadí a přepínání kapitol; `kapitoly/chapters.css` vzhled navigace.
@@ -58,7 +56,7 @@ history:
 
 - `PhotolysisSystem` přijímá volitelnou `waterGroup`; částice H₂O vznikají v `getReactionPoint` a sdílí `_updateGasScale` i zvýraznění tagem `water` s ostatními plyny. Emisi řídí odpar přes `setTranspiration`, nikoli kolize fotonů. Skupina je oddělená od fotosyntézy a viditelná pouze v Transpiraci.
 
-- `okna/tree_annotations.js` předává tag tématu a stav otevření přes `setElementHighlight` v `kapitoly/chapters.js`.
+- `okna/tree_annotations.js` předává zvýraznění podle tématu při otevření detailu nebo při najetí na plochu okna. Stav najetí využívá také styl tlačítka.
 - Změna detailu přepíná zvýraznění přímo v obsluze události; aktivní kapitola omezuje zvýraznění na viditelná okna.
 - `index.html` mapuje tagy `water` a `sugar` na samostatné uniformy `uSelected` materiálů linek; vykreslení obsluhuje `vykreslovani/water_brush.js`.
 - Zvýraznění se agreguje podle tagu pouze z oken aktivní kapitoly; více otevřených oken se stejným tagem se nepřepisuje. Voda reaguje také v Transpiraci, glukóza zůstává u Fotosyntézy.
@@ -71,8 +69,7 @@ history:
 - `ekologie/tree_ecology.js` poskytuje živé hodnoty modelu.
 - `ekologie/tree_ecology_vzorce.js` obsahuje společné výpočty a jejich vstupy.
 - `okna/element_ui_okna_veliciny.js` určuje popisky, témata, jednotky a formát čísel.
-- Fotosyntéza používá `activity`, Cukry `glucoseGramsPerMinute` a posuvník Vody `sliderTreeWater`.
-- O₂ používá `oxygenGramsPerMinute` a CO₂ `co2GramsPerMinute`; obě veličiny se zobrazují v g/min.
+- V oknech Fotosyntézy se vykreslují dva údaje na okno včetně produkce a spotřeby O₂, CO₂ a cukrů. Posuvník dostupnosti vody volá `model.setWaterInput`.
 
 ### Vstupy výpočtu
 
@@ -96,7 +93,7 @@ history:
 
 ## Rozšíření
 
-- Nové okno potřebuje záznam v kapitole a pevnou pozici v CSS.
+- Nové okno potřebuje záznam v kapitole. Umístění přebírá z rozložení kapitoly.
 - Nová veličina potřebuje skutečný zdroj hodnoty a záznam v převodníku.
 
 [Stav implementace](../zmeny.md#z003--ui-podle-svg) · [Obsah](../architektura_obsahu.md)

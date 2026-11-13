@@ -1,5 +1,5 @@
 import * as THREE from '../web_assets/vendor/three.module.js';
-import { createSeasonTimeline } from './season_timeline.js?v=beech-calendar-1';
+import { createSeasonTimeline } from './season_timeline.js?v=date-controls-1';
 
 const SEASONS = ['spring', 'summer', 'autumn', 'latefall'];
 const LABELS = ['JARO', 'LÉTO', 'PODZIM', 'ZIMA'];

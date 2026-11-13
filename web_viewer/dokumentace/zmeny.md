@@ -23,13 +23,207 @@ history:
 
 # Změny
 
-- Historická evidence; nové drobné úpravy se sem nemusí zapisovat. Pracovní postup určuje AGENTS.md a má přednost před staršími pravidly níže. Ověření platí vždy jen v uvedeném rozsahu.
-
 ## Čeká
+
+#### Z103 — Návrh kapitoly Semenace
+
+- Zadání: navrhnout kapitolu s ročním cyklem, kontextem počtu a úspěšnosti semen, vazbou oken a částicemi padajících semen.
+- Výsledek: zapsán cíl, obsah, ovládání obdobím, kontext a návrh zvýraznění i chování částic; assety dodá uživatel, číselné údaje vyžadují zdroje.
+- Stav: Čeká.
+- Ověření: kontrola návaznosti dokumentace a existujícího ročního přehledu; web ani částice nebyly změněny.
 
 ## Rozpracováno
 
 ## Implementováno
+
+#### Z166 — Svislý bilancující pruh oken Fotosyntézy
+
+- Zadání: nahradit dva vodorovné pruhy v tematických oknech Fotosyntézy jedním svislým I-tvarovaným bilancujícím pruhem uprostřed mezi popisky a hodnotami, zarovnat nadpis okna vpravo se sloupcem hodnot, rozšířit prostřední tah a zvětšit mezery mezi řádky i sloupci.
+- Výsledek: extrahována maska `web_assets/okna/ui_balance_bar.png` z `2.svg`, upravena mřížka v `tree_annotations.js` a `element_ui_okna_vzhled.css` na svislý pruh s úzkou středovou mezerou vlevo (levý okraj 70 %, odstup od pravého okraje 3 %) a tři doleva zarovnané řádky vpravo (nahoře vždy spotřeba, uprostřed nadpis s kulatým tlačítkem +/− vpravo, dole dostupnost nebo produkce) s popisky těsně u hodnot a detailem otevíraným doprava; pruh vykresluje poměrný rozdíl obou zobrazených veličin od okrajů středové mezery nahoru nebo dolů s méně saturovaným prázdným podkladem, zachováno svislé ovládání dostupnosti světla a vody a aktualizována dokumentace vzhledu i obsahu.
+- Stav: Implementováno.
+- Ověření: kontrola syntaxe `tree_annotations.js`, cílený test `test_posuvniky_fotosyntezy.mjs` a kontrola dokumentace `check_documentation.py` prošly; vizuální kontrola v prohlížeči čeká na uživatele.
+
+#### Z165 — Usychání listů při nedostatku vody
+
+- Zadání: při nedostatku vody spustit podzimní animaci usychání stromu.
+- Výsledek: po téměř úplném vyčerpání zásoby se listy postupně zbarví a opadávají; po doplnění vody se mohou v růstovém období obnovit.
+- Stav: Implementováno.
+- Ověření: cílené testy reakce na zásobu vody a časování listů; vizuální kontrola čeká na uživatele.
+
+#### Z164 — Textury fotonů
+
+- Zadání: použít dodané textury ze složky fotony.
+- Výsledek: částice střídají tři kreslené varianty a natáčejí se ve směru letu.
+- Stav: Implementováno.
+- Ověření: test fotolýzy prošel včetně kontroly textury částice a její dráhy.
+
+#### Z163 — Fotony jen při aktivní fotosyntéze
+
+- Zadání: zastavit fotony, pokud koruna nemůže využít světlo.
+- Výsledek: při prakticky nulové aktivitě fotosyntézy se nové fotony nevysílají. Po obnovení aktivity jejich četnost opět určuje dostupnost světla.
+- Stav: Implementováno.
+- Ověření: test fotolýzy ověřil zastavení při plném světle a nulové aktivitě i obnovení emise při návratu aktivity. Test modelu fotosyntézy prošel.
+
+#### Z162 — Růst listů při rychlém posunu
+
+- Zadání: zachovat viditelný růst listů při rychlém posunu období.
+- Výsledek: překročení jara se zachytí i při přeskočení data; po opadu nové listy postupně dorostou, rychlost času animaci zrychlí.
+- Stav: Implementováno.
+- Ověření: cílený test překročení jara a časování růstu; vizuální kontrola čeká na uživatele.
+
+#### Z161 — Stabilnější mraky a zatažené pozadí
+
+- Zadání: omezit problikávání mraků a při zatažení zašednout pozadí.
+- Výsledek: průhledné mraky mají pevné pořadí vrstev a u obzoru plynule mizí; pozadí se mění podle množství mraků a denní doby.
+- Stav: Implementováno.
+- Ověření: cílený test mraků; vizuální kontrola čeká na uživatele.
+
+#### Z160 — Mraky podle dostupnosti světla
+
+- Zadání: znázornit ruční snížení dostupnosti světla pomocí dodaných mraků.
+- Výsledek: mraky se zvětšují, objevují a přibližují ke slunci podle rozdílu oproti automatickému světlu; při nulové dostupnosti slunce zakryjí.
+- Stav: Implementováno.
+- Ověření: test pokrytí mraky, vztahů fotosyntézy a definic oken prošel; vizuální kontrola čeká na uživatele.
+
+#### Z159 — Posuvník dostupnosti světla
+
+- Zadání: ovládat dostupnost světla spodním pruhem stejně jako u vody.
+- Výsledek: posuvník nastavuje denní dostupnost světla pro výpočet fotosyntézy i emisi fotonů. V noci je zamčený a ruční změna období obnoví automatiku.
+- Stav: Implementováno.
+- Ověření: test modelu ověřil reakci fotosyntézy, zachování nastavení a přechod dne a noci.
+
+#### Z157 — Černé tlačítko s barvou při najetí
+
+- Zadání: obarvit tlačítko detailu až při najetí na celé okno a aktualizovat šablonu.
+- Výsledek: černá výplň tlačítek Fotosyntézy přebírá odstín tématu při najetí na okno nebo otevřený detail. Dokumentace popisuje aktuální vzhled a stavbu oken.
+- Stav: Implementováno.
+- Ověření: kontrola stylu a dokumentace.
+
+#### Z156 — Menší tlačítko detailu s texturou částic
+
+- Zadání: zmenšit plusko a dát ho doprostřed výplně s texturou částic.
+- Výsledek: ve Fotosyntéze je tmavé +/− uprostřed vyplněného tvaru z textury částice, tónovaného barvou tématu.
+- Stav: Implementováno.
+- Ověření: kontrola změny stylu a dokumentace.
+
+#### Z155 — Neutrální barva čísel ve Fotosyntéze
+
+- Zadání: odebrat tematickou barvu číselným hodnotám.
+- Výsledek: číselné hodnoty mají barvu běžného textu podle denního nebo nočního režimu.
+- Stav: Implementováno.
+- Ověření: kontrola změny stylu a dokumentace.
+
+#### Z154 — Sazba a poloha detailů Fotosyntézy
+
+- Zadání: zarovnat vysvětlující odstavec doprava a posunout ho i se vzorcem níž.
+- Výsledek: společná šablona zarovnává řádky odstavce k jeho pravému okraji a posouvá celý detail o 6 px níž.
+- Stav: Implementováno.
+- Ověření: kontrola změny stylu a dokumentace.
+
+#### Z151 — Jemnější kontextový text
+
+- Zadání: snížit tučnost písma v šabloně kontextového textu.
+- Výsledek: kontextové texty používají běžnou váhu písma 400.
+- Stav: Implementováno.
+- Ověření: kontrola CSS a návaznosti stylů; vizuální kontrola čeká na uživatele.
+
+#### Z149 — Odhad dýchání stromu
+
+- Zadání: dopočítat chybějící spotřebu a produkci ve Fotosyntéze.
+- Výsledek: okna zobrazují výukový odhad spotřeby O₂ a cukrů a produkce CO₂ při dýchání podle teploty; předpoklady a omezení jsou v definici oken.
+- Stav: Implementováno.
+- Ověření: test vztahů fotosyntézy a dýchání a test definic oken prošly. Nesouvisející test vodní páry selhal na očekávaném zvětšení částic; vizuální kontrola čeká na uživatele.
+
+#### Z149 — Zarovnání okna Voda s datem
+
+- Zadání: zarovnat spodní okno s řádkem data.
+- Výsledek: spodní okraj okna Voda má na široké a vyšší obrazovce stejné odsazení jako datum.
+- Stav: Implementováno.
+- Ověření: kontrola pravidel polohy; vizuální kontrola čeká na uživatele.
+
+#### Z148 — Zarovnání okna Světlo s menu
+
+- Zadání: posunout okno Světlo níže a zarovnat jeho horní okraj s menu.
+- Výsledek: na široké a vyšší obrazovce začíná okno stejně jako menu na 7 % výšky.
+- Stav: Implementováno.
+- Ověření: kontrola pravidel polohy; vizuální kontrola čeká na uživatele.
+
+#### Z147 — Mírný posun 3D modelu stromu doprava
+
+- Zadání: posunout 3D model stromu trochu doprava.
+- Výsledek: pohled kamery posouvá zobrazení stromu o 4 % šířky obrazovky doprava při zachování osy otáčení v kmeni.
+- Stav: Implementováno.
+- Ověření: kontrola při commitu; vizuální kontrola čeká na uživatele.
+
+#### Z146 — Zvýraznění nad celým oknem
+
+- Zadání: spustit zvýraznění při najetí na celou plochu okna.
+- Výsledek: najetí funguje i nad prázdnou plochou a otevřeným detailem; prázdná plocha dále propouští ovládání stromu.
+- Stav: Implementováno.
+- Ověření: existující test definic oken prošel; funkční a vizuální kontrola čeká na uživatele.
+
+#### Z145 — Užší místo pro hodnoty
+
+- Zadání: zmenšit místo pro hodnotu podle délky 100 %.
+- Výsledek: popisky jsou blíže hodnotám při zachování pevné šířky.
+- Stav: Implementováno.
+- Ověření: kontrola při commitu; vizuální kontrola čeká na uživatele.
+
+#### Z144 — Roztažení oken Fotosyntézy do výšky
+
+- Zadání: zarovnat pravá okna mezi horní nabídku a spodní řádek s datem.
+- Výsledek: na dostatečně vysoké široké obrazovce jsou okna rovnoměrněji rozložená po výšce; na menších obrazovkách zůstávají původní pozice.
+- Stav: Implementováno.
+- Ověření: kontrola upravených pravidel; vizuální kontrola čeká na uživatele.
+
+#### Z143 — Pevné místo pro hodnoty
+
+- Zadání: zabránit poskakování popisků při změně hodnot.
+- Výsledek: číselné hodnoty a jednotky mají ve Fotosyntéze vyhrazenou šířku.
+- Stav: Implementováno.
+- Ověření: kontrola při commitu; vizuální kontrola čeká na uživatele.
+
+#### Z142 — Síla zvýraznění částic a linek
+
+- Zadání: více zvětšit zvýrazněné částice a méně zesílit zvýrazněné linky.
+- Výsledek: částice H₂O, O₂ a CO₂ se při zvýraznění zvětší více; vodní a cukrová linka se zesílí méně.
+- Stav: Implementováno.
+- Ověření: kontrola změněných hodnot; vizuální kontrola čeká na uživatele.
+
+#### Z141 — Datum a čas vlevo dole
+
+- Zadání: přesunout datum a tlačítka času do vyznačeného místa.
+- Výsledek: společný řádek data a času je vlevo dole.
+- Stav: Implementováno.
+- Ověření: kontrola při commitu; vizuální kontrola čeká na uživatele.
+
+#### Z140 — Silnější pruhy a rozestupy
+
+- Zadání: zesílit pruhy a zvětšit rozestupy mezi pruhy a texty.
+- Výsledek: pruhy mají 12 px a údaje větší svislé odstupy.
+- Stav: Implementováno.
+- Ověření: kontrola při commitu; vizuální kontrola čeká na uživatele.
+
+#### Z139 — Sjednocení velikosti částic
+
+- Zadání: zmenšit částice O₂ a CO₂ na velikost částic H₂O.
+- Výsledek: částice všech tří látek sdílejí stejnou základní velikost i poměr zvýraznění.
+- Stav: Implementováno.
+- Ověření: cílené porovnání velikostí a zvýraznění částic; vizuální kontrola čeká na uživatele.
+
+#### Z138 — Stejná velikost data a menu
+
+- Zadání: sjednotit velikost písma menu a data.
+- Výsledek: datum používá stejnou responzivní velikost písma jako položky menu.
+- Stav: Implementováno.
+- Ověření: kontrola při commitu. Vizuální kontrola čeká na uživatele.
+
+#### Z137 — Ovládání času u data
+
+- Zadání: přesunout tlačítka času před datum.
+- Výsledek: pauza a rychlosti jsou vlevo od data v horním řádku.
+- Stav: Implementováno.
+- Ověření: test definic oken a kontrola při commitu; vizuální a funkční kontrola čeká na uživatele.
 
 #### Z136 — Plynulé přibližování stromu
 
@@ -38,12 +232,89 @@ history:
 - Stav: Implementováno.
 - Ověření: cílený test kolečka pro několik měřítek obrazovky prošel; vizuální a funkční kontrola čeká na uživatele.
 
-#### Z103 — Návrh kapitoly Semenace
+#### Z135 — Úvodní text Fotosyntézy
 
-- Zadání: navrhnout kapitolu s ročním cyklem, kontextem počtu a úspěšnosti semen, vazbou oken a částicemi padajících semen.
-- Výsledek: zapsán cíl, obsah, ovládání obdobím, kontext a návrh zvýraznění i chování částic; assety dodá uživatel, číselné údaje vyžadují zdroje.
+- Zadání: přidat pod nadpis krátký text, který se po 20 sekundách skryje.
+- Výsledek: věta o světle a cukrech se zobrazí při vstupu do kapitoly a po 20 sekundách zmizí.
 - Stav: Implementováno.
-- Ověření: návrh byl navázán na implementaci v Z104 a následný model v Z118; finální vizuální kontrola a číselné zdroje zůstávají otevřené.
+- Ověření: kontrola při commitu; vizuální a funkční kontrola čeká na uživatele.
+
+#### Z134 — Zarovnání data
+
+- Zadání: posunout datum na stejný pravý okraj jako okna Fotosyntézy.
+- Výsledek: datum má pravé odsazení 6 %, na úzké obrazovce 4 %.
+- Stav: Implementováno.
+- Ověření: kontrola při commitu. Vizuální kontrola čeká na uživatele.
+
+#### Z133 — Sjednocení okrajů Fotosyntézy
+
+- Zadání: sjednotit pravý okraj oken s levým okrajem nadpisu.
+- Výsledek: oba okraje mají stejné odsazení na široké i úzké obrazovce.
+- Stav: Implementováno.
+- Ověření: kontrola při commitu. Vizuální kontrola čeká na uživatele.
+
+#### Z132 — Výpočty v detailech oken
+
+- Zadání: zobrazovat výpočty až po rozkliknutí okna.
+- Výsledek: vzorce a přehledy vstupů oken Fotosyntézy jsou součástí detailu.
+- Stav: Implementováno.
+- Ověření: kontrola při commitu; vizuální a funkční kontrola čeká na uživatele.
+
+#### Z131 — Okna Fotosyntézy vpravo
+
+- Zadání: přesunout Světlo a ostatní okna doprava, tlačítka vlevo od nadpisů a detaily vlevo od oken.
+- Výsledek: všech pět tematických oken je zarovnaných vpravo a používá požadované umístění tlačítek a detailů.
+- Stav: Implementováno.
+- Ověření: test definic oken prošel. Vizuální a funkční kontrola čeká na uživatele.
+
+#### Z130 — Nadpis Fotosyntéza a okno Světlo
+
+- Zadání: změnit Fotosyntézu na nadpis a zobrazit spotřebu i dostupnost světla v samostatném okně; fotony navázat na dostupnost.
+- Výsledek: kapitola má samostatný nadpis a společné tematické okno Světlo. Dostupnost světla řídí příchozí fotony, zatímco aktivita fotosyntézy ovlivňuje vznik plynů.
+- Stav: Implementováno.
+- Ověření: testy definic oken, částic a vodního modelu prošly. V Chrome při nulovém přísunu vody klesla spotřeba světla na 0 %, dostupnost zůstala kladná a fotony přicházely.
+
+#### Z129 — Čitelnější pruhy a dostupnost vody
+
+- Zadání: zvýraznit pruhy a zpřesnit ovládání vody kolem schopnosti příjmu kořenů.
+- Výsledek: pruhy jsou vyšší, prázdná část zřetelnější a rozsah přísunu vychází ze sezónního limitu.
+- Stav: Implementováno.
+- Ověření: cílené testy vody a oken prošly; v Chrome ověřeno načtení, čitelnost a tažení dostupnosti vody.
+
+#### Z128 — Stálá šířka linek
+
+- Zadání: vypnout rozšiřování linek podle přísunu vody.
+- Výsledek: voda i glukóza mají stálou základní šířku; zvýraznění souvisejících oken zůstává.
+- Stav: Implementováno.
+- Ověření: kontrola při commitu. Existující test linky vyžaduje Edge a starý vstup, proto nebyl spuštěn; vizuální kontrola čeká na uživatele.
+
+#### Z127 — Nižší automatický přísun vody
+
+- Zadání: ponechat prostor pro zvýšení dostupné vody.
+- Výsledek: automatický přísun odpovídá 90 % sezónního limitu příjmu kořenů.
+- Stav: Implementováno.
+- Ověření: cílené testy vody a definic oken prošly. Vizuální a funkční kontrola čeká na uživatele.
+
+#### Z126 — Původní textura vodorovných pruhů
+
+- Zadání: vrátit pruhům ve Fotosyntéze původní texturu.
+- Výsledek: oba směry vyplnění používají nepravidelný obrys z původních vodorovných tahů.
+- Stav: Implementováno.
+- Ověření: kontrola při commitu a ověření dostupnosti tří obrazových masek. Vizuální kontrola čeká na uživatele.
+
+#### Z125 — Vodorovné ukazatele toků
+
+- Zadání: zobrazit v tematických oknech Fotosyntézy dva protisměrné vodorovné pruhy a ovládat dostupnost vody.
+- Výsledek: O₂, CO₂, Cukry a Voda mají dva údaje; chybějící výpočty jsou označené. Spodní pruh vody nastavuje přísun ke kořenům a ostatní pruhy ukazují výpočty.
+- Stav: Implementováno.
+- Ověření: cílený test vazeb fotosyntézy a omezení příjmu vody i existující test definic oken prošly. Vizuální a funkční kontrola čeká na uživatele.
+
+#### Z124 — Čárky jako posuvníky ve Fotosyntéze
+
+- Zadání: zobrazit hodnoty vůči maximu a umožnit jejich nastavení pomocí čárek oken.
+- Výsledek: čárky zachovávají délku maxima, zobrazují aktuální podíl a ovládají navázané veličiny nebo spotřebu vody; po zásahu se obnovuje vliv podmínek.
+- Stav: Implementováno.
+- Ověření: cílený test vazeb, vodní bilance a návratu k automatice a existující test definic oken prošly. Vizuální a funkční kontrola čeká na uživatele; existující test ekologie selhal na zásobě vody.
 
 #### Z123 — Větší uvolněná semena
 
@@ -72,6 +343,13 @@ history:
 - Výsledek: květy visí špičkou u větví a přijímají stín koruny. Podzim spustí postupný pád semen a na přelomu podzimu a zimy padají také obaly.
 - Stav: Implementováno.
 - Ověření: v Google Chrome ověřen směr zavěšení, pohyb semen i obalů z koruny k zemi a vykreslení bez chyb shaderu. Vizuální kontrola čeká na uživatele.
+
+#### Z119 — Obnovení načítání stromu
+
+- Zadání: opravit zastavení načítání hlavní stránky.
+- Výsledek: zvýraznění má při vytváření oken dostupný počáteční stav a průběžnou aktualizaci. Okno Semena opět předává stav modelu.
+- Stav: Implementováno.
+- Ověření: v Google Chrome se načetl strom i model Semenace a výběr podzimu proběhl bez chyb stránky.
 
 #### Z118 — Model květu a semen v Semenaci
 
@@ -213,7 +491,7 @@ history:
 - Stav: Implementováno.
 - Ověření: cílený test částic a kontrola změn; finální vizuální kontrola uživatelem.
 
-#### Z124 — Zvýraznění elementů při najetí na okno
+#### Z093 — Zvýraznění elementů při najetí na okno
 
 - Zadání: rozšířit propojení oken a elementů o najetí.
 - Výsledek: najetí zvýrazní související element stejně jako otevřený detail; oba stavy se kombinují.
@@ -890,13 +1168,33 @@ history:
 
 ## Ověřeno
 
-#### Z119 — Obnovení načítání stromu
+#### Z158 — Bližší detail a kliknutí na celé okno Fotosyntézy
 
-- Zadání: opravit zastavení načítání hlavní stránky.
-- Výsledek: zvýraznění má při vytváření oken dostupný počáteční stav a průběžnou aktualizaci. Okno Semena opět předává stav modelu.
+- Zadání: přiblížit detail k údajům a rozšířit klikací plochu.
+- Výsledek: detail je blíž oknu a lze ho přepnout kliknutím na celý blok údajů.
 - Stav: Ověřeno.
-- Ověření: v Google Chrome se načetl strom i model Semenace a výběr podzimu proběhl bez chyb stránky. Ověřeno pouze načtení a uvedený výběr.
+- Ověření: v Chrome kliknutí na hodnotu CO₂ otevřelo i zavřelo detail. Kliknutí na posuvník vody její detail neotevřelo.
 
+#### Z153 — Užší text v detailech Fotosyntézy
+
+- Zadání: zarovnat vysvětlení pod vzorcem, zúžit odstavec a zmenšit písmo o bod.
+- Výsledek: společná šablona má kratší řádky a odstavec začíná pod vzorcem u horního pruhu. Vzorec má stejnou velikost a ukotvení.
+- Stav: Ověřeno.
+- Ověření: v otevřeném detailu CO₂ v Chrome mají vzorec a odstavec stejný levý okraj. Odstavec byl široký 277 px při šířce detailu 315 px a měl písmo o jeden bod menší.
+
+#### Z152 — Stejné mezery mezi okny Fotosyntézy
+
+- Zadání: sjednotit mezery mezi pěti pravými okny.
+- Výsledek: okna tvoří jeden sloupec se stejnými mezerami. Na nižší obrazovce se zmenší nadpisy a vnitřní rozestupy.
+- Stav: Ověřeno.
+- Ověření: v Chrome mají všechny čtyři mezery stejnou velikost při rozměrech 1482 × 830, 1280 × 600 a 390 × 540 px. Otevření detailu Světla polohu oken nezměnilo. Test definic oken prošel.
+
+#### Z150 — Zřetelnější výplň pruhů ve Fotosyntéze
+
+- Zadání: upravit texturu pruhů a zvýraznit rozdíl mezi výplní a prázdnou částí.
+- Výsledek: textura ručního tahu tvoří silnější pruhy s oblými konci a nepravidelnou spodní hranou. Prázdná část má slabší odstín stejné barvy.
+- Stav: Ověřeno.
+- Ověření: vizuální kontrola v Chrome ve Fotosyntéze při různých hodnotách pruhů v obou směrech.
 
 ## K upřesnění
 

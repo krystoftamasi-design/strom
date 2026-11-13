@@ -20,8 +20,8 @@ history:
 
 # Elementy
 
-- Zvýrazněné linky jsou silnější při zachování barvy, zvýrazněné částice větší. Zvýraznění i návrat trvají přibližně 180 ms; při omezení pohybu jsou okamžité.
-- Definované zvýraznění spojení se spouští také při najetí na související okno. Trvá po dobu najetí nebo otevření alespoň jednoho souvisejícího detailu v aktivní kapitole; po skončení obou stavů se obnoví původní vzhled.
+- Zvýrazněné linky jsou přibližně tří- až 3,4násobně silné při zachování barvy; zvýrazněné částice H₂O, O₂ a CO₂ mají 2,5násobnou velikost. Zvýraznění i návrat trvají přibližně 180 ms; při omezení pohybu jsou okamžité.
+- Definované zvýraznění spojení se spouští také při najetí na celou plochu souvisejícího okna nebo jeho otevřený detail. Trvá po dobu najetí nebo otevření alespoň jednoho souvisejícího detailu v aktivní kapitole; po skončení obou stavů se obnoví původní vzhled. Prázdná plocha nadále propouští ovládání stromu.
 
 ### Voda linka
 
@@ -30,12 +30,11 @@ Definice spojení
 
 - Okna: [Voda](okna.md#voda) ve Fotosyntéze; [Transpirace](okna.md#transpirace), [Příjem vody](okna.md#příjem-vody) v Transpiraci.
 - **Zvýraznění**
-- Otevření vodního okna zesílí modrou záři vrstvy. V režimu prostorové linky zesílí linku.
+- při otevření okna modrá linka zesílí a po její trase začne putovat pulzující vlna tloušťky.
 
 **Chování elementu**
 
-- V režimu X-Ray pokrývá kořeny, kmen a větve průhledná vrstva s modrou září. Bouřková šumová maska tvoří tmavší víry a světlé žilky, které postupují od kořenů vzhůru ke koruně. Kresba kůry je přes vrstvu viditelná.
-- Vypnutí X-Ray vrátí prostorovou vodní linku. Parametr `?water=classic` obnoví i původní způsob prosvítání linky skrz dřevo.
+- Modrá linka vede z kořenů přes kmen k listům.
 - Při fotosyntéze proudí nahoru.
 - Při červenání prvního listu se stahuje od kořenů k listům.
 - Při vstupu do kapitoly zachovává aktuální stav podle [Společného stahování linek](#společné-stahování-linek).
@@ -49,7 +48,7 @@ Definice spojení
 
 - Okno: [Cukry](okna.md#cukry).
 - **Zvýraznění**
-- Otevřený detail výrazně zesílí tloušťku celé fialové linky v kapitole Fotosyntéza a spustí po její trase putující pulzaci, včetně výchozího otevření.
+- Otevřený detail zesílí tloušťku celé fialové linky v kapitole Fotosyntéza a spustí po její trase putující pulzaci, včetně výchozího otevření.
 - Mimo kapitolu Fotosyntéza se zvýraznění vypne.
 
 **Chování elementu**
@@ -77,10 +76,7 @@ Definice spojení
 
 #### Šířka linek
 
-
-- Vyšší přísun vody rozšiřuje prostorové linky a zesiluje záři vrstvy v režimu X-Ray.
-- zakladní šířka linek je setjná
-- Při nulovém přísunu zůstávají obě velmi tenké.
+- Voda i glukóza mají stejnou základní šířku nezávisle na přísunu vody. Zvýraznění linky se řídí společným pravidlem elementů.
 
 ### H₂O
 
@@ -95,7 +91,7 @@ Definice spojení
 - Modré nápisy H₂O představují vodní páru, nikoli kyslík vznikající při fotosyntéze.
 - V Transpiraci vznikají s odstupem od konce vodní linky v koruně, stoupají a rozptylují se ve stejném kuželu jako O₂; při vzniku rostou a při zániku se zmenšují stejně jako ostatní plynové částice.
 - Emise probíhá při kladném modelovém odparu a plně rozvinuté vodní lince; při jejím stažení se nové částice nevytvářejí. Mimo Transpiraci jsou skryté.
-- Částice používají tři malované PNG textury H₂O a přehrávání částicového systému; při otevřeném hlavním okně mají stejnou velikost jako nezvýrazněné O₂; počet částic je schematický, nikoli měřítko litrů vody.
+- Částice používají tři malované PNG textury H₂O a přehrávání částicového systému; jejich běžná velikost odpovídá O₂ a CO₂. Počet částic je schematický, nikoli měřítko litrů vody.
 
 ### O₂
 
@@ -107,7 +103,7 @@ Definice spojení
 
 **Chování elementu**
 
-- Světle modré částice odlétají od listů; běžná velikost je zvětšená a při otevření detailu se dále zvýrazní.
+- Světle modré částice odlétají od listů; jejich běžná velikost odpovídá H₂O.
 
 ### CO₂
 
@@ -119,19 +115,31 @@ Definice spojení
 
 **Chování elementu**
 
-- Červenooranžové částice přicházejí ke koruně; běžná velikost je zvětšená a při otevření detailu se dále zvýrazní.
+- Červenooranžové částice přicházejí ke koruně; jejich běžná velikost odpovídá H₂O.
 
 ### Fotony
 
 **Tag:** nepřiřazený
 Definice spojení
 
-- Okno: nepřiřazené.
+- Okno: [Světlo](okna.md#světlo).
 - Reakce na okno: není definovaná.
 
 **Chování elementu**
 
-- Žluté částice putují od slunce k listům.
+- Žluté částice znázorňují světlo přicházející k listům, které mohou fotosyntetizovat. Když aktivita fotosyntézy klesne prakticky na nulu, například u holé koruny, nové fotony se nevysílají. Při aktivní fotosyntéze jejich četnost určuje dostupnost světla.
+- Fotony používají tři varianty žlutého ručního tahu a natáčejí se podle směru letu.
+
+### Růst listů
+
+- Při rychlém posunu přes jaro se růst nových listů nepřeskočí: po dokončení opadu starých listů se nové viditelně zvětšují i tehdy, když datum již pokročilo dále. Vyšší rychlost času růst zrychlí.
+- Při téměř vyčerpané zásobě vody se listy postupně zbarví jako na podzim a následně opadávají. Vypnutí přísunu vody nespustí uschnutí okamžitě, dokud má strom ještě zásobu. Při obnovení zavodnění se listy v růstovém období obnoví.
+
+### Mraky
+
+- Při ručním snížení dostupnosti světla pod automatickou hodnotu se u slunce objevují mraky z dodaných textur. Plynule vyrůstají, zvyšují krytí a při dalším snížení se stahují ke slunci; při nulové dostupnosti ho zcela zakryjí.
+- Míra zakrytí vychází z rozdílu mezi ručně nastaveným světlem a automatickou hodnotou podle polohy slunce. Při návratu na automatickou nebo vyšší hodnotu mraky zmizí. V noci se nezobrazují.
+- Podle množství mraků se pozadí plynule mění směrem k šedé; po jejich rozptýlení se vrací k barvě odpovídající denní době.
 
 ### Cesta vody
 
@@ -147,11 +155,6 @@ Definice spojení
 - Textové schéma Kořeny → Xylém → Listy → pára ukazuje cestu vody.
 - Stálý přehled ukazuje kořeny dole, kmen uprostřed a listy nahoře; popisky rozlišují příjem, proudění vzhůru a odpar s chlazením.
 - Je statické; šipky neudávají rychlost ani měřený průtok.
-
-### Opad listů
-
-- Při podzimním opadu zanese poryv několik listů z koruny do popředí směrem ke kameře. Listy se při letu převalují a pak dopadnou na zem.
-- Směr poryvu se určí při uvolnění listu. Při systémovém omezení pohybu se poryv ke kameře nepřidává.
 
 ### Padající semena
 

@@ -44,6 +44,7 @@ export class PhotolysisSystem {
     this.treeWaterLiters = options.treeWaterLiters !== undefined ? options.treeWaterLiters : 800;
     this.sunElevationDeg = options.sunElevationDeg !== undefined ? options.sunElevationDeg : 45.8;
     this.activity = null; // Optional shared whole-tree model; legacy users retain their cutoff.
+    this.lightAvailability = null;
 
     // Simulation tuning
     this.streamDistance = options.streamDistance || 15.0; // Distance from reaction point towards Sun
@@ -119,6 +120,10 @@ export class PhotolysisSystem {
     this.activity = Math.max(0, Math.min(1, Number(value) || 0));
   }
 
+  setLightAvailability(value) {
+    this.lightAvailability = Math.max(0, Math.min(1, Number(value) || 0));
+  }
+
   // Setters for dynamic environmental parameters
   setWaterVolume(liters) {
     this.treeWaterLiters = Number(liters);
@@ -150,8 +155,8 @@ export class PhotolysisSystem {
     const growth = entrance * entrance * (3 - 2 * entrance);
     const exit = Math.max(0, Math.min(1, (b.maxLifetime - b.age) / 0.25));
     const shrink = exit * exit * (3 - 2 * exit);
-    const highlight = 1 + 1.1 * this.highlightedGases[b.kind];
-    b.mesh.scale.setScalar(b.baseScale * 1.6 * this.bubbleSize * (b.kind === 'water' ? 1 / 2.1 : 1) * highlight * (0.02 + 0.98 * growth) * shrink);
+    const highlight = 1 + 1.5 * this.highlightedGases[b.kind];
+    b.mesh.scale.setScalar(b.baseScale * 1.6 / 2.1 * this.bubbleSize * highlight * (0.02 + 0.98 * growth) * shrink);
   }
   setBubbleSpawnDistance(distance) {
     if (!Number.isFinite(distance)) return;
@@ -170,20 +175,23 @@ export class PhotolysisSystem {
 
   _initPhotonPool() {
     const THREE = this.THREE;
-    // Visibly elongated sphere/capsule bead along Z axis
-    const photonGeo = new THREE.SphereGeometry(0.12, 12, 12);
-    photonGeo.scale(0.85, 0.85, 2.8); // Elongated along velocity vector
-
-    // Clean, flat minimalist cel-shaded material
-    const photonMat = new THREE.MeshBasicMaterial({
-      color: 0xffcc00,
-      transparent: false,
-      depthWrite: true
+    const loader = new THREE.TextureLoader();
+    const textures = ['1.png', '2.png', '3.png'].map(name => {
+      const texture = loader.load(new URL(`../web_assets/fotony/${name}`, import.meta.url).href);
+      texture.colorSpace = THREE.SRGBColorSpace;
+      return texture;
     });
 
     this.photonPool = [];
     for (let i = 0; i < this.maxPhotons; i++) {
-      const mesh = new THREE.Mesh(photonGeo, photonMat);
+      const material = new THREE.SpriteMaterial({
+        map: textures[i % textures.length],
+        transparent: false,
+        alphaTest: 0.5,
+        toneMapped: false
+      });
+      const mesh = new THREE.Sprite(material);
+      mesh.scale.set(1.05, 0.85, 1);
       mesh.name = `PhotonParticle_${i}`;
       mesh.visible = false;
       mesh.renderOrder = 9;
@@ -402,9 +410,6 @@ export class PhotolysisSystem {
     p.speed = this.photonSpeed;
     p.active = true;
 
-    // Orient mesh along velocity vector
-    this._vDir.copy(p.target).sub(p.origin).normalize();
-    p.mesh.quaternion.setFromUnitVectors(this._zAxis, this._vDir);
     p.mesh.position.copy(p.origin);
     p.mesh.visible = true;
 
@@ -497,6 +502,8 @@ export class PhotolysisSystem {
     if (!this.isPhotolysisActive()) {
       return;
     }
+    if (this.lightAvailability !== null && this.activity !== null
+        && Math.random() >= Math.min(1, this.activity / Math.max(this.lightAvailability, 0.0001))) return;
 
     this.totalPhotonsAbsorbed++;
     this.absorbedPhotonsCount++;
@@ -512,14 +519,17 @@ export class PhotolysisSystem {
   }
 
   // Main simulation update loop
-  update(delta = 0.016) {
+  update(delta = 0.016, camera = null) {
     const dt = Math.min(delta, 0.1);
     this._updateWaterVapour(dt);
 
     // 1. Emission logic (only emit when conditions are met)
-    if (this.isPhotolysisActive() && this.photonsPerSecond > 0) {
+    const incomingLight = this.isPhotolysisActive()
+      && (this.lightAvailability === null || this.lightAvailability > 0.0001);
+    if (incomingLight && this.photonsPerSecond > 0) {
       // Keep the first photons visible even while photosynthesis is just starting.
-      const emissionActivity = this.activity === null ? 1 : Math.max(0.2, Math.sqrt(this.activity));
+      const emissionActivity = this.lightAvailability !== null ? Math.sqrt(this.lightAvailability)
+        : this.activity === null ? 1 : Math.max(0.2, Math.sqrt(this.activity));
       const emitInterval = 1.0 / (this.photonsPerSecond * emissionActivity);
       this.emitTimer += dt;
       while (this.emitTimer >= emitInterval) {
@@ -543,6 +553,10 @@ export class PhotolysisSystem {
         this._onPhotonCollision();
       } else {
         p.mesh.position.lerpVectors(p.origin, p.target, p.progress);
+        if (camera) {
+          this._vDir.copy(p.target).sub(p.origin).transformDirection(camera.matrixWorldInverse);
+          p.mesh.material.rotation = Math.atan2(this._vDir.y, this._vDir.x);
+        }
       }
     }
 

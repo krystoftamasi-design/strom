@@ -1,4 +1,4 @@
-import { oknaPodleKapitol, kontextoveTexty, pruvodceTranspiraci } from './element_ui_okna_obsah.js?v=seeds-3';
+import { oknaPodleKapitol, kontextoveTexty, pruvodceTranspiraci } from './element_ui_okna_obsah.js?v=photosynthesis-spacing-1';
 import { veliciny, vstupyVzorce, ohlasitChybuOken } from './element_ui_okna_veliciny.js?v=transpiration-vapour-1';
 import { zkontrolovatOkna } from './element_ui_okna_kontrola.js?v=seeds-1';
 
@@ -11,9 +11,14 @@ const strokes = {
     { file: 'ui_linka_svisla_4.png', width: 8, height: 32 },
     { file: 'ui_linka_svisla_5.png', width: 7, height: 69 },
   ],
-
+  horizontal: [
+    { file: 'ui_linka_vodorovna_1.png', width: 200, height: 5 },
+    { file: 'ui_linka_vodorovna_2.png', width: 201, height: 6 },
+    { file: 'ui_linka_vodorovna_3.png', width: 250, height: 6 },
+  ],
 };
-const strokeBags = { vertical: [] };
+const strokeBags = { vertical: [], horizontal: [] };
+const waterAvailabilityMax = model => Math.max(model.seasonalWaterLimit * 2, model.waterInput, 0.001);
 function pickUiWindowStroke(direction) {
   const bag = strokeBags[direction];
   if (!bag.length) {
@@ -26,7 +31,7 @@ function pickUiWindowStroke(direction) {
   const stroke = bag.pop();
   return { ...stroke, url: new URL(`../web_assets/${stroke.file}`, import.meta.url).href };
 }
-function createElementUiOkno({ panel, body, reveal, toggle }) {
+function createElementUiOkno({ panel, body, reveal, toggle, model, definition }) {
   panel.classList.add('element-ui-okno');
   panel.dataset.topic ||= 'neutral';
   const footer = document.createElement('div');
@@ -48,7 +53,7 @@ function createElementUiOkno({ panel, body, reveal, toggle }) {
   const header = panel.querySelector(':scope > header');
   const formula = body.querySelector('.ui-window-formula');
   readout.append(header, footer);
-  if (formula) readout.append(formula);
+  if (formula && panel.dataset.chapter !== 'photosynthesis') readout.append(formula);
   panel.insertBefore(readout, reveal);
   const edge = panel.querySelector('.annotation-frame-left');
   for (const frame of panel.querySelectorAll('.annotation-frame')) if (frame !== edge) frame.remove();
@@ -56,6 +61,89 @@ function createElementUiOkno({ panel, body, reveal, toggle }) {
   const stroke = pickUiWindowStroke('vertical');
   panel.style.setProperty('--ui-edge-variant', `url("${stroke.url}")`);
   edge.dataset.variant = stroke.file;
+  if (panel.dataset.chapter === 'photosynthesis' && !definition.hlavni) {
+    const current = footer.querySelector('.chapter-metric');
+    const unavailable = document.createElement('div');
+    unavailable.className = 'chapter-metric element-ui-unavailable';
+    const label = document.createElement('span');
+    label.textContent = definition.id === 'co2' ? 'produkce' : 'spotřeba';
+    const message = document.createElement('span');
+    message.textContent = 'Zatím nemáme hodnotu';
+    unavailable.append(label, message);
+    const respirationFields = { kyslik: 'respirationOxygen', co2: 'respirationCO2', cukry: 'respirationSugar' };
+    if (respirationFields[definition.id]) {
+      unavailable.classList.remove('element-ui-unavailable');
+      const value = document.createElement('strong');
+      value.title = 'Orientační výukový odhad dýchání';
+      const output = document.createElement('output');
+      output.dataset.respiration = respirationFields[definition.id];
+      output.textContent = '—';
+      const unit = document.createElement('span');
+      unit.className = 'element-ui-unit';
+      unit.textContent = 'g/min';
+      value.append(output, unit);
+      message.replaceWith(value);
+    }
+    const availability = document.createElement('div');
+    availability.className = 'chapter-metric';
+    const availabilityLabel = document.createElement('span');
+    availabilityLabel.textContent = 'dostupnost';
+    const availabilityValue = document.createElement('strong');
+    availabilityValue.className = 'element-ui-availability';
+    availabilityValue.textContent = '—';
+    availability.append(availabilityLabel, availabilityValue);
+    const isAvailabilityWindow = ['voda', 'svetlo'].includes(definition.id);
+    const isTopMeasured = isAvailabilityWindow || definition.id === 'co2';
+    const topMetric = isTopMeasured ? current : unavailable;
+    const bottomMetric = isAvailabilityWindow ? availability : isTopMeasured ? unavailable : current;
+    const topFlow = isTopMeasured ? 'measured' : 'respiration';
+    const bottomFlow = definition.id === 'voda' ? 'availability'
+      : definition.id === 'svetlo' ? 'light-availability'
+        : isTopMeasured ? 'respiration' : 'measured';
+
+    if (current) {
+      topMetric.classList.add('element-ui-flow-top');
+      bottomMetric.classList.add('element-ui-flow-bottom');
+
+      const bar = document.createElement('div');
+      bar.className = 'element-ui-balance-bar';
+      bar.dataset.topFlow = topFlow;
+      bar.dataset.bottomFlow = bottomFlow;
+
+      const fill = document.createElement('span');
+      fill.className = 'element-ui-balance-fill';
+      fill.style.setProperty('--ui-flow-variant', `url("${new URL('../web_assets/okna/ui_balance_bar.png', import.meta.url).href}")`);
+
+      bar.append(fill);
+
+      if (bottomFlow === 'availability' || bottomFlow === 'light-availability') {
+        const slider = document.createElement('input');
+        slider.type = 'range';
+        slider.min = '0'; slider.max = '1000'; slider.step = '1';
+        slider.className = 'element-ui-flow-slider element-ui-balance-slider';
+        if (bottomFlow === 'light-availability') {
+          slider.setAttribute('aria-label', 'Dostupnost světla');
+          slider.addEventListener('input', () => model.setLightAvailability(Number(slider.value) / 1000));
+        } else {
+          slider.setAttribute('aria-label', 'Dostupnost vody pro kořeny');
+          slider.addEventListener('pointerdown', () => {
+            slider.dataset.scaleMax = String(waterAvailabilityMax(model));
+          });
+          for (const eventName of ['pointerup', 'pointercancel', 'lostpointercapture']) {
+            slider.addEventListener(eventName, () => { delete slider.dataset.scaleMax; });
+          }
+          slider.addEventListener('input', () => {
+            const max = Number(slider.dataset.scaleMax) || waterAvailabilityMax(model);
+            if (Number.isFinite(max) && max > 0) model.setWaterInput(max * Number(slider.value) / 1000);
+          });
+        }
+        bar.append(slider);
+      }
+
+      footer.replaceChildren(topMetric, bar, bottomMetric);
+      panel.classList.add('element-ui-flow-window');
+    }
+  }
   toggle.classList.add('element-ui-trigger');
   toggle.setAttribute('aria-controls', reveal.id = `${body.id}-reveal`);
 }
@@ -63,7 +151,7 @@ function createElementUiOkno({ panel, body, reveal, toggle }) {
 
 // Static screen-space UI. Camera and tree geometry never participate in layout.
 // Original content and controls are moved, so live outputs and handlers survive.
-export function createTreeAnnotations({ shell, model, createSeasonControl, setElementHighlight = () => {} }) {
+export function createTreeAnnotations({ shell, model, createSeasonControl, setElementHighlight = () => { } }) {
   // This hint lives only until reload; defaults opening programmatically do not dismiss it.
   const hintTimer = setTimeout(() => shell.classList.add('window-toggle-hint'),
     Math.max(0, 30000 - performance.now()));
@@ -75,12 +163,41 @@ export function createTreeAnnotations({ shell, model, createSeasonControl, setEl
   const contextSelections = new Map();
   const contextGuides = new Map();
   let activeChapter = null;
+  let photosynthesisIntro = null;
+  let photosynthesisIntroTimer = null;
   function syncHighlights() {
     const states = [...linkedWindows.values()];
     for (const tag of new Set(states.map(state => state.tag))) {
       setElementHighlight(tag, states.some(state => state.tag === tag && state.chapter === activeChapter && (state.open || state.hovered)));
     }
   }
+  let pointerPosition = null;
+  function syncWindowHover() {
+    let changed = false;
+    for (const [panel, state] of linkedWindows) {
+      const inRect = element => {
+        const rect = element.getBoundingClientRect();
+        return pointerPosition && pointerPosition.x >= rect.left && pointerPosition.x <= rect.right
+          && pointerPosition.y >= rect.top && pointerPosition.y <= rect.bottom;
+      };
+      const reveal = panel.querySelector('.annotation-reveal');
+      const hovered = Boolean(state.chapter === activeChapter && pointerPosition
+        && (inRect(panel) || (state.open && reveal && inRect(reveal))));
+      panel.classList.toggle('is-pointer-over', hovered);
+      if (state.hovered !== hovered) { state.hovered = hovered; changed = true; }
+    }
+    if (changed) syncHighlights();
+  }
+  window.addEventListener('pointermove', event => {
+    if (event.pointerType === 'touch') return;
+    pointerPosition = { x: event.clientX, y: event.clientY };
+    syncWindowHover();
+  }, { passive: true });
+  window.addEventListener('pointerout', event => {
+    if (event.relatedTarget) return;
+    pointerPosition = null;
+    syncWindowHover();
+  });
   const content = shell.querySelector('.chapter-content');
   const kontrola = zkontrolovatOkna({
     okna: oknaPodleKapitol,
@@ -175,16 +292,7 @@ export function createTreeAnnotations({ shell, model, createSeasonControl, setEl
     }
     body.append(...nodes.filter(Boolean));
     panel.append(header, reveal);
-    if (definition) createElementUiOkno({ panel, body, reveal, toggle });
-    if (definition) {
-      for (const [eventName, hovered] of [['pointerenter', true], ['pointerleave', false]]) {
-        panel.addEventListener(eventName, event => {
-          if (event.pointerType === 'touch') return;
-          const state = linkedWindows.get(panel);
-          if (state) { state.hovered = hovered; syncHighlights(); }
-        });
-      }
-    }
+    if (definition) createElementUiOkno({ panel, body, reveal, toggle, model, definition });
     let expanded = false;
     function expand(open) {
       expanded = open;
@@ -208,7 +316,13 @@ export function createTreeAnnotations({ shell, model, createSeasonControl, setEl
     }
     const userToggle = () => { dismissToggleHint(); expand(!expanded); };
     toggle.addEventListener('click', userToggle);
-    if (definition && (definition.viditelnyPrepinac || ['water', 'sugar'].includes(definition.tema))) h.addEventListener('click', userToggle);
+    if (panel.classList.contains('element-ui-flow-window')) {
+      panel.querySelector('.element-ui-readout').addEventListener('click', event => {
+        if (!event.target.closest('button, input')) userToggle();
+      });
+    } else if (definition && (definition.viditelnyPrepinac || ['water', 'sugar'].includes(definition.tema))) {
+      h.addEventListener('click', userToggle);
+    }
     expand(definition ? Boolean(definition.otevrene) : article.dataset.chapter === 'intro' || article.dataset.chapter === 'seasons');
     header.append(h, toggle);
     article.append(panel);
@@ -252,7 +366,7 @@ export function createTreeAnnotations({ shell, model, createSeasonControl, setEl
       metric.className = `chapter-metric ${value.druh || 'value'}-metric`;
       if (value.popisHodnoty) {
         const label = document.createElement('span');
-        label.textContent = value.popisHodnoty;
+        label.textContent = definition.id === 'svetlo' ? 'spotřeba' : value.popisHodnoty;
         metric.append(label);
       }
       const strong = document.createElement('strong');
@@ -297,6 +411,17 @@ export function createTreeAnnotations({ shell, model, createSeasonControl, setEl
   }
 
   for (const article of content.querySelectorAll('article[data-chapter]')) {
+    if (article.dataset.chapter === 'photosynthesis') {
+      const title = document.createElement('h2');
+      title.className = 'photosynthesis-title';
+      title.textContent = 'Fotosyntéza';
+      article.append(title);
+      photosynthesisIntro = document.createElement('p');
+      photosynthesisIntro.className = 'photosynthesis-intro';
+      photosynthesisIntro.textContent = 'Listy využívají světlo k tvorbě cukrů.';
+      photosynthesisIntro.hidden = true;
+      article.append(photosynthesisIntro);
+    }
     if (kontextoveTexty[article.dataset.chapter]) addContextGuide(article, article.dataset.chapter);
     if (article.dataset.chapter === 'transpiration') {
       const guide = document.createElement('section');
@@ -326,8 +451,8 @@ export function createTreeAnnotations({ shell, model, createSeasonControl, setEl
         article.querySelector('.period-readout'), paragraphs[2], article.querySelector('.period-seasons'),
         article.querySelector('#periodYearPlayback')], heading);
       card(article, 'leaves', 'right', 'Denní čas', [paragraphs[3],
-        article.querySelector('.period-hours'), article.querySelector('.period-day-cycle'),
-        article.querySelector('#periodDayPlayback'), paragraphs[4]]);
+      article.querySelector('.period-hours'), article.querySelector('.period-day-cycle'),
+      article.querySelector('#periodDayPlayback'), paragraphs[4]]);
     } else if (article.dataset.chapter === 'roots') {
       const tipHeading = article.querySelector('h3');
       detail.insertBefore(article.querySelector('.root-diagram'), detail.querySelector('p'));
@@ -339,7 +464,7 @@ export function createTreeAnnotations({ shell, model, createSeasonControl, setEl
     // Only empty wrappers can be discarded; live outputs must remain in the DOM.
     const mainBody = article.querySelector('.annotation-body');
     for (const node of [...article.children]) {
-      if (node.classList.contains('tree-annotation') || node.classList.contains('chapter-context-guide') || node.classList.contains('transpiration-prompt')) continue;
+      if (node.classList.contains('tree-annotation') || node.classList.contains('chapter-context-guide') || node.classList.contains('transpiration-prompt') || node.classList.contains('photosynthesis-title') || node.classList.contains('photosynthesis-intro')) continue;
       if (node.classList.contains('chapter-metrics') && !node.children.length) node.remove();
       else if (mainBody) mainBody.append(node);
     }
@@ -354,7 +479,60 @@ export function createTreeAnnotations({ shell, model, createSeasonControl, setEl
 
   return {
     update(chapter, playbackDelta = 0) {
+      if (chapter !== activeChapter && photosynthesisIntro) {
+        clearTimeout(photosynthesisIntroTimer);
+        photosynthesisIntro.hidden = chapter !== 'photosynthesis';
+        if (chapter === 'photosynthesis') {
+          photosynthesisIntroTimer = setTimeout(() => { photosynthesisIntro.hidden = true; }, 20000);
+        }
+      }
+      const chapterChanged = chapter !== activeChapter;
       activeChapter = chapter;
+      if (chapterChanged) syncWindowHover();
+      const clamp01 = value => (Number.isFinite(value) ? Math.max(0, Math.min(1, value)) : 0);
+      const balanceValues = windowId => {
+        const clean = value => (Number.isFinite(value) && value > 0 ? value : 0);
+        if (windowId === 'svetlo') return [clean(model.activity), clean(model.light)];
+        if (windowId === 'voda') return [clean(model.waterConsumption), clean(model.waterInput)];
+        if (windowId === 'kyslik') return [clean(model.respirationOxygen), clean(model.oxygenGramsPerMinute)];
+        if (windowId === 'co2') return [clean(model.co2GramsPerMinute), clean(model.respirationCO2)];
+        if (windowId === 'cukry') return [clean(model.respirationSugar), clean(model.glucoseGramsPerMinute)];
+        return [0, 0];
+      };
+      for (const bar of shell.querySelectorAll('.element-ui-balance-bar')) {
+        const panel = bar.closest('.element-ui-okno');
+        const slider = bar.querySelector('input');
+        const maxWater = Number(slider?.dataset.scaleMax) || waterAvailabilityMax(model);
+        const [topValue, bottomValue] = balanceValues(panel.dataset.windowId);
+        const peak = Math.max(topValue, bottomValue);
+        const diff = peak > 1e-6 ? Math.max(-1, Math.min(1, (bottomValue - topValue) / peak)) : 0;
+        const topInset = diff < 0 ? 47 + diff * 47 : 53;
+        const bottomInset = diff > 0 ? 47 - diff * 47 : 53;
+        bar.style.setProperty('--balance-top', `${topInset}%`);
+        bar.style.setProperty('--balance-bottom', `${bottomInset}%`);
+
+        if (bar.dataset.bottomFlow === 'light-availability' && slider) {
+          const lightLevel = clamp01(model.light);
+          const percent = Math.round(lightLevel * 100);
+          panel.querySelector('.element-ui-availability').textContent = `${percent} %`;
+          slider.disabled = !model.ready || model.sunElevation <= 0;
+          if (slider.disabled || !slider.matches(':active')) slider.value = String(Math.round(lightLevel * 1000));
+          slider.setAttribute('aria-valuetext', `${percent} procent`);
+          continue;
+        }
+        if (slider) {
+          const waterLevel = clamp01(model.waterInput / maxWater);
+          if (!slider.matches(':active')) slider.value = String(Math.round(waterLevel * 1000));
+          const displayed = Number.isFinite(model.waterInput) ? (model.waterInput * 60).toLocaleString('cs-CZ', { maximumFractionDigits: 1, minimumFractionDigits: 1 }) : '—';
+          panel.querySelector('.element-ui-availability').textContent = `${displayed} l/h`;
+          slider.setAttribute('aria-valuetext', `${displayed} litrů za hodinu`);
+          slider.disabled = !model.ready;
+        }
+      }
+      for (const output of shell.querySelectorAll('[data-respiration]')) {
+        const value = model[output.dataset.respiration];
+        output.textContent = model.ready && Number.isFinite(value) ? value.toLocaleString('cs-CZ', { minimumFractionDigits: 1, maximumFractionDigits: 1 }) : '—';
+      }
       for (const definition of oknaPodleKapitol.seeds) {
         const output = shell.querySelector(`output[data-stav-obdobi="${definition.id}"]`);
         if (output) output.textContent = definition.stavObdobi[model.season] || '—';
