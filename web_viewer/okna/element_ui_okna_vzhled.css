@@ -455,15 +455,14 @@ body.scene-night .tree-overlay .element-ui-okno .ui-word {
 .tree-overlay .element-ui-okno:is([data-window-id="kyslik"], [data-window-id="co2"], [data-window-id="cukry"]) .element-ui-balance-bar::after {
   position: absolute;
   left: 50%;
-  transform: translateX(-50%);
+  transform: translate(-50%, -50%);
   z-index: 2;
   color: var(--ui-ink);
   font: 700 clamp(10px, 1.25vh, 13px)/1 var(--ui-font-text);
-  text-shadow: 0 0 3px white, 0 0 3px white;
   pointer-events: none;
 }
-.tree-overlay .element-ui-okno:is([data-window-id="kyslik"], [data-window-id="co2"], [data-window-id="cukry"]) .element-ui-balance-bar::before { content: 'P'; top: 2px; }
-.tree-overlay .element-ui-okno:is([data-window-id="kyslik"], [data-window-id="co2"], [data-window-id="cukry"]) .element-ui-balance-bar::after { content: 'S'; bottom: 2px; }
+.tree-overlay .element-ui-okno:is([data-window-id="kyslik"], [data-window-id="co2"], [data-window-id="cukry"]) .element-ui-balance-bar::before { content: 'P'; top: 7%; }
+.tree-overlay .element-ui-okno:is([data-window-id="kyslik"], [data-window-id="co2"], [data-window-id="cukry"]) .element-ui-balance-bar::after { content: 'S'; top: 93%; }
 .tree-overlay .element-ui-okno[data-window-id="co2"] .element-ui-balance-bar::before { content: 'S'; }
 .tree-overlay .element-ui-okno[data-window-id="co2"] .element-ui-balance-bar::after { content: 'P'; }
 
