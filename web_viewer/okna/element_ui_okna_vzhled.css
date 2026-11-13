@@ -451,6 +451,20 @@ body.scene-night .tree-overlay .element-ui-okno .ui-word {
   clip-path: inset(var(--balance-top, 50%) 0 var(--balance-bottom, 50%) 0);
 }
 
+.tree-overlay .element-ui-okno:is([data-window-id="kyslik"], [data-window-id="co2"], [data-window-id="cukry"]) .element-ui-balance-bar::before,
+.tree-overlay .element-ui-okno:is([data-window-id="kyslik"], [data-window-id="co2"], [data-window-id="cukry"]) .element-ui-balance-bar::after {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  color: white;
+  font: 600 7px/1 sans-serif;
+  pointer-events: none;
+}
+.tree-overlay .element-ui-okno:is([data-window-id="kyslik"], [data-window-id="co2"], [data-window-id="cukry"]) .element-ui-balance-bar::before { content: 'P'; top: 2px; }
+.tree-overlay .element-ui-okno:is([data-window-id="kyslik"], [data-window-id="co2"], [data-window-id="cukry"]) .element-ui-balance-bar::after { content: 'S'; bottom: 2px; }
+.tree-overlay .element-ui-okno[data-window-id="co2"] .element-ui-balance-bar::before { content: 'S'; }
+.tree-overlay .element-ui-okno[data-window-id="co2"] .element-ui-balance-bar::after { content: 'P'; }
+
 .tree-overlay .element-ui-balance-slider {
   appearance: none;
   writing-mode: vertical-lr;

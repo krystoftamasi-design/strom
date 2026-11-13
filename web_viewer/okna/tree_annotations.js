@@ -112,7 +112,7 @@ function createElementUiOkno({ panel, body, reveal, toggle, model, definition })
 
       const fill = document.createElement('span');
       fill.className = 'element-ui-balance-fill';
-      fill.style.setProperty('--ui-flow-variant', `url("${new URL('../web_assets/okna/ui_balance_bar.png', import.meta.url).href}")`);
+      fill.style.setProperty('--ui-flow-variant', `url("${new URL('../web_assets/okna/affinity-pruh.png', import.meta.url).href}")`);
 
       bar.append(fill);
 
@@ -495,7 +495,7 @@ export function createTreeAnnotations({ shell, model, createSeasonControl, setEl
         if (windowId === 'svetlo') return [clean(model.activity) * 100, clean(model.light) * 100];
         if (windowId === 'voda') return [clean(model.waterConsumption) * 60, clean(model.waterInput) * 60];
         if (windowId === 'kyslik') return [clean(model.oxygenGramsPerMinute), clean(model.respirationOxygen)];
-        if (windowId === 'co2') return [clean(model.co2GramsPerMinute), clean(model.respirationCO2)];
+        if (windowId === 'co2') return [clean(model.respirationCO2), clean(model.co2GramsPerMinute)];
         if (windowId === 'cukry') return [clean(model.glucoseGramsPerMinute), clean(model.respirationSugar)];
         return [0, 0];
       };
