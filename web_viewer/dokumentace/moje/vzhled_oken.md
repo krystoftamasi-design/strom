@@ -36,7 +36,7 @@ history:
 
 - Údaje tvoří svislý blok: nadpis → hodnota s jednotkou → vzorec nebo přehled vstupů. Ve Fotosyntéze je vzorec nebo přehled vstupů v detailu.
 - Tematický detail má vlastní posuv. Je vpravo od údajů v Transpiraci a ve Fotosyntéze a pod nadpisem v Semenaci. Hlavní okno používá variantu detailu pod údaji.
-- Detail Fotosyntézy se otevírá 12 px vpravo od okna a začíná 6 px pod jeho horním okrajem. Pod vzorcem je odstavec široký nejvýše 88 % detailu, bez levého odsazení od okna a s pravým odstupem 6 % jeho šířky. Text odstavce je zarovnaný doleva a má písmo o jeden bod menší než společná velikost detailu. Při jednořádkovém vzorci začíná zhruba ve výšce horního pruhu.
+- Detail Fotosyntézy se otevírá 24 px vpravo od okna a začíná 6 px pod jeho horním okrajem. Pod vzorcem je odstavec široký nejvýše 88 % detailu, bez levého odsazení od okna a s pravým odstupem 6 % jeho šířky. Text odstavce je zarovnaný doleva a má písmo o jeden bod menší než společná velikost detailu. Vzorec používá velikost 12 až 15 px. Při jednořádkovém vzorci začíná zhruba ve výšce horního pruhu.
 - Nadpis zůstává na jednom řádku bez zmenšování podle délky; při nedostatku místa je dostupný vodorovný posuv.
 - Tlačítko +/− má vlastní prostor vedle nadpisu, odstup 8 px a viditelný fokus. Základní varianta má kruhový obrys o průměru 28 px.
 - Ve Fotosyntéze má tlačítko výplň ve tvaru malované částice o šířce přibližně 17 až 20 px a klikací plochu 22 až 28 px v barvě tématu s bílým +/−. Při najetí na okno se výplň zesvětlí a symbol ztmavne.
@@ -61,7 +61,7 @@ history:
 - Pravý sloupec začíná na 52 % a má šířku 44 %; okna Transpirace mají horní okraje 26 / 46 / 70 % a výšku 17 %.
 - Hlavní okno: levý okraj 4 %, horní 65 %, šířka 44 %, výška 24 %; minimální výška oken se ruší. Odsazení obsahu je 12 px, tematický tah má šířku 5 px a hlavní 6 px. Tematický detail má nad sebou mezeru 8 px.
 - Používá se společná typografická škála pro úzkou obrazovku, bez výjimek podle délky nadpisu.
-- Vzorce i přehledy vstupů se mohou zalomit. Okna Fotosyntézy začínají na 52 % a jejich detaily se otevírají 8 px vpravo od okna do zbývající šířky pravého sloupce (nejvýše 44 % obrazovky).
+- Vzorce i přehledy vstupů se mohou zalomit. Okna Fotosyntézy začínají na 52 % a jejich detaily se otevírají 16 px vpravo od okna do zbývající šířky pravého sloupce (nejvýše 44 % obrazovky).
 
 ### Písmo
 

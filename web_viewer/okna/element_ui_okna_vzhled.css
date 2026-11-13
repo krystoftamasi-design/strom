@@ -461,8 +461,8 @@ body.scene-night .tree-overlay .element-ui-okno .ui-word {
   font: 700 clamp(10px, 1.25vh, 13px)/1 var(--ui-font-text);
   pointer-events: none;
 }
-.tree-overlay .element-ui-okno:is([data-window-id="kyslik"], [data-window-id="co2"], [data-window-id="cukry"]) .element-ui-balance-bar::before { content: 'P'; top: 7%; }
-.tree-overlay .element-ui-okno:is([data-window-id="kyslik"], [data-window-id="co2"], [data-window-id="cukry"]) .element-ui-balance-bar::after { content: 'S'; top: 93%; }
+.tree-overlay .element-ui-okno:is([data-window-id="kyslik"], [data-window-id="co2"], [data-window-id="cukry"]) .element-ui-balance-bar::before { content: 'P'; top: 10%; }
+.tree-overlay .element-ui-okno:is([data-window-id="kyslik"], [data-window-id="co2"], [data-window-id="cukry"]) .element-ui-balance-bar::after { content: 'S'; top: 90%; }
 
 .tree-overlay .element-ui-balance-slider {
   appearance: none;
@@ -1100,10 +1100,10 @@ body.scene-night .chapter-context-guide .transpiration-legend {
   position: absolute;
   top: 6px;
   bottom: auto;
-  left: calc(100% + 12px);
+  left: calc(100% + 24px);
   right: auto;
   width: min(26vw, 38ch);
-  max-width: calc(27vw - 100% - 12px);
+  max-width: calc(27vw - 100% - 24px);
   height: auto;
   max-height: 17vh;
   margin: 0;
@@ -1112,6 +1112,7 @@ body.scene-night .chapter-context-guide .transpiration-legend {
 
 .tree-overlay .element-ui-flow-window .annotation-body>.ui-window-formula {
   min-block-size: calc(max(var(--ui-heading-size) * 1.05, var(--ui-toggle-size)) - 13px);
+  font-size: clamp(12px, .9vw, 15px);
 }
 
 .tree-overlay .element-ui-flow-window .annotation-body>p:not(.ui-window-formula) {
@@ -1167,9 +1168,9 @@ body.scene-night .chapter-context-guide .transpiration-legend {
   }
 
   .tree-overlay .element-ui-okno[data-chapter="photosynthesis"][data-side="right"] .annotation-reveal {
-    left: calc(100% + 8px);
+    left: calc(100% + 16px);
     width: min(30vw, 38ch);
-    max-width: calc(44vw - 100% - 8px);
+    max-width: calc(44vw - 100% - 16px);
     max-height: 17vh;
     margin: 0;
   }
