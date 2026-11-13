@@ -463,8 +463,6 @@ body.scene-night .tree-overlay .element-ui-okno .ui-word {
 }
 .tree-overlay .element-ui-okno:is([data-window-id="kyslik"], [data-window-id="co2"], [data-window-id="cukry"]) .element-ui-balance-bar::before { content: 'P'; top: 7%; }
 .tree-overlay .element-ui-okno:is([data-window-id="kyslik"], [data-window-id="co2"], [data-window-id="cukry"]) .element-ui-balance-bar::after { content: 'S'; top: 93%; }
-.tree-overlay .element-ui-okno[data-window-id="co2"] .element-ui-balance-bar::before { content: 'S'; }
-.tree-overlay .element-ui-okno[data-window-id="co2"] .element-ui-balance-bar::after { content: 'P'; }
 
 .tree-overlay .element-ui-balance-slider {
   appearance: none;

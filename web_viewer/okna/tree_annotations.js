@@ -504,8 +504,12 @@ export function createTreeAnnotations({ shell, model, createSeasonControl, setEl
         const slider = bar.querySelector('input');
         const maxWater = Number(slider?.dataset.scaleMax) || waterAvailabilityMax(model);
         const [topValue, bottomValue] = balanceValues(panel.dataset.windowId);
-        const topInset = 47 * (1 - clamp01(topValue / 7));
-        const bottomInset = 47 * (1 - clamp01(bottomValue / 7));
+        const isMassBalance = ['kyslik', 'co2', 'cukry'].includes(panel.dataset.windowId);
+        const difference = topValue - bottomValue;
+        const topLevel = isMassBalance ? Math.max(0, difference) : topValue;
+        const bottomLevel = isMassBalance ? Math.max(0, -difference) : bottomValue;
+        const topInset = 47 * (1 - clamp01(topLevel / 7));
+        const bottomInset = 47 * (1 - clamp01(bottomLevel / 7));
         bar.style.setProperty('--balance-top', `${topInset}%`);
         bar.style.setProperty('--balance-bottom', `${bottomInset}%`);
 
