@@ -1439,9 +1439,7 @@
     const leafDepthMat1 = createLeafDepthMaterial(0, leafReference, shaderUniforms);
     const leafDepthMat2 = createLeafDepthMaterial(1, leafReference, shaderUniforms);
     const leafBreeze = setupLeafBreeze([leafToonMat1, leafToonMat2, leafDepthMat1, leafDepthMat2], { leafCenters: true });
-    const waterSurface = { value: new THREE.Vector4() };
-    const classicWater = new URLSearchParams(location.search).get('water') === 'classic';
-    const barkToonMat = createBarkMaterial(barkReference,leafReference,shaderUniforms,waterSurface);
+    const barkToonMat = createBarkMaterial(barkReference,leafReference,shaderUniforms);
     const canopyOcclusion = new CanopyOcclusion(leafReference, shaderUniforms);
 
     // 6. GLTF TREE LOADER
@@ -3180,20 +3178,6 @@
     const sliderSapGlow = document.getElementById('sliderSapGlow');
     const valSapGlow = document.getElementById('valSapGlow');
     const chkSapXray = document.getElementById('chkSapXray');
-    function updateWaterSurface() {
-      const useSurface = !classicWater && chkSapXray.checked && trunkMesh && rootsMesh;
-      for (const mesh of sapMeshes) mesh.visible = !useSurface;
-      if (sapJointMesh) sapJointMesh.visible = !useSurface;
-      const reveal = sapUniforms.uFlowRevealBottom.value === 1;
-      const front = THREE.MathUtils.lerp(-1.08, 1.08, reveal ? 1 - sapFlowRetraction : sapFlowRetraction);
-      const emission = (0.42 + 0.36 * flowSelections.water.value) * sapUniforms.uWidthScale.value * sapUniforms.uGlow.value;
-      waterSurface.value.set(
-        useSurface && sapGroup.visible ? sapUniforms.uOpacity.value : 0,
-        Math.min(1.4, emission),
-        reducedElementMotion.matches ? 0 : sapUniforms.uTime.value * 2.2,
-        (reveal ? -1 : 1) * (front + 2)
-      );
-    }
 
     if (chkSapFlow) {
       chkSapFlow.addEventListener('change', (e) => {
@@ -4180,7 +4164,6 @@
       studioColor.copy(baseSceneBackground).lerp(overcastBackground, cloudAmount * 0.55);
       chapterApp.updateScene(playbackDelta);
       updateHighlights(delta);
-      updateWaterSurface();
       seedChapter.update(chapterApp.chapter === 'seeds', ecology.seasonPosition, trunkMesh, seedHighlight, playbackDelta);
       treeBird.update(!chapterApp.introduction && chapterApp.chapter !== 'roots', trunkMesh, playbackDelta);
       introForest.update();
