@@ -30,7 +30,7 @@ history:
 #### Přiblížení stromu
 
 - Nejmenší vzdálenost kamery od cíle otáčení je 17 jednotek scény; hodnotu lze doladit po vizuálním ověření.
-- Pohled kamery je mírně posunutý o 4 % šířky obrazovky doprava, aby měl 3D model stromu v rozhraní lepší umístění při zachování osy otáčení v kmeni.
+- Pohled kamery je posunutý o 2 % šířky obrazovky doleva při zachování osy otáčení v kmeni.
 
 #### Kruh ročních období
 

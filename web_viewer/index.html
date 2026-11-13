@@ -1176,7 +1176,7 @@
     // 2. CAMERA SETUP (EXACT BLENDER CAMERA PARAMETERS)
     // Blender: loc = [37.91, -28.07, 18.18], Blender Z-up -> glTF Y-up: [37.91, 18.18, 28.07]
     const camera = new THREE.PerspectiveCamera(43, window.innerWidth / window.innerHeight, 0.5, 300);
-    const treeHorizontalShift = 0.04;
+    const treeHorizontalShift = -0.02;
     function updateCameraProjection() {
       const width = window.innerWidth;
       const height = window.innerHeight;
