@@ -492,8 +492,8 @@ export function createTreeAnnotations({ shell, model, createSeasonControl, setEl
       const clamp01 = value => (Number.isFinite(value) ? Math.max(0, Math.min(1, value)) : 0);
       const balanceValues = windowId => {
         const clean = value => (Number.isFinite(value) && value > 0 ? value : 0);
-        if (windowId === 'svetlo') return [clean(model.activity), clean(model.light)];
-        if (windowId === 'voda') return [clean(model.waterConsumption), clean(model.waterInput)];
+        if (windowId === 'svetlo') return [clean(model.activity) * 100, clean(model.light) * 100];
+        if (windowId === 'voda') return [clean(model.waterConsumption) * 60, clean(model.waterInput) * 60];
         if (windowId === 'kyslik') return [clean(model.oxygenGramsPerMinute), clean(model.respirationOxygen)];
         if (windowId === 'co2') return [clean(model.respirationCO2), clean(model.co2GramsPerMinute)];
         if (windowId === 'cukry') return [clean(model.glucoseGramsPerMinute), clean(model.respirationSugar)];
@@ -504,10 +504,8 @@ export function createTreeAnnotations({ shell, model, createSeasonControl, setEl
         const slider = bar.querySelector('input');
         const maxWater = Number(slider?.dataset.scaleMax) || waterAvailabilityMax(model);
         const [topValue, bottomValue] = balanceValues(panel.dataset.windowId);
-        const peak = Math.max(topValue, bottomValue);
-        const diff = peak > 1e-6 ? Math.max(-1, Math.min(1, (bottomValue - topValue) / peak)) : 0;
-        const topInset = diff < 0 ? 47 + diff * 47 : 53;
-        const bottomInset = diff > 0 ? 47 - diff * 47 : 53;
+        const topInset = 47 * (1 - clamp01(topValue / 7));
+        const bottomInset = 47 * (1 - clamp01(bottomValue / 7));
         bar.style.setProperty('--balance-top', `${topInset}%`);
         bar.style.setProperty('--balance-bottom', `${bottomInset}%`);
 
