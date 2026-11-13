@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 
-const MODEL_URL = new URL('../web_assets/ptak/sojka.glb?v=flock', import.meta.url).href;
+const MODEL_URL = new URL('../web_assets/ptak/sojka.glb?v=wing-shape', import.meta.url).href;
 const MASK_URL = new URL('../web_assets/ptak/sojka-alfa.svg?v=feathers', import.meta.url).href;
 const LENGTH = 1.4;
 const FOLDED_WING = 0.86;
@@ -234,8 +234,10 @@ function createBirdPose(model, shadowSource, config, index) {
       tail.rotation.z = still ? 0 : Math.sin(time * (flight ? 14 : 3.4)) * (flight ? 0.13 : 0.07);
       legA.rotation.z = flight ? -(1 - feetOut) * 0.95 : stride * 0.34;
       legB.rotation.z = flight ? legA.rotation.z : -stride * 0.34;
-      wingA.rotation.x = THREE.MathUtils.lerp(FOLDED_WING, flap, spread);
-      wingB.rotation.x = -wingA.rotation.x;
+      const wingPitch = THREE.MathUtils.lerp(FOLDED_WING, flap, spread);
+      const sweepBack = 0.35 * (1 - spread);
+      wingA.rotation.set(wingPitch, -sweepBack, 0, 'YXZ');
+      wingB.rotation.set(-wingPitch, sweepBack, 0, 'YXZ');
 
       bird.visible = true;
       shadow.visible = bird.position.y < 0.12;
