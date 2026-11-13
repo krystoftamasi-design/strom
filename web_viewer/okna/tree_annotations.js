@@ -495,7 +495,7 @@ export function createTreeAnnotations({ shell, model, createSeasonControl, setEl
         if (windowId === 'svetlo') return [clean(model.activity) * 100, clean(model.light) * 100];
         if (windowId === 'voda') return [clean(model.waterConsumption) * 60, clean(model.waterInput) * 60];
         if (windowId === 'kyslik') return [clean(model.oxygenGramsPerMinute), clean(model.respirationOxygen)];
-        if (windowId === 'co2') return [clean(model.respirationCO2), clean(model.co2GramsPerMinute)];
+        if (windowId === 'co2') return [clean(model.co2GramsPerMinute), clean(model.respirationCO2)];
         if (windowId === 'cukry') return [clean(model.glucoseGramsPerMinute), clean(model.respirationSugar)];
         return [0, 0];
       };
