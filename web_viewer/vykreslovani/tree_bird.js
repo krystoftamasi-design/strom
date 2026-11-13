@@ -1,16 +1,19 @@
 import * as THREE from 'three';
 
-const MODEL_URL = new URL('../web_assets/ptak/sojka.glb?v=wings', import.meta.url).href;
-const MASK_URL = new URL('../web_assets/ptak/sojka-alfa.svg', import.meta.url).href;
+const MODEL_URL = new URL('../web_assets/ptak/sojka.glb?v=flock', import.meta.url).href;
+const MASK_URL = new URL('../web_assets/ptak/sojka-alfa.svg?v=feathers', import.meta.url).href;
 const LENGTH = 1.4;
 const FOLDED_WING = 0.86;
+const BIRDS = [
+  { angle: -0.68, distance: 0.74, size: 1, delay: 0, bend: -1 },
+  { angle: 0.15, distance: 0.85, size: 0.91, delay: 15, bend: 1 },
+  { angle: 0.92, distance: 0.95, size: 0.95, delay: 29, bend: 1 }
+];
 const ground = (angle, radius) => new THREE.Vector3(Math.cos(angle) * radius, 0, Math.sin(angle) * radius);
 const heading = (x, z) => Math.atan2(-z, x); // The beak points along +X.
-const face = ({ from, to }) => heading(to.x - from.x, to.z - from.z);
+const turnBetween = (from, to) => THREE.MathUtils.euclideanModulo(to - from + Math.PI, 2 * Math.PI) - Math.PI;
 
-function findPerch(branches, angle, radius) {
-  branches.updateWorldMatrix(true, false);
-  const box = new THREE.Box3().setFromObject(branches);
+function findPerch(branches, box, angle, radius, occupied) {
   const ray = new THREE.Raycaster();
   const normalMatrix = new THREE.Matrix3().getNormalMatrix(branches.matrixWorld);
   const normal = new THREE.Vector3();
@@ -24,7 +27,8 @@ function findPerch(branches, angle, radius) {
       ray.set(origin, new THREE.Vector3(0, -1, 0));
       for (const hit of ray.intersectObject(branches, false)) {
         const level = (hit.point.y - box.min.y) / (box.max.y - box.min.y);
-        if (level < 0.35 || level > 0.82 || !hit.face) continue;
+        if (level < 0.35 || level > 0.82 || !hit.face ||
+            occupied.some(point => point.distanceToSquared(hit.point) < 2.25)) continue;
         if (normal.copy(hit.face.normal).applyNormalMatrix(normalMatrix).y < 0.48) continue;
         const score = Math.abs(level - 0.51) * 3 + Math.abs(offset) * 0.35 + Math.abs(distance - 0.55);
         if (score >= bestScore) continue;
@@ -36,47 +40,69 @@ function findPerch(branches, angle, radius) {
   return best;
 }
 
-function stylize(material, mask, lighting) {
+function flightPath(from, to, radius, bend) {
+  const climbing = to.y > from.y;
+  // Sweep out from the trunk, climb or descend beside the canopy, then turn
+  // back in. The final control point stays above the landing point.
+  const departure = ground(Math.atan2(from.z, from.x) + bend * 0.65, radius * 1.75);
+  const approach = ground(Math.atan2(to.z, to.x) + bend * 0.92, radius * 1.55);
+  departure.y = from.y + (climbing ? 0.7 : 0.9);
+  approach.y = to.y + (climbing ? 2.9 : 1.0);
+  return new THREE.CubicBezierCurve3(from, departure, approach, to);
+}
+
+function stylize(material, mask, lighting, { plumageRamp, plumageBump }) {
+  if (!Array.isArray(plumageRamp) || plumageRamp.length !== 12 || !plumageRamp.every(Number.isFinite)) {
+    throw new Error('V modelu chybí barevná paleta sojky.');
+  }
   const result = new THREE.MeshLambertMaterial({
     map: material.map,
     alphaMap: mask,
     alphaToCoverage: true,
+    bumpMap: material.map,
+    bumpScale: plumageBump,
     side: THREE.DoubleSide
   });
+  const stops = [0, 4, 8].map(index => new THREE.Vector4(...plumageRamp.slice(index, index + 4)));
   result.onBeforeCompile = shader => {
     shader.uniforms.uBirdSun = lighting.uSunDirection;
     shader.uniforms.uBirdIllumination = lighting.uSceneIllumination;
+    shader.uniforms.uPlumageRamp = { value: stops };
     shader.fragmentShader = shader.fragmentShader
       .replace('#include <common>', `#include <common>
         uniform vec3 uBirdSun;
-        uniform float uBirdIllumination;`)
+        uniform float uBirdIllumination;
+        uniform vec4 uPlumageRamp[3];`)
       .replace('#include <shadowmap_pars_fragment>', '#include <shadowmap_pars_fragment>\n#include <shadowmask_pars_fragment>')
       .replace('#include <alphamap_fragment>', `
         #include <alphamap_fragment>
-        float edgeWidth = clamp(fwidth(diffuseColor.a), 0.05, 0.45);
+        float edgeWidth = clamp(fwidth(diffuseColor.a), 0.12, 0.45);
         diffuseColor.a = smoothstep(0.5 - edgeWidth, 0.5 + edgeWidth, diffuseColor.a);
         if (diffuseColor.a <= 0.0) discard;`)
       .replace('#include <opaque_fragment>', `
         float facing = dot(normalize(normal), normalize(mat3(viewMatrix) * uBirdSun));
-        float band = 0.56 + 0.21 * smoothstep(-0.20, -0.12, facing)
-                          + 0.23 * smoothstep(0.38, 0.46, facing);
+        float band = 0.44 + 0.28 * smoothstep(-0.22, -0.17, facing)
+                          + 0.28 * smoothstep(0.37, 0.42, facing);
         float daylight = clamp(uBirdIllumination / 2.7, 0.0, 1.0);
-        vec3 plumage = mix(vec3(dot(diffuseColor.rgb, vec3(0.2126, 0.7152, 0.0722))), diffuseColor.rgb, 0.87);
-        outgoingLight = plumage * mix(vec3(0.13, 0.17, 0.25), vec3(band * mix(0.62, 1.0, getShadowMask())), daylight);
+        // Blender's CONSTANT ramp defines the plumage. Widen the two hard
+        // thresholds only across the pixel footprint to keep them stable.
+        float pigment = dot(diffuseColor.rgb, vec3(0.2126, 0.7152, 0.0722));
+        float width = clamp(fwidth(pigment), 0.005, 0.055);
+        float mid = uPlumageRamp[1].x;
+        float high = uPlumageRamp[2].x;
+        vec3 plumage = mix(uPlumageRamp[0].yzw, uPlumageRamp[1].yzw, smoothstep(mid - width, mid + width, pigment));
+        plumage = mix(plumage, uPlumageRamp[2].yzw, smoothstep(high - width, high + width, pigment));
+        vec3 skyTint = vec3(0.018, 0.024, 0.043);
+        vec3 shade = mix(skyTint, plumage, band * mix(0.66, 1.0, getShadowMask()));
+        outgoingLight = mix(plumage * vec3(0.13, 0.17, 0.25) + skyTint * 0.18, shade, daylight);
         #undef OPAQUE
         #include <opaque_fragment>`);
   };
   return result;
 }
 
-export function createTreeBird({ scene, loader, textureLoader, camera, lighting, reducedMotion }) {
-  const bird = new THREE.Group();
-  const pose = new THREE.Group();
-  bird.name = 'Sojka';
-  bird.visible = false;
-  bird.add(pose);
-  scene.add(bird);
-  const shadow = new THREE.Mesh(new THREE.PlaneGeometry(0.72, 0.42), new THREE.ShaderMaterial({
+function createGroundShadow() {
+  return new THREE.Mesh(new THREE.PlaneGeometry(0.72, 0.42), new THREE.ShaderMaterial({
     transparent: true,
     depthWrite: false,
     uniforms: { opacity: { value: 0.13 } },
@@ -86,12 +112,120 @@ export function createTreeBird({ scene, loader, textureLoader, camera, lighting,
       uniform float opacity;
       void main() { gl_FragColor = vec4(0.15, 0.13, 0.12, opacity * (1.0 - smoothstep(0.05, 0.5, distance(vUv, vec2(0.5))))); }`
   }));
-  shadow.rotation.x = -Math.PI / 2;
-  shadow.visible = false;
-  scene.add(shadow);
+}
 
-  let parts, loading = false, failed = false;
-  let attached, route, step = 0, elapsed = 0;
+function createBirdPose(model, shadowSource, config, index) {
+  const bird = new THREE.Group();
+  bird.name = index === 0 ? 'Sojka' : `Sojka ${index + 1}`;
+  bird.visible = false;
+  const pose = new THREE.Group();
+  bird.add(pose);
+  pose.add(model.clone());
+  pose.scale.setScalar(config.size);
+  const shadow = shadowSource.clone();
+  shadow.visible = false;
+  shadow.rotation.x = -Math.PI / 2;
+  const [body, tail, legA, legB, wingA, wingB] =
+    ['Body', 'Tail', 'LegA', 'LegB', 'WingA', 'WingB'].map(name => pose.getObjectByName(name));
+
+  const tangent = new THREE.Vector3();
+  const ahead = new THREE.Vector3();
+  let route, cycle, elapsed;
+  return {
+    bird,
+    shadow,
+    setRoute(angle, radius, perch) {
+      const { bend, distance, delay } = config;
+      const start = ground(angle - bend * 0.31, radius * distance);
+      const forage = ground(angle, radius * (distance - 0.15));
+      const end = ground(angle + bend * 0.40, radius * (distance + 0.05));
+      const move = (kind, from, to, seconds) => {
+        const path = kind === 'fly' ? flightPath(from, to, radius, bend) : null;
+        const dir = path ? path.getTangent(0, tangent) : tangent.subVectors(to, from);
+        return { kind, from, to, seconds, path, yaw: heading(dir.x, dir.z) };
+      };
+      route = [
+        move('walk', start, forage, 5.5),
+        move('peck', forage, end, 4),
+        move('walk', forage, end, 4.5)
+      ];
+      if (perch) route.push(
+        move('fly', end, perch, 7 + index * 0.3),
+        move('rest', perch, start, 11 + index * 2),
+        move('fly', perch, start, 6 + index * 0.35)
+      );
+      else route.push(move('walk', end, start, 8));
+      route.push(move('rest', start, forage, 5 + index));
+      cycle = route.reduce((sum, action) => sum + action.seconds, 0);
+      elapsed = delay % cycle;
+    },
+    update(still, delta) {
+      if (!still) elapsed = (elapsed + delta) % cycle;
+      let time = still ? 0 : elapsed;
+      const step = route.findIndex(action => {
+        if (time < action.seconds) return true;
+        time -= action.seconds;
+        return false;
+      });
+      const { kind, from, to, seconds, path, yaw } = route[step];
+      const t = time / seconds;
+      const walking = kind === 'walk' && !still;
+      const flight = Boolean(path);
+      const stride = walking ? Math.sin(time * Math.PI * 5.6) : 0;
+      const dip = kind === 'peck' ? Math.max(0, Math.sin(time * Math.PI * 2.8)) ** 5 * 0.62 : 0;
+      const previous = route[(step + route.length - 1) % route.length];
+      const prevTangent = previous.path?.getTangent(1, tangent);
+      const prevYaw = prevTangent ? heading(prevTangent.x, prevTangent.z) : previous.yaw;
+      const turn = turnBetween(prevYaw, yaw);
+      bird.position.copy(from);
+      bird.rotation.y = still ? yaw : prevYaw + turn * THREE.MathUtils.smoothstep(time, 0, 0.42);
+      pose.rotation.set(0, 0, 0);
+      if (walking) {
+        bird.position.lerp(to, t);
+        bird.position.y += Math.abs(stride) * 0.043;
+      }
+      if (kind === 'rest') bird.rotation.y += Math.sin(time * 0.85) * 0.23;
+      let spread = 0, flap = 0, feetOut = 1;
+      if (flight) {
+        const progress = THREE.MathUtils.smoothstep(t, 0, 1);
+        path.getPointAt(progress, bird.position);
+        path.getTangentAt(progress, tangent);
+        path.getTangentAt(Math.min(1, progress + 0.06), ahead);
+        const flightYaw = heading(tangent.x, tangent.z);
+        const yawAhead = heading(ahead.x, ahead.z);
+        const curve = turnBetween(flightYaw, yawAhead);
+        bird.rotation.y = prevYaw + turnBetween(prevYaw, flightYaw) * THREE.MathUtils.smoothstep(t, 0, 0.08);
+        const airborne = Math.sin(t * Math.PI);
+        const flare = THREE.MathUtils.smoothstep(t, 0.78, 0.94) * (1 - THREE.MathUtils.smoothstep(t, 0.94, 1));
+        pose.rotation.x = THREE.MathUtils.clamp(curve * 2.5, -0.36, 0.36) * airborne;
+        pose.rotation.z = THREE.MathUtils.clamp(Math.asin(tangent.y), -0.65, 0.85) * Math.min(1, airborne * 3)
+          + flare * 0.34;
+        feetOut = 1 - THREE.MathUtils.smoothstep(t, 0, 0.16) * (1 - THREE.MathUtils.smoothstep(t, 0.75, 1));
+        spread = THREE.MathUtils.smoothstep(t, 0, 0.12) * (1 - THREE.MathUtils.smoothstep(t, 0.91, 1));
+        const stroke = Math.sin(time * Math.PI * 10.4 + index);
+        const glide = THREE.MathUtils.smoothstep(t, 0.53, 0.68) * (1 - THREE.MathUtils.smoothstep(t, 0.80, 0.91));
+        flap = stroke * (0.70 - glide * 0.58) - flare * 0.16;
+      }
+
+      body.rotation.z = -dip + stride * 0.045;
+      tail.rotation.z = still ? 0 : Math.sin(time * (flight ? 14 : 3.4)) * (flight ? 0.13 : 0.07);
+      legA.rotation.z = flight ? -(1 - feetOut) * 0.95 : stride * 0.34;
+      legB.rotation.z = flight ? legA.rotation.z : -stride * 0.34;
+      wingA.rotation.x = THREE.MathUtils.lerp(FOLDED_WING, flap, spread);
+      wingB.rotation.x = -wingA.rotation.x;
+
+      bird.visible = true;
+      shadow.visible = bird.position.y < 0.12;
+      if (shadow.visible) {
+        shadow.position.set(bird.position.x - 0.04, 0.008, bird.position.z);
+        shadow.rotation.z = bird.rotation.y;
+      }
+    }
+  };
+}
+
+export function createTreeBird({ scene, loader, textureLoader, camera, lighting, reducedMotion }) {
+  let flock, loading = false, failed = false, attached;
   function load() {
     if (loading || failed) return;
     loading = true;
@@ -102,92 +236,47 @@ export function createTreeBird({ scene, loader, textureLoader, camera, lighting,
       const scale = LENGTH / (box.max.x - box.min.x);
       model.scale.setScalar(scale);
       model.position.y = -box.min.y * scale;
-      const [body, tail, legA, legB, beak, wingA, wingB] = nodes;
+      const [body, tail, , , beak, wingA, wingB] = nodes;
       mask.flipY = false; // Use the same glTF UVs as the plumage texture.
       mask.needsUpdate = true;
-      const material = stylize(body.material, mask, lighting);
+      const material = stylize(body.material, mask, lighting, body.userData);
       for (const node of nodes) {
         node.material = material;
         node.receiveShadow = true;
       }
-      // All four parts follow the torso and retain their own joint pivots.
       model.updateMatrixWorld(true);
       for (const node of [tail, beak, wingA, wingB]) body.attach(node);
-      pose.add(model);
-      parts = { body, tail, legA, legB, wingA, wingB };
+      const shadow = createGroundShadow();
+      flock = BIRDS.map((config, index) => createBirdPose(model, shadow, config, index));
+      for (const { bird, shadow } of flock) scene.add(bird, shadow);
     }).catch(error => {
       failed = true;
       console.warn('Model sojky se nepodařilo načíst.', error);
     }).finally(() => { loading = false; });
   }
 
-  function setRoute(branches) {
-    const box = new THREE.Box3().setFromObject(branches);
-    const angle = Math.atan2(camera.position.z, camera.position.x);
-    const radius = Math.max(3, Math.min(box.max.x - box.min.x, box.max.z - box.min.z) * 0.5);
-    const start = ground(angle - 0.52, radius * 0.62);
-    const forage = ground(angle + 0.11, radius * 0.51);
-    const end = ground(angle + 0.59, radius * 0.64);
-    const perch = findPerch(branches, angle, radius);
-    route = [
-      { kind: 'walk', from: start, to: forage, seconds: 5 },
-      { kind: 'peck', from: forage, to: end, seconds: 4 },
-      { kind: 'walk', from: forage, to: end, seconds: 4 }
-    ];
-    if (perch) route.push(
-      { kind: 'fly', from: end, to: perch, seconds: 3.8 },
-      { kind: 'rest', from: perch, to: start, seconds: 12 },
-      { kind: 'fly', from: perch, to: start, seconds: 4.2 }
-    );
-    else route.push({ kind: 'walk', from: end, to: start, seconds: 7 });
-    route.push({ kind: 'rest', from: start, to: forage, seconds: 6 });
-    attached = branches;
-    step = elapsed = 0;
-  }
-
   return {
     update(active, branches, delta) {
-      bird.visible = shadow.visible = false;
-      if (!active || !branches?.visible) return;
-      if (!parts) { load(); return; }
-      if (attached !== branches) setRoute(branches);
-      const still = reducedMotion.matches;
-      if (!still) elapsed += delta;
-      while (elapsed >= route[step].seconds) {
-        elapsed -= route[step].seconds;
-        step = (step + 1) % route.length;
+      if (!active || !branches?.visible) {
+        for (const { bird, shadow } of flock || []) bird.visible = shadow.visible = false;
+        return;
       }
-      const { kind, from, to, seconds } = route[still ? 0 : step];
-      const t = still ? 0 : elapsed / seconds;
-      const walking = kind === 'walk' && !still;
-      const flight = kind === 'fly' && !still;
-      const stride = walking ? Math.sin(elapsed * Math.PI * 5.6) : 0;
-      const approach = Math.sin(Math.PI * t);
-      const dip = kind === 'peck' ? Math.max(0, Math.sin(elapsed * Math.PI * 2.8)) ** 5 * 0.62 : 0;
-      const yaw = face(route[still ? 0 : step]);
-      const previousYaw = face(route[(step + route.length - 1) % route.length]);
-      const turn = THREE.MathUtils.euclideanModulo(yaw - previousYaw + Math.PI, 2 * Math.PI) - Math.PI;
-      bird.position.copy(from);
-      if (walking || flight) bird.position.lerp(to, flight ? THREE.MathUtils.smoothstep(t, 0, 1) : t);
-      if (flight) bird.position.y += approach * 2.2;
-      if (walking) bird.position.y += Math.abs(stride) * 0.043;
-      bird.rotation.y = still ? yaw : previousYaw + turn * THREE.MathUtils.smoothstep(elapsed, 0, 0.42);
-      if (kind === 'rest' && !still) bird.rotation.y += Math.sin(elapsed * 0.85) * 0.23;
-      pose.rotation.z = flight ? Math.atan2(to.y - from.y, from.distanceTo(to) + 0.01) * approach * 0.7 : 0;
-      parts.body.rotation.z = -dip + stride * 0.045;
-      parts.tail.rotation.z = still ? 0 : Math.sin(elapsed * (flight ? 14 : 3.4)) * (flight ? 0.18 : 0.07);
-      parts.legA.rotation.z = flight ? -approach * 0.95 : stride * 0.34;
-      parts.legB.rotation.z = flight ? -approach * 0.95 : -stride * 0.34;
-      const spread = flight ? THREE.MathUtils.smoothstep(Math.min(t, 1 - t), 0, 0.16) : 0;
-      const flap = Math.sin(elapsed * Math.PI * 11) * 0.62;
-      parts.wingA.rotation.x = THREE.MathUtils.lerp(FOLDED_WING, flap, spread);
-      parts.wingB.rotation.x = -parts.wingA.rotation.x;
-      bird.visible = true;
-      shadow.visible = !flight && from.y < 0.01;
-      if (shadow.visible) {
-        shadow.position.set(bird.position.x - 0.04, 0.008, bird.position.z);
-        shadow.rotation.z = bird.rotation.y;
+      if (!flock) { load(); return; }
+      if (attached !== branches) {
+        branches.updateWorldMatrix(true, false);
+        const box = new THREE.Box3().setFromObject(branches);
+        const radius = Math.max(3, Math.min(box.max.x - box.min.x, box.max.z - box.min.z) * 0.5);
+        const centerAngle = Math.atan2(camera.position.z, camera.position.x);
+        const occupied = [];
+        flock.forEach((bird, index) => {
+          const angle = centerAngle + BIRDS[index].angle;
+          const perch = findPerch(branches, box, angle, radius, occupied);
+          if (perch) occupied.push(perch);
+          bird.setRoute(angle, radius, perch);
+        });
+        attached = branches;
       }
+      for (const bird of flock) bird.update(reducedMotion.matches, delta);
     }
   };
 }

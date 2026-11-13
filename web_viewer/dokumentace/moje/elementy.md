@@ -172,13 +172,13 @@ Definice spojení
 - Průběh určuje ovládání období. Pauza zastaví pád a při omezení pohybu se výsledek zobrazí rovnou. Modely se zobrazují v Semenaci a jejich počet i měřítko jsou schematické.
 - Šíření živočichy vysvětluje související okno.
 
-### Sojka
+### Sojky
 
-- V kapitolách s pohledem na strom se sojka prochází pod korunou, občas zobne do země a po přeletu chvíli posedí na větvi. Když nenajde místo k přistání, zůstane na zemi.
-- Při přeletu mává křídly. Při dosednutí je složí k tělu.
-- Ve scéně má od zobáku k ocasu přibližně 1,4 m, aby byla čitelná při pohledu na celý strom.
-- Kresbu peří doplňuje odstupňované světlo ve stylu listů. Okraje peří vyhlazuje maska průhlednosti. Pauza zastaví animaci; při omezení pohybu sojka stojí pod stromem.
-- Sojka nemá tag ani propojené okno.
+- V kapitolách s pohledem na strom se tři sojky střídavě procházejí pod korunou, zobou a posedávají na různých větvích. Sojka bez vhodného místa k přistání zůstává na zemi.
+- Sojka se rozletí do strany, v oblouku nabere výšku a přiblíží se k větvi shora. V zatáčce se naklání. Před dosednutím chvíli plachtí, zpomalí, natáhne nohy a složí křídla.
+- Délka až 1,4 m zlepšuje čitelnost při pohledu na celý strom. Peří vychází z barevné palety v Blenderu a odstupňovaného světla ve stylu listů. Maska průhlednosti změkčuje obrys a zachovává výřezy mezi pery.
+- Pauza zastaví animaci. Při omezení pohybu sojky stojí pod stromem.
+- Sojky nemají tag ani propojené okno.
 
 ### Pravidlo propojení
 
