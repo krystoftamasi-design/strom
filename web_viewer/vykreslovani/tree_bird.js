@@ -6,9 +6,10 @@ const LENGTH = 1.4;
 const FOLDED_WING = 0.86;
 const BIRDS = [
   { angle: -0.68, distance: 0.74, size: 1, delay: 0, bend: -1 },
-  { angle: 0.15, distance: 0.85, size: 0.91, delay: 15, bend: 1 },
-  { angle: 0.92, distance: 0.95, size: 0.95, delay: 29, bend: 1 }
+  { angle: 0.15, distance: 0.85, size: 0.91, delay: 19, bend: 1 },
+  { angle: 0.92, distance: 0.95, size: 0.95, delay: 37, bend: 1 }
 ];
+const FULL_TURN = 2 * Math.PI;
 const ground = (angle, radius) => new THREE.Vector3(Math.cos(angle) * radius, 0, Math.sin(angle) * radius);
 const heading = (x, z) => Math.atan2(-z, x); // The beak points along +X.
 const turnBetween = (from, to) => THREE.MathUtils.euclideanModulo(to - from + Math.PI, 2 * Math.PI) - Math.PI;
@@ -40,15 +41,34 @@ function findPerch(branches, box, angle, radius, occupied) {
   return best;
 }
 
-function flightPath(from, to, radius, bend) {
-  const climbing = to.y > from.y;
-  // Sweep out from the trunk, climb or descend beside the canopy, then turn
-  // back in. The final control point stays above the landing point.
-  const departure = ground(Math.atan2(from.z, from.x) + bend * 0.65, radius * 1.75);
-  const approach = ground(Math.atan2(to.z, to.x) + bend * 0.92, radius * 1.55);
-  departure.y = from.y + (climbing ? 0.7 : 0.9);
-  approach.y = to.y + (climbing ? 2.9 : 1.0);
-  return new THREE.CubicBezierCurve3(from, departure, approach, to);
+class OrbitFlight extends THREE.Curve {
+  constructor(from, to, radius, bend) {
+    super();
+    this.from = from;
+    this.to = to;
+    this.radius = radius;
+    this.startAngle = Math.atan2(from.z, from.x);
+    this.startRadius = Math.hypot(from.x, from.z);
+    this.endRadius = Math.hypot(to.x, to.z);
+    const endAngle = Math.atan2(to.z, to.x);
+    const sweep = THREE.MathUtils.euclideanModulo(bend * (endAngle - this.startAngle), FULL_TURN);
+    this.sweep = bend * (sweep < 0.78 * FULL_TURN ? sweep + FULL_TURN : sweep);
+    this.climbing = to.y > from.y;
+  }
+
+  getPoint(t, target = new THREE.Vector3()) {
+    if (t === 0) return target.copy(this.from);
+    if (t === 1) return target.copy(this.to);
+    const { lerp, smoothstep } = THREE.MathUtils;
+    // Gain speed on the low arc, climb outside the crown, then turn in to land.
+    const angle = this.startAngle + this.sweep * t;
+    const outside = lerp(this.startRadius, this.radius, smoothstep(t, 0, 0.20));
+    const radius = lerp(outside, this.endRadius, smoothstep(t, 0.83, 1));
+    const altitude = lerp(this.from.y, this.to.y, smoothstep(t, 0.17, 0.83));
+    const lift = (this.climbing ? 0.55 : 0.8) * smoothstep(t, 0, 0.15) * (1 - smoothstep(t, 0.28, 0.48));
+    const clearance = (this.climbing ? 0.8 : 0.4) * smoothstep(t, 0.64, 0.82) * (1 - smoothstep(t, 0.86, 1));
+    return target.set(Math.cos(angle) * radius, altitude + lift + clearance, Math.sin(angle) * radius);
+  }
 }
 
 function stylize(material, mask, lighting, { plumageRamp, plumageBump }) {
@@ -134,15 +154,18 @@ function createBirdPose(model, shadowSource, config, index) {
   return {
     bird,
     shadow,
-    setRoute(angle, radius, perch) {
+    setRoute(angle, radius, orbitRadius, perch) {
       const { bend, distance, delay } = config;
       const start = ground(angle - bend * 0.31, radius * distance);
       const forage = ground(angle, radius * (distance - 0.15));
       const end = ground(angle + bend * 0.40, radius * (distance + 0.05));
-      const move = (kind, from, to, seconds) => {
-        const path = kind === 'fly' ? flightPath(from, to, radius, bend) : null;
+      const move = (kind, from, to, seconds, path = null) => {
         const dir = path ? path.getTangent(0, tangent) : tangent.subVectors(to, from);
         return { kind, from, to, seconds, path, yaw: heading(dir.x, dir.z) };
+      };
+      const fly = (from, to) => {
+        const path = new OrbitFlight(from, to, orbitRadius, bend);
+        return move('fly', from, to, path.getLength() / (5.7 + index * 0.22), path);
       };
       route = [
         move('walk', start, forage, 5.5),
@@ -150,9 +173,9 @@ function createBirdPose(model, shadowSource, config, index) {
         move('walk', forage, end, 4.5)
       ];
       if (perch) route.push(
-        move('fly', end, perch, 7 + index * 0.3),
+        fly(end, perch),
         move('rest', perch, start, 11 + index * 2),
-        move('fly', perch, start, 6 + index * 0.35)
+        fly(perch, start)
       );
       else route.push(move('walk', end, start, 8));
       route.push(move('rest', start, forage, 5 + index));
@@ -190,7 +213,7 @@ function createBirdPose(model, shadowSource, config, index) {
         const progress = THREE.MathUtils.smoothstep(t, 0, 1);
         path.getPointAt(progress, bird.position);
         path.getTangentAt(progress, tangent);
-        path.getTangentAt(Math.min(1, progress + 0.06), ahead);
+        path.getTangentAt(Math.min(1, progress + 0.025), ahead);
         const flightYaw = heading(tangent.x, tangent.z);
         const yawAhead = heading(ahead.x, ahead.z);
         const curve = turnBetween(flightYaw, yawAhead);
@@ -266,13 +289,17 @@ export function createTreeBird({ scene, loader, textureLoader, camera, lighting,
         branches.updateWorldMatrix(true, false);
         const box = new THREE.Box3().setFromObject(branches);
         const radius = Math.max(3, Math.min(box.max.x - box.min.x, box.max.z - box.min.z) * 0.5);
+        const orbitRadius = Math.hypot(
+          Math.max(Math.abs(box.min.x), Math.abs(box.max.x)),
+          Math.max(Math.abs(box.min.z), Math.abs(box.max.z))
+        ) + 1.0;
         const centerAngle = Math.atan2(camera.position.z, camera.position.x);
         const occupied = [];
         flock.forEach((bird, index) => {
           const angle = centerAngle + BIRDS[index].angle;
           const perch = findPerch(branches, box, angle, radius, occupied);
           if (perch) occupied.push(perch);
-          bird.setRoute(angle, radius, perch);
+          bird.setRoute(angle, radius, orbitRadius + index * 0.45, perch);
         });
         attached = branches;
       }

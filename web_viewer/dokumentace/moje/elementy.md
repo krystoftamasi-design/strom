@@ -175,7 +175,7 @@ Definice spojení
 ### Sojky
 
 - V kapitolách s pohledem na strom se tři sojky střídavě procházejí pod korunou, zobou a posedávají na různých větvích. Sojka bez vhodného místa k přistání zůstává na zemi.
-- Sojka se rozletí do strany, v oblouku nabere výšku a přiblíží se k větvi shora. V zatáčce se naklání. Před dosednutím chvíli plachtí, zpomalí, natáhne nohy a složí křídla.
+- Sojka po vzletu zrychlí nízko nad zemí a teprve potom nabírá výšku při kroužení kolem stromu. V zatáčce se naklání. Před dosednutím na větev nebo na zem krátce plachtí, zpomalí, natáhne nohy a složí křídla.
 - Délka až 1,4 m zlepšuje čitelnost při pohledu na celý strom. Peří vychází z barevné palety v Blenderu a odstupňovaného světla ve stylu listů. Maska průhlednosti změkčuje obrys a zachovává výřezy mezi pery.
 - Pauza zastaví animaci. Při omezení pohybu sojky stojí pod stromem.
 - Sojky nemají tag ani propojené okno.
