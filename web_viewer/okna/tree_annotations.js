@@ -93,7 +93,7 @@ function createElementUiOkno({ panel, body, reveal, toggle, model, definition })
     availabilityValue.textContent = '—';
     availability.append(availabilityLabel, availabilityValue);
     const isAvailabilityWindow = ['voda', 'svetlo'].includes(definition.id);
-    const isTopMeasured = isAvailabilityWindow || definition.id === 'co2';
+    const isTopMeasured = isAvailabilityWindow || definition.id !== 'co2';
     const topMetric = isTopMeasured ? current : unavailable;
     const bottomMetric = isAvailabilityWindow ? availability : isTopMeasured ? unavailable : current;
     const topFlow = isTopMeasured ? 'measured' : 'respiration';
@@ -494,9 +494,9 @@ export function createTreeAnnotations({ shell, model, createSeasonControl, setEl
         const clean = value => (Number.isFinite(value) && value > 0 ? value : 0);
         if (windowId === 'svetlo') return [clean(model.activity), clean(model.light)];
         if (windowId === 'voda') return [clean(model.waterConsumption), clean(model.waterInput)];
-        if (windowId === 'kyslik') return [clean(model.respirationOxygen), clean(model.oxygenGramsPerMinute)];
-        if (windowId === 'co2') return [clean(model.co2GramsPerMinute), clean(model.respirationCO2)];
-        if (windowId === 'cukry') return [clean(model.respirationSugar), clean(model.glucoseGramsPerMinute)];
+        if (windowId === 'kyslik') return [clean(model.oxygenGramsPerMinute), clean(model.respirationOxygen)];
+        if (windowId === 'co2') return [clean(model.respirationCO2), clean(model.co2GramsPerMinute)];
+        if (windowId === 'cukry') return [clean(model.glucoseGramsPerMinute), clean(model.respirationSugar)];
         return [0, 0];
       };
       for (const bar of shell.querySelectorAll('.element-ui-balance-bar')) {
