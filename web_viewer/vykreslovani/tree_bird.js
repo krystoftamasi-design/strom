@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 
 const MODEL_URL = new URL('../web_assets/ptak/sojka.glb', import.meta.url).href;
-const LENGTH = 1.08;
+const LENGTH = 1.4;
 const ground = (angle, radius) => new THREE.Vector3(Math.cos(angle) * radius, 0, Math.sin(angle) * radius);
 const heading = (x, z) => Math.atan2(-z, x); // The beak points along +X.
 const face = ({ from, to }) => heading(to.x - from.x, to.z - from.z);

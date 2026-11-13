@@ -175,6 +175,7 @@ Definice spojení
 ### Sojka
 
 - V kapitolách s pohledem na strom se sojka prochází pod korunou, občas zobne do země a po přeletu chvíli posedí na větvi. Když nenajde místo k přistání, zůstane na zemi.
+- Ve scéně má od zobáku k ocasu přibližně 1,4 m, aby byla čitelná při pohledu na celý strom.
 - Kresbu peří doplňuje odstupňované světlo ve stylu listů. Pauza zastaví animaci; při omezení pohybu sojka stojí pod stromem.
 - Sojka nemá tag ani propojené okno.
 
