@@ -33,7 +33,7 @@ export function attachBarkAttributes(geometry, data, isRoot = false) {
   geometry.setAttribute('barkWaterDistance', new THREE.BufferAttribute(distances, 1));
 }
 
-export function createBarkMaterial(reference, leafReference, uniforms, water) {
+export function createBarkMaterial(reference, leafReference, uniforms, water = { value: new THREE.Vector4() }) {
   const material = new THREE.MeshLambertMaterial({ color: 0xffffff, side: THREE.FrontSide });
   material.name = 'Bark_GraphML_Tree (Blender reference)';
   material.toneMapped = false;
