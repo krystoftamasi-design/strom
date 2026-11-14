@@ -1,9 +1,9 @@
 import * as THREE from 'three';
 
-const MODEL_URL = new URL('../web_assets/ptak/sojka.glb?v=wing-shape', import.meta.url).href;
+const MODEL_URL = new URL('../web_assets/ptak/sojka.glb?v=anatomy', import.meta.url).href;
 const MASK_URL = new URL('../web_assets/ptak/sojka-alfa.svg?v=feathers', import.meta.url).href;
 const LENGTH = 1.4;
-const FOLDED_WING = 0.86;
+const FOLDED_WING = 0.94;
 const BIRDS = [
   { angle: -0.68, distance: 0.74, size: 1, delay: 0, bend: -1 },
   { angle: 0.15, distance: 0.85, size: 0.91, delay: 19, bend: 1 },
@@ -134,6 +134,16 @@ function createGroundShadow() {
   }));
 }
 
+function lowestFoot(leg, angle) {
+  const points = leg.geometry.attributes.position;
+  const sin = Math.sin(angle), cos = Math.cos(angle);
+  let lowest = Infinity;
+  for (let i = 0; i < points.count; i++) {
+    lowest = Math.min(lowest, points.getX(i) * sin + points.getY(i) * cos);
+  }
+  return lowest;
+}
+
 function createBirdPose(model, shadowSource, config, index) {
   const bird = new THREE.Group();
   bird.name = index === 0 ? 'Sojka' : `Sojka ${index + 1}`;
@@ -147,6 +157,11 @@ function createBirdPose(model, shadowSource, config, index) {
   shadow.rotation.x = -Math.PI / 2;
   const [body, tail, legA, legB, wingA, wingB] =
     ['Body', 'Tail', 'LegA', 'LegB', 'WingA', 'WingB'].map(name => pose.getObjectByName(name));
+  const legRestA = legA.position.y;
+  const legRestB = legB.position.y;
+  const soleA = lowestFoot(legA, 0);
+  const soleB = lowestFoot(legB, 0);
+  const bodyRest = body.position.y;
 
   const tangent = new THREE.Vector3();
   const ahead = new THREE.Vector3();
@@ -194,7 +209,9 @@ function createBirdPose(model, shadowSource, config, index) {
       const t = time / seconds;
       const walking = kind === 'walk' && !still;
       const flight = Boolean(path);
-      const stride = walking ? Math.sin(time * Math.PI * 5.6) : 0;
+      const stepPhase = time * Math.PI * 2.8;
+      const stepAmount = walking ? Math.min(1, time * 5, (seconds - time) * 5) : 0;
+      const stride = Math.sin(stepPhase) * stepAmount;
       const dip = kind === 'peck' ? Math.max(0, Math.sin(time * Math.PI * 2.8)) ** 5 * 0.62 : 0;
       const previous = route[(step + route.length - 1) % route.length];
       const prevTangent = previous.path?.getTangent(1, tangent);
@@ -203,12 +220,9 @@ function createBirdPose(model, shadowSource, config, index) {
       bird.position.copy(from);
       bird.rotation.y = still ? yaw : prevYaw + turn * THREE.MathUtils.smoothstep(time, 0, 0.42);
       pose.rotation.set(0, 0, 0);
-      if (walking) {
-        bird.position.lerp(to, t);
-        bird.position.y += Math.abs(stride) * 0.043;
-      }
+      if (walking) bird.position.lerp(to, t);
       if (kind === 'rest') bird.rotation.y += Math.sin(time * 0.85) * 0.23;
-      let spread = 0, flap = 0, feetOut = 1;
+      let spread = 0, flap = 0, recovery = 0, tucked = 0, reach = 0, flare = 0;
       if (flight) {
         const progress = THREE.MathUtils.smoothstep(t, 0, 1);
         path.getPointAt(progress, bird.position);
@@ -219,25 +233,41 @@ function createBirdPose(model, shadowSource, config, index) {
         const curve = turnBetween(flightYaw, yawAhead);
         bird.rotation.y = prevYaw + turnBetween(prevYaw, flightYaw) * THREE.MathUtils.smoothstep(t, 0, 0.08);
         const airborne = Math.sin(t * Math.PI);
-        const flare = THREE.MathUtils.smoothstep(t, 0.78, 0.94) * (1 - THREE.MathUtils.smoothstep(t, 0.94, 1));
+        flare = THREE.MathUtils.smoothstep(t, 0.78, 0.94) * (1 - THREE.MathUtils.smoothstep(t, 0.94, 1));
         pose.rotation.x = THREE.MathUtils.clamp(curve * 2.5, -0.36, 0.36) * airborne;
-        pose.rotation.z = THREE.MathUtils.clamp(Math.asin(tangent.y), -0.65, 0.85) * Math.min(1, airborne * 3)
+        pose.rotation.z = THREE.MathUtils.clamp(Math.asin(tangent.y), -0.52, 0.64) * Math.min(1, airborne * 3)
           + flare * 0.34;
-        feetOut = 1 - THREE.MathUtils.smoothstep(t, 0, 0.16) * (1 - THREE.MathUtils.smoothstep(t, 0.75, 1));
+        tucked = THREE.MathUtils.smoothstep(t, 0.03, 0.16) * (1 - THREE.MathUtils.smoothstep(t, 0.76, 0.94));
+        reach = flare;
         spread = THREE.MathUtils.smoothstep(t, 0, 0.12) * (1 - THREE.MathUtils.smoothstep(t, 0.91, 1));
-        const stroke = Math.sin(time * Math.PI * 10.4 + index);
         const glide = THREE.MathUtils.smoothstep(t, 0.53, 0.68) * (1 - THREE.MathUtils.smoothstep(t, 0.80, 0.91));
-        flap = stroke * (0.70 - glide * 0.58) - flare * 0.16;
+        const beat = (time * (4.6 + 0.22 * index) + index / 3) % 1;
+        const downstroke = beat < 0.42;
+        const strokePhase = downstroke ? beat / 0.42 : (beat - 0.42) / 0.58;
+        const stroke = Math.cos(Math.PI * strokePhase) * (downstroke ? -1 : 1);
+        flap = stroke * (0.76 - glide * 0.66) - flare * 0.14;
+        recovery = downstroke ? 0 : Math.sin(Math.PI * strokePhase) * (1 - glide);
       }
 
+      const settle = !still && !flight && previous.path && time < 0.35
+        ? Math.sin(Math.PI * time / 0.35) : 0;
+      body.position.y = bodyRest + Math.abs(stride) * 0.035 - settle * 0.085;
       body.rotation.z = -dip + stride * 0.045;
-      tail.rotation.z = still ? 0 : Math.sin(time * (flight ? 14 : 3.4)) * (flight ? 0.13 : 0.07);
-      legA.rotation.z = flight ? -(1 - feetOut) * 0.95 : stride * 0.34;
-      legB.rotation.z = flight ? legA.rotation.z : -stride * 0.34;
+      tail.rotation.z = -flare * 0.24 + dip * 0.25 + stride * 0.075;
+      tail.scale.z = 1 + flare * 0.30;
+      legA.rotation.z = flight ? -tucked * 0.78 + reach * 0.36 : stride * 0.25;
+      legB.rotation.z = flight ? legA.rotation.z : -stride * 0.25;
+      const swing = Math.cos(stepPhase) * stepAmount;
+      legA.position.y = legRestA - (flight ? 0 : lowestFoot(legA, legA.rotation.z) - soleA)
+        + Math.max(0, swing) * 0.14 + tucked * 0.15;
+      legB.position.y = legRestB - (flight ? 0 : lowestFoot(legB, legB.rotation.z) - soleB)
+        + Math.max(0, -swing) * 0.14 + tucked * 0.15;
       const wingPitch = THREE.MathUtils.lerp(FOLDED_WING, flap, spread);
-      const sweepBack = 0.35 * (1 - spread);
-      wingA.rotation.set(wingPitch, -sweepBack, 0, 'YXZ');
-      wingB.rotation.set(-wingPitch, sweepBack, 0, 'YXZ');
+      const sweepBack = THREE.MathUtils.lerp(0.34, 0.06 + recovery * 0.29, spread);
+      const wingSpan = THREE.MathUtils.lerp(0.34, 1 - recovery * 0.17, spread);
+      wingA.rotation.set(wingPitch, -sweepBack, recovery * 0.13, 'YXZ');
+      wingB.rotation.set(-wingPitch, sweepBack, recovery * 0.13, 'YXZ');
+      wingA.scale.z = wingB.scale.z = wingSpan;
 
       bird.visible = true;
       shadow.visible = bird.position.y < 0.12;

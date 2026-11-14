@@ -177,7 +177,8 @@ Definice spojení
 - V kapitolách s pohledem na strom se tři sojky střídavě procházejí pod korunou, zobou a posedávají na různých větvích. Sojka bez vhodného místa k přistání zůstává na zemi.
 - Sojka po vzletu zrychlí nízko nad zemí a teprve potom nabírá výšku při kroužení kolem stromu. V zatáčce se naklání. Před dosednutím na větev nebo na zem krátce plachtí, zpomalí, natáhne nohy a složí křídla.
 - Délka až 1,4 m zlepšuje čitelnost při pohledu na celý strom. Peří vychází z barevné palety v Blenderu a odstupňovaného světla ve stylu listů. Maska průhlednosti změkčuje obrys a zachovává výřezy mezi pery.
-- Křídla mají prohnutý profil, zaoblenou náběžnou hranu a členité konce letek. Při složení se stáčejí dozadu podél boků.
+- Široká křídla mají rozpětí přibližně 1,6násobku délky těla s ocasem. Při mávnutí dolů se roztáhnou a cestou nahoru se mírně přitáhnou. Při složení se stáčejí podél boků.
+- Nohy se při chůzi střídavě zvedají a došlapují. Za letu se přitáhnou k tělu. Před dosednutím se vysunou vpřed, ocas se rozevře a tělo při došlapu mírně klesne.
 - Pauza zastaví animaci. Při omezení pohybu sojky stojí pod stromem.
 - Sojky nemají tag ani propojené okno.
 
