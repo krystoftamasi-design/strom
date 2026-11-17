@@ -167,6 +167,40 @@ function createElementUiOkno({ panel, body, reveal, toggle, model, definition })
 }
 
 
+function enablePrototypeRotation(circle) {
+  circle.classList.add('rotatable');
+  circle.tabIndex = 0;
+  circle.setAttribute('role', 'group');
+  circle.setAttribute('aria-label', 'Otočný ukazatel. Pro otočení táhněte nebo použijte šipky vlevo a vpravo.');
+
+  let rotation = 0;
+  let drag = null;
+  const pointerAngle = event => {
+    const { left, top, width, height } = circle.getBoundingClientRect();
+    return Math.atan2(event.clientY - top - height / 2, event.clientX - left - width / 2) * 180 / Math.PI;
+  };
+  const rotate = angle => {
+    rotation = angle;
+    circle.style.rotate = `${angle}deg`;
+  };
+  circle.addEventListener('pointerdown', event => {
+    if (event.button !== 0 || drag) return;
+    drag = { id: event.pointerId, offset: rotation - pointerAngle(event) };
+    circle.setPointerCapture(event.pointerId);
+  });
+  circle.addEventListener('pointermove', event => {
+    if (drag?.id === event.pointerId) rotate(drag.offset + pointerAngle(event));
+  });
+  circle.addEventListener('lostpointercapture', event => {
+    if (drag?.id === event.pointerId) drag = null;
+  });
+  circle.addEventListener('keydown', event => {
+    if (event.key !== 'ArrowLeft' && event.key !== 'ArrowRight') return;
+    event.preventDefault();
+    rotate(rotation + (event.key === 'ArrowLeft' ? -10 : 10));
+  });
+}
+
 function createOxygenBalance(variant) {
   const lines = variant !== 'bars';
   const square = variant === 'square';
@@ -183,6 +217,7 @@ function createOxygenBalance(variant) {
     </div>
   `;
   const circle = panel.querySelector('.oxygen-balance');
+  if (!square) enablePrototypeRotation(circle);
   const flows = panel.querySelector('.oxygen-balance-flows');
   const [productionSection, consumptionSection] = lines ? [...circle.children].slice(1) : flows.children;
   return {

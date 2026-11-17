@@ -166,6 +166,21 @@ body .tree-overlay [data-chapter] .chapter-context-guide h2 { font-weight: 400; 
   font-variant-numeric: tabular-nums;
 }
 
+.oxygen-balance.rotatable {
+  cursor: grab;
+  touch-action: none;
+  user-select: none;
+}
+
+.oxygen-balance.rotatable:active {
+  cursor: grabbing;
+}
+
+.oxygen-balance.rotatable:focus-visible {
+  outline: none;
+  filter: brightness(1.2);
+}
+
 body.scene-night .tree-overlay .oxygen-balance-panel {
   --oxygen-paper: #454749;
 }
