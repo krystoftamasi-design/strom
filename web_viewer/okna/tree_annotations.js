@@ -167,48 +167,31 @@ function createElementUiOkno({ panel, body, reveal, toggle, model, definition })
 
 
 function createOxygenBalance(variant) {
-  const lines = variant === "lines";
-  let capacity = 1000;
-  let reserve = capacity / 4;
+  const lines = variant !== 'bars';
+  const square = variant === 'square';
   const panel = document.createElement('section');
   panel.className = 'oxygen-balance-panel';
   panel.setAttribute('aria-label', 'Zkušební bilance O₂');
   panel.innerHTML = `
-    <h3>${lines ? 'Dělicí čáry' : 'Sloupce'}</h3>
-    <div class="oxygen-balance${lines ? ' oxygen-balance-lines' : ''}">
+    <h3>${square ? 'Čtverec' : lines ? 'Dělicí čáry' : 'Sloupce'}</h3>
+    <div class="oxygen-balance${lines ? ' oxygen-balance-lines' : ''}${square ? ' oxygen-balance-square' : ''}">
       ${lines ? '<div class="oxygen-balance-reserve"><abbr title="Zásoba">Z</abbr></div>' : '<abbr title="Zásoba">Z</abbr><div class="oxygen-balance-flows">'}
       <div class="oxygen-balance-production">${lines ? '' : '<span></span>'}<abbr title="Produkce">P</abbr></div>
       <div>${lines ? '' : '<span></span>'}<abbr title="Spotřeba">S</abbr></div>
       ${lines ? '' : '</div>'}
     </div>
-    <div class="oxygen-balance-settings">
-      <label>Max. zásoba (g) <input type="number" min="1" step="1" value="${capacity}" required></label>
-    </div>
   `;
   const circle = panel.querySelector('.oxygen-balance');
   const flows = panel.querySelector('.oxygen-balance-flows');
   const [productionSection, consumptionSection] = lines ? [...circle.children].slice(1) : flows.children;
-  const capacityInput = panel.querySelector('input');
-  capacityInput.addEventListener('change', () => {
-    if (capacityInput.validity.valid && Number.isSafeInteger(capacityInput.valueAsNumber)) {
-      capacity = capacityInput.valueAsNumber;
-      reserve = Math.min(reserve, capacity);
-    }
-    capacityInput.value = String(capacity);
-  });
-
   return {
     panel,
-    update(model, modelMinutes) {
-      const production = model.oxygenGramsPerMinute;
-      const consumption = model.respirationOxygen;
-      if (!model.ready || !Number.isFinite(production) || !Number.isFinite(consumption)) return;
-
-      reserve = Math.max(0, Math.min(capacity, reserve + (production - consumption) * modelMinutes));
+    update(production, consumption, capacity, reserve) {
       circle.style.setProperty('--oxygen-level', `${100 * reserve / capacity}%`);
-      const scale = Math.max(capacity, 60 * production, 60 * consumption);
       productionSection.hidden = production <= 0;
       consumptionSection.hidden = consumption <= 0;
+      productionSection.classList.toggle('stronger-flow', production > consumption);
+      consumptionSection.classList.toggle('stronger-flow', consumption > production);
       if (lines) {
         const smaller = Math.min(production, consumption);
         const larger = Math.max(production, consumption);
@@ -219,6 +202,7 @@ function createOxygenBalance(variant) {
         circle.classList.toggle('production-at-bottom', production > consumption);
         return;
       }
+      const scale = Math.max(capacity, 60 * production, 60 * consumption);
       flows.hidden = productionSection.hidden && consumptionSection.hidden;
       productionSection.style.setProperty('--flow-height', `${6000 * production / scale}%`);
       consumptionSection.style.setProperty('--flow-height', `${6000 * consumption / scale}%`);
@@ -242,7 +226,17 @@ export function createTreeAnnotations({ shell, model, createSeasonControl, setEl
   let activeChapter = null;
   let photosynthesisIntro = null;
   let photosynthesisIntroTimer = null;
-  const prototypes = ['bars', 'lines'].map(createOxygenBalance);
+  const prototypes = ['bars', 'lines', 'square'].map(createOxygenBalance);
+  const capacityInput = shell.querySelector('[data-prototype-capacity]');
+  let prototypeCapacity = capacityInput.valueAsNumber;
+  let prototypeReserve = prototypeCapacity / 4;
+  capacityInput.addEventListener('change', () => {
+    if (capacityInput.validity.valid && Number.isSafeInteger(capacityInput.valueAsNumber)) {
+      prototypeCapacity = capacityInput.valueAsNumber;
+      prototypeReserve = Math.min(prototypeReserve, prototypeCapacity);
+    }
+    capacityInput.value = String(prototypeCapacity);
+  });
   function syncHighlights() {
     const states = [...linkedWindows.values()];
     for (const tag of new Set(states.map(state => state.tag))) {
@@ -571,7 +565,12 @@ export function createTreeAnnotations({ shell, model, createSeasonControl, setEl
       activeChapter = chapter;
       if (chapterChanged) syncWindowHover();
       if (chapter === 'prototype') {
-        for (const prototype of prototypes) prototype.update(model, modelMinutes);
+        const production = model.oxygenGramsPerMinute;
+        const consumption = model.respirationOxygen;
+        if (model.ready && Number.isFinite(production) && Number.isFinite(consumption)) {
+          prototypeReserve = Math.max(0, Math.min(prototypeCapacity, prototypeReserve + (production - consumption) * modelMinutes));
+          for (const prototype of prototypes) prototype.update(production, consumption, prototypeCapacity, prototypeReserve);
+        }
       }
       const clamp01 = value => (Number.isFinite(value) ? Math.max(0, Math.min(1, value)) : 0);
       const balanceValues = windowId => {

@@ -140,6 +140,7 @@ body .tree-overlay [data-chapter] .chapter-context-guide h2 { font-weight: 400; 
 /* Removable oxygen balance prototype beneath the photosynthesis guide. */
 .tree-overlay .oxygen-balance-panel {
   --oxygen-paper: #f1f6f7;
+  --oxygen-flow-blue: #37699d;
   --oxygen-rule: color-mix(in srgb, var(--ui-ink) 45%, var(--oxygen-paper));
   margin-block-start: 14px;
   color: var(--ui-ink);
@@ -208,7 +209,7 @@ body.scene-night .tree-overlay .oxygen-balance-panel {
   content: '';
   inline-size: 40%;
   block-size: var(--flow-height, 0%);
-  background: color-mix(in srgb, var(--ui-oxygen) 60%, var(--ui-ink));
+  background: var(--oxygen-flow-blue);
 }
 
 .oxygen-balance-flows[hidden],
@@ -228,6 +229,13 @@ body.scene-night .tree-overlay .oxygen-balance-panel {
   align-items: center;
   gap: 6px;
 }
+
+.oxygen-balance-settings {
+  --oxygen-paper: #f1f6f7;
+  --oxygen-rule: color-mix(in srgb, var(--ui-ink) 45%, var(--oxygen-paper));
+}
+
+body.scene-night .oxygen-balance-settings { --oxygen-paper: #19262c; }
 
 .oxygen-balance-settings input {
   box-sizing: border-box;
@@ -331,3 +339,12 @@ body.scene-night .tree-overlay .oxygen-balance-panel {
     transparent var(--oxygen-level, 0%)
   );
 }
+
+.tree-overlay .oxygen-balance-square { border-radius: 0; }
+
+.oxygen-balance-lines > div + div {
+  background: var(--oxygen-flow-blue);
+  color: #fff;
+}
+
+.oxygen-balance-panel .stronger-flow { --oxygen-flow-blue: #21446a; }
