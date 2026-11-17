@@ -115,6 +115,9 @@ function createElementUiOkno({ panel, body, reveal, toggle, model, definition })
       fill.setAttribute('aria-hidden', 'true');
       const track = document.createElement('span');
       track.className = 'element-ui-balance-track';
+      const trackShaft = document.createElement('span');
+      trackShaft.className = 'element-ui-balance-track-shaft';
+      track.append(trackShaft);
       fill.append(track);
       for (const side of ['top', 'bottom']) {
         const isConsumption = side === (isAvailabilityWindow ? 'top' : 'bottom');

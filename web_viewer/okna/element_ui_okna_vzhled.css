@@ -401,7 +401,7 @@ body.scene-night .tree-overlay .element-ui-okno .ui-word {
 }
 
 .tree-overlay .element-ui-balance-bar {
-  --balance-marker-width: clamp(11px, 1.3vh, 14px);
+  --balance-marker-width: clamp(11px, 1.45vh, 14px);
   position: relative;
   height: clamp(24px, 3.2vh, 32px);
 }
@@ -417,14 +417,13 @@ body.scene-night .tree-overlay .element-ui-okno .ui-word {
   position: absolute;
   inset-block: 0;
   left: 0;
-  /* Apply after the brush mask to restore solid paint and keep its soft edges. */
-  filter: url('../web_assets/okna/affinity-bilance-kryti.svg#brush');
 }
 
 .tree-overlay .element-ui-balance-track {
   --balance-ink: #a7a7a7;
-  --balance-texture: url('../web_assets/okna/affinity-bilance.png');
-  --balance-track-end: clamp(8px, 1vh, 11px);
+  --balance-texture: url('../web_assets/okna/affinity-bilance.png?v=affinity-windows-markers-4');
+  --balance-track-start: clamp(10px, 1.3vh, 13px);
+  --balance-track-end: clamp(11px, 1.45vh, 14px);
   right: 0;
 }
 
@@ -435,9 +434,17 @@ body.scene-night .tree-overlay .element-ui-balance-track {
 .tree-overlay .element-ui-balance-track::before {
   content: '';
   position: absolute;
-  inset: 0 calc(var(--balance-track-end) - 2px) 0 0;
+  inset: 0 auto 0 0;
+  width: var(--balance-track-start);
   background: var(--balance-ink);
-  mask: var(--balance-texture) left center / 115% 100% no-repeat;
+  mask: var(--balance-texture) left center / auto 100% no-repeat;
+}
+
+.tree-overlay .element-ui-balance-track-shaft {
+  position: absolute;
+  inset: 0 calc(var(--balance-track-end) - 2px) 0 calc(var(--balance-track-start) - 2px);
+  background: var(--balance-ink);
+  mask: var(--balance-texture) center / 240% 100% no-repeat;
 }
 
 .tree-overlay .element-ui-balance-track::after {
@@ -447,13 +454,15 @@ body.scene-night .tree-overlay .element-ui-balance-track {
   width: var(--balance-track-end);
   background: var(--balance-ink);
   /* Keep the original flare, with a fixed width independent of the bar. */
-  mask: var(--balance-texture) right center / 1120% 100% no-repeat;
+  mask: var(--balance-texture) right center / auto 100% no-repeat;
 }
 
 .tree-overlay .element-ui-balance-marker {
   --balance-ink: var(--ui-topic);
   /* Reserve enough shaft before the marker even at zero. */
   right: calc((100% - var(--balance-position, 0%)) * .8);
+  /* Apply after the brush mask to restore solid paint and keep its soft edges. */
+  filter: url('../web_assets/okna/affinity-bilance-kryti.svg#brush');
 }
 
 .tree-overlay .element-ui-balance-marker::before {
@@ -461,7 +470,7 @@ body.scene-night .tree-overlay .element-ui-balance-track {
   position: absolute;
   inset: 0 calc(var(--balance-marker-width) - 2px) 0 0;
   background: var(--balance-ink);
-  mask: var(--balance-texture) left center / 120% 100% no-repeat;
+  mask: var(--balance-texture) left center / 140% 100% no-repeat;
 }
 
 .tree-overlay .element-ui-balance-marker::after {
@@ -470,38 +479,38 @@ body.scene-night .tree-overlay .element-ui-balance-track {
   inset: 0 0 0 auto;
   width: var(--balance-marker-width);
   background: var(--balance-ink);
-  mask: var(--balance-texture) right center / 1000% 100% no-repeat;
+  mask: var(--balance-texture) right center / auto 100% no-repeat;
 }
 
 .tree-overlay .element-ui-balance-marker-cap {
   position: absolute;
   right: 0;
   z-index: 1;
-  width: var(--balance-marker-width);
+  width: clamp(8px, 1.05vh, 10.5px);
   display: grid;
   place-items: center;
   color: white;
-  font: 700 clamp(8px, .95vh, 10px)/1 var(--ui-font-text);
+  font: 700 clamp(7px, .9vh, 9.5px)/1 var(--ui-font-text);
 }
 
 .tree-overlay .element-ui-balance-marker-top {
   --balance-position: var(--balance-top);
-  --balance-texture: url('../web_assets/okna/affinity-bilance-horni.png');
+  --balance-texture: url('../web_assets/okna/affinity-bilance-horni.png?v=affinity-windows-markers-4');
 }
 
 .tree-overlay .element-ui-balance-marker-top .element-ui-balance-marker-cap {
-  top: 2px;
-  bottom: 48%;
+  top: 4%;
+  bottom: 54%;
 }
 
 .tree-overlay .element-ui-balance-marker-bottom {
   --balance-position: var(--balance-bottom);
-  --balance-texture: url('../web_assets/okna/affinity-bilance-dolni.png');
+  --balance-texture: url('../web_assets/okna/affinity-bilance-dolni.png?v=affinity-windows-markers-4');
 }
 
 .tree-overlay .element-ui-balance-marker-bottom .element-ui-balance-marker-cap {
-  top: 48%;
-  bottom: 2px;
+  top: 57%;
+  bottom: 7%;
 }
 
 .tree-overlay .element-ui-balance-consumption {
