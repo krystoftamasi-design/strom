@@ -102,7 +102,7 @@ export const oknaPodleKapitol = {
 
 export const kontextoveTexty = {
   seasons: {
-    vychozi: 'Když buk shodí listy, přestane tvořit cukry fotosyntézou. Živé buňky v kmeni a kořenech ale i v zimě získávají energii z uložených cukrů.',
+    vychozi: 'Na jaře buk raší, v létě má plnou korunu a na podzim se jeho listy zbarví a opadají. Přes zimu čekají nové listy schované v pupenech.',
     varianty: {},
   },
   seeds: {
