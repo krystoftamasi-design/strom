@@ -189,8 +189,8 @@ function createOxygenBalance(variant) {
     panel,
     update(production, consumption, capacity, reserve) {
       circle.style.setProperty('--oxygen-level', `${100 * reserve / capacity}%`);
-      productionSection.hidden = production <= 0;
-      consumptionSection.hidden = consumption <= 0;
+      productionSection.setAttribute('aria-hidden', String(production <= 0));
+      consumptionSection.setAttribute('aria-hidden', String(consumption <= 0));
       productionSection.classList.toggle('stronger-flow', production > consumption);
       consumptionSection.classList.toggle('stronger-flow', consumption > production);
       if (lines) {
@@ -204,7 +204,6 @@ function createOxygenBalance(variant) {
         return;
       }
       const scale = Math.max(capacity, 60 * production, 60 * consumption);
-      flows.hidden = productionSection.hidden && consumptionSection.hidden;
       productionSection.style.setProperty('--flow-height', `${6000 * production / scale}%`);
       consumptionSection.style.setProperty('--flow-height', `${6000 * consumption / scale}%`);
     }

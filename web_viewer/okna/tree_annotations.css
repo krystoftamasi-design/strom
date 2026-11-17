@@ -146,7 +146,14 @@ body .tree-overlay [data-chapter] .chapter-context-guide h2 { font-weight: 400; 
   font: 300 clamp(11px, 1.65vh, 14px)/1.1 var(--ui-font-display);
 }
 
+@property --oxygen-level {
+  syntax: '<percentage>';
+  inherits: true;
+  initial-value: 0%;
+}
+
 .tree-overlay .oxygen-balance {
+  transition: --oxygen-level 180ms ease-out;
   position: relative;
   inline-size: min(100%, clamp(134px, 22vh, 182px));
   aspect-ratio: 1;
@@ -207,12 +214,18 @@ body.scene-night .tree-overlay .oxygen-balance-panel {
   content: '';
   inline-size: 40%;
   block-size: var(--flow-height, 0%);
+  transition: block-size 180ms ease-out, background-color 180ms ease-out;
   background: var(--oxygen-flow-blue);
 }
 
-.oxygen-balance-flows[hidden],
-.oxygen-balance-flows > div[hidden] {
-  display: none;
+.oxygen-balance-flows > div,
+.oxygen-balance-lines > div:not(.oxygen-balance-reserve) {
+  transition: opacity 180ms ease-out, background-color 180ms ease-out;
+}
+
+.oxygen-balance [aria-hidden="true"] {
+  opacity: 0;
+  pointer-events: none;
 }
 
 .oxygen-balance-settings {
@@ -282,48 +295,53 @@ body.scene-night .oxygen-balance-settings { --oxygen-paper: #454749; }
 .tree-overlay .oxygen-balance-lines {
   background: var(--oxygen-paper);
   display: grid;
+  transition: grid-template-rows 180ms ease-out, --oxygen-level 180ms ease-out;
   --oxygen-label-space: 18px;
-  --oxygen-moving-space: calc(100% - 3 * var(--oxygen-label-space));
+  --oxygen-middle-label: var(--oxygen-label-space);
+  --oxygen-bottom-label: var(--oxygen-label-space);
+  --oxygen-moving-space: calc(100% - var(--oxygen-label-space) - var(--oxygen-middle-label) - var(--oxygen-bottom-label));
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   grid-template-rows:
     minmax(var(--oxygen-label-space), 1fr)
-    calc(var(--oxygen-label-space) + var(--oxygen-moving-space) * var(--oxygen-smaller-flow, 0))
-    calc(var(--oxygen-label-space) + var(--oxygen-moving-space) * var(--oxygen-larger-flow, 0));
+    calc(var(--oxygen-middle-label) + var(--oxygen-moving-space) * var(--oxygen-middle-flow))
+    calc(var(--oxygen-bottom-label) + var(--oxygen-moving-space) * var(--oxygen-larger-flow, 0));
+  --oxygen-middle-flow: var(--oxygen-smaller-flow, 0);
+}
+
+.tree-overlay .oxygen-balance-lines:is(.similar-flows, :has(> [aria-hidden="true"])) {
+  --oxygen-middle-label: 0px;
+  --oxygen-middle-flow: 0;
+}
+
+.tree-overlay .oxygen-balance-lines:has(> [aria-hidden="true"] + [aria-hidden="true"]) {
+  --oxygen-bottom-label: 0px;
 }
 
 .oxygen-balance-lines > div {
   display: flex;
   flex-direction: column;
   justify-content: center;
-}
-
-.oxygen-balance-lines > div[hidden] {
-  display: none;
-}
-
-.oxygen-balance-lines:is(.similar-flows, :has(> div[hidden])) {
-  --oxygen-moving-space: calc(100% - 2 * var(--oxygen-label-space));
-  grid-template-rows: 1fr calc(var(--oxygen-label-space) + var(--oxygen-moving-space) * var(--oxygen-larger-flow, 0));
-}
-
-.oxygen-balance-lines:has(> div[hidden] + div[hidden]) {
-  grid-template-rows: 1fr;
-}
-
-.oxygen-balance-lines.similar-flows {
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  column-gap: 1px;
-}
-
-.oxygen-balance-lines.similar-flows .oxygen-balance-reserve {
   grid-column: 1 / -1;
+  min-block-size: 0;
 }
 
-.oxygen-balance-lines.production-at-bottom:not(.similar-flows) .oxygen-balance-production {
-  order: 1;
-}
+.oxygen-balance-lines > div:nth-child(2),
+.oxygen-balance-lines.production-at-bottom > div:last-child { grid-row: 2; }
 
-.oxygen-balance-lines abbr {
-  text-decoration: none;
+.oxygen-balance-lines > div:last-child,
+.oxygen-balance-lines.production-at-bottom > div:nth-child(2) { grid-row: 3; }
+
+.oxygen-balance-lines.similar-flows { column-gap: 1px; }
+.oxygen-balance-lines.similar-flows > div:nth-child(2) { grid-area: 3 / 1; }
+.oxygen-balance-lines.similar-flows > div:last-child { grid-area: 3 / 2; }
+
+@media (prefers-reduced-motion: reduce) {
+  .tree-overlay .oxygen-balance,
+  .oxygen-balance-flows > div,
+  .oxygen-balance-flows > div > span::before,
+  .oxygen-balance-lines > div:not(.oxygen-balance-reserve) {
+    transition: none;
+  }
 }
 
 .oxygen-balance-lines .oxygen-balance-reserve {
