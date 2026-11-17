@@ -148,12 +148,7 @@ body .tree-overlay [data-chapter] .chapter-context-guide h2 { font-weight: 400; 
 
 .tree-overlay .oxygen-balance {
   display: grid;
-  --oxygen-label-space: 18px;
-  --oxygen-moving-space: calc(100% - 3 * var(--oxygen-label-space));
-  grid-template-rows:
-    minmax(var(--oxygen-label-space), 1fr)
-    calc(var(--oxygen-label-space) + var(--oxygen-moving-space) * var(--oxygen-smaller-flow, 0))
-    calc(var(--oxygen-label-space) + var(--oxygen-moving-space) * var(--oxygen-larger-flow, 0));
+  place-items: center;
   inline-size: min(100%, clamp(134px, 22vh, 182px));
   aspect-ratio: 1;
   overflow: hidden;
@@ -169,55 +164,48 @@ body.scene-night .tree-overlay .oxygen-balance-panel {
   --oxygen-paper: #19262c;
 }
 
-.oxygen-balance > div {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-}
-
-.oxygen-balance > div + div {
-  border-block-start: 1px solid var(--oxygen-rule);
-}
-
-.oxygen-balance > div[hidden] {
-  display: none;
-}
-
-.oxygen-balance:is(.similar-flows, :has(> div[hidden])) {
-  --oxygen-moving-space: calc(100% - 2 * var(--oxygen-label-space));
-  grid-template-rows: 1fr calc(var(--oxygen-label-space) + var(--oxygen-moving-space) * var(--oxygen-larger-flow, 0));
-}
-
-.oxygen-balance:has(> div[hidden] + div[hidden]) {
-  grid-template-rows: 1fr;
-}
-
-.oxygen-balance.similar-flows {
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-}
-
-.oxygen-balance.similar-flows .oxygen-balance-reserve {
-  grid-column: 1 / -1;
-}
-
-.oxygen-balance.similar-flows > div:last-child {
-  border-inline-start: 1px solid var(--oxygen-rule);
-}
-
-.oxygen-balance.production-at-bottom:not(.similar-flows) .oxygen-balance-production {
-  order: 1;
-}
-
-.oxygen-balance abbr {
+.oxygen-balance-panel abbr {
   text-decoration: none;
 }
 
-.oxygen-balance .oxygen-balance-reserve {
+.tree-overlay .oxygen-balance {
   background: linear-gradient(
     to top,
     color-mix(in srgb, var(--ui-oxygen) 42%, var(--oxygen-paper)) var(--oxygen-level, 0%),
     transparent var(--oxygen-level, 0%)
   );
+}
+
+.oxygen-balance-flows {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  inline-size: min(100%, clamp(134px, 22vh, 182px));
+  margin-block-start: 8px;
+  text-align: center;
+}
+
+.oxygen-balance-flows > div:first-child { grid-column: 1; }
+.oxygen-balance-flows > div:last-child { grid-column: 2; }
+
+.oxygen-balance-flows > div > span {
+  display: flex;
+  align-items: end;
+  justify-content: center;
+  block-size: 60px;
+  margin-block-end: 4px;
+  border-block-end: 1px solid var(--oxygen-rule);
+}
+
+.oxygen-balance-flows > div > span::before {
+  content: '';
+  inline-size: 40%;
+  block-size: var(--flow-height, 0%);
+  background: var(--ui-oxygen);
+}
+
+.oxygen-balance-flows[hidden],
+.oxygen-balance-flows > div[hidden] {
+  display: none;
 }
 
 .oxygen-balance-settings {
@@ -254,7 +242,7 @@ body.scene-night .tree-overlay .oxygen-balance-panel {
 @media (max-width: 700px) {
   .tree-overlay article[data-chapter="photosynthesis"]:has(.oxygen-balance) {
     --photosynthesis-top: 22vh;
-    --oxygen-guide-height: clamp(228px, 37vh, 302px);
+    --oxygen-guide-height: clamp(298px, 43vh, 374px);
     padding-top: calc(var(--photosynthesis-top) + var(--ui-main-heading-size) + var(--oxygen-guide-height) + 28px);
     overflow-y: auto;
   }

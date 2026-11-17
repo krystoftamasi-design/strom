@@ -174,16 +174,19 @@ function createOxygenBalance() {
   panel.setAttribute('aria-label', 'Zkušební bilance O₂');
   panel.innerHTML = `
     <div class="oxygen-balance">
-      <div class="oxygen-balance-reserve"><abbr title="Zásoba">Z</abbr></div>
-      <div class="oxygen-balance-production"><abbr title="Produkce">P</abbr></div>
-      <div><abbr title="Spotřeba">S</abbr></div>
+      <abbr title="Zásoba">Z</abbr>
+    </div>
+    <div class="oxygen-balance-flows">
+      <div><span></span><abbr title="Produkce">P</abbr></div>
+      <div><span></span><abbr title="Spotřeba">S</abbr></div>
     </div>
     <div class="oxygen-balance-settings">
       <label>Max. zásoba (g) <input type="number" min="1" step="1" value="${capacity}" required></label>
     </div>
   `;
   const circle = panel.querySelector('.oxygen-balance');
-  const [, productionSection, consumptionSection] = circle.children;
+  const flows = panel.querySelector('.oxygen-balance-flows');
+  const [productionSection, consumptionSection] = flows.children;
   const capacityInput = panel.querySelector('input');
   capacityInput.addEventListener('change', () => {
     if (capacityInput.validity.valid && Number.isSafeInteger(capacityInput.valueAsNumber)) {
@@ -202,16 +205,12 @@ function createOxygenBalance() {
 
       reserve = Math.max(0, Math.min(capacity, reserve + (production - consumption) * modelMinutes));
       circle.style.setProperty('--oxygen-level', `${100 * reserve / capacity}%`);
-      const scale = Math.max(capacity, 60 * (production + consumption));
-      const smaller = Math.min(production, consumption);
-      const larger = Math.max(production, consumption);
-      const similar = smaller > 0 && smaller >= 0.9 * larger;
+      const scale = Math.max(capacity, 60 * production, 60 * consumption);
       productionSection.hidden = production <= 0;
       consumptionSection.hidden = consumption <= 0;
-      circle.style.setProperty('--oxygen-smaller-flow', String(60 * smaller / scale));
-      circle.style.setProperty('--oxygen-larger-flow', String(60 * larger / scale));
-      circle.classList.toggle('similar-flows', similar);
-      circle.classList.toggle('production-at-bottom', production > consumption);
+      flows.hidden = productionSection.hidden && consumptionSection.hidden;
+      productionSection.style.setProperty('--flow-height', `${6000 * production / scale}%`);
+      consumptionSection.style.setProperty('--flow-height', `${6000 * consumption / scale}%`);
     }
   };
 }
