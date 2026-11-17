@@ -1,9 +1,9 @@
 import * as THREE from 'three';
 import { createBranchDryingProfile } from './leaf_branch_drying.js?v=3';
 
-// Two layers are enough for the requested ~20,000 visible leaves while
-// avoiding the extra memory and geometry cost of a third duplicate layer.
-const LEAF_MULTIPLIER = 2;
+// Five layers provide enough geometry for 40,000 leaves in the canopy.
+const LEAF_MULTIPLIER = 5;
+const MAX_LEAF_COUNT = 40000;
 
 function leafKey(uv, index, atlas) {
   const x = Math.floor(uv.getX(index) * atlas.size / atlas.tile);
@@ -485,6 +485,12 @@ export class LeafControls {
     this.applySize();
   }
 
+  maxForBaseCount(baseCount) {
+    if (!this.total) return 0;
+    const max = Math.min(MAX_LEAF_COUNT, this.total * LEAF_MULTIPLIER);
+    return Math.round(max * baseCount / this.total);
+  }
+
   applyCount() {
     // Visibility is initialized before the GLB arrives. Keep the requested
     // count until there are meshes to measure instead of clamping it to zero.
@@ -493,7 +499,7 @@ export class LeafControls {
     this.photosyntheticFoliageCache = null;
     const enabled = this.models.filter((model, i) => this.type === 'all' || String(i) === this.type);
     const baseTotal = enabled.reduce((sum, model) => sum + model.baseCount, 0);
-    this.countInput.max = baseTotal * LEAF_MULTIPLIER;
+    this.countInput.max = this.maxForBaseCount(baseTotal);
     this.count = Math.max(0, Math.min(Math.round(this.count), Number(this.countInput.max)));
     this.countInput.value = this.count;
     let remaining = this.count;
@@ -516,8 +522,10 @@ export class LeafControls {
     const originalCount = selected => this.models.reduce((sum, model, i) => sum + (selected === 'all' || String(i) === selected ? model.baseCount : 0), 0);
     // Isolating a type preserves density instead of doubling its population.
     const density = this.count / (originalCount(this.type) || 1);
+    const atMaximum = this.count === this.maxForBaseCount(originalCount(this.type));
     this.type = type;
-    this.count = Math.round(density * originalCount(type));
+    const baseCount = originalCount(type);
+    this.count = atMaximum ? this.maxForBaseCount(baseCount) : Math.round(density * baseCount);
     this.typeButtons.forEach(button => {
       const active = button.dataset.leafType === type;
       button.classList.toggle('active', active);
