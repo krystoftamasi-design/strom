@@ -69,6 +69,8 @@ history:
 - Výchozí stav detailu: zavřený.
 - Související element: [O₂ částice](elementy.md#o₂).
 
+Pod kontextovým textem je prototyp bilance O₂. Ukazuje produkci a spotřebu z modelu v `g/min`. Zkušební zásoba začíná na 250 g a při běhu času ve Fotosyntéze se mění o rozdíl mezi produkcí a spotřebou, v mezích 0 až 1 000 g. Hodnota se drží při přechodu mezi kapitolami a obnoví se po načtení stránky. Zásoba slouží jen k demonstraci bilance.
+
 #### CO₂
 
 **Tag:** 🔶 `co2`

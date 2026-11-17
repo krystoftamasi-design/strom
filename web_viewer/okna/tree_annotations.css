@@ -136,3 +136,75 @@ body .tree-overlay [data-chapter] .chapter-context-guide h2 { font-weight: 400; 
 @media (max-width: 700px) {
   .tree-overlay .season-date-card { left: 4%; right: auto; top: auto; bottom: 4%; }
 }
+
+/* Removable oxygen balance prototype beneath the photosynthesis guide. */
+.tree-overlay .oxygen-balance {
+  --oxygen-paper: #f1f6f7;
+  --oxygen-rule: color-mix(in srgb, var(--ui-ink) 45%, var(--oxygen-paper));
+  display: grid;
+  grid-template-rows: 55% 21% 24%;
+  inline-size: min(100%, clamp(134px, 22vh, 182px));
+  aspect-ratio: 1;
+  margin-block-start: 14px;
+  overflow: hidden;
+  box-sizing: border-box;
+  border: 1px solid var(--oxygen-rule);
+  border-radius: 50%;
+  background: var(--oxygen-paper);
+  color: var(--ui-ink);
+  font: 500 clamp(11px, 1.65vh, 14px)/1.08 var(--ui-font-text);
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+}
+
+body.scene-night .tree-overlay .oxygen-balance {
+  --oxygen-paper: #19262c;
+}
+
+.oxygen-balance > div {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.oxygen-balance > div + div {
+  border-block-start: 1px solid var(--oxygen-rule);
+}
+
+.oxygen-balance > div:last-child {
+  justify-content: start;
+  padding-block-start: 3px;
+}
+
+.oxygen-balance output {
+  display: block;
+  color: inherit;
+  font-weight: 650;
+}
+
+.oxygen-balance .oxygen-balance-reserve {
+  background: linear-gradient(
+    to top,
+    color-mix(in srgb, var(--ui-oxygen) 42%, var(--oxygen-paper)) var(--oxygen-level, 0%),
+    transparent var(--oxygen-level, 0%)
+  );
+}
+
+.chapter-context-guide:has(.oxygen-balance):focus-visible {
+  outline: 2px solid var(--ui-ink);
+  outline-offset: 4px;
+}
+
+@media (max-width: 700px) {
+  .tree-overlay article[data-chapter="photosynthesis"]:has(.oxygen-balance) {
+    --photosynthesis-top: 22vh;
+    --oxygen-guide-height: clamp(204px, 34vh, 276px);
+    padding-top: calc(var(--photosynthesis-top) + var(--ui-main-heading-size) + var(--oxygen-guide-height) + 28px);
+    overflow-y: auto;
+  }
+
+  .tree-overlay article[data-chapter="photosynthesis"] .chapter-context-guide:has(.oxygen-balance) {
+    width: 85%;
+    max-height: var(--oxygen-guide-height);
+  }
+}

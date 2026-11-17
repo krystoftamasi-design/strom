@@ -166,6 +166,40 @@ function createElementUiOkno({ panel, body, reveal, toggle, model, definition })
 }
 
 
+function createOxygenBalance() {
+  const capacity = 1000;
+  let reserve = capacity / 4;
+  const grams = new Intl.NumberFormat('cs-CZ', { maximumFractionDigits: 0 });
+  const rate = new Intl.NumberFormat('cs-CZ', { minimumFractionDigits: 1, maximumFractionDigits: 1 });
+  const circle = document.createElement('section');
+  circle.className = 'oxygen-balance';
+  circle.setAttribute('aria-label', 'Zkušební bilance O₂');
+  circle.innerHTML = `
+    <div class="oxygen-balance-reserve">Zásoba O₂ <output aria-live="off">—</output></div>
+    <div>Produkce <output aria-live="off">—</output></div>
+    <div>Spotřeba <output aria-live="off">—</output></div>
+  `;
+  const [reserveOutput, productionOutput, consumptionOutput] = circle.querySelectorAll('output');
+
+  return {
+    circle,
+    update(model, modelMinutes) {
+      const production = model.oxygenGramsPerMinute;
+      const consumption = model.respirationOxygen;
+      if (!model.ready || !Number.isFinite(production) || !Number.isFinite(consumption)) return;
+
+      reserve = Math.max(0, Math.min(capacity, reserve + (production - consumption) * modelMinutes));
+      circle.style.setProperty('--oxygen-level', `${100 * reserve / capacity}%`);
+      const reserveText = `${grams.format(reserve)} g`;
+      const productionText = `${rate.format(production)} g/min`;
+      const consumptionText = `${rate.format(consumption)} g/min`;
+      if (reserveOutput.value !== reserveText) reserveOutput.value = reserveText;
+      if (productionOutput.value !== productionText) productionOutput.value = productionText;
+      if (consumptionOutput.value !== consumptionText) consumptionOutput.value = consumptionText;
+    }
+  };
+}
+
 // Static screen-space UI. Camera and tree geometry never participate in layout.
 // Original content and controls are moved, so live outputs and handlers survive.
 export function createTreeAnnotations({ shell, model, createSeasonControl, setElementHighlight = () => { } }) {
@@ -182,6 +216,7 @@ export function createTreeAnnotations({ shell, model, createSeasonControl, setEl
   let activeChapter = null;
   let photosynthesisIntro = null;
   let photosynthesisIntroTimer = null;
+  const oxygenBalance = createOxygenBalance();
   function syncHighlights() {
     const states = [...linkedWindows.values()];
     for (const tag of new Set(states.map(state => state.tag))) {
@@ -257,6 +292,10 @@ export function createTreeAnnotations({ shell, model, createSeasonControl, setEl
     guide.setAttribute('aria-label', `Kontext kapitoly ${article.dataset.chapter}`);
     const title = document.createElement('h2');
     guide.append(title);
+    if (chapter === 'photosynthesis') {
+      guide.append(oxygenBalance.circle);
+      guide.tabIndex = 0;
+    }
     contextGuides.set(chapter, guide);
     article.append(guide);
     updateContextGuide(chapter);
@@ -491,7 +530,7 @@ export function createTreeAnnotations({ shell, model, createSeasonControl, setEl
   let lastSmoothTime = performance.now();
 
   return {
-    update(chapter, playbackDelta = 0) {
+    update(chapter, playbackDelta = 0, modelMinutes = 0) {
       const now = performance.now();
       const dt = (now - lastSmoothTime) / 1000;
       lastSmoothTime = now;
@@ -505,6 +544,7 @@ export function createTreeAnnotations({ shell, model, createSeasonControl, setEl
       const chapterChanged = chapter !== activeChapter;
       activeChapter = chapter;
       if (chapterChanged) syncWindowHover();
+      if (chapter === 'photosynthesis') oxygenBalance.update(model, modelMinutes);
       const clamp01 = value => (Number.isFinite(value) ? Math.max(0, Math.min(1, value)) : 0);
       const balanceValues = windowId => {
         const clean = value => (Number.isFinite(value) && value > 0 ? value : 0);
