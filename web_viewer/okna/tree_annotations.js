@@ -172,7 +172,7 @@ function createOxygenBalance(variant) {
   const square = variant === 'square';
   const panel = document.createElement('section');
   panel.className = 'oxygen-balance-panel';
-  panel.setAttribute('aria-label', 'Zkušební bilance O₂');
+  panel.setAttribute('aria-label', 'Zkušební bilance cukrů');
   panel.innerHTML = `
     <h3>${square ? 'Čtverec' : lines ? 'Dělicí čáry' : 'Sloupce'}</h3>
     <div class="oxygen-balance${lines ? ' oxygen-balance-lines' : ''}${square ? ' oxygen-balance-square' : ''}">
@@ -568,8 +568,8 @@ export function createTreeAnnotations({ shell, model, createSeasonControl, setEl
       activeChapter = chapter;
       if (chapterChanged) syncWindowHover();
       if (chapter === 'prototype') {
-        const production = model.oxygenGramsPerMinute;
-        const consumption = model.respirationOxygen;
+        const production = model.glucoseGramsPerMinute;
+        const consumption = model.respirationSugar;
         if (model.ready && Number.isFinite(production) && Number.isFinite(consumption)) {
           prototypeReserve = Math.max(0, Math.min(prototypeCapacity, prototypeReserve + (production - consumption) * modelMinutes));
           for (const prototype of prototypes) prototype.update(production, consumption, prototypeCapacity, prototypeReserve);

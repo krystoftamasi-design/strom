@@ -217,7 +217,7 @@ history:
 
 ## Kapitola Prototyp
 
-Tři zkušební varianty bilance O₂ používají živou produkci a spotřebu modelu. Sdílejí zásobu a jedno nastavení jejího maxima (výchozí 1 000 g). Zásoba startuje na 250 g. Zásoba se během běhu kapitoly mění podle rozdílu toků a nepřekročí nastavené maximum. Velikost sloupců a částí mezi čarami vychází z toků za jednu modelovou hodinu a společné stupnice.
+Tři zkušební varianty bilance cukrů používají tvorbu glukózy při fotosyntéze a odhad spotřeby cukrů při dýchání. Sdílejí zásobu a jedno nastavení jejího maxima (výchozí 1 000 g). Zásoba startuje na 250 g. Zásoba se během běhu kapitoly mění podle rozdílu toků a nepřekročí nastavené maximum. Velikost sloupců a částí mezi čarami vychází z toků za jednu modelovou hodinu a společné stupnice.
 
 ## Související dokumenty
 

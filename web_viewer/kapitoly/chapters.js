@@ -1,6 +1,6 @@
 import { zobrazitHodnotu, vyhladitHodnotu } from '../okna/element_ui_okna_veliciny.js?v=affinity-windows-layout-2';
 import { SEASONS } from '../ekologie/tree_ecology.js?v=light-slider-1';
-import { createTreeAnnotations } from '../okna/tree_annotations.js?v=oxygen-prototypes-6';
+import { createTreeAnnotations } from '../okna/tree_annotations.js?v=sugar-prototypes-1';
 
 const chapters = [
   ['seasons', 'Období'], ['photosynthesis', 'Fotosyntéza'], ['transpiration', 'Transpirace'],
@@ -53,7 +53,7 @@ export function createChapters({ model, applySeason, setSun, setAzimuth, setVisu
       <article data-chapter="prototype" hidden tabindex="0">
         <h2>Prototyp</h2>
         <div class="oxygen-balance-settings">
-          <label>Max. zásoba (g) <input data-prototype-capacity type="number" min="1" step="1" value="1000" required></label>
+          <label>Max. zásoba cukrů (g) <input data-prototype-capacity type="number" min="1" step="1" value="1000" required></label>
         </div>
         <div class="prototype-list"></div>
       </article>
