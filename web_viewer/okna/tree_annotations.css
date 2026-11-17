@@ -56,19 +56,18 @@ body[data-chapter="intro"] .chapter-panel.tree-overlay {
 .tree-overlay details { padding-top: 8px; margin-top: 11px; }
 .tree-overlay details p { font-size: 11px; }
 .tree-overlay .chapter-link { font-size: 11px; margin-top: 7px; }
-.period-readout { display: flex; flex-direction: column; gap: 3px; padding: 9px; margin: 7px 0 11px; border: 1px solid #c5dda438; border-radius: 8px; background: #c5dda40b; }
-.period-readout span { color: #aebda8; font-size: 10px; }
-.period-readout strong { color: #d9eabd; font: 600 14px 'Satoshi', sans-serif; }
 .period-choice-row { display: grid; gap: 4px; margin: 9px 0; }
 .period-seasons { grid-template-columns: repeat(4, minmax(0, 1fr)); }
 .period-hours { grid-template-columns: repeat(3, minmax(0, 1fr)); }
-.period-choice-row button, .period-playback { min-width: 0; border: 1px solid #84957466; border-radius: 7px; background: #c5dda412; color: #d8e5ca; cursor: pointer; font: 500 10px 'Nohemi', sans-serif; }
+.period-choice-row button, .period-playback { min-height: 32px; min-width: 0; border: 1px solid currentColor; border-radius: 0; background: transparent; color: var(--ui-ink); cursor: pointer; font: 500 clamp(11px, .85vw, 14px) 'Satoshi', sans-serif; }
 .period-choice-row button { padding: 8px 2px; }
-.period-choice-row button[aria-pressed="true"] { background: #c5dda4; border-color: #c5dda4; color: #17251b; }
+.period-choice-row button[aria-pressed="true"] { background: var(--ui-ink); color: var(--ui-control-face, #fff); }
+body.scene-night .period-choice-row button[aria-pressed="true"] { --ui-control-face: #181818; }
 .period-playback { display: block; width: 100%; padding: 8px; margin: 9px 0 2px; text-align: center; }
-.period-day-cycle { display: flex; align-items: center; gap: 6px; margin: 10px 0 3px; color: #c1cbbf; font-size: 10px; cursor: pointer; }
-.period-day-cycle input { accent-color: #b5cfa3; }
-.period-choice-row button:hover, .period-playback:hover { border-color: #c5dda4; }
+.period-day-cycle { display: flex; align-items: center; gap: 6px; margin: 10px 0 3px; color: var(--ui-ink); font: var(--ui-text-style); cursor: pointer; }
+.period-day-cycle input { accent-color: var(--ui-topic); }
+.period-choice-row button:hover, .period-playback:hover { border-color: var(--ui-topic); }
+:is(.period-choice-row button, .period-playback, .period-day-cycle input):focus-visible { outline: 2px solid var(--ui-ink); outline-offset: 2px; }
 .tree-overlay .seed-cycle { margin: 10px 0; }
 .tree-overlay .seed-cycle:not(.all-seasons) > li:not(.current) { display: none; }
 .tree-overlay .seed-cycle li { padding: 10px; }
@@ -122,7 +121,6 @@ body.scene-night .tree-overlay .season-date-card { color: #f0f2e9; }
 @media (max-width: 1050px) and (min-width: 701px) { .tree-annotation { width: 205px; } .tree-overlay .chapter-shared { width: 224px; left: 12px; bottom: 12px; } }
 @media (max-width: 700px) {
   .tree-annotation { width: min(185px, calc(50vw - 18px)); border-radius: 10px; }
-  .tree-overlay [data-chapter="seasons"] .tree-annotation { width: min(165px, calc(50vw - 22px)); }
   .tree-overlay [data-chapter="seasons"] .period-seasons { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .tree-annotation > header { padding: 9px; }
   .tree-overlay .tree-annotation h2, .tree-overlay .tree-annotation h3 { font-size: 12px; }

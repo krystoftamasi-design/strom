@@ -1,6 +1,6 @@
 import { zobrazitHodnotu } from '../okna/element_ui_okna_veliciny.js?v=transpiration-vapour-1';
 import { SEASONS } from '../ekologie/tree_ecology.js?v=light-slider-1';
-import { createTreeAnnotations } from '../okna/tree_annotations.js?v=affinity-windows-markers-3';
+import { createTreeAnnotations } from '../okna/tree_annotations.js?v=season-windows-1';
 
 const chapters = [
   ['seasons', 'Období'], ['photosynthesis', 'Fotosyntéza'], ['transpiration', 'Transpirace'],
@@ -33,22 +33,27 @@ export function createChapters({ model, applySeason, setSun, setAzimuth, setVisu
         <h2 class="intro-title">strom</h2>
       </article>
       <article data-chapter="seasons" hidden>
-        <p class="chapter-eyebrow">01 / Čas stromu</p><h2>Období stromu</h2>
-        <p>Strom se mění v průběhu roku i jednoho dne. Vyzkoušejte obě časové osy a sledujte listy, slunce a stín přímo na stromu.</p>
-        <div class="period-readout" aria-live="off"><span>Teď ve stromu</span><strong><output id="periodSeason">—</output> · <output id="periodTime">—</output></strong></div>
-        <p>Otočte kruhem u paty stromu, nebo vyberte roční období. Zkuste se vrátit zpět a porovnejte korunu na jaře, v létě, na podzim a v zimě.</p>
-        <div class="period-choice-row period-seasons" role="group" aria-label="Vybrat roční období">
-          <button type="button" data-period-season="spring">Jaro</button><button type="button" data-period-season="summer">Léto</button>
-          <button type="button" data-period-season="autumn">Podzim</button><button type="button" data-period-season="latefall">Zima</button>
-        </div>
-        <button type="button" id="periodYearPlayback" class="period-playback">Ⅱ Pozastavit rok</button>
-        <p>Čas dne nastavíte posuvníkem dole. Ráno slunce vychází, v poledne je vysoko a v noci je pod obzorem. Tlačítky můžete skočit přímo na ukázkový čas.</p>
-        <div class="period-choice-row period-hours" role="group" aria-label="Vybrat čas dne">
-          <button type="button" data-period-hour="8">Ráno</button><button type="button" data-period-hour="12">Poledne</button><button type="button" data-period-hour="22">Noc</button>
-        </div>
-        <label class="period-day-cycle"><input type="checkbox" id="periodDayCycle" checked> Slunce podle hodin</label>
-        <button type="button" id="periodDayPlayback" class="period-playback">Ⅱ Pozastavit čas</button>
-        <p class="chapter-note">Dole můžete den pozastavit nebo zrychlit na 2× a 4×. Při ruční změně výšky či směru slunce se denní cyklus vypne; znovu jej zapnete přepínačem výše.</p>
+        <h2 class="scene-chapter-title">Období</h2>
+        <section data-period-window="rok" data-topic="leaves">
+          <h3>Rok</h3>
+          <div class="chapter-metric"><strong><output id="periodSeason" aria-live="off">—</output></strong></div>
+          <p>Porovnej, jak se během roku mění koruna.</p>
+          <div class="period-choice-row period-seasons" role="group" aria-label="Vybrat roční období">
+            <button type="button" data-period-season="spring">Jaro</button><button type="button" data-period-season="summer">Léto</button>
+            <button type="button" data-period-season="autumn">Podzim</button><button type="button" data-period-season="latefall">Zima</button>
+          </div>
+          <button type="button" id="periodYearPlayback" class="period-playback">Ⅱ Pozastavit rok</button>
+        </section>
+        <section data-period-window="den" data-topic="light">
+          <h3>Den</h3>
+          <div class="chapter-metric"><strong><output id="periodTime" aria-live="off">—</output></strong></div>
+          <p>Vyber část dne a sleduj, kam se posune stín.</p>
+          <div class="period-choice-row period-hours" role="group" aria-label="Vybrat čas dne">
+            <button type="button" data-period-hour="8">Ráno</button><button type="button" data-period-hour="12">Poledne</button><button type="button" data-period-hour="22">Noc</button>
+          </div>
+          <label class="period-day-cycle"><input type="checkbox" id="periodDayCycle" checked> Slunce podle hodin</label>
+          <button type="button" id="periodDayPlayback" class="period-playback">Ⅱ Pozastavit čas</button>
+        </section>
       </article>
       <article data-chapter="photosynthesis" hidden></article>
       <article data-chapter="transpiration" hidden></article>

@@ -1021,12 +1021,12 @@ body.scene-night .chapter-context-guide .transpiration-legend {
 }
 
 /* Photosynthesis starts level with the first topic window; context follows below. */
-.tree-overlay [data-chapter="photosynthesis"] {
+.tree-overlay :is([data-chapter="photosynthesis"], [data-chapter="seasons"]) {
   --photosynthesis-top: 25%;
   --photosynthesis-height: max(21%, 140px);
 }
 
-.tree-overlay .photosynthesis-title {
+.tree-overlay :is(.photosynthesis-title, .scene-chapter-title) {
   position: absolute;
   left: 6%;
   top: var(--photosynthesis-top);
@@ -1071,7 +1071,7 @@ body.scene-night .chapter-context-guide .transpiration-legend {
   column-gap: calc(var(--flow-detail-width) + 2 * var(--flow-gap));
 }
 
-.tree-overlay .element-ui-okno[data-chapter="photosynthesis"][data-side="right"] {
+.tree-overlay .element-ui-okno:is([data-chapter="photosynthesis"], [data-chapter="seasons"])[data-side="right"] {
   --ui-heading-size: clamp(25px, min(2.8vw, 4.8vh), 52px);
   --ui-value-size: clamp(15px, min(1.4vw, 2.6vh), 24px);
   --ui-text-size: clamp(12px, min(1vw, 2vh), 18px);
@@ -1093,17 +1093,17 @@ body.scene-night .chapter-context-guide .transpiration-legend {
   cursor: pointer;
 }
 
-.tree-overlay .element-ui-okno[data-chapter="photosynthesis"][data-side="right"] .element-ui-readout>header {
+.tree-overlay .element-ui-okno:is([data-chapter="photosynthesis"], [data-chapter="seasons"])[data-side="right"] .element-ui-readout>header {
   grid-template-columns: minmax(0, 1fr) var(--ui-toggle-size);
   align-items: center;
 }
 
-.tree-overlay .element-ui-okno[data-chapter="photosynthesis"][data-side="right"] .element-ui-trigger {
+.tree-overlay .element-ui-okno:is([data-chapter="photosynthesis"], [data-chapter="seasons"])[data-side="right"] .element-ui-trigger {
   grid-column: 2;
   grid-row: 1;
 }
 
-.tree-overlay .element-ui-okno.element-ui-flow-window[data-toggle-visible="true"] .element-ui-readout .element-ui-trigger {
+.tree-overlay .element-ui-okno:is(.element-ui-flow-window, [data-chapter="seasons"])[data-toggle-visible="true"] .element-ui-readout .element-ui-trigger {
   position: relative;
   isolation: isolate;
   border: 0;
@@ -1112,7 +1112,7 @@ body.scene-night .chapter-context-guide .transpiration-legend {
   font-weight: 600;
 }
 
-.tree-overlay .element-ui-flow-window .element-ui-trigger::before {
+.tree-overlay .element-ui-okno:is(.element-ui-flow-window, [data-chapter="seasons"]) .element-ui-trigger::before {
   content: '';
   position: absolute;
   inset: 0;
@@ -1125,7 +1125,7 @@ body.scene-night .chapter-context-guide .transpiration-legend {
 }
 
 @media (hover: hover) {
-  .tree-overlay .element-ui-flow-window:is(:hover, .is-pointer-over) {
+  .tree-overlay .element-ui-okno:is(.element-ui-flow-window, [data-chapter="seasons"]):is(:hover, .is-pointer-over) {
     --flow-toggle-fill: color-mix(in srgb, var(--ui-topic) 75%, white);
     --flow-toggle-symbol: #181818;
   }
@@ -1184,7 +1184,14 @@ body.scene-night .chapter-context-guide .transpiration-legend {
   pointer-events: auto;
 }
 
-.tree-overlay [data-chapter="photosynthesis"] .chapter-context-guide h2 {
+.tree-overlay [data-chapter="seasons"] .chapter-context-guide {
+  top: calc(var(--photosynthesis-top) + var(--ui-main-heading-size) + 16px);
+  max-height: max(0px, calc(83% - var(--photosynthesis-top) - var(--ui-main-heading-size) - 16px));
+  overflow-y: auto;
+  pointer-events: auto;
+}
+
+.tree-overlay :is([data-chapter="photosynthesis"], [data-chapter="seasons"]) .chapter-context-guide h2 {
   margin-top: 0;
 }
 
@@ -1198,7 +1205,7 @@ body.scene-night .chapter-context-guide .transpiration-legend {
 }
 
 @media (max-width: 700px) {
-  .tree-overlay .photosynthesis-title {
+  .tree-overlay :is(.photosynthesis-title, .scene-chapter-title) {
     left: 4%;
   }
 
@@ -1213,13 +1220,59 @@ body.scene-night .chapter-context-guide .transpiration-legend {
     padding-bottom: 12vh;
   }
 
-  .tree-overlay article[data-chapter="photosynthesis"] .chapter-context-guide {
+  .tree-overlay article:is([data-chapter="photosynthesis"], [data-chapter="seasons"]) .chapter-context-guide {
     max-height: max(0px, calc(39vh - var(--photosynthesis-top) - var(--ui-main-heading-size) - 24px));
   }
 
-  .tree-overlay [data-chapter="photosynthesis"] {
+  .tree-overlay :is([data-chapter="photosynthesis"], [data-chapter="seasons"]) {
     --photosynthesis-top: 22%;
     --photosynthesis-height: 24%;
+  }
+}
+
+.tree-overlay article[data-chapter="seasons"]:not([hidden]) {
+  display: grid;
+  align-content: start;
+  gap: clamp(14px, 3vh, 38px);
+  padding: 25vh 4% 12vh 70%;
+  overflow-y: auto;
+}
+
+.tree-overlay .element-ui-okno[data-window-id="rok"] {
+  --ui-topic: var(--ui-leaves);
+}
+
+.tree-overlay .element-ui-okno[data-chapter="seasons"] {
+  --flow-toggle-symbol: #181818;
+}
+
+.tree-overlay .element-ui-okno[data-chapter="seasons"] .element-ui-edge {
+  display: none;
+}
+
+.tree-overlay .element-ui-okno[data-chapter="seasons"] .element-ui-readout {
+  overflow: visible;
+}
+
+.tree-overlay .element-ui-okno[data-chapter="seasons"] .element-ui-values :is(strong, output) {
+  color: var(--ui-ink);
+}
+
+.tree-overlay .element-ui-okno[data-chapter="seasons"] .annotation-reveal {
+  position: relative;
+  inset: auto;
+  height: auto;
+  max-height: max(110px, 24vh);
+  margin-top: 8px;
+}
+
+.tree-overlay .element-ui-okno[data-chapter="seasons"] :is(.annotation-reveal-inner, .annotation-body) {
+  height: auto;
+}
+
+@media (max-width: 700px) {
+  .tree-overlay article[data-chapter="seasons"]:not([hidden]) {
+    padding: 39vh 4% 12vh 52%;
   }
 }
 

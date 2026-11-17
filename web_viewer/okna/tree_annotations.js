@@ -1,4 +1,4 @@
-import { oknaPodleKapitol, kontextoveTexty, pruvodceTranspiraci } from './element_ui_okna_obsah.js?v=photosynthesis-spacing-1';
+import { oknaPodleKapitol, kontextoveTexty, pruvodceTranspiraci } from './element_ui_okna_obsah.js?v=season-windows-1';
 import { veliciny, vstupyVzorce, ohlasitChybuOken } from './element_ui_okna_veliciny.js?v=transpiration-vapour-1';
 import { zkontrolovatOkna } from './element_ui_okna_kontrola.js?v=seeds-1';
 
@@ -461,12 +461,13 @@ export function createTreeAnnotations({ shell, model, createSeasonControl, setEl
       // The introduction contains only a standalone title, without a window.
       continue;
     } else if (article.dataset.chapter === 'seasons') {
-      card(article, 'wheel', 'left', 'Období stromu', [eyebrow, paragraphs[1],
-        article.querySelector('.period-readout'), paragraphs[2], article.querySelector('.period-seasons'),
-        article.querySelector('#periodYearPlayback')], heading);
-      card(article, 'leaves', 'right', 'Denní čas', [paragraphs[3],
-      article.querySelector('.period-hours'), article.querySelector('.period-day-cycle'),
-      article.querySelector('#periodDayPlayback'), paragraphs[4]]);
+      for (const source of article.querySelectorAll('[data-period-window]')) {
+        const title = source.querySelector('h3');
+        const definition = { id: source.dataset.periodWindow, tema: source.dataset.topic, viditelnyPrepinac: true };
+        const nodes = [...source.children].filter(node => node !== title);
+        card(article, definition.id, 'right', title.textContent, nodes, title, definition);
+        source.remove();
+      }
     } else if (article.dataset.chapter === 'roots') {
       const tipHeading = article.querySelector('h3');
       detail.insertBefore(article.querySelector('.root-diagram'), detail.querySelector('p'));
@@ -478,7 +479,7 @@ export function createTreeAnnotations({ shell, model, createSeasonControl, setEl
     // Only empty wrappers can be discarded; live outputs must remain in the DOM.
     const mainBody = article.querySelector('.annotation-body');
     for (const node of [...article.children]) {
-      if (node.classList.contains('tree-annotation') || node.classList.contains('chapter-context-guide') || node.classList.contains('transpiration-prompt') || node.classList.contains('photosynthesis-title') || node.classList.contains('photosynthesis-intro')) continue;
+      if (node.classList.contains('tree-annotation') || node.classList.contains('chapter-context-guide') || node.classList.contains('transpiration-prompt') || node.classList.contains('photosynthesis-title') || node.classList.contains('photosynthesis-intro') || node.classList.contains('scene-chapter-title')) continue;
       if (node.classList.contains('chapter-metrics') && !node.children.length) node.remove();
       else if (mainBody) mainBody.append(node);
     }

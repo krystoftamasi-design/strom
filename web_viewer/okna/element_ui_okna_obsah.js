@@ -101,6 +101,10 @@ export const oknaPodleKapitol = {
 };
 
 export const kontextoveTexty = {
+  seasons: {
+    vychozi: 'Otoč kruhem u paty stromu a sleduj, jak se během roku mění koruna. Čas dne mění světlo a stín.',
+    varianty: {},
+  },
   seeds: {
     vychozi: 'Z mnoha bukvic jen malá část doroste ve strom.',
     varianty: {},

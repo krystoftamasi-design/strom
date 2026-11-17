@@ -26,6 +26,13 @@ history:
 - Popisné texty oken piš co nejstručněji, aby se vešly do dostupného prostoru a zachovaly hlavní sdělení.
 - Nápověda +/− se aktivuje 30 sekund po načtení stránky, pokud uživatel dosud ručně nepřepnul žádné okno; první přepnutí tlačítkem, nadpisem či klávesnicí ji vypne všude až do obnovení stránky. Automatické výchozí otevření ji nevypíná. Animaci určuje [Vzhled oken](vzhled_oken.md).
 
+## Kapitola Období
+
+- Samostatný nadpis a krátký průvodce pomáhají použít kruh ročních období a sledovat denní světlo a stín. Vpravo jsou okna Rok a Den podle [šablony vzhledu](vzhled_oken.md#rozložení).
+- **Rok** ukazuje aktuální roční období. Detail umožňuje zvolit roční období nebo pozastavit a znovu spustit běh roku.
+- **Den** ukazuje aktuální čas. Detail umožňuje skočit na ráno, poledne či noc, řídit slunce podle hodin a pozastavit nebo znovu spustit čas.
+- Detaily jsou výchozí zavřené a jejich stav se zachovává při přepnutí kapitoly. Kruh a spodní ovládání času jsou dostupné i při zavřených detailech.
+
 ## Kapitola Fotosyntéza
 
 ### Okna

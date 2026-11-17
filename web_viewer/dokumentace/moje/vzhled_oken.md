@@ -29,7 +29,7 @@ history:
 
 - Okna mají pevné místo v rozhraní, nezávisle na stromu a kameře; nemají pohybové animace ani spojnice ke stromu.
 - Změny hodnot neposouvají údaje ani sousední okna. Ve Fotosyntéze má hodnota pevné místo přibližně pro „100 %“ a celý blok údajů je klikací. U ostatních oken prázdná plocha propouští myš ke stromu.
-- Bloky jsou bez výplně a rámečku. Mimo Fotosyntézu mají vlevo nepravidelný svislý tah v barvě tématu.
+- Bloky jsou bez výplně a rámečku. Mimo Fotosyntézu a Období mají vlevo nepravidelný svislý tah v barvě tématu.
 - Tematická okna Fotosyntézy používají návrh z Affinity. Nahoře je nadpis vlevo a malované tlačítko +/− vpravo. Pod záhlavím jsou dva řádky s popiskem vlevo a hodnotou s jednotkou vpravo. Mezi řádky leží vodorovný pruh s původní texturou z Affinity, vysoký 22 až 32 px.
 - Na tlumeném podkladu pruhu jsou dvě značky. Jejich poloha zleva doprava ukazuje obě hodnoty samostatně. U kyslíku, CO₂ a cukrů je v horním řádku produkce (P) a v dolním spotřeba (S), na škále 0 až 7 g/min. U vody a světla je nahoře spotřeba a dole dostupnost. Škála vody je 0 až 100 l/h a škála světla 0 až 7 %. Ovládání dostupnosti má rozšířenou plochu a viditelný klávesnicový fokus.
 
@@ -48,6 +48,7 @@ history:
 ### Rozložení
 
 - Fotosyntéza má vlevo samostatný nadpis kapitoly a pod ním kontextového průvodce s vlastním svislým posuvem. Při změně věty se 15 sekund čeká, pak text 3 sekundy mizí a nový se 3 sekundy objevuje.
+- Období používá stejný samostatný nadpis a průvodce vlevo. Okna Rok a Den jsou v pravém sloupci a přebírají typografii a malované tlačítko +/− z Fotosyntézy. U Roku je zelené, u Dne žluté. Na úzké obrazovce sloupec začíná pod průvodcem. Rozbalený detail má vlastní posuv a objeví se pod hodnotou, takže další okno ustoupí dolů.
 
 - Aktuální vzor oken: Transpirace; původní grafický podklad: [podklad rozhraní](../../web_assets/ui_from_af/Untitled.svg), přibližně 2020 × 1143 px; procenta se vztahují k ploše rozhraní.
 - Transpirace má vlevo průvodce (32 % výšky) a hlavní okno dole; tematická okna jsou vpravo a střed zůstává volný pro strom.
