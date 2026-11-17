@@ -596,7 +596,7 @@ export function createTreeAnnotations({ shell, model, createSeasonControl, setEl
     applySugarEvent(event) {
       const budburst = event === 'budburst';
       if (!budburst && leafSugarTransferred) return;
-      const amount = budburst ? 0.65 * prototypeReserve : Math.min(leafSugar, prototypeCapacity - prototypeReserve);
+      const amount = budburst ? Math.min(650, prototypeReserve) : Math.min(leafSugar, prototypeCapacity - prototypeReserve);
       prototypeReserve += budburst ? -amount : amount;
       leafSugar = 0;
       leafSugarTransferred = !budburst;
