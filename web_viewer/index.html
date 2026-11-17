@@ -728,7 +728,7 @@
   </style>
   <link rel="stylesheet" href="./kapitoly/chapters.css?v=menu-bold-4">
   <link rel="stylesheet" href="./okna/tree_annotations.css?v=season-guide-1">
-  <link rel="stylesheet" href="./okna/element_ui_okna_vzhled.css?v=affinity-windows-markers-6">
+  <link rel="stylesheet" href="./okna/element_ui_okna_vzhled.css?v=affinity-windows-layout-1">
 </head>
 
 <body>
@@ -1227,7 +1227,7 @@
     import { createSunClouds } from './vykreslovani/sun_clouds.js?v=2';
     import { createWaterBrushMaterial, addWaterBrushAttributes } from './vykreslovani/water_brush.js?v=highlight-width-3';
     import { TreeEcology, SEASONS, MODEL_MINUTES_PER_SECOND } from './ekologie/tree_ecology.js?v=light-slider-1';
-    import { createChapters } from './kapitoly/chapters.js?v=affinity-windows-markers-6';
+    import { createChapters } from './kapitoly/chapters.js?v=affinity-windows-layout-1';
     import { createSeedChapter } from './kapitoly/seed_chapter.js';
     import { createTreeBird } from './vykreslovani/tree_bird.js?v=perch-grid-1';
     import { createSeasonRing } from './obdobi/season_ring.js?v=date-controls-1';
@@ -1268,9 +1268,7 @@
     };
     const renderContext = canvas.getContext('webgl2', rendererOptions) || canvas.getContext('webgl', rendererOptions);
     const renderer = new THREE.WebGLRenderer({ canvas, context: renderContext, ...rendererOptions });
-    let maxRenderPixelRatio = Math.min(window.devicePixelRatio || 1, 1.5);
-    let activeRenderPixelRatio = maxRenderPixelRatio;
-    renderer.setPixelRatio(activeRenderPixelRatio);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.5));
     renderer.setSize(window.innerWidth, window.innerHeight);
     renderer.toneMapping = THREE.NoToneMapping;
     renderer.toneMappingExposure = 1.08;
@@ -3807,13 +3805,13 @@
       }
       shaderUniforms.uSunIntensity.value = daylight;
 
-      sunMesh1.position.copy(sun1.position).sub(sun1.target.position).normalize().multiplyScalar(sunMarkerDistance).add(sun1.target.position);
-      sunMat.opacity = THREE.MathUtils.smoothstep(sunElevationDeg, -6, 0);
-      sunMesh1.visible = sunMat.opacity > 0;
-      sunMat.color.copy(sunHorizonColor).lerp(sunDayColor,
-        THREE.MathUtils.smoothstep(sunElevationDeg, 0, 50));
-
+      // Keep every visible sun and its ray at the actual light position.
       if (sunHelpersGroup.visible) {
+        sunMesh1.position.copy(sun1.position).sub(sun1.target.position).normalize().multiplyScalar(sunMarkerDistance).add(sun1.target.position);
+        sunMat.opacity = THREE.MathUtils.smoothstep(sunElevationDeg, -6, 0);
+        sunMesh1.visible = sunMat.opacity > 0;
+        sunMat.color.copy(sunHorizonColor).lerp(sunDayColor,
+          THREE.MathUtils.smoothstep(sunElevationDeg, 0, 50));
         const sunsetTint = THREE.MathUtils.clamp((24 - Math.max(0, sunElevationDeg)) / 24, 0, 1);
         coronaMesh.position.copy(sunMesh1.position);
         coronaMesh.visible = false;
@@ -4215,10 +4213,6 @@
     let leafFallAnimationTime = lastTime * 0.001;
     let frameCount = 0;
     let fpsTimer = 0;
-    let adaptiveTime = 0;
-    let adaptiveFrames = 0;
-    let lastPixelRatioChange = lastTime;
-    const adaptiveStartTime = lastTime;
     let lastBreezeShadowUpdate = -Infinity;
     function animate(now) {
       requestAnimationFrame(animate);
@@ -4241,32 +4235,6 @@
         }
         frameCount = 0;
         fpsTimer = 0;
-      }
-
-      if (maxRenderPixelRatio > 1.05 && ecology.ready && !document.hidden && frameSeconds > 0 && frameSeconds <= 0.15 && now - adaptiveStartTime > 1500) {
-        adaptiveFrames++;
-        adaptiveTime += frameSeconds;
-        if (adaptiveTime >= 0.7) {
-          const sampleFps = adaptiveFrames / adaptiveTime;
-          adaptiveTime = 0;
-          adaptiveFrames = 0;
-          const sinceChange = now - lastPixelRatioChange;
-          let nextRatio = activeRenderPixelRatio;
-          if (sampleFps < 38 && activeRenderPixelRatio > 1.0 && sinceChange >= 800) {
-            nextRatio = activeRenderPixelRatio > 1.28 && maxRenderPixelRatio > 1.28 ? 1.2 : 1.0;
-          } else if (sampleFps > 55 && activeRenderPixelRatio < maxRenderPixelRatio && sinceChange >= 2400) {
-            nextRatio = activeRenderPixelRatio < 1.1 && maxRenderPixelRatio > 1.28 ? 1.2 : maxRenderPixelRatio;
-          }
-          if (nextRatio !== activeRenderPixelRatio) {
-            activeRenderPixelRatio = nextRatio;
-            renderer.setPixelRatio(activeRenderPixelRatio);
-            renderer.setSize(window.innerWidth, window.innerHeight, false);
-            lastPixelRatioChange = now;
-          }
-        }
-      } else if (frameSeconds > 0.15) {
-        adaptiveTime = 0;
-        adaptiveFrames = 0;
       }
 
       if (playbackDelta > 0) chapterApp.tick(playbackDelta);
@@ -4359,9 +4327,6 @@
     // 10. RESIZE LISTENER
     window.addEventListener('resize', () => {
       updateCameraProjection();
-      maxRenderPixelRatio = Math.min(window.devicePixelRatio || 1, 1.5);
-      activeRenderPixelRatio = Math.min(activeRenderPixelRatio, maxRenderPixelRatio);
-      renderer.setPixelRatio(activeRenderPixelRatio);
       renderer.setSize(window.innerWidth, window.innerHeight);
       introForest.resize();
     });
