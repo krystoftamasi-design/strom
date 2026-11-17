@@ -203,13 +203,13 @@ function enablePrototypeRotation(circle) {
 
 function createOxygenBalance(variant) {
   const lines = variant !== 'bars';
-  const square = variant === 'square';
+  const rectangle = variant === 'rectangle';
   const panel = document.createElement('section');
   panel.className = 'oxygen-balance-panel';
   panel.setAttribute('aria-label', 'Zkušební bilance cukrů');
   panel.innerHTML = `
-    <h3>${square ? 'Čtverec' : lines ? 'Dělicí čáry' : 'Sloupce'}</h3>
-    <div class="oxygen-balance${lines ? ' oxygen-balance-lines' : ''}${square ? ' oxygen-balance-square' : ''}">
+    <h3>${rectangle ? 'Obdélník' : lines ? 'Dělicí čáry' : 'Sloupce'}</h3>
+    <div class="oxygen-balance${lines ? ' oxygen-balance-lines' : ''}${rectangle ? ' oxygen-balance-rectangle' : ''}">
       ${lines ? '<div class="oxygen-balance-reserve"><abbr title="Zásoba">Z</abbr></div>' : '<abbr title="Zásoba">Z</abbr><div class="oxygen-balance-flows">'}
       <div class="oxygen-balance-production">${lines ? '' : '<span></span>'}<abbr title="Produkce">P</abbr></div>
       <div>${lines ? '' : '<span></span>'}<abbr title="Spotřeba">S</abbr></div>
@@ -217,7 +217,7 @@ function createOxygenBalance(variant) {
     </div>
   `;
   const circle = panel.querySelector('.oxygen-balance');
-  if (!square) enablePrototypeRotation(circle);
+  if (!rectangle) enablePrototypeRotation(circle);
   const flows = panel.querySelector('.oxygen-balance-flows');
   const [productionSection, consumptionSection] = lines ? [...circle.children].slice(1) : flows.children;
   return {
@@ -261,7 +261,7 @@ export function createTreeAnnotations({ shell, model, createSeasonControl, setEl
   let activeChapter = null;
   let photosynthesisIntro = null;
   let photosynthesisIntroTimer = null;
-  const prototypes = ['bars', 'lines', 'square'].map(createOxygenBalance);
+  const prototypes = ['bars', 'lines', 'rectangle'].map(createOxygenBalance);
   const capacityInput = shell.querySelector('[data-prototype-capacity]');
   let prototypeCapacity = capacityInput.valueAsNumber;
   let prototypeReserve = prototypeCapacity / 4;

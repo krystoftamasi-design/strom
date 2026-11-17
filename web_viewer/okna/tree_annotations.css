@@ -367,7 +367,40 @@ body.scene-night .oxygen-balance-settings { --oxygen-paper: #454749; }
   );
 }
 
-.tree-overlay .oxygen-balance-square { border-radius: 0; }
+.prototype-list .oxygen-balance-panel:has(.oxygen-balance-rectangle) {
+  inline-size: max-content;
+  margin-inline-start: auto;
+  padding-inline: 18px;
+}
+
+.tree-overlay .oxygen-balance-rectangle {
+  --oxygen-middle-label: 0px;
+  --oxygen-bottom-label: 0px;
+  inline-size: clamp(64px, 7vw, 104px);
+  block-size: clamp(146px, 24vh, 200px);
+  aspect-ratio: auto;
+  overflow: visible;
+  border-radius: 0;
+}
+
+.oxygen-balance-rectangle > div:not(.oxygen-balance-reserve) {
+  position: relative;
+}
+
+.oxygen-balance-rectangle > div:not(.oxygen-balance-reserve) > abbr {
+  position: absolute;
+  inset-block-start: 50%;
+  translate: 0 -50%;
+  color: var(--ui-ink);
+}
+
+.oxygen-balance-rectangle .oxygen-balance-production > abbr {
+  inset-inline-end: calc(100% + 6px);
+}
+
+.oxygen-balance-rectangle > div:last-child > abbr {
+  inset-inline-start: calc(100% + 6px);
+}
 
 .oxygen-balance-lines > div + div {
   background: var(--prototype-flow-color);
