@@ -3839,14 +3839,23 @@
 
     // A single tilted orbit avoids crossing straight over the tree at noon.
     const sunPathInclination = THREE.MathUtils.degToRad(35);
+    let _lastSliderSunElev = NaN;
+    let _lastSliderLightRot = NaN;
+    let _lastSliderDayHour = NaN;
     function updateSunFromDayClock(hour) {
       const angle = (hour - 6) / 24 * Math.PI * 2;
       const arc = Math.sin(angle);
       const elevation = THREE.MathUtils.radToDeg(Math.asin(arc * Math.cos(sunPathInclination)));
       const azimuth = (THREE.MathUtils.radToDeg(Math.atan2(
         arc * Math.sin(sunPathInclination), Math.cos(angle))) + 360) % 360;
-      sliderSunElevation.value = elevation;
-      sliderLightRot.value = azimuth;
+      if (!Number.isFinite(_lastSliderSunElev) || Math.abs(elevation - _lastSliderSunElev) >= 0.25) {
+        _lastSliderSunElev = elevation;
+        sliderSunElevation.value = elevation;
+      }
+      if (!Number.isFinite(_lastSliderLightRot) || Math.abs(azimuth - _lastSliderLightRot) >= 0.25) {
+        _lastSliderLightRot = azimuth;
+        sliderLightRot.value = azimuth;
+      }
       updateSunElevation(elevation);
       updateSunAzimuth(azimuth);
     }
@@ -4224,6 +4233,7 @@
     let lastPixelRatioChange = lastTime;
     const adaptiveStartTime = lastTime;
     let lastBreezeShadowUpdate = -Infinity;
+    let lastRegrowthShadowUpdate = -Infinity;
     function animate(now) {
       requestAnimationFrame(animate);
 
@@ -4310,7 +4320,10 @@
       const modelMinutes = adjustingTimeOfDay ? 0 : delta * MODEL_MINUTES_PER_SECOND * getDayClockSpeed();
       if (modelMinutes > 0 && sliderTimeOfDay) {
         timeOfDayHours = (timeOfDayHours + modelMinutes / 60) % 24;
-        sliderTimeOfDay.value = timeOfDayHours;
+        if (!Number.isFinite(_lastSliderDayHour) || Math.abs(timeOfDayHours - _lastSliderDayHour) >= 0.05) {
+          _lastSliderDayHour = timeOfDayHours;
+          sliderTimeOfDay.value = timeOfDayHours;
+        }
         if (ecology.dayCycleEnabled) updateSunFromDayClock(timeOfDayHours);
         const h = Math.floor(timeOfDayHours);
         const m = Math.floor((timeOfDayHours - h) * 60);
@@ -4347,12 +4360,14 @@
           startSeasonalRegrowth();
           invalidateShadows();
         }
-        // Falling/regrowing leaves and their shadow silhouettes share the same frame.
-        // Gentle breeze updates shadows at a throttled cadence so high leaf counts
-        // do not re-render the full shadow map on every frame.
-        if (leavesAnimating || leafRegrowthActive) {
+        // Falling leaves update shadows every frame; slower spring regrowth and
+        // gentle breeze throttle shadow updates so high leaf counts stay smooth.
+        if (leavesAnimating) {
           invalidateShadows();
-          lastBreezeShadowUpdate = now;
+          lastBreezeShadowUpdate = lastRegrowthShadowUpdate = now;
+        } else if (leafRegrowthActive && now - lastRegrowthShadowUpdate >= 100) {
+          invalidateShadows();
+          lastBreezeShadowUpdate = lastRegrowthShadowUpdate = now;
         } else if (leafBreeze.active && now - lastBreezeShadowUpdate >= 400) {
           invalidateShadows();
           lastBreezeShadowUpdate = now;
