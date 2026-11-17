@@ -174,12 +174,14 @@ Definice spojení
 
 ### Sojky
 
-- V kapitolách s pohledem na strom se tři sojky střídavě procházejí pod korunou, zobou a posedávají na různých větvích. Sojka bez vhodného místa k přistání zůstává na zemi.
+- Ve dne se v kapitolách s pohledem na strom sojky procházejí pod korunou, zobou a posedávají na větvích. Sojka bez vhodného místa k přistání zůstává na zemi. Při nízkém slunci zpomalí.
+- Počet viditelných sojek určuje teplota vzduchu. Od −2 do 27 °C jsou tři, od −8 do 32 °C mimo toto pásmo dvě a od −14 do 36 °C mimo obě užší pásma jedna. Při silnějším mrazu nebo vedru zůstávají mimo záběr. Pásma řídí výskyt ve scéně.
+- V noci může v koruně tiše sedět jedna sojka, pokud je teplota v rozmezí −14 až 36 °C a najde vhodnou větev. Ostatní jsou mimo záběr.
 - Sojka po vzletu zrychlí nízko nad zemí a teprve potom nabírá výšku při kroužení kolem stromu. V zatáčce se naklání. Před dosednutím na větev nebo na zem krátce plachtí, zpomalí, natáhne nohy a složí křídla.
 - Sojky mají realistickou délku přibližně 0,32 až 0,35 m. Peří vychází z barevné palety v Blenderu a odstupňovaného světla ve stylu listů. Maska průhlednosti změkčuje obrys a zachovává výřezy mezi pery.
 - Široká křídla mají rozpětí přibližně 1,6násobku délky těla s ocasem. Při mávnutí dolů se roztáhnou a cestou nahoru se mírně přitáhnou. Při složení se stáčejí podél boků.
 - Nohy se při chůzi střídavě zvedají a došlapují. Za letu se přitáhnou k tělu. Před dosednutím se vysunou vpřed, ocas se rozevře a tělo při došlapu mírně klesne.
-- Pauza zastaví animaci. Při omezení pohybu sojky stojí pod stromem.
+- Pauza zastaví animaci. Při omezení pohybu sojky ve dne stojí pod stromem.
 - Sojky nemají tag ani propojené okno.
 
 ### Pravidlo propojení

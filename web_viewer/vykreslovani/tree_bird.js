@@ -9,6 +9,8 @@ const BIRDS = [
   { angle: 0.15, distance: 0.85, size: 0.91, delay: 19, bend: 1 },
   { angle: 0.92, distance: 0.95, size: 0.95, delay: 37, bend: 1 }
 ];
+// Scene visibility ranges in °C, from the most to the least tolerant visitor.
+const FORAGING_RANGES = [[-14, 36], [-8, 32], [-2, 27]];
 const FULL_TURN = 2 * Math.PI;
 const ground = (angle, radius) => new THREE.Vector3(Math.cos(angle) * radius, 0, Math.sin(angle) * radius);
 const heading = (x, z) => Math.atan2(-z, x); // The beak points along +X.
@@ -165,10 +167,11 @@ function createBirdPose(model, shadowSource, config, index) {
 
   const tangent = new THREE.Vector3();
   const ahead = new THREE.Vector3();
-  let route, cycle, elapsed;
+  let route, cycle, elapsed, perchStep = -1;
   return {
     bird,
     shadow,
+    get canRoost() { return perchStep >= 0; },
     setRoute(angle, radius, orbitRadius, perch) {
       const { bend, distance, delay } = config;
       const start = ground(angle - bend * 0.31, radius * distance);
@@ -187,6 +190,7 @@ function createBirdPose(model, shadowSource, config, index) {
         move('peck', forage, end, 4),
         move('walk', forage, end, 4.5)
       ];
+      perchStep = perch ? route.length + 1 : -1;
       if (perch) route.push(
         fly(end, perch),
         move('rest', perch, start, 11 + index * 2),
@@ -197,10 +201,10 @@ function createBirdPose(model, shadowSource, config, index) {
       cycle = route.reduce((sum, action) => sum + action.seconds, 0);
       elapsed = delay % cycle;
     },
-    update(still, delta) {
-      if (!still) elapsed = (elapsed + delta) % cycle;
-      let time = still ? 0 : elapsed;
-      const step = route.findIndex(action => {
+    update(still, delta, roosting) {
+      if (!still && !roosting) elapsed = (elapsed + delta) % cycle;
+      let time = still || roosting ? 0 : elapsed;
+      const step = roosting ? perchStep : route.findIndex(action => {
         if (time < action.seconds) return true;
         time -= action.seconds;
         return false;
@@ -249,7 +253,7 @@ function createBirdPose(model, shadowSource, config, index) {
         recovery = downstroke ? 0 : Math.sin(Math.PI * strokePhase) * (1 - glide);
       }
 
-      const settle = !still && !flight && previous.path && time < 0.35
+      const settle = !still && !roosting && !flight && previous.path && time < 0.35
         ? Math.sin(Math.PI * time / 0.35) : 0;
       body.position.y = bodyRest + Math.abs(stride) * 0.035 - settle * 0.085;
       body.rotation.z = -dip + stride * 0.045;
@@ -280,7 +284,7 @@ function createBirdPose(model, shadowSource, config, index) {
 }
 
 export function createTreeBird({ scene, loader, textureLoader, camera, lighting, reducedMotion }) {
-  let flock, loading = false, failed = false, attached;
+  let flock, loading = false, failed = false, attached, roostingBird;
   function load() {
     if (loading || failed) return;
     loading = true;
@@ -311,8 +315,13 @@ export function createTreeBird({ scene, loader, textureLoader, camera, lighting,
   }
 
   return {
-    update(active, branches, delta) {
-      if (!active || !branches?.visible) {
+    update(active, branches, delta, airTemperature, sunElevation) {
+      let visibleCount = 0;
+      for (const [low, high] of FORAGING_RANGES) {
+        if (!(airTemperature >= low && airTemperature <= high)) break;
+        visibleCount++;
+      }
+      if (!active || !branches?.visible || visibleCount === 0) {
         for (const { bird, shadow } of flock || []) bird.visible = shadow.visible = false;
         return;
       }
@@ -333,9 +342,18 @@ export function createTreeBird({ scene, loader, textureLoader, camera, lighting,
           if (perch) occupied.push(perch);
           bird.setRoute(angle, radius, orbitRadius + index * 0.45, perch);
         });
+        roostingBird = flock.find(bird => bird.canRoost);
         attached = branches;
       }
-      for (const bird of flock) bird.update(reducedMotion.matches, delta);
+      const night = sunElevation <= 0;
+      const pace = 0.45 + 0.55 * THREE.MathUtils.smoothstep(sunElevation, 0, 10);
+      flock.forEach((pose, index) => {
+        if (night ? pose === roostingBird : index < visibleCount) {
+          pose.update(reducedMotion.matches, delta * pace, night);
+        } else {
+          pose.bird.visible = pose.shadow.visible = false;
+        }
+      });
     }
   };
 }
