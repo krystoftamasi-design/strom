@@ -167,11 +167,33 @@ function createBirdPose(model, shadowSource, config, index) {
 
   const tangent = new THREE.Vector3();
   const ahead = new THREE.Vector3();
-  let route, cycle, elapsed, perchStep = -1;
+  let route, cycle, elapsed, perchStep = -1, departure;
   return {
     bird,
     shadow,
     get canRoost() { return perchStep >= 0; },
+    get departing() { return Boolean(departure); },
+    cancelDeparture() { departure = undefined; },
+    startDeparture(camera) {
+      const from = bird.position.clone();
+      const forward = camera.getWorldDirection(new THREE.Vector3());
+      const right = new THREE.Vector3().setFromMatrixColumn(camera.matrixWorld, 0).normalize();
+      const cameraPosition = camera.getWorldPosition(new THREE.Vector3());
+      const depth = Math.max(camera.near + 3, 6 + index);
+      const side = config.bend;
+      const halfViewWidth = depth * Math.tan(THREE.MathUtils.degToRad(camera.fov / 2)) * camera.aspect;
+      const passOffset = Math.min(1 + index * 0.55, halfViewWidth * 0.60);
+      const pass = cameraPosition.clone().addScaledVector(forward, depth).addScaledVector(right, side * passOffset);
+      const exit = cameraPosition.clone().addScaledVector(forward, depth + 1)
+        .addScaledVector(right, side * Math.max(halfViewWidth * 1.6 + 1, 5));
+      pass.y = Math.max(0.8, pass.y);
+      exit.y = Math.max(1.2, exit.y + 0.6);
+      const rise = from.clone().lerp(pass, 0.28);
+      rise.y = Math.max(from.y + 0.75, rise.y);
+      const path = new THREE.CatmullRomCurve3([from, rise, pass, exit]);
+      departure = { kind: 'fly', from, to: exit, path, yaw: bird.rotation.y,
+        seconds: THREE.MathUtils.clamp(path.getLength() / (7 + index), 2.6, 6), elapsed: 0 };
+    },
     setRoute(angle, radius, orbitRadius, perch) {
       const { bend, distance, delay } = config;
       const start = ground(angle - bend * 0.31, radius * distance);
@@ -202,14 +224,29 @@ function createBirdPose(model, shadowSource, config, index) {
       elapsed = delay % cycle;
     },
     update(still, delta, roosting) {
-      if (!still && !roosting) elapsed = (elapsed + delta) % cycle;
-      let time = still || roosting ? 0 : elapsed;
-      const step = roosting ? perchStep : route.findIndex(action => {
-        if (time < action.seconds) return true;
-        time -= action.seconds;
-        return false;
-      });
-      const { kind, from, to, seconds, path, yaw } = route[step];
+      let time, action, previous;
+      if (departure) {
+        departure.elapsed += delta;
+        if (still || departure.elapsed >= departure.seconds) {
+          bird.visible = shadow.visible = false;
+          departure = undefined;
+          return;
+        }
+        time = departure.elapsed;
+        action = departure;
+        previous = { yaw: departure.yaw };
+      } else {
+        if (!still && !roosting) elapsed = (elapsed + delta) % cycle;
+        time = still || roosting ? 0 : elapsed;
+        const step = roosting ? perchStep : route.findIndex(candidate => {
+          if (time < candidate.seconds) return true;
+          time -= candidate.seconds;
+          return false;
+        });
+        action = route[step];
+        previous = route[(step + route.length - 1) % route.length];
+      }
+      const { kind, from, to, seconds, path, yaw } = action;
       const t = time / seconds;
       const walking = kind === 'walk' && !still;
       const flight = Boolean(path);
@@ -217,7 +254,6 @@ function createBirdPose(model, shadowSource, config, index) {
       const stepAmount = walking ? Math.min(1, time * 5, (seconds - time) * 5) : 0;
       const stride = Math.sin(stepPhase) * stepAmount;
       const dip = kind === 'peck' ? Math.max(0, Math.sin(time * Math.PI * 2.8)) ** 5 * 0.62 : 0;
-      const previous = route[(step + route.length - 1) % route.length];
       const prevTangent = previous.path?.getTangent(1, tangent);
       const prevYaw = prevTangent ? heading(prevTangent.x, prevTangent.z) : previous.yaw;
       const turn = turnBetween(prevYaw, yaw);
@@ -284,7 +320,7 @@ function createBirdPose(model, shadowSource, config, index) {
 }
 
 export function createTreeBird({ scene, loader, textureLoader, camera, lighting, reducedMotion }) {
-  let flock, loading = false, failed = false, attached, roostingBird;
+  let flock, loading = false, failed = false, attached, roostingBird, previousNight;
   function load() {
     if (loading || failed) return;
     loading = true;
@@ -322,11 +358,16 @@ export function createTreeBird({ scene, loader, textureLoader, camera, lighting,
         visibleCount++;
       }
       if (!active || !branches?.visible || visibleCount === 0) {
-        for (const { bird, shadow } of flock || []) bird.visible = shadow.visible = false;
+        previousNight = undefined;
+        for (const pose of flock || []) {
+          pose.cancelDeparture();
+          pose.bird.visible = pose.shadow.visible = false;
+        }
         return;
       }
       if (!flock) { load(); return; }
       if (attached !== branches) {
+        previousNight = undefined;
         branches.updateWorldMatrix(true, false);
         const box = new THREE.Box3().setFromObject(branches);
         const radius = Math.max(3, Math.min(box.max.x - box.min.x, box.max.z - box.min.z) * 0.5);
@@ -337,6 +378,7 @@ export function createTreeBird({ scene, loader, textureLoader, camera, lighting,
         const centerAngle = Math.atan2(camera.position.z, camera.position.x);
         const occupied = [];
         flock.forEach((bird, index) => {
+          bird.cancelDeparture();
           const angle = centerAngle + BIRDS[index].angle;
           const perch = findPerch(branches, box, angle, radius, occupied);
           if (perch) occupied.push(perch);
@@ -346,10 +388,20 @@ export function createTreeBird({ scene, loader, textureLoader, camera, lighting,
         attached = branches;
       }
       const night = sunElevation <= 0;
+      const still = reducedMotion.matches;
+      if (night && previousNight === false && !still) {
+        for (const pose of flock) {
+          if (pose !== roostingBird && pose.bird.visible) pose.startDeparture(camera);
+        }
+      }
+      previousNight = night;
       const pace = 0.45 + 0.55 * THREE.MathUtils.smoothstep(sunElevation, 0, 10);
       flock.forEach((pose, index) => {
-        if (night ? pose === roostingBird : index < visibleCount) {
-          pose.update(reducedMotion.matches, delta * pace, night);
+        if (!night) pose.cancelDeparture();
+        if (night && pose.departing) {
+          pose.update(still, delta, false);
+        } else if (night ? pose === roostingBird : index < visibleCount) {
+          pose.update(still, delta * pace, night);
         } else {
           pose.bird.visible = pose.shadow.visible = false;
         }

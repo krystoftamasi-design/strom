@@ -1,9 +1,9 @@
 import * as THREE from 'three';
 import { createBranchDryingProfile } from './leaf_branch_drying.js?v=3';
 
-// Five layers provide enough geometry for 40,000 leaves in the canopy.
-const LEAF_MULTIPLIER = 5;
-const MAX_LEAF_COUNT = 40000;
+const LEAF_MULTIPLIER = 7;
+const MAX_LEAF_COUNT = 60000;
+const BASE_RENDER_LIMIT = 40000;
 
 function leafKey(uv, index, atlas) {
   const x = Math.floor(uv.getX(index) * atlas.size / atlas.tile);
@@ -139,6 +139,8 @@ export class LeafControls {
     this.scale = Number(sizeInput.value) / 100;
     this.growthProgress = 1.0;
     this.count = Number(countInput.value);
+    this.renderLimit = BASE_RENDER_LIMIT;
+    this.fastSamples = 0;
     sizeInput.addEventListener('input', () => { this.scale = Number(sizeInput.value) / 100; this.applySize(); this.notify(); });
     countInput.addEventListener('input', () => { this.count = Number(countInput.value); this.applyCount(); this.notify(); });
     typeButtons.forEach(button => button.addEventListener('click', () => this.setType(button.dataset.leafType)));
@@ -193,7 +195,6 @@ export class LeafControls {
         mesh.worldToLocal(landing);
         leaf.fallBaseSpeed = 2.1 + fallSeed * 1.5;
         leaf.fallHeight = height;
-        leaf.fallDuration = height / leaf.fallBaseSpeed + 0.65 + 7.0;
         // A red leaf stays on the branch for five seconds, then the batch
         // rolls out over roughly one second according to the rate slider.
         leaf.fallDelay = 0;
@@ -265,14 +266,11 @@ export class LeafControls {
     let animating = false;
     const speed = Math.max(dryingSpeed, 0.05);
     const fallMultiplier = THREE.MathUtils.clamp(Number(fallSpeed) || 1, 0.25, 3.0);
-    this.models.forEach(({ leaves }) => leaves.forEach(leaf => {
-      if (leaf.fallHeight && leaf.fallBaseSpeed) {
-        leaf.fallDuration = leaf.fallHeight / (leaf.fallBaseSpeed * fallMultiplier) + 0.65 + 7.0;
-      }
-    }));
+    this.fallMultiplier = fallMultiplier;
     const sharpness = THREE.MathUtils.clamp(dryingSharpness, 0, 1);
 
-    this.models.forEach(({ mesh, leaves, ends }) => {
+    this.models.forEach(({ mesh, leaves, selectedCount }) => {
+      if (!mesh.visible) return;
       const startTimes = mesh.geometry.attributes.leafFallStartTime;
       const cameraDrift = mesh.geometry.attributes.leafCameraDrift;
       const drift = new THREE.Vector3();
@@ -297,7 +295,8 @@ export class LeafControls {
         changed = true;
         driftChanged = true;
       };
-      leaves.forEach((leaf, index) => {
+      for (let index = 0; index < selectedCount; index++) {
+        const leaf = leaves[index];
         const priority = THREE.MathUtils.clamp(leaf.dryingPriority, 0, 1);
         const regionPriority = THREE.MathUtils.clamp(leaf.dryingRegionPriority, 0, 1);
         const dryingPriority = THREE.MathUtils.lerp(priority, regionPriority, sharpness);
@@ -316,8 +315,7 @@ export class LeafControls {
           ? releasedByCalendar
           : seasonProgress >= redTriggerSeason;
 
-        const visible = mesh.visible && ends[index + 1] <= mesh.geometry.drawRange.count;
-        if (!visible || movingBackwards || !readyToFall) {
+        if (movingBackwards || !readyToFall) {
           if (leaf.fallStartTime !== 1000000.0) {
             leaf.fallStartTime = 1000000.0;
             for (const vertex of leaf.vertices) startTimes.setX(vertex, leaf.fallStartTime);
@@ -331,14 +329,15 @@ export class LeafControls {
           this.fallEmissionTokens -= 1;
           scheduleFall(leaf, index, time + leaf.fallDelay);
         }
-      });
+        if (time >= leaf.fallStartTime && time <= leaf.fallStartTime + this.fallDuration(leaf)) animating = true;
+      }
       if (changed) {
         startTimes.needsUpdate = true;
         this.foliageCache = null;
         this.photosyntheticFoliageCache = null;
       }
       if (driftChanged) cameraDrift.needsUpdate = true;
-      if (changed || leaves.some(leaf => time >= leaf.fallStartTime && time <= leaf.fallStartTime + leaf.fallDuration)) animating = true;
+      if (changed) animating = true;
     });
     return animating;
   }
@@ -408,10 +407,18 @@ export class LeafControls {
   }
 
   hasUnfinishedLeafFall(time) {
-    return this.models.some(({ mesh, leaves, ends }) => mesh.visible && leaves.some((leaf, index) =>
-      ends[index + 1] <= mesh.geometry.drawRange.count
-      && leaf.fallStartTime !== 1000000.0
-      && time < leaf.fallStartTime + leaf.fallDuration));
+    for (const { mesh, leaves, selectedCount } of this.models) {
+      if (!mesh.visible) continue;
+      for (let index = 0; index < selectedCount; index++) {
+        const leaf = leaves[index];
+        if (leaf.fallStartTime !== 1000000.0 && time < leaf.fallStartTime + this.fallDuration(leaf)) return true;
+      }
+    }
+    return false;
+  }
+
+  fallDuration(leaf) {
+    return leaf.fallHeight / (leaf.fallBaseSpeed * (this.fallMultiplier ?? 1)) + 0.65 + 7;
   }
 
   getFirstRedSeasonProgress(dryingSpeed, dryingSharpness, dryingFrontWidth) {
@@ -491,6 +498,31 @@ export class LeafControls {
     return Math.round(max * baseCount / this.total);
   }
 
+  // Extra density is optional. Ramp it up only after sustained headroom and
+  // drop it faster when frame rate falls, without changing the slider request.
+  reportFrameRate(fps) {
+    if (!this.models.length || !this.visible || this.count <= BASE_RENDER_LIMIT || !Number.isFinite(fps)) {
+      this.fastSamples = 0;
+      return;
+    }
+    let next = this.renderLimit;
+    if (fps < 49) {
+      next = Math.max(BASE_RENDER_LIMIT, next - 5000);
+      this.fastSamples = 0;
+    } else if (fps >= 57 && next < this.count) {
+      if (++this.fastSamples >= 5) {
+        next = Math.min(this.count, next + 2500);
+        this.fastSamples = 0;
+      }
+    } else {
+      this.fastSamples = 0;
+    }
+    if (next !== this.renderLimit) {
+      this.renderLimit = next;
+      this.applyCount();
+    }
+  }
+
   applyCount() {
     // Visibility is initialized before the GLB arrives. Keep the requested
     // count until there are meshes to measure instead of clamping it to zero.
@@ -502,19 +534,35 @@ export class LeafControls {
     this.countInput.max = this.maxForBaseCount(baseTotal);
     this.count = Math.max(0, Math.min(Math.round(this.count), Number(this.countInput.max)));
     this.countInput.value = this.count;
-    let remaining = this.count;
-    this.models.forEach(({ mesh, ends }) => {
-      mesh.geometry.setDrawRange(0, ends[0]);
-      mesh.visible = false;
-    });
-    enabled.forEach(({ mesh, baseCount, ends }, i) => {
-      const count = i === enabled.length - 1 ? remaining : Math.round(this.count * baseCount / baseTotal);
+    if (this.count <= BASE_RENDER_LIMIT) this.renderLimit = BASE_RENDER_LIMIT;
+    const renderedCount = Math.min(this.count, this.renderLimit);
+    let remaining = renderedCount;
+    this.models.forEach((model) => {
+      const { mesh, baseCount, ends, leaves } = model;
+      const isEnabled = enabled.includes(model);
+      const count = !isEnabled ? 0 : model === enabled.at(-1)
+        ? remaining : Math.round(renderedCount * baseCount / baseTotal);
+      if (mesh.geometry.hasAttribute('leafFallStartTime')) {
+        const times = mesh.geometry.attributes.leafFallStartTime;
+        const before = model.selectedCount ?? 0;
+        let reset = false;
+        for (let index = this.visible ? count : 0; index < before; index++) {
+          const leaf = leaves[index];
+          if (leaf.fallStartTime === 1000000.0) continue;
+          leaf.fallStartTime = 1000000.0;
+          for (const vertex of leaf.vertices) times.setX(vertex, leaf.fallStartTime);
+          reset = true;
+        }
+        if (reset) times.needsUpdate = true;
+      }
+      model.selectedCount = count;
       mesh.geometry.setDrawRange(0, ends[count]);
-      mesh.visible = this.visible;
+      mesh.visible = isEnabled && this.visible;
       remaining -= count;
     });
-    this.countLabel.textContent = this.count.toLocaleString('cs-CZ');
-    if (this.canopyLabel) this.canopyLabel.textContent = `🍃 Koruna a listy (${this.count.toLocaleString('cs-CZ')} listů)`;
+    const formatted = renderedCount.toLocaleString('cs-CZ');
+    this.countLabel.textContent = renderedCount === this.count ? formatted : `${formatted} / ${this.count.toLocaleString('cs-CZ')}`;
+    if (this.canopyLabel) this.canopyLabel.textContent = `🍃 Koruna a listy (${formatted} listů)`;
   }
 
   setType(type) {

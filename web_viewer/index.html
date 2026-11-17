@@ -747,7 +747,7 @@
             <label for="sliderLeafCount">Počet listů</label>
             <span class="slider-val" id="valLeafCount">20 000</span>
           </div>
-          <input type="range" id="sliderLeafCount" min="0" max="40000" step="1" value="20000">
+          <input type="range" id="sliderLeafCount" min="0" max="60000" step="1" value="20000">
         </div>
       </div>
 
@@ -1106,7 +1106,7 @@
     import { PhotolysisSystem } from './vykreslovani/photolysis_system.js?v=photon-texture-1';
     import { loadBarkReference, loadBarkAttributes, attachBarkAttributes, createBarkMaterial } from './vykreslovani/bark_material.js?v=stable-shadow-4';
     import { loadLeafReference, loadLeafAttributes, attachLeafAttributes, createLeafMaterial, createLeafDepthMaterial, setLeafEdgeTransition } from './vykreslovani/leaf_material.js?v=narrow-canopy-shade-6';
-    import { LeafControls } from './listy/leaf_controls.js?v=leaf-limit-40000';
+    import { LeafControls } from './listy/leaf_controls.js?v=adaptive-leaves-1';
     import { crossedSpring, advanceVisibleGrowth } from './listy/leaf_growth_timing.js?v=1';
     import { advanceDroughtLeaves, droughtLeafFall } from './listy/drought_leaf_animation.js?v=1';
     import { loadBranchDryingReference, branchDryingFrontWidth } from './listy/leaf_branch_drying.js?v=3';
@@ -1116,7 +1116,7 @@
     import { TreeEcology, SEASONS, MODEL_MINUTES_PER_SECOND } from './ekologie/tree_ecology.js?v=light-slider-1';
     import { createChapters } from './kapitoly/chapters.js?v=affinity-windows-markers-2';
     import { createSeedChapter } from './kapitoly/seed_chapter.js';
-    import { createTreeBird } from './vykreslovani/tree_bird.js?v=weather-1';
+    import { createTreeBird } from './vykreslovani/tree_bird.js?v=dusk-flight-1';
     import { createSeasonRing } from './obdobi/season_ring.js?v=date-controls-1';
     import { createIntroForest } from './obdobi/intro_forest.js?v=intro-closer-camera-2';
     import { seasonColorForPosition } from './obdobi/season_timeline.js?v=beech-calendar-1';
@@ -4080,17 +4080,20 @@
     function animate(now) {
       requestAnimationFrame(animate);
 
-      const delta = document.hidden ? 0 : Math.min(0.1, (now - lastTime) / 1000);
+      const frameSeconds = document.hidden ? 0 : (now - lastTime) / 1000;
+      const delta = Math.min(0.1, frameSeconds);
       lastTime = now;
       const playbackDelta = timePaused ? 0 : delta * timePlaybackSpeed;
       simulationTime += playbackDelta;
       const simulationNow = simulationTime * 1000;
 
       // FPS Calculation
-      frameCount++;
-      fpsTimer += delta;
+      if (frameSeconds > 0) frameCount++;
+      fpsTimer += frameSeconds;
       if (fpsTimer >= 0.5) {
-        valFps.textContent = Math.round(frameCount / fpsTimer);
+        const fps = frameCount / fpsTimer;
+        valFps.textContent = Math.round(fps);
+        leafControls.reportFrameRate(fps);
         frameCount = 0;
         fpsTimer = 0;
       }
