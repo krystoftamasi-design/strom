@@ -52,13 +52,13 @@
     {
       "model": "strom_web_fast",
       "kind": "trunk",
-      "vertices": 91146,
+      "vertices": 44427,
       "file": "strom_web_fast_bark_trunk.bin"
     },
     {
       "model": "strom_web_fast",
       "kind": "roots",
-      "vertices": 37241,
+      "vertices": 17363,
       "file": "strom_web_fast_bark_roots.bin"
     }
   ]

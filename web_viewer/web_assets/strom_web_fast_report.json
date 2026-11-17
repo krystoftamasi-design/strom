@@ -1,16 +1,16 @@
 {
   "source": "strom_web",
   "target": "strom_web_fast",
-  "ratio": 0.3,
+  "ratio": 0.12,
   "meshes": [
     {
       "kind": "trunk",
       "oldTriangles": 361715,
-      "triangles": 108514,
+      "triangles": 43405,
       "oldVertices": 251801,
-      "vertices": 91146,
-      "surfaceErrorP95Meters": 0.041919784992933265,
-      "surfaceErrorMaxMeters": 0.2981499433517456,
+      "vertices": 44427,
+      "surfaceErrorP95Meters": 0.1617209456861019,
+      "surfaceErrorMaxMeters": 0.7031371593475342,
       "boundsBefore": [
         [
           -6.067295074462891,
@@ -25,14 +25,14 @@
       ],
       "boundsAfter": [
         [
-          -6.067104339599609,
-          -0.01806369610130787,
+          -6.068265438079834,
+          -0.017945213243365288,
           -4.101282119750977
         ],
         [
-          5.840010166168213,
+          5.737499237060547,
           23.916194915771484,
-          6.148996829986572
+          5.866231441497803
         ]
       ],
       "barkFile": "strom_web_fast_bark_trunk.bin"
@@ -40,11 +40,11 @@
     {
       "kind": "roots",
       "oldTriangles": 110579,
-      "triangles": 33173,
+      "triangles": 13269,
       "oldVertices": 105688,
-      "vertices": 37241,
-      "surfaceErrorP95Meters": 0.065541099011898,
-      "surfaceErrorMaxMeters": 0.690748929977417,
+      "vertices": 17363,
+      "surfaceErrorP95Meters": 0.12990803420543667,
+      "surfaceErrorMaxMeters": 0.7010471224784851,
       "boundsBefore": [
         [
           -6.598506450653076,
@@ -59,8 +59,8 @@
       ],
       "boundsAfter": [
         [
-          -6.339008331298828,
-          -1.634295105934143,
+          -6.101227760314941,
+          -1.6314233541488647,
           -6.389073371887207
         ],
         [
@@ -72,6 +72,6 @@
       "barkFile": "strom_web_fast_bark_roots.bin"
     }
   ],
-  "bytes": 7709120,
-  "totalTriangles": 161551
+  "bytes": 4557864,
+  "totalTriangles": 76538
 }
