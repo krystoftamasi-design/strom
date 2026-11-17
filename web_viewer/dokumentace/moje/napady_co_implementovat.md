@@ -15,9 +15,10 @@ history:
 ## Doporučený postup
 
 1. Dokončit okna Fotosyntézy: vzhled, hodnoty, ovládání a vazby na děje ve stromu. Zvážit naznačení ovládání pruhů a ověřit, zda je srozumitelné.
-2. Projít vzhled a funkčnost kapitoly a potom otestovat porozumění se studenty podle [Strategie](strategie.md). Využít i níže uvedené otázky a podle výsledků upravit nejasná místa.
-3. Teprve po ověření pokračovat další kapitolou; hotovou Fotosyntézu použít jako vzor a obsah přizpůsobit cíli dané kapitoly. U Transpirace prověřit propojení oken s místem děje.
-4. Umístění testu Období, sandbox a zvukový design ponechat k pozdějšímu posouzení; nejsou podmínkou dokončení Fotosyntézy.
+2. Dokončit průvodce Fotosyntézou: dopracovat kontextové texty a jejich výběr podle stavu a otevřených oken; podrobnosti jsou v [Kontextových textech](kontextove_texty.md#k-dopracování-a-ověření).
+3. Projít vzhled a funkčnost kapitoly a potom otestovat porozumění se studenty podle [Strategie](strategie.md). Využít i níže uvedené otázky a podle výsledků upravit nejasná místa.
+4. Teprve po ověření pokračovat další kapitolou; hotovou Fotosyntézu použít jako vzor a obsah přizpůsobit cíli dané kapitoly. U Transpirace prověřit propojení oken s místem děje.
+5. Umístění testu Období, sandbox a zvukový design ponechat k pozdějšímu posouzení; nejsou podmínkou dokončení Fotosyntézy.
 
 ## Obecné
 
