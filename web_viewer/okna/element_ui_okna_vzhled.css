@@ -421,7 +421,7 @@ body.scene-night .tree-overlay .element-ui-okno .ui-word {
 
 .tree-overlay .element-ui-balance-track {
   --balance-ink: #a7a7a7;
-  --balance-texture: url('../web_assets/okna/affinity-bilance.png?v=affinity-windows-markers-4');
+  --balance-texture: url('../web_assets/okna/affinity-bilance.png?v=affinity-windows-markers-5');
   --balance-track-start: clamp(10px, 1.3vh, 13px);
   --balance-track-end: clamp(11px, 1.45vh, 14px);
   right: 0;
@@ -490,12 +490,12 @@ body.scene-night .tree-overlay .element-ui-balance-track {
   display: grid;
   place-items: center;
   color: white;
-  font: 700 clamp(7px, .9vh, 9.5px)/1 var(--ui-font-text);
+  font: 300 clamp(7px, .9vh, 9.5px)/1 var(--ui-font-display);
 }
 
 .tree-overlay .element-ui-balance-marker-top {
   --balance-position: var(--balance-top);
-  --balance-texture: url('../web_assets/okna/affinity-bilance-horni.png?v=affinity-windows-markers-4');
+  --balance-texture: url('../web_assets/okna/affinity-bilance-horni.png?v=affinity-windows-markers-5');
 }
 
 .tree-overlay .element-ui-balance-marker-top .element-ui-balance-marker-cap {
@@ -505,7 +505,7 @@ body.scene-night .tree-overlay .element-ui-balance-track {
 
 .tree-overlay .element-ui-balance-marker-bottom {
   --balance-position: var(--balance-bottom);
-  --balance-texture: url('../web_assets/okna/affinity-bilance-dolni.png?v=affinity-windows-markers-4');
+  --balance-texture: url('../web_assets/okna/affinity-bilance-dolni.png?v=affinity-windows-markers-5');
 }
 
 .tree-overlay .element-ui-balance-marker-bottom .element-ui-balance-marker-cap {

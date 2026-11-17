@@ -124,11 +124,19 @@
       gap: 10px;
     }
 
-    .manager-controlled.manager-hidden { display: none !important; }
+    .manager-controlled.manager-hidden {
+      display: none !important;
+    }
+
     body[data-chapter="intro"] .time-playback-panel,
     body[data-chapter="intro"] .time-of-day-control,
-    body[data-chapter="intro"] .manager-controlled { display: none !important; }
-    body:not(.manager-open) #chapterShared { display: none !important; }
+    body[data-chapter="intro"] .manager-controlled {
+      display: none !important;
+    }
+
+    body:not(.manager-open) #chapterShared {
+      display: none !important;
+    }
 
     .action-btn {
       background: var(--bg-panel);
@@ -450,14 +458,38 @@
       border-radius: 12px;
       background: var(--bg-panel);
       backdrop-filter: blur(14px);
-      box-shadow: 0 4px 15px rgba(0,0,0,.2);
+      box-shadow: 0 4px 15px rgba(0, 0, 0, .2);
       color: var(--text-muted);
       font: 11px var(--font-mono);
     }
-    .time-of-day-timeline { min-width: 155px; flex: 1; display: flex; flex-direction: column; gap: 5px; }
-    .time-of-day-control .time-label { display: flex; justify-content: space-between; gap: 14px; }
-    .time-of-day-control input { width: 100%; margin: 0; accent-color: #f6c85f; cursor: pointer; }
-    .time-playback-buttons { display: flex; flex-wrap: wrap; gap: 5px; }
+
+    .time-of-day-timeline {
+      min-width: 155px;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+
+    .time-of-day-control .time-label {
+      display: flex;
+      justify-content: space-between;
+      gap: 14px;
+    }
+
+    .time-of-day-control input {
+      width: 100%;
+      margin: 0;
+      accent-color: #f6c85f;
+      cursor: pointer;
+    }
+
+    .time-playback-buttons {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 5px;
+    }
+
     .time-playback-panel {
       pointer-events: auto;
       padding: 8px;
@@ -465,8 +497,9 @@
       border-radius: 12px;
       background: var(--bg-panel);
       backdrop-filter: blur(14px);
-      box-shadow: 0 4px 15px rgba(0,0,0,.2);
+      box-shadow: 0 4px 15px rgba(0, 0, 0, .2);
     }
+
     .time-playback-buttons button {
       width: 36px;
       height: 34px;
@@ -476,23 +509,66 @@
       padding: 6px;
       border: 1px solid var(--bg-panel-border);
       border-radius: 7px;
-      background: rgba(255,255,255,.05);
+      background: rgba(255, 255, 255, .05);
       color: var(--text-main);
       font: inherit;
       cursor: pointer;
     }
-    .time-playback-buttons button:hover { background: rgba(255,255,255,.12); }
-    .time-playback-buttons button[aria-pressed="true"] { color: #f6c85f; border-color: #f6c85f; }
-    .time-playback-buttons svg { width: 20px; height: 20px; fill: currentColor; }
-    .time-playback-buttons .time-pause-play { display: none; }
-    .time-playback-buttons button[aria-pressed="true"] .time-pause-bars { display: none; }
-    .time-playback-buttons button[aria-pressed="true"] .time-pause-play { display: inline; }
-    .time-playback-buttons button:focus-visible { outline: 2px solid #f6c85f; outline-offset: 2px; }
-    @media (max-width: 700px) {
-      .hud-bottom { left: 10px; right: 10px; bottom: 10px; flex-wrap: wrap; justify-content: flex-end; gap: 6px; }
-      .time-of-day-control { min-width: 155px; flex: 1 1 100%; order: 2; }
-      .stat-pill { padding: 7px 9px; font-size: 9px; }
+
+    .time-playback-buttons button:hover {
+      background: rgba(255, 255, 255, .12);
     }
+
+    .time-playback-buttons button[aria-pressed="true"] {
+      color: #f6c85f;
+      border-color: #f6c85f;
+    }
+
+    .time-playback-buttons svg {
+      width: 20px;
+      height: 20px;
+      fill: currentColor;
+    }
+
+    .time-playback-buttons .time-pause-play {
+      display: none;
+    }
+
+    .time-playback-buttons button[aria-pressed="true"] .time-pause-bars {
+      display: none;
+    }
+
+    .time-playback-buttons button[aria-pressed="true"] .time-pause-play {
+      display: inline;
+    }
+
+    .time-playback-buttons button:focus-visible {
+      outline: 2px solid #f6c85f;
+      outline-offset: 2px;
+    }
+
+    @media (max-width: 700px) {
+      .hud-bottom {
+        left: 10px;
+        right: 10px;
+        bottom: 10px;
+        flex-wrap: wrap;
+        justify-content: flex-end;
+        gap: 6px;
+      }
+
+      .time-of-day-control {
+        min-width: 155px;
+        flex: 1 1 100%;
+        order: 2;
+      }
+
+      .stat-pill {
+        padding: 7px 9px;
+        font-size: 9px;
+      }
+    }
+
     .stat-pill {
       pointer-events: auto;
       background: var(--bg-panel);
@@ -652,7 +728,7 @@
   </style>
   <link rel="stylesheet" href="./kapitoly/chapters.css?v=menu-bold-4">
   <link rel="stylesheet" href="./okna/tree_annotations.css?v=season-guide-1">
-  <link rel="stylesheet" href="./okna/element_ui_okna_vzhled.css?v=affinity-windows-markers-4">
+  <link rel="stylesheet" href="./okna/element_ui_okna_vzhled.css?v=affinity-windows-markers-5">
 </head>
 
 <body>
@@ -663,7 +739,8 @@
   <!-- Top Bar -->
   <div class="top-bar">
     <div class="top-actions">
-      <button class="action-btn manager-controlled manager-hidden" id="btnSaveCameraView" title="Uložit tento pohled kamery pro příští spuštění">
+      <button class="action-btn manager-controlled manager-hidden" id="btnSaveCameraView"
+        title="Uložit tento pohled kamery pro příští spuštění">
         <span>⌖ Uložit pohled</span>
       </button>
       <button class="action-btn manager-controlled manager-hidden" id="btnTogglePanel" title="Zobrazit/skrýt nastavení">
@@ -695,35 +772,40 @@
             <span>Posun barevného tónu</span>
             <span class="slider-val" id="valSeason">50 %</span>
           </div>
-          <input type="range" id="sliderSeason" min="0" max="100" value="50" title="Nejdřív schnou listy s nejdelší cestou po větvích od paty kmene. Skupiny listů mají mírně náhodné pořadí. Barva stínu zůstává stejná.">
+          <input type="range" id="sliderSeason" min="0" max="100" value="50"
+            title="Nejdřív schnou listy s nejdelší cestou po větvích od paty kmene. Skupiny listů mají mírně náhodné pořadí. Barva stínu zůstává stejná.">
         </div>
         <div class="slider-group" style="margin-top: 12px;">
           <div class="slider-label">
             <label for="sliderDryingSpeed">Rychlost přechodu do červené</label>
             <span class="slider-val" id="valDryingSpeed">0,50×</span>
           </div>
-          <input type="range" id="sliderDryingSpeed" min="1" max="300" step="1" value="50" title="Rozsah 0,01× až 3,00×. Doleva: pomalejší přechod přes žlutou a oranžovou. Doprava: rychlejší přechod do červené.">
+          <input type="range" id="sliderDryingSpeed" min="1" max="300" step="1" value="50"
+            title="Rozsah 0,01× až 3,00×. Doleva: pomalejší přechod přes žlutou a oranžovou. Doprava: rychlejší přechod do červené.">
         </div>
         <div class="slider-group" style="margin-top: 12px;">
           <div class="slider-label">
             <label for="sliderYellowPhase">Délka žluté fáze</label>
             <span class="slider-val" id="valYellowPhase">65 %</span>
           </div>
-          <input type="range" id="sliderYellowPhase" min="0" max="100" step="1" value="65" title="Doleva: rychlejší přechod ze žluté do červené. Doprava: delší žlutá fáze až do 100 %.">
+          <input type="range" id="sliderYellowPhase" min="0" max="100" step="1" value="65"
+            title="Doleva: rychlejší přechod ze žluté do červené. Doprava: delší žlutá fáze až do 100 %.">
         </div>
         <div class="slider-group" style="margin-top: 12px;">
           <div class="slider-label">
             <label for="sliderLeafFallSpeed">Rychlost padání listů</label>
             <span class="slider-val" id="valLeafFallSpeed">150 %</span>
           </div>
-          <input type="range" id="sliderLeafFallSpeed" min="25" max="300" step="5" value="150" title="Doleva: pomalejší padání. Doprava: rychlejší padání.">
+          <input type="range" id="sliderLeafFallSpeed" min="25" max="300" step="5" value="150"
+            title="Doleva: pomalejší padání. Doprava: rychlejší padání.">
         </div>
         <div class="slider-group" style="margin-top: 12px;">
           <div class="slider-label">
             <label for="sliderLeafFallAmount">Kolik listů spadne za sekundu</label>
             <span class="slider-val" id="valLeafFallAmount">700</span>
           </div>
-          <input type="range" id="sliderLeafFallAmount" min="1" max="30000" step="1" value="700" title="Rychlost opadávání: přibližný počet listů, které se uvolní za sekundu.">
+          <input type="range" id="sliderLeafFallAmount" min="1" max="30000" step="1" value="700"
+            title="Rychlost opadávání: přibližný počet listů, které se uvolní za sekundu.">
         </div>
         <div class="btn-grid" style="margin-top: 12px;">
           <button class="grid-btn active" id="btnLeafFall" aria-pressed="true">🍂 Opadávání: zapnuto</button>
@@ -733,7 +815,8 @@
             <label for="sliderDryingSharpness">Ostrost hranice schnutí</label>
             <span class="slider-val" id="valDryingSharpness">100 %</span>
           </div>
-          <input type="range" id="sliderDryingSharpness" min="0" max="100" step="1" value="100" title="Doleva: široké pásmo přechodu přes více skupin listů. Doprava: úzká hranice přibližně přes 1–2 sousední skupiny.">
+          <input type="range" id="sliderDryingSharpness" min="0" max="100" step="1" value="100"
+            title="Doleva: široké pásmo přechodu přes více skupin listů. Doprava: úzká hranice přibližně přes 1–2 sousední skupiny.">
         </div>
         <div class="slider-group" style="margin-top: 12px;">
           <div class="slider-label">
@@ -758,7 +841,8 @@
             <label for="sliderLeafWind">Síla větru v listech</label>
             <span class="slider-val" id="valLeafWind">25 %</span>
           </div>
-          <input type="range" id="sliderLeafWind" min="0" max="300" step="1" value="25" title="0 %: bez větru. 100 %: jemný vítr. 300 %: silný vítr.">
+          <input type="range" id="sliderLeafWind" min="0" max="300" step="1" value="25"
+            title="0 %: bez větru. 100 %: jemný vítr. 300 %: silný vítr.">
         </div>
       </div>
 
@@ -859,27 +943,36 @@
         </div>
 
         <!-- SLIDER ZÁSOBY VODY VE STROMU V LITRECH -->
-        <div class="slider-group" style="margin-top: 10px; padding: 10px; background: rgba(56, 189, 248, 0.08); border: 1px solid rgba(56, 189, 248, 0.25); border-radius: 8px;">
+        <div class="slider-group"
+          style="margin-top: 10px; padding: 10px; background: rgba(56, 189, 248, 0.08); border: 1px solid rgba(56, 189, 248, 0.25); border-radius: 8px;">
           <div class="slider-label">
             <span style="font-weight: 700; color: #38bdf8;">💧 Voda ve stromu (litry)</span>
-            <span class="slider-val" id="valTreeWater" style="font-weight: 700; color: #38bdf8; font-size: 13px;">6 l/h</span>
+            <span class="slider-val" id="valTreeWater" style="font-weight: 700; color: #38bdf8; font-size: 13px;">6
+              l/h</span>
           </div>
-          <input type="range" id="sliderTreeWater" min="0" max="120" step="0.06" value="6" aria-label="Voda dodaná ke kořenům v litrech za hodinu">
-          <div style="display: flex; justify-content: space-between; font-size: 9.5px; color: #64748b; margin-top: 3px;">
+          <input type="range" id="sliderTreeWater" min="0" max="120" step="0.06" value="6"
+            aria-label="Voda dodaná ke kořenům v litrech za hodinu">
+          <div
+            style="display: flex; justify-content: space-between; font-size: 9.5px; color: #64748b; margin-top: 3px;">
             <span>0 L (uschnutí)</span>
             <span style="color: #38bdf8; font-weight: 600;">800 L (normál)</span>
             <span>1500 L (maximum)</span>
           </div>
-          <div id="statusTreeWater" style="margin-top: 6px; font-size: 11px; font-weight: 600; color: #10b981; line-height: 1.35;">
+          <div id="statusTreeWater"
+            style="margin-top: 6px; font-size: 11px; font-weight: 600; color: #10b981; line-height: 1.35;">
             🟢 Optimální turgor (100% hydratace pletiv)
           </div>
-          <div id="droughtBarContainer" style="display: none; margin-top: 7px; padding-top: 6px; border-top: 1px solid rgba(255,255,255,0.08);">
-            <div style="display: flex; justify-content: space-between; font-size: 10px; color: #fbbf24; margin-bottom: 3px;">
+          <div id="droughtBarContainer"
+            style="display: none; margin-top: 7px; padding-top: 6px; border-top: 1px solid rgba(255,255,255,0.08);">
+            <div
+              style="display: flex; justify-content: space-between; font-size: 10px; color: #fbbf24; margin-bottom: 3px;">
               <span id="droughtBarLabel">🍂 Postup schnutí listů:</span>
               <span id="droughtBarVal" style="font-family: var(--font-mono); font-weight: 700;">0%</span>
             </div>
             <div style="width: 100%; height: 6px; background: rgba(0,0,0,0.5); border-radius: 3px; overflow: hidden;">
-              <div id="droughtBarFill" style="width: 0%; height: 100%; background: linear-gradient(90deg, #f59e0b, #ef4444); transition: width 0.1s linear;"></div>
+              <div id="droughtBarFill"
+                style="width: 0%; height: 100%; background: linear-gradient(90deg, #f59e0b, #ef4444); transition: width 0.1s linear;">
+              </div>
             </div>
           </div>
         </div>
@@ -922,11 +1015,13 @@
         </div>
         <div class="toggle-row" style="margin-top: 8px;">
           <span>🤖 Trasování podle nejtlustšího kmene</span>
-          <span style="font-size: 11px; color: var(--accent); font-family: var(--font-mono); font-weight: 600;">Automatické</span>
+          <span
+            style="font-size: 11px; color: var(--accent); font-family: var(--font-mono); font-weight: 600;">Automatické</span>
         </div>
         <div class="toggle-row" style="margin-top: 8px;">
           <span style="display: flex; align-items: center; gap: 6px;">
-            <span style="display: inline-block; width: 9px; height: 9px; border-radius: 50%; background: #ffd700; box-shadow: 0 0 6px #ffd700;"></span>
+            <span
+              style="display: inline-block; width: 9px; height: 9px; border-radius: 50%; background: #ffd700; box-shadow: 0 0 6px #ffd700;"></span>
             <span>Proud fotonů (Světlo)</span>
           </span>
           <label class="switch">
@@ -936,7 +1031,8 @@
         </div>
         <div class="toggle-row" style="margin-top: 8px;">
           <span style="display: flex; align-items: center; gap: 6px;">
-            <span style="display: inline-block; width: 9px; height: 9px; border-radius: 50%; background: #38bdf8; box-shadow: 0 0 6px #38bdf8;"></span>
+            <span
+              style="display: inline-block; width: 9px; height: 9px; border-radius: 50%; background: #38bdf8; box-shadow: 0 0 6px #38bdf8;"></span>
             <span>Bubliny kyslíku (O₂)</span>
           </span>
           <label class="switch">
@@ -995,11 +1091,13 @@
         </div>
         <div class="toggle-row" style="margin-top: 8px;">
           <span>Informační okno</span>
-          <span style="font-size: 11px; color: #38bdf8; font-family: var(--font-mono); font-weight: 500;">Při najetí myší</span>
+          <span style="font-size: 11px; color: #38bdf8; font-family: var(--font-mono); font-weight: 500;">Při najetí
+            myší</span>
         </div>
         <div class="toggle-row" style="margin-top: 8px;">
           <span>Biologická funkce</span>
-          <span style="font-size: 11px; color: #38bdf8; font-family: var(--font-mono); font-weight: 600;">Okapová linie</span>
+          <span style="font-size: 11px; color: #38bdf8; font-family: var(--font-mono); font-weight: 600;">Okapová
+            linie</span>
         </div>
       </div>
 
@@ -1018,8 +1116,8 @@
             <span>Hloubka zastínění koruny</span>
             <span class="slider-val" id="valCanopyAO">45%</span>
           </div>
-          <input type="range" id="sliderCanopyAO" min="0" max="100" value="45"
-            aria-label="Hloubka zastínění koruny" title="Měkké zastínění spodních a vnitřních listů podle hustoty koruny">
+          <input type="range" id="sliderCanopyAO" min="0" max="100" value="45" aria-label="Hloubka zastínění koruny"
+            title="Měkké zastínění spodních a vnitřních listů podle hustoty koruny">
         </div>
         <div class="slider-group">
           <div class="slider-label">
@@ -1058,21 +1156,35 @@
   <div class="hud-bottom">
     <div class="time-of-day-control manager-controlled manager-hidden">
       <div class="time-of-day-timeline">
-        <label class="time-label" for="sliderTimeOfDay"><span>Čas dne · <output id="valTimePlaybackSpeed" aria-live="polite">1×</output></span><strong id="valTimeOfDay">poledne</strong></label>
-        <input type="range" id="sliderTimeOfDay" min="0" max="24" step="0.1" value="12" aria-label="Čas dne od půlnoci do půlnoci">
+        <label class="time-label" for="sliderTimeOfDay"><span>Čas dne · <output id="valTimePlaybackSpeed"
+              aria-live="polite">1×</output></span><strong id="valTimeOfDay">poledne</strong></label>
+        <input type="range" id="sliderTimeOfDay" min="0" max="24" step="0.1" value="12"
+          aria-label="Čas dne od půlnoci do půlnoci">
       </div>
     </div>
-      <div class="time-playback-buttons time-playback-panel" role="group" aria-label="Běh času">
-        <button type="button" id="btnTimePause" aria-pressed="false" aria-label="Pozastavit čas" title="Pozastavit čas">
-          <svg viewBox="0 0 24 24" aria-hidden="true"><g class="time-pause-bars"><rect x="6" y="4" width="4" height="16" rx="1"/><rect x="14" y="4" width="4" height="16" rx="1"/></g><path class="time-pause-play" d="M7 4v16l13-8z"/></svg>
-        </button>
-        <button type="button" id="btnTimeFaster" aria-pressed="false" aria-label="Rychlost času 2×" title="Rychlost 2× · druhým kliknutím 1×">
-          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 5v14l10-7zM12 5v14l10-7z"/></svg>
-        </button>
-        <button type="button" id="btnTimeFastest" aria-pressed="false" aria-label="Rychlost času 4×" title="Rychlost 4× · druhým kliknutím 1×">
-          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M1 5v14l7-7zM9 5v14l7-7zM17 5v14l7-7z"/></svg>
-        </button>
-      </div>
+    <div class="time-playback-buttons time-playback-panel" role="group" aria-label="Běh času">
+      <button type="button" id="btnTimePause" aria-pressed="false" aria-label="Pozastavit čas" title="Pozastavit čas">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <g class="time-pause-bars">
+            <rect x="6" y="4" width="4" height="16" rx="1" />
+            <rect x="14" y="4" width="4" height="16" rx="1" />
+          </g>
+          <path class="time-pause-play" d="M7 4v16l13-8z" />
+        </svg>
+      </button>
+      <button type="button" id="btnTimeFaster" aria-pressed="false" aria-label="Rychlost času 2×"
+        title="Rychlost 2× · druhým kliknutím 1×">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M2 5v14l10-7zM12 5v14l10-7z" />
+        </svg>
+      </button>
+      <button type="button" id="btnTimeFastest" aria-pressed="false" aria-label="Rychlost času 4×"
+        title="Rychlost 4× · druhým kliknutím 1×">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M1 5v14l7-7zM9 5v14l7-7zM17 5v14l7-7z" />
+        </svg>
+      </button>
+    </div>
     <div class="stat-pill manager-controlled manager-hidden">
       <span>Výška: <strong id="valTreeHeight">—</strong></span>
     </div>
@@ -1094,11 +1206,12 @@
   <!-- Drip Zone Hover Window (Monochromatic, No Emoji) -->
   <div id="dripTooltip" class="drip-hover-card">
     <div class="drip-hover-title">Okapová zóna</div>
-    <div class="drip-hover-desc">Projekce obvodu koruny na terén. Místo stékání srážkové vody z okraje koruny a hlavní vrstva savých kořenů.</div>
+    <div class="drip-hover-desc">Projekce obvodu koruny na terén. Místo stékání srážkové vody z okraje koruny a hlavní
+      vrstva savých kořenů.</div>
   </div>
 
   <!-- THREE.JS APPLICATION SCRIPT -->
-    <script type="module">
+  <script type="module">
     import * as THREE from 'three';
     import { OrbitControls } from 'three/addons/controls/OrbitControls.js?v=zoom-pixel-ratio-1';
     import { setupLeafBreeze } from './listy/leaf_breeze.js?v=3';
@@ -1114,7 +1227,7 @@
     import { createSunClouds } from './vykreslovani/sun_clouds.js?v=2';
     import { createWaterBrushMaterial, addWaterBrushAttributes } from './vykreslovani/water_brush.js?v=highlight-width-3';
     import { TreeEcology, SEASONS, MODEL_MINUTES_PER_SECOND } from './ekologie/tree_ecology.js?v=light-slider-1';
-    import { createChapters } from './kapitoly/chapters.js?v=affinity-windows-markers-4';
+    import { createChapters } from './kapitoly/chapters.js?v=affinity-windows-markers-5';
     import { createSeedChapter } from './kapitoly/seed_chapter.js';
     import { createTreeBird } from './vykreslovani/tree_bird.js?v=dusk-flight-1';
     import { createSeasonRing } from './obdobi/season_ring.js?v=date-controls-1';
@@ -1207,7 +1320,7 @@
     try {
       const savedCameraView = JSON.parse(localStorage.getItem(savedCameraViewKey) || 'null');
       if (Array.isArray(savedCameraView?.position) && savedCameraView.position.length === 3
-          && savedCameraView.position.every(Number.isFinite)) {
+        && savedCameraView.position.every(Number.isFinite)) {
         camera.position.fromArray(savedCameraView.position);
         controls.target.copy(treeTarget);
         if (Number.isFinite(savedCameraView?.target?.[1])) {
@@ -1406,7 +1519,7 @@
 
     // 5. TOON / CEL-SHADING SHADERS (EXACT 1:1 REPLICATION OF BLENDER NPR MAT 003, 005 & SEASON)
     const textureLoader = new THREE.TextureLoader();
-    const [leafReference,barkReference,branchDryingReference] = await Promise.all([loadLeafReference(textureLoader),loadBarkReference(),loadBranchDryingReference()]);
+    const [leafReference, barkReference, branchDryingReference] = await Promise.all([loadLeafReference(textureLoader), loadBarkReference(), loadBranchDryingReference()]);
 
     const shaderUniforms = {
       uSunDirection: { value: new THREE.Vector3(0.5, 0.8, 0.4).normalize() },
@@ -1435,7 +1548,7 @@
     const leafDepthMat1 = createLeafDepthMaterial(0, leafReference, shaderUniforms);
     const leafDepthMat2 = createLeafDepthMaterial(1, leafReference, shaderUniforms);
     const leafBreeze = setupLeafBreeze([leafToonMat1, leafToonMat2, leafDepthMat1, leafDepthMat2], { leafCenters: true });
-    const barkToonMat = createBarkMaterial(barkReference,leafReference,shaderUniforms);
+    const barkToonMat = createBarkMaterial(barkReference, leafReference, shaderUniforms);
     const canopyOcclusion = new CanopyOcclusion(leafReference, shaderUniforms);
 
     // 6. GLTF TREE LOADER
@@ -1470,7 +1583,7 @@
       loadProgressText.textContent = 'Stahuji 3D model stromu...';
       let referenceAttributes, barkAttributes;
       try {
-        [referenceAttributes,barkAttributes] = await Promise.all([loadLeafAttributes(modelUrl),loadBarkAttributes(modelUrl)]);
+        [referenceAttributes, barkAttributes] = await Promise.all([loadLeafAttributes(modelUrl), loadBarkAttributes(modelUrl)]);
       } catch (error) {
         loadProgressText.textContent = 'Chyba načtení Blender materiálu: ' + error.message;
         console.error(error);
@@ -1540,13 +1653,13 @@
               // ROOTS (Tree_Roots)
               else if (name.includes('roots')) {
                 rootsMesh = node;
-                attachBarkAttributes(node.geometry,barkAttributes.roots,true);
+                attachBarkAttributes(node.geometry, barkAttributes.roots, true);
                 node.material = barkToonMat;
               }
               // TRUNK & BRANCHES (Plane001_2)
               else {
                 trunkMesh = node;
-                attachBarkAttributes(node.geometry,barkAttributes.trunk);
+                attachBarkAttributes(node.geometry, barkAttributes.trunk);
                 node.material = barkToonMat;
               }
             }
@@ -1661,7 +1774,7 @@
     // root1..3 slouží jako záložní (fallback) hodnoty, dokud nedoběhne auto-trasování.
     const sapPaths = {
       trunk: [...defaultTrunkBranch],
-      roots: [ [...defaultRoot1], [...defaultRoot2], [...defaultRoot3] ]
+      roots: [[...defaultRoot1], [...defaultRoot2], [...defaultRoot3]]
     };
 
     // Vyčistit případné staré ruční úpravy z localStorage
@@ -2260,7 +2373,7 @@
         let glucoseMaxDistance = -Infinity;
         const trunkPoints = trunkRoute.slice();
         if (trunkPoints[0].distanceToSquared(junctionPoint)
-            > trunkPoints[trunkPoints.length - 1].distanceToSquared(junctionPoint)) trunkPoints.reverse();
+          > trunkPoints[trunkPoints.length - 1].distanceToSquared(junctionPoint)) trunkPoints.reverse();
         const trunkCurve = new THREE.CatmullRomCurve3(trunkPoints, false, 'centripetal');
         const greenRootIndices = rootPaths.length >= 4
           ? [0, rootPaths.length - 1]
@@ -2273,42 +2386,42 @@
         for (const { route, name, trunk } of glucoseRoutes) {
           if (!route || route.length < 3) continue;
           const oriented = route.slice();
-        if (!trunk && oriented[oriented.length - 1].distanceToSquared(junctionPoint)
+          if (!trunk && oriented[oriented.length - 1].distanceToSquared(junctionPoint)
             > oriented[0].distanceToSquared(junctionPoint)) oriented.reverse();
-        const rootCurve = new THREE.CatmullRomCurve3(oriented, false, 'centripetal');
-        // All branches meet at the same offset junction, away from the water.
-        const sideOffset = new THREE.Vector3(0.20, 0, -0.14);
-        const combined = [];
-        if (trunk) {
-          for (let i = 0; i < 58; i++) {
-            combined.push(trunkCurve.getPoint(i / 57).add(sideOffset));
+          const rootCurve = new THREE.CatmullRomCurve3(oriented, false, 'centripetal');
+          // All branches meet at the same offset junction, away from the water.
+          const sideOffset = new THREE.Vector3(0.20, 0, -0.14);
+          const combined = [];
+          if (trunk) {
+            for (let i = 0; i < 58; i++) {
+              combined.push(trunkCurve.getPoint(i / 57).add(sideOffset));
+            }
+          } else for (let i = 0; i < 44; i++) {
+            combined.push(rootCurve.getPoint(0.35 + 0.65 * i / 43).add(sideOffset));
           }
-        } else for (let i = 0; i < 44; i++) {
-          combined.push(rootCurve.getPoint(0.35 + 0.65 * i / 43).add(sideOffset));
-        }
-        const greenCurve = new THREE.CatmullRomCurve3(combined, false, 'centripetal');
-        if (!greenGroup.userData.sugarAnchor) {
-          greenGroup.userData.sugarAnchor = greenCurve.getPointAt(0.5).toArray();
-        }
-        const geometry = new THREE.TubeGeometry(greenCurve, 320, radius, 12, false);
-        const flowStart = trunk ? 0 : -rootCurve.getLength() * 0.65;
-        addWaterBrushAttributes(geometry, greenCurve, flowStart);
-        glucoseMinDistance = Math.min(glucoseMinDistance, flowStart);
-        glucoseMaxDistance = Math.max(glucoseMaxDistance, flowStart + greenCurve.getLength());
-        const material = sapMaterial.clone();
-        material.uniforms.uSelected = flowSelections.sugar;
-        material.uniforms.uTime = sapUniforms.uTime;
-        material.uniforms.uSpeed = sapUniforms.uSpeed;
-        material.uniforms.uGlow = sapUniforms.uGlow;
-        material.uniforms.uOpacity = sapUniforms.uOpacity;
-        // Spring reserves move upward into newly forming leaves; in summer
-        // glucose moves away from mature leaves toward storage and growth.
-        material.uniforms.uFlowDirection = { value: 1.0 };
-        material.uniforms.uWidthScale = { value: 1.0 };
-        material.uniforms.uFlowCutoff = glucoseCutoff;
-        material.uniforms.uFlowRevealBottom = glucoseRevealBottom;
-        material.uniforms.uColor = { value: new THREE.Color(0xd42fd5) };
-        material.uniforms.uHighlightColor = { value: new THREE.Color(0xf4a7ff) };
+          const greenCurve = new THREE.CatmullRomCurve3(combined, false, 'centripetal');
+          if (!greenGroup.userData.sugarAnchor) {
+            greenGroup.userData.sugarAnchor = greenCurve.getPointAt(0.5).toArray();
+          }
+          const geometry = new THREE.TubeGeometry(greenCurve, 320, radius, 12, false);
+          const flowStart = trunk ? 0 : -rootCurve.getLength() * 0.65;
+          addWaterBrushAttributes(geometry, greenCurve, flowStart);
+          glucoseMinDistance = Math.min(glucoseMinDistance, flowStart);
+          glucoseMaxDistance = Math.max(glucoseMaxDistance, flowStart + greenCurve.getLength());
+          const material = sapMaterial.clone();
+          material.uniforms.uSelected = flowSelections.sugar;
+          material.uniforms.uTime = sapUniforms.uTime;
+          material.uniforms.uSpeed = sapUniforms.uSpeed;
+          material.uniforms.uGlow = sapUniforms.uGlow;
+          material.uniforms.uOpacity = sapUniforms.uOpacity;
+          // Spring reserves move upward into newly forming leaves; in summer
+          // glucose moves away from mature leaves toward storage and growth.
+          material.uniforms.uFlowDirection = { value: 1.0 };
+          material.uniforms.uWidthScale = { value: 1.0 };
+          material.uniforms.uFlowCutoff = glucoseCutoff;
+          material.uniforms.uFlowRevealBottom = glucoseRevealBottom;
+          material.uniforms.uColor = { value: new THREE.Color(0xd42fd5) };
+          material.uniforms.uHighlightColor = { value: new THREE.Color(0xf4a7ff) };
           const mesh = new THREE.Mesh(geometry, material);
           mesh.name = `PhotosynthesisPurpleFlow${name}`;
           mesh.renderOrder = 9;
@@ -3251,7 +3364,7 @@
     // The user controls water offered to roots; uptake has a seasonal ceiling.
     const sliderTreeWater = document.getElementById('sliderTreeWater');
     const valTreeWater = document.getElementById('valTreeWater');
-    const hourlyWater = ratePerMinute => `${(ratePerMinute * 60).toLocaleString('cs-CZ', {maximumFractionDigits: 2})} l/h`;
+    const hourlyWater = ratePerMinute => `${(ratePerMinute * 60).toLocaleString('cs-CZ', { maximumFractionDigits: 2 })} l/h`;
     if (sliderTreeWater && valTreeWater) {
       sliderTreeWater.addEventListener('input', (e) => {
         ecology.setWaterInput(Number(e.target.value) / 60);
@@ -3728,7 +3841,7 @@
       if (valTimeOfDay) {
         const h = Math.floor(hour) % 24;
         const m = Math.round((hour - Math.floor(hour)) * 60) % 60;
-        valTimeOfDay.textContent = `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}`;
+        valTimeOfDay.textContent = `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}`;
       }
     });
 
@@ -3837,7 +3950,7 @@
       }
       ecology.configure({ height: treeBox.max.y, woodVolume, crownArea: Math.PI * size.x * size.z / 4 });
       treeWaterLiters = ecology.reserve;
-      document.getElementById('valTreeHeight').textContent = `${ecology.height.toLocaleString('cs-CZ', {maximumFractionDigits: 1})} m`;
+      document.getElementById('valTreeHeight').textContent = `${ecology.height.toLocaleString('cs-CZ', { maximumFractionDigits: 1 })} m`;
       // Cover both modest and high water demand without exposing the store itself.
       // The chapter UI can detach this control; keep using its original handle.
       if (sliderTreeWater) sliderTreeWater.max = Math.max(120, Math.ceil(ecology.baseTranspiration * 120));
@@ -4120,7 +4233,7 @@
         if (ecology.dayCycleEnabled) updateSunFromDayClock(timeOfDayHours);
         const h = Math.floor(timeOfDayHours);
         const m = Math.floor((timeOfDayHours - h) * 60);
-        if (valTimeOfDay) valTimeOfDay.textContent = `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}`;
+        if (valTimeOfDay) valTimeOfDay.textContent = `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}`;
       }
       // Water balance uses the clock's increment, including intro/night speeds.
       updateWaterAndDrought(modelMinutes);
