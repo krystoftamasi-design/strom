@@ -167,22 +167,50 @@ function createElementUiOkno({ panel, body, reveal, toggle, model, definition })
 
 
 function createOxygenBalance() {
-  const capacity = 1000;
+  let capacity = 1000;
   let reserve = capacity / 4;
   const grams = new Intl.NumberFormat('cs-CZ', { maximumFractionDigits: 0 });
   const rate = new Intl.NumberFormat('cs-CZ', { minimumFractionDigits: 1, maximumFractionDigits: 1 });
-  const circle = document.createElement('section');
-  circle.className = 'oxygen-balance';
-  circle.setAttribute('aria-label', 'Zkušební bilance O₂');
-  circle.innerHTML = `
-    <div class="oxygen-balance-reserve">Zásoba O₂ <output aria-live="off">—</output></div>
-    <div>Produkce <output aria-live="off">—</output></div>
-    <div>Spotřeba <output aria-live="off">—</output></div>
+  const percent = new Intl.NumberFormat('cs-CZ', { style: 'percent', maximumFractionDigits: 1 });
+  const panel = document.createElement('section');
+  panel.className = 'oxygen-balance-panel';
+  panel.setAttribute('aria-label', 'Zkušební bilance O₂');
+  panel.innerHTML = `
+    <div class="oxygen-balance">
+      <div class="oxygen-balance-reserve">Zásoba O₂ <output aria-live="off">—</output></div>
+      <div class="oxygen-balance-production">
+        <span>Produkce <strong>—</strong></span><output aria-live="off">—</output>
+      </div>
+      <div class="oxygen-balance-consumption">
+        <span>Spotřeba <strong>—</strong></span><output aria-live="off">—</output>
+      </div>
+    </div>
+    <div class="oxygen-balance-settings">
+      <label>Max. zásoba (g) <input type="number" min="1" step="1" value="${capacity}" required></label>
+      <small>Podíly za 1 modelovou hodinu</small>
+    </div>
   `;
+  const circle = panel.querySelector('.oxygen-balance');
   const [reserveOutput, productionOutput, consumptionOutput] = circle.querySelectorAll('output');
+  const [productionShare, consumptionShare] = circle.querySelectorAll('strong');
+  const capacityInput = panel.querySelector('input');
+  capacityInput.addEventListener('change', () => {
+    if (capacityInput.validity.valid && Number.isSafeInteger(capacityInput.valueAsNumber)) {
+      capacity = capacityInput.valueAsNumber;
+      reserve = Math.min(reserve, capacity);
+    }
+    capacityInput.value = String(capacity);
+  });
+
+  function updateShare(label, property, gramsPerMinute) {
+    const share = 60 * gramsPerMinute / capacity;
+    circle.style.setProperty(property, `${100 * Math.min(1, share)}%`);
+    const text = percent.format(share);
+    if (label.textContent !== text) label.textContent = text;
+  }
 
   return {
-    circle,
+    panel,
     update(model, modelMinutes) {
       const production = model.oxygenGramsPerMinute;
       const consumption = model.respirationOxygen;
@@ -196,6 +224,8 @@ function createOxygenBalance() {
       if (reserveOutput.value !== reserveText) reserveOutput.value = reserveText;
       if (productionOutput.value !== productionText) productionOutput.value = productionText;
       if (consumptionOutput.value !== consumptionText) consumptionOutput.value = consumptionText;
+      updateShare(productionShare, '--oxygen-production', production);
+      updateShare(consumptionShare, '--oxygen-consumption', consumption);
     }
   };
 }
@@ -293,7 +323,7 @@ export function createTreeAnnotations({ shell, model, createSeasonControl, setEl
     const title = document.createElement('h2');
     guide.append(title);
     if (chapter === 'photosynthesis') {
-      guide.append(oxygenBalance.circle);
+      guide.append(oxygenBalance.panel);
       guide.tabIndex = 0;
     }
     contextGuides.set(chapter, guide);

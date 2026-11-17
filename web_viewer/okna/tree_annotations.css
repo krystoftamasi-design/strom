@@ -138,26 +138,29 @@ body .tree-overlay [data-chapter] .chapter-context-guide h2 { font-weight: 400; 
 }
 
 /* Removable oxygen balance prototype beneath the photosynthesis guide. */
-.tree-overlay .oxygen-balance {
+.tree-overlay .oxygen-balance-panel {
   --oxygen-paper: #f1f6f7;
   --oxygen-rule: color-mix(in srgb, var(--ui-ink) 45%, var(--oxygen-paper));
+  margin-block-start: 14px;
+  color: var(--ui-ink);
+  font: 500 clamp(11px, 1.65vh, 14px)/1.1 var(--ui-font-text);
+}
+
+.tree-overlay .oxygen-balance {
   display: grid;
-  grid-template-rows: 55% 21% 24%;
+  grid-template-rows: 51% 22% 27%;
   inline-size: min(100%, clamp(134px, 22vh, 182px));
   aspect-ratio: 1;
-  margin-block-start: 14px;
   overflow: hidden;
   box-sizing: border-box;
   border: 1px solid var(--oxygen-rule);
   border-radius: 50%;
   background: var(--oxygen-paper);
-  color: var(--ui-ink);
-  font: 500 clamp(11px, 1.65vh, 14px)/1.08 var(--ui-font-text);
   text-align: center;
   font-variant-numeric: tabular-nums;
 }
 
-body.scene-night .tree-overlay .oxygen-balance {
+body.scene-night .tree-overlay .oxygen-balance-panel {
   --oxygen-paper: #19262c;
 }
 
@@ -165,6 +168,11 @@ body.scene-night .tree-overlay .oxygen-balance {
   display: flex;
   flex-direction: column;
   justify-content: center;
+  background: linear-gradient(
+    to top,
+    var(--oxygen-fill) var(--oxygen-level, 0%),
+    transparent var(--oxygen-level, 0%)
+  );
 }
 
 .oxygen-balance > div + div {
@@ -183,14 +191,47 @@ body.scene-night .tree-overlay .oxygen-balance {
 }
 
 .oxygen-balance .oxygen-balance-reserve {
-  background: linear-gradient(
-    to top,
-    color-mix(in srgb, var(--ui-oxygen) 42%, var(--oxygen-paper)) var(--oxygen-level, 0%),
-    transparent var(--oxygen-level, 0%)
-  );
+  --oxygen-fill: color-mix(in srgb, var(--ui-oxygen) 42%, var(--oxygen-paper));
 }
 
-.chapter-context-guide:has(.oxygen-balance):focus-visible {
+.oxygen-balance .oxygen-balance-production {
+  --oxygen-level: var(--oxygen-production, 0%);
+  --oxygen-fill: color-mix(in srgb, var(--ui-oxygen) 54%, var(--oxygen-paper));
+}
+
+.oxygen-balance .oxygen-balance-consumption {
+  --oxygen-level: var(--oxygen-consumption, 0%);
+  --oxygen-fill: color-mix(in srgb, #cd894c 44%, var(--oxygen-paper));
+}
+
+.oxygen-balance-settings {
+  display: grid;
+  justify-items: start;
+  gap: 4px;
+  margin-block-start: 8px;
+}
+
+.oxygen-balance-settings label {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+}
+
+.oxygen-balance-settings input {
+  box-sizing: border-box;
+  inline-size: 7em;
+  min-block-size: 28px;
+  padding: 2px 5px;
+  border: 1px solid var(--oxygen-rule);
+  border-radius: 4px;
+  background: var(--oxygen-paper);
+  color: inherit;
+  font: inherit;
+}
+
+.chapter-context-guide:has(.oxygen-balance):focus-visible,
+.oxygen-balance-settings input:focus-visible {
   outline: 2px solid var(--ui-ink);
   outline-offset: 4px;
 }
@@ -198,7 +239,7 @@ body.scene-night .tree-overlay .oxygen-balance {
 @media (max-width: 700px) {
   .tree-overlay article[data-chapter="photosynthesis"]:has(.oxygen-balance) {
     --photosynthesis-top: 22vh;
-    --oxygen-guide-height: clamp(204px, 34vh, 276px);
+    --oxygen-guide-height: clamp(246px, 39vh, 320px);
     padding-top: calc(var(--photosynthesis-top) + var(--ui-main-heading-size) + var(--oxygen-guide-height) + 28px);
     overflow-y: auto;
   }
