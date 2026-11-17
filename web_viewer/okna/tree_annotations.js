@@ -399,7 +399,6 @@ export function createTreeAnnotations({ shell, model, createSeasonControl, setEl
     expand(definition ? Boolean(definition.otevrene) : article.dataset.chapter === 'intro' || article.dataset.chapter === 'seasons');
     header.append(h, toggle);
     article.append(panel);
-    return panel;
   }
 
   // All configured windows use this builder; the records contain their content.
@@ -481,7 +480,7 @@ export function createTreeAnnotations({ shell, model, createSeasonControl, setEl
     }
     const heading = definition.hlavni ? document.createElement('h2') : null;
     if (heading) heading.textContent = definition.nadpis;
-    return card(article, definition.id, definition.strana, definition.nadpis, nodes, heading, definition);
+    card(article, definition.id, definition.strana, definition.nadpis, nodes, heading, definition);
   }
 
   for (const article of content.querySelectorAll('article[data-chapter]')) {
@@ -489,7 +488,7 @@ export function createTreeAnnotations({ shell, model, createSeasonControl, setEl
       const list = article.querySelector('.prototype-list');
       list.append(...prototypes.map(prototype => prototype.panel));
       const oxygen = oknaPodleKapitol.photosynthesis.find(definition => definition.id === 'kyslik');
-      if (oxygen && !kontrola.neplatnaOkna.has(oxygen)) list.append(configuredCard(article, oxygen));
+      if (oxygen && !kontrola.neplatnaOkna.has(oxygen)) configuredCard(article, oxygen);
       continue;
     }
     if (article.dataset.chapter === 'photosynthesis') {

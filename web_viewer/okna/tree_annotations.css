@@ -343,32 +343,32 @@ body.scene-night .oxygen-balance-settings { --oxygen-paper: #454749; }
 
 .oxygen-balance-panel .stronger-flow { --oxygen-flow-blue: #21446a; }
 
-.tree-overlay .prototype-list .element-ui-flow-window {
+.tree-overlay article[data-chapter="prototype"] > .element-ui-flow-window {
   --ui-heading-size: clamp(25px, min(2.8vw, 4.8vh), 52px);
   --ui-value-size: clamp(15px, min(1.4vw, 2.6vh), 24px);
   --ui-toggle-size: clamp(26px, 3.8vh, 32px);
   position: relative;
   inset: auto;
   inline-size: 182px;
-  align-self: flex-start;
-  margin-block-start: 14px;
+  margin-block-start: 18px;
+  margin-inline-start: 4px;
   padding: 0;
 }
 
-.tree-overlay .prototype-list .element-ui-flow-window .element-ui-readout {
+.tree-overlay article[data-chapter="prototype"] > .element-ui-flow-window .element-ui-readout {
   cursor: pointer;
 }
 
-.tree-overlay .prototype-list .element-ui-flow-window .element-ui-readout > header {
+.tree-overlay article[data-chapter="prototype"] > .element-ui-flow-window .element-ui-readout > header {
   grid-template-columns: minmax(0, 1fr) var(--ui-toggle-size);
   align-items: center;
 }
 
-.tree-overlay .prototype-list .element-ui-flow-window .element-ui-trigger {
+.tree-overlay article[data-chapter="prototype"] > .element-ui-flow-window .element-ui-trigger {
   grid-area: 1 / 2;
 }
 
-.tree-overlay .prototype-list .element-ui-flow-window .annotation-reveal {
+.tree-overlay article[data-chapter="prototype"] > .element-ui-flow-window .annotation-reveal {
   position: static;
   inline-size: auto;
 }
