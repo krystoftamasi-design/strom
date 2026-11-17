@@ -419,7 +419,8 @@ body.scene-night .tree-overlay .element-ui-okno .ui-word {
   position: absolute;
   inset: 0;
   background: var(--balance-ink);
-  mask: var(--balance-texture) center / 106% 100% no-repeat;
+  /* Start on the straight shaft of the brush, keeping its right-hand cap. */
+  mask: var(--balance-texture) 90% center / 138% 100% no-repeat;
 }
 
 .tree-overlay .element-ui-balance-track {
@@ -430,7 +431,8 @@ body.scene-night .tree-overlay .element-ui-okno .ui-word {
 
 .tree-overlay .element-ui-balance-marker {
   inset-block: 0;
-  right: calc(100% - clamp(10px, var(--balance-position, 0%), 100%));
+  /* Reserve enough shaft before the marker even at zero. */
+  right: calc((100% - var(--balance-position, 0%)) * .8);
   width: 100%;
   display: flex;
   justify-content: flex-end;
@@ -1006,15 +1008,24 @@ body.scene-night .chapter-context-guide .transpiration-legend {
 }
 
 .tree-overlay article[data-chapter="photosynthesis"] {
+  --flow-window-width: clamp(132px, 12vw, 224px);
+  --flow-gap: clamp(16px, 2vw, 30px);
+  --flow-detail-width: clamp(145px, 15vw, 280px);
   position: absolute;
   inset: 0;
   box-sizing: border-box;
   display: grid;
-  grid-auto-rows: max-content;
-  justify-items: start;
+  grid-template-columns: repeat(2, var(--flow-window-width));
+  grid-template-rows: repeat(3, max-content);
+  grid-auto-flow: column;
   align-content: space-between;
+  column-gap: var(--flow-gap);
   row-gap: 8px;
-  padding: 7vh 3% 6vh 70%;
+  padding: 7vh 3% 6vh max(4%, calc(97% - 2 * var(--flow-window-width) - var(--flow-gap)));
+}
+
+.tree-overlay article[data-chapter="photosynthesis"]:has(> :is([data-window-id="svetlo"], [data-window-id="kyslik"], [data-window-id="co2"]):not(.collapsed)) {
+  column-gap: calc(var(--flow-detail-width) + 2 * var(--flow-gap));
 }
 
 .tree-overlay .element-ui-okno[data-chapter="photosynthesis"][data-side="right"] {
@@ -1026,8 +1037,7 @@ body.scene-night .chapter-context-guide .transpiration-legend {
   position: relative;
   inset: auto;
   display: block;
-  width: clamp(132px, 12vw, 224px);
-  max-width: 100%;
+  width: 100%;
   height: auto;
   min-height: 0;
   padding: 0;
@@ -1096,10 +1106,9 @@ body.scene-night .chapter-context-guide .transpiration-legend {
   position: absolute;
   top: 6px;
   bottom: auto;
-  left: calc(100% + 24px);
+  left: calc(100% + var(--flow-gap));
   right: auto;
-  width: min(26vw, 38ch);
-  max-width: calc(27vw - 100% - 24px);
+  width: var(--flow-detail-width);
   height: auto;
   max-height: 17vh;
   margin: 0;
@@ -1122,16 +1131,6 @@ body.scene-night .chapter-context-guide .transpiration-legend {
 @media (max-height: 620px) {
   .tree-overlay article[data-chapter="photosynthesis"] {
     overflow-y: auto;
-  }
-}
-
-/* The detail opens toward the scene when there is little space to the right. */
-@media (max-width: 1050px) {
-  .tree-overlay .element-ui-okno[data-chapter="photosynthesis"][data-side="right"] .annotation-reveal {
-    left: auto;
-    right: calc(100% + 16px);
-    width: min(42vw, 38ch);
-    max-width: none;
   }
 }
 
@@ -1166,11 +1165,13 @@ body.scene-night .chapter-context-guide .transpiration-legend {
   }
 
   .tree-overlay article[data-chapter="photosynthesis"] {
-    padding: 14vh 4% 6vh 52%;
+    --flow-detail-width: min(42vw, 270px);
+    padding-top: 39vh;
+    padding-bottom: 12vh;
   }
 
-  .tree-overlay .element-ui-okno[data-chapter="photosynthesis"][data-side="right"] {
-    max-width: 44vw;
+  .tree-overlay article[data-chapter="photosynthesis"] .chapter-context-guide {
+    max-height: max(0px, calc(39vh - var(--photosynthesis-top) - var(--ui-main-heading-size) - 24px));
   }
 
   .tree-overlay [data-chapter="photosynthesis"] {
