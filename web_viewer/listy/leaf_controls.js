@@ -68,9 +68,58 @@ function radixSortByFloat(orderOut, values, count, scratchA, scratchB, counts) {
   orderOut.set(src.subarray(0, count));
 }
 
+// Trim transparent margins around planar leaf quads while preserving bilinearly interpolated UVs and world positions.
+function cropLeafQuads(leaves, positions, geomUv, refUv, original, crop) {
+  if (!crop || !geomUv || !refUv) return;
+  for (const leaf of leaves) {
+    let v00 = -1, v10 = -1, v01 = -1, v11 = -1;
+    for (const vi of leaf.vertices) {
+      const u = geomUv.getX(vi);
+      const v = geomUv.getY(vi);
+      if (u < 0.5) {
+        if (v < 0.5) v00 = vi;
+        else v01 = vi;
+      } else {
+        if (v < 0.5) v10 = vi;
+        else v11 = vi;
+      }
+    }
+    if (v00 < 0 || v10 < 0 || v01 < 0 || v11 < 0) continue;
+    const p00x = original[v00 * 3], p00y = original[v00 * 3 + 1], p00z = original[v00 * 3 + 2];
+    const p10x = original[v10 * 3], p10y = original[v10 * 3 + 1], p10z = original[v10 * 3 + 2];
+    const p01x = original[v01 * 3], p01y = original[v01 * 3 + 1], p01z = original[v01 * 3 + 2];
+    const p11x = original[v11 * 3], p11y = original[v11 * 3 + 1], p11z = original[v11 * 3 + 2];
+    const r00u = refUv.getX(v00), r00v = refUv.getY(v00);
+    const r10u = refUv.getX(v10), r10v = refUv.getY(v10);
+    const r01u = refUv.getX(v01), r01v = refUv.getY(v01);
+    const r11u = refUv.getX(v11), r11v = refUv.getY(v11);
+    for (const vi of leaf.vertices) {
+      const uNew = geomUv.getX(vi) < 0.5 ? crop.uMin : crop.uMax;
+      const vNew = geomUv.getY(vi) < 0.5 ? crop.vMin : crop.vMax;
+      const w00 = (1 - uNew) * (1 - vNew);
+      const w10 = uNew * (1 - vNew);
+      const w01 = (1 - uNew) * vNew;
+      const w11 = uNew * vNew;
+      const nx = p00x * w00 + p10x * w10 + p01x * w01 + p11x * w11;
+      const ny = p00y * w00 + p10y * w10 + p01y * w01 + p11y * w11;
+      const nz = p00z * w00 + p10z * w10 + p01z * w01 + p11z * w11;
+      original[vi * 3] = nx;
+      original[vi * 3 + 1] = ny;
+      original[vi * 3 + 2] = nz;
+      positions.setXYZ(vi, nx, ny, nz);
+      geomUv.setXY(vi, uNew, vNew);
+      refUv.setXY(
+        vi,
+        r00u * w00 + r10u * w10 + r01u * w01 + r11u * w11,
+        r00v * w00 + r10v * w10 + r01v * w01 + r11v * w11
+      );
+    }
+  }
+}
+
 // A leaf is an atlas tile, not four consecutive vertices: the GLBs contain
 // seam duplicates, and their vertex orders differ between the two models.
-function prepareMesh(mesh, atlas, materialIndex) {
+function prepareMesh(mesh, atlas, materialIndex, alphaBounds = null) {
   const geometry = mesh.geometry;
   const positions = geometry.attributes.position;
   const uv = geometry.attributes.referenceUv;
@@ -105,6 +154,7 @@ function prepareMesh(mesh, atlas, materialIndex) {
     groups.get(key).indices.push(a, b, c);
   }
   const leaves = [...groups.values()].sort((a, b) => hash(a.key + materialIndex * 7919) - hash(b.key + materialIndex * 7919));
+  cropLeafQuads(leaves, positions, geometry.attributes.uv, uv, original, alphaBounds?.[materialIndex]);
   const sorted = new index.array.constructor(index.count);
   let offset = 0;
   const ends = [0];
@@ -291,8 +341,8 @@ export class LeafControls {
     typeButtons.forEach(button => button.addEventListener('click', () => this.setType(button.dataset.leafType)));
   }
 
-  setMeshes(meshes, atlas = { size: 4096, tile: 56 }) {
-    this.models = meshes.map((mesh, i) => prepareMesh(mesh, atlas, i));
+  setMeshes(meshes, atlas = { size: 4096, tile: 56 }, alphaBounds = null) {
+    this.models = meshes.map((mesh, i) => prepareMesh(mesh, atlas, i, alphaBounds));
     this.prepareBranchSeason();
     this.total = this.models.reduce((n, model) => n + model.baseCount, 0);
     this.applySize();

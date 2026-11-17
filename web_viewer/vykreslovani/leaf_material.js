@@ -113,6 +113,40 @@ function createDisplay3DTexture(display) {
   return texture;
 }
 
+function computeAlphaCropBounds(image, type, margin = 0.05) {
+  if (!image || typeof document === 'undefined') return null;
+  const w = image.width;
+  const h = image.height;
+  if (!w || !h) return null;
+  const canvas = document.createElement('canvas');
+  canvas.width = w;
+  canvas.height = h;
+  const ctx = canvas.getContext('2d', { willReadFrequently: true });
+  ctx.drawImage(image, 0, 0, w, h);
+  const rgba = ctx.getImageData(0, 0, w, h).data;
+  let minX = w, minY = h, maxX = -1, maxY = -1;
+  for (let y = 0; y < h; y++) {
+    for (let x = 0; x < w; x++) {
+      let a = rgba[(y * w + x) * 4 + 3] / 255;
+      if (type === 1) a = Math.max(0, (a - 0.6145453453) / (1 - 0.6145453453));
+      if (a > 0.005) {
+        if (x < minX) minX = x;
+        if (x > maxX) maxX = x;
+        if (y < minY) minY = y;
+        if (y > maxY) maxY = y;
+      }
+    }
+  }
+  if (maxX < minX || maxY < minY) return null;
+  // Leaf alpha textures use flipY = false, so image row y maps directly to v = y / h.
+  return {
+    uMin: Math.max(0, minX / w - margin),
+    uMax: Math.min(1, (maxX + 1) / w + margin),
+    vMin: Math.max(0, minY / h - margin),
+    vMax: Math.min(1, (maxY + 1) / h + margin)
+  };
+}
+
 function rgbChroma(r, g, b) {
   const max = Math.max(r, g, b);
   if (max <= 1e-10) return new THREE.Vector3(1, 1, 1);
@@ -145,11 +179,12 @@ export async function loadLeafReference(loader) {
   // Type 1 / Material.003: list2.png. Type 2 / Material.005: list.png.
   // Visible coverage uses the source brush; shadows use its simplified outline.
   const alpha = [alpha0, alpha1];
+  const alphaBounds = alpha.map((mask, type) => computeAlphaCropBounds(mask.image, type));
   const stableAlpha = alpha.map((mask, type) => createStableBrushAlpha(mask.image, type));
   const shadowAlpha = alpha.map((mask, type) => createShadowBrushAlpha(mask.image, type));
   // Approved brush preview: distinct source masks, filtered stochastic pores,
   // and no additional default Gaussian feathering or surface grain.
-  return { metadata, detail, diffuse, alpha, stableAlpha, shadowAlpha, edgeTransition: 0, procedural: [procedural0, procedural1], display, display3D };
+  return { metadata, detail, diffuse, alpha, alphaBounds, stableAlpha, shadowAlpha, edgeTransition: 0, procedural: [procedural0, procedural1], display, display3D };
 }
 
 export function setLeafEdgeTransition(reference, amount) {
@@ -334,7 +369,7 @@ export function createLeafMaterial(type, reference, uniforms) {
   const mat = new THREE.MeshLambertMaterial({ color: 0xffffff, side: THREE.DoubleSide, alphaToCoverage: uniforms.uAlphaMode.value > 0.5, depthWrite: true });
   mat.name = type === 0 ? 'Material.003 (Blender reference)' : 'Material.005 (Blender reference)';
   mat.toneMapped = false; // Blender's saved AgX High Contrast transform is applied with a LUT.
-  mat.customProgramCacheKey = () => `reference_leaf_${type}_opt_v2_${reference.display3D ? '3d' : '2d'}`;
+  mat.customProgramCacheKey = () => `reference_leaf_${type}_opt_v3_${reference.display3D ? '3d' : '2d'}`;
   const yellowChroma = type === 0 ? rgbChroma(0.78, 0.60, 0.055) : rgbChroma(0.84, 0.54, 0.035);
   const redChroma = type === 0 ? rgbChroma(0.8589947224, 0.0204435382, 0.0008851319) : rgbChroma(0.8589913845, 0.0085899057, 0.0085899057);
   mat.onBeforeCompile = (shader, renderer) => {
@@ -433,45 +468,53 @@ export function createLeafMaterial(type, reference, uniforms) {
       // A shadowed leaf uses the original deep blue-black shadow colour.
       vec3 dark = vec3(0.0221054647, 0.0155322049, 0.0609656647);
       vec3 shadowBase = mix(dark, min(dark, procedural), 0.7466666698);
-      vec3 base = mix(green,min(green,procedural),0.7466666698);
-      vec3 seasonal = base;
-      if (uLeafType > 0.5 && vLeafPhase.x > 0.0001) {
-        vec3 variant = mix(base, leafHueSat(base, 0.57, 1.1, 1.0), uLeafRandom.y);
-        seasonal = mix(base, variant, vLeafPhase.x);
+      vec3 seasonal = shadowBase;
+      vec3 litDisplay;
+      if (ramp <= 0.0001) {
+        litDisplay = leafDisplayTransform(shadowBase);
+      } else {
+        vec3 base = mix(green, min(green, procedural), 0.7466666698);
+        seasonal = base;
+        if (uLeafType > 0.5 && vLeafPhase.x > 0.0001) {
+          vec3 variant = mix(base, leafHueSat(base, 0.57, 1.1, 1.0), uLeafRandom.y);
+          seasonal = mix(base, variant, vLeafPhase.x);
+        }
+        if (vLeafPhase.y > 0.0001) {
+          float valY = max(seasonal.r, max(seasonal.g, seasonal.b));
+          seasonal = mix(seasonal, uYellowChroma * valY, vLeafPhase.y);
+        }
+        if (vLeafPhase.z > 0.0001) {
+          float valR = max(seasonal.r, max(seasonal.g, seasonal.b));
+          seasonal = mix(seasonal, uRedChroma * valR, vLeafPhase.z);
+        }
+        seasonal = leafHueSat(seasonal, mix(0.55, 0.5, uLeafRandom.y), 1.0, 1.0);
+        litDisplay = leafDisplayTransform(mix(shadowBase, seasonal, ramp));
       }
-      if (vLeafPhase.y > 0.0001) {
-        float valY = max(seasonal.r, max(seasonal.g, seasonal.b));
-        seasonal = mix(seasonal, uYellowChroma * valY, vLeafPhase.y);
-      }
-      if (vLeafPhase.z > 0.0001) {
-        float valR = max(seasonal.r, max(seasonal.g, seasonal.b));
-        seasonal = mix(seasonal, uRedChroma * valR, vLeafPhase.z);
-      }
-      seasonal = leafHueSat(seasonal,mix(0.55,0.5,uLeafRandom.y),1.0,1.0);
       // Compress strong daylight after the Blender transform to retain leaf
       // pigment/detail instead of boosting the brightest colours into clipping.
       float leafIllumination = uSceneIllumination / (1.0 + 0.32 * max(uSceneIllumination - 1.0, 0.0));
-      vec3 litDisplay = leafDisplayTransform(mix(shadowBase, seasonal, ramp));
       outgoingLight = litDisplay * leafIllumination;
-      vec3 nNorm = normalize(normal);
-      if (uMoonIntensity > 0.0001) {
-        float moonFacing = max(dot(nNorm, normalize(uMoonDirection)), 0.0);
-        outgoingLight += mix(litDisplay, vec3(1.0), 0.18)
-          * vec3(0.72, 0.84, 1.0) * uMoonIntensity * (0.06 + 0.55 * moonFacing);
-      }
+      if (uMoonIntensity > 0.0001 || (uSunIntensity > 0.0001 && ramp > 0.0001)) {
+        vec3 nNorm = normalize(normal);
+        if (uMoonIntensity > 0.0001) {
+          float moonFacing = max(dot(nNorm, normalize(uMoonDirection)), 0.0);
+          outgoingLight += mix(litDisplay, vec3(1.0), 0.18)
+            * vec3(0.72, 0.84, 1.0) * uMoonIntensity * (0.06 + 0.55 * moonFacing);
+        }
 
-      // Thin leaves transmit a little sunlight towards their shaded side.
-      // Match normal/view coordinates and attenuate leaves deep in the crown.
-      if (uSunIntensity > 0.0001 && ramp > 0.0001) {
-        vec3 transmittedSunDirection = normalize((viewMatrix * vec4(uSunDirection, 0.0)).xyz);
-        float backlit = max(dot(-nNorm, transmittedSunDirection), 0.0);
-        float towardsSun = pow(max(dot(-geometryViewDir, transmittedSunDirection), 0.0), 3.0);
-        float crownTransmission = mix(0.15, 1.0, clamp(vCanopyVisibility, 0.0, 1.0));
-        float transmittedLight = 0.30 * backlit * (0.35 + 0.65 * towardsSun)
-          * crownTransmission * clamp(uSunIntensity, 0.0, 1.0);
-        if (transmittedLight > 0.0001) {
-          vec3 seasonalDisplay = ramp >= 0.9999 ? litDisplay : leafDisplayTransform(seasonal);
-          outgoingLight += seasonalDisplay * vec3(1.12, 1.04, 0.72) * transmittedLight * ramp;
+        // Thin leaves transmit a little sunlight towards their shaded side.
+        // Match normal/view coordinates and attenuate leaves deep in the crown.
+        if (uSunIntensity > 0.0001 && ramp > 0.0001) {
+          vec3 transmittedSunDirection = normalize((viewMatrix * vec4(uSunDirection, 0.0)).xyz);
+          float backlit = max(dot(-nNorm, transmittedSunDirection), 0.0);
+          float towardsSun = pow(max(dot(-geometryViewDir, transmittedSunDirection), 0.0), 3.0);
+          float crownTransmission = mix(0.15, 1.0, clamp(vCanopyVisibility, 0.0, 1.0));
+          float transmittedLight = 0.30 * backlit * (0.35 + 0.65 * towardsSun)
+            * crownTransmission * clamp(uSunIntensity, 0.0, 1.0);
+          if (transmittedLight > 0.0001) {
+            vec3 seasonalDisplay = ramp >= 0.9999 ? litDisplay : leafDisplayTransform(seasonal);
+            outgoingLight += seasonalDisplay * vec3(1.12, 1.04, 0.72) * transmittedLight * ramp;
+          }
         }
       }
 
