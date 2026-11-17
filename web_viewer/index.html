@@ -3805,13 +3805,13 @@
       }
       shaderUniforms.uSunIntensity.value = daylight;
 
-      // Keep every visible sun and its ray at the actual light position.
+      sunMesh1.position.copy(sun1.position).sub(sun1.target.position).normalize().multiplyScalar(sunMarkerDistance).add(sun1.target.position);
+      sunMat.opacity = THREE.MathUtils.smoothstep(sunElevationDeg, -6, 0);
+      sunMesh1.visible = sunMat.opacity > 0;
+      sunMat.color.copy(sunHorizonColor).lerp(sunDayColor,
+        THREE.MathUtils.smoothstep(sunElevationDeg, 0, 50));
+
       if (sunHelpersGroup.visible) {
-        sunMesh1.position.copy(sun1.position).sub(sun1.target.position).normalize().multiplyScalar(sunMarkerDistance).add(sun1.target.position);
-        sunMat.opacity = THREE.MathUtils.smoothstep(sunElevationDeg, -6, 0);
-        sunMesh1.visible = sunMat.opacity > 0;
-        sunMat.color.copy(sunHorizonColor).lerp(sunDayColor,
-          THREE.MathUtils.smoothstep(sunElevationDeg, 0, 50));
         const sunsetTint = THREE.MathUtils.clamp((24 - Math.max(0, sunElevationDeg)) / 24, 0, 1);
         coronaMesh.position.copy(sunMesh1.position);
         coronaMesh.visible = false;

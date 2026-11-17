@@ -135,6 +135,10 @@ Definice spojení
 - Při rychlém posunu přes jaro se růst nových listů nepřeskočí: po dokončení opadu starých listů se nové viditelně zvětšují i tehdy, když datum již pokročilo dále. Vyšší rychlost času růst zrychlí.
 - Při téměř vyčerpané zásobě vody se listy postupně zbarví jako na podzim a následně opadávají. Vypnutí přísunu vody nespustí uschnutí okamžitě, dokud má strom ještě zásobu. Při obnovení zavodnění se listy v růstovém období obnoví.
 
+### Slunce
+
+- Slunce je u obzoru oranžové a výš na obloze světle žluté. Jeho poloha, barva a viditelnost se řídí výškou nad obzorem i při vypnutých popiscích a paprscích.
+
 ### Mraky
 
 - Při ručním snížení dostupnosti světla pod automatickou hodnotu se u slunce objevují mraky z dodaných textur. Plynule vyrůstají, zvyšují krytí a při dalším snížení se stahují ke slunci; při nulové dostupnosti ho zcela zakryjí.
