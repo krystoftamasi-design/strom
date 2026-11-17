@@ -2,7 +2,7 @@ import * as THREE from 'three';
 
 const MODEL_URL = new URL('../web_assets/ptak/sojka.glb?v=anatomy', import.meta.url).href;
 const MASK_URL = new URL('../web_assets/ptak/sojka-alfa.svg?v=feathers', import.meta.url).href;
-const LENGTH = 1.4;
+const LENGTH = 0.35;
 const FOLDED_WING = 0.94;
 const BIRDS = [
   { angle: -0.68, distance: 0.74, size: 1, delay: 0, bend: -1 },
@@ -122,7 +122,7 @@ function stylize(material, mask, lighting, { plumageRamp, plumageBump }) {
 }
 
 function createGroundShadow() {
-  return new THREE.Mesh(new THREE.PlaneGeometry(0.72, 0.42), new THREE.ShaderMaterial({
+  return new THREE.Mesh(new THREE.PlaneGeometry(0.18, 0.11), new THREE.ShaderMaterial({
     transparent: true,
     depthWrite: false,
     uniforms: { opacity: { value: 0.13 } },
@@ -272,7 +272,7 @@ function createBirdPose(model, shadowSource, config, index) {
       bird.visible = true;
       shadow.visible = bird.position.y < 0.12;
       if (shadow.visible) {
-        shadow.position.set(bird.position.x - 0.04, 0.008, bird.position.z);
+        shadow.position.set(bird.position.x - 0.01, 0.008, bird.position.z);
         shadow.rotation.z = bird.rotation.y;
       }
     }
