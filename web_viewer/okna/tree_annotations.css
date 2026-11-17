@@ -140,7 +140,7 @@ body .tree-overlay [data-chapter] .chapter-context-guide h2 { font-weight: 400; 
 /* Removable oxygen balance prototype beneath the photosynthesis guide. */
 .tree-overlay .oxygen-balance-panel {
   --oxygen-paper: #bfc0c0;
-  --oxygen-flow-blue: #37699d;
+  --prototype-flow-color: #79409a;
   margin-block-start: 14px;
   color: var(--ui-ink);
   font: 300 clamp(11px, 1.65vh, 14px)/1.1 var(--ui-font-display);
@@ -182,7 +182,7 @@ body.scene-night .tree-overlay .oxygen-balance-panel {
 .tree-overlay .oxygen-balance {
   background: linear-gradient(
     to top,
-    color-mix(in srgb, var(--ui-oxygen) 42%, var(--oxygen-paper)) var(--oxygen-level, 0%),
+    color-mix(in srgb, var(--ui-sugar) 42%, var(--oxygen-paper)) var(--oxygen-level, 0%),
     var(--oxygen-paper) var(--oxygen-level, 0%)
   );
 }
@@ -215,7 +215,7 @@ body.scene-night .tree-overlay .oxygen-balance-panel {
   inline-size: 40%;
   block-size: var(--flow-height, 0%);
   transition: block-size 180ms ease-out, background-color 180ms ease-out;
-  background: var(--oxygen-flow-blue);
+  background: var(--prototype-flow-color);
 }
 
 .oxygen-balance-flows > div,
@@ -261,7 +261,7 @@ body.scene-night .oxygen-balance-settings { --oxygen-paper: #454749; }
 
 .oxygen-balance-settings input:focus-visible {
   outline: none;
-  background: color-mix(in srgb, var(--oxygen-paper) 65%, var(--ui-oxygen));
+  background: color-mix(in srgb, var(--oxygen-paper) 65%, var(--ui-sugar));
 }
 
 .tree-overlay article[data-chapter="prototype"] {
@@ -347,7 +347,7 @@ body.scene-night .oxygen-balance-settings { --oxygen-paper: #454749; }
 .oxygen-balance-lines .oxygen-balance-reserve {
   background: linear-gradient(
     to top,
-    color-mix(in srgb, var(--ui-oxygen) 42%, var(--oxygen-paper)) var(--oxygen-level, 0%),
+    color-mix(in srgb, var(--ui-sugar) 42%, var(--oxygen-paper)) var(--oxygen-level, 0%),
     transparent var(--oxygen-level, 0%)
   );
 }
@@ -355,11 +355,11 @@ body.scene-night .oxygen-balance-settings { --oxygen-paper: #454749; }
 .tree-overlay .oxygen-balance-square { border-radius: 0; }
 
 .oxygen-balance-lines > div + div {
-  background: var(--oxygen-flow-blue);
+  background: var(--prototype-flow-color);
   color: #fff;
 }
 
-.oxygen-balance-panel .stronger-flow { --oxygen-flow-blue: #21446a; }
+.oxygen-balance-panel .stronger-flow { --prototype-flow-color: #54246f; }
 
 .tree-overlay article[data-chapter="prototype"] > .element-ui-flow-window {
   --ui-heading-size: clamp(25px, min(2.8vw, 4.8vh), 52px);
