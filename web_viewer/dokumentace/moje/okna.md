@@ -69,8 +69,6 @@ history:
 - Výchozí stav detailu: zavřený.
 - Související element: [O₂ částice](elementy.md#o₂).
 
-Pod kontextovým textem je prototyp bilance O₂. Zkušební zásoba začíná na 250 g a při běhu času ve Fotosyntéze se mění o rozdíl mezi produkcí a spotřebou. Zůstává mezi nulou a maximem nastaveným pod kruhem, výchozí maximum je 1 000 g. Snížení maxima pod aktuální zásobu omezí zásobu na nové maximum. Výška sloupců produkce a spotřeby vychází z množství za jednu modelovou hodinu. Společná stupnice sahá k nastavenému maximu nebo k většímu z obou množství, pokud maximum překročí. Zásoba i maximum se drží při změně kapitoly a po načtení stránky se vrátí na výchozí hodnoty.
-
 #### CO₂
 
 **Tag:** 🔶 `co2`
@@ -216,6 +214,10 @@ Pod kontextovým textem je prototyp bilance O₂. Zkušební zásoba začíná n
 - Detail: „Bukvice padají poblíž stromu; živočichové část přenesou dál. Za generace se tak druh může šířit při změnách klimatu.“
 - Roční přehled znázorňuje jeden rok; posun druhu probíhá přes mnoho generací a není součástí roční simulace.
 - Související element: [Padající semena](elementy.md#padající-semena).
+
+## Kapitola Prototyp
+
+Dvě zkušební varianty bilance O₂ používají živou produkci a spotřebu modelu. Každá má vlastní nastavení maximální zásoby (výchozí 1 000 g) a startuje s 250 g. Zásoba se během běhu kapitoly mění podle rozdílu toků a nepřekročí nastavené maximum. Velikost sloupců a částí mezi čarami vychází z toků za jednu modelovou hodinu a společné stupnice.
 
 ## Související dokumenty
 

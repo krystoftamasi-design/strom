@@ -48,7 +48,7 @@ history:
 ### Rozložení
 
 - Fotosyntéza má vlevo samostatný nadpis kapitoly a pod ním kontextového průvodce s vlastním svislým posuvem. Při změně věty se 15 sekund čeká, pak text 3 sekundy mizí a nový se 3 sekundy objevuje.
-- Prototyp bilance O₂ je kruh pod textem průvodce. Kruh ukazuje zásobu (Z) hladinou ode dna. Uvnitř kruhu jsou stejně široké sloupce produkce (P) vlevo a spotřeby (S) vpravo se společnou základnou. Prototyp používá písmo Nohemi. Nulový tok se skryje včetně písmene. Pod kruhem je nastavení maxima v gramech. Na úzké obrazovce se pro prototyp vyhradí místo nad tematickými okny a kapitola se dá posouvat.
+- Kapitola Prototyp obsahuje dvě varianty bilance O₂ v písmu Nohemi. V první jsou sloupce P a S uvnitř kruhu zásoby Z. Ve druhé dělí pohyblivé čáry kruh na části, větší tok je dole a podobné toky jsou vedle sebe. Nulové toky se skryjí. Pod každým kruhem je nastavení maxima v gramech.
 - Období přebírá samostatný nadpis a průvodce vlevo z Fotosyntézy. Kruh ročních období a ovládání času zůstávají u stromu.
 
 - Aktuální vzor oken: Transpirace; původní grafický podklad: [podklad rozhraní](../../web_assets/ui_from_af/Untitled.svg), přibližně 2020 × 1143 px; procenta se vztahují k ploše rozhraní.

@@ -166,19 +166,20 @@ function createElementUiOkno({ panel, body, reveal, toggle, model, definition })
 }
 
 
-function createOxygenBalance() {
+function createOxygenBalance(variant) {
+  const lines = variant === "lines";
   let capacity = 1000;
   let reserve = capacity / 4;
   const panel = document.createElement('section');
   panel.className = 'oxygen-balance-panel';
   panel.setAttribute('aria-label', 'Zkušební bilance O₂');
   panel.innerHTML = `
-    <div class="oxygen-balance">
-      <abbr title="Zásoba">Z</abbr>
-      <div class="oxygen-balance-flows">
-        <div><span></span><abbr title="Produkce">P</abbr></div>
-        <div><span></span><abbr title="Spotřeba">S</abbr></div>
-      </div>
+    <h3>${lines ? 'Dělicí čáry' : 'Sloupce'}</h3>
+    <div class="oxygen-balance${lines ? ' oxygen-balance-lines' : ''}">
+      ${lines ? '<div class="oxygen-balance-reserve"><abbr title="Zásoba">Z</abbr></div>' : '<abbr title="Zásoba">Z</abbr><div class="oxygen-balance-flows">'}
+      <div class="oxygen-balance-production">${lines ? '' : '<span></span>'}<abbr title="Produkce">P</abbr></div>
+      <div>${lines ? '' : '<span></span>'}<abbr title="Spotřeba">S</abbr></div>
+      ${lines ? '' : '</div>'}
     </div>
     <div class="oxygen-balance-settings">
       <label>Max. zásoba (g) <input type="number" min="1" step="1" value="${capacity}" required></label>
@@ -186,7 +187,7 @@ function createOxygenBalance() {
   `;
   const circle = panel.querySelector('.oxygen-balance');
   const flows = panel.querySelector('.oxygen-balance-flows');
-  const [productionSection, consumptionSection] = flows.children;
+  const [productionSection, consumptionSection] = lines ? [...circle.children].slice(1) : flows.children;
   const capacityInput = panel.querySelector('input');
   capacityInput.addEventListener('change', () => {
     if (capacityInput.validity.valid && Number.isSafeInteger(capacityInput.valueAsNumber)) {
@@ -208,6 +209,16 @@ function createOxygenBalance() {
       const scale = Math.max(capacity, 60 * production, 60 * consumption);
       productionSection.hidden = production <= 0;
       consumptionSection.hidden = consumption <= 0;
+      if (lines) {
+        const smaller = Math.min(production, consumption);
+        const larger = Math.max(production, consumption);
+        const lineScale = Math.max(capacity, 60 * (production + consumption));
+        circle.style.setProperty('--oxygen-smaller-flow', String(60 * smaller / lineScale));
+        circle.style.setProperty('--oxygen-larger-flow', String(60 * larger / lineScale));
+        circle.classList.toggle('similar-flows', smaller > 0 && smaller >= 0.9 * larger);
+        circle.classList.toggle('production-at-bottom', production > consumption);
+        return;
+      }
       flows.hidden = productionSection.hidden && consumptionSection.hidden;
       productionSection.style.setProperty('--flow-height', `${6000 * production / scale}%`);
       consumptionSection.style.setProperty('--flow-height', `${6000 * consumption / scale}%`);
@@ -231,7 +242,7 @@ export function createTreeAnnotations({ shell, model, createSeasonControl, setEl
   let activeChapter = null;
   let photosynthesisIntro = null;
   let photosynthesisIntroTimer = null;
-  const oxygenBalance = createOxygenBalance();
+  const prototypes = ['bars', 'lines'].map(createOxygenBalance);
   function syncHighlights() {
     const states = [...linkedWindows.values()];
     for (const tag of new Set(states.map(state => state.tag))) {
@@ -307,10 +318,6 @@ export function createTreeAnnotations({ shell, model, createSeasonControl, setEl
     guide.setAttribute('aria-label', `Kontext kapitoly ${article.dataset.chapter}`);
     const title = document.createElement('h2');
     guide.append(title);
-    if (chapter === 'photosynthesis') {
-      guide.append(oxygenBalance.panel);
-      guide.tabIndex = 0;
-    }
     contextGuides.set(chapter, guide);
     article.append(guide);
     updateContextGuide(chapter);
@@ -482,6 +489,10 @@ export function createTreeAnnotations({ shell, model, createSeasonControl, setEl
   }
 
   for (const article of content.querySelectorAll('article[data-chapter]')) {
+    if (article.dataset.chapter === 'prototype') {
+      article.querySelector('.prototype-list').append(...prototypes.map(prototype => prototype.panel));
+      continue;
+    }
     if (article.dataset.chapter === 'photosynthesis') {
       const title = document.createElement('h2');
       title.className = 'photosynthesis-title';
@@ -559,7 +570,9 @@ export function createTreeAnnotations({ shell, model, createSeasonControl, setEl
       const chapterChanged = chapter !== activeChapter;
       activeChapter = chapter;
       if (chapterChanged) syncWindowHover();
-      if (chapter === 'photosynthesis') oxygenBalance.update(model, modelMinutes);
+      if (chapter === 'prototype') {
+        for (const prototype of prototypes) prototype.update(model, modelMinutes);
+      }
       const clamp01 = value => (Number.isFinite(value) ? Math.max(0, Math.min(1, value)) : 0);
       const balanceValues = windowId => {
         const clean = value => (Number.isFinite(value) && value > 0 ? value : 0);

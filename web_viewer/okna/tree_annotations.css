@@ -241,22 +241,93 @@ body.scene-night .tree-overlay .oxygen-balance-panel {
   font: inherit;
 }
 
-.chapter-context-guide:has(.oxygen-balance):focus-visible,
 .oxygen-balance-settings input:focus-visible {
   outline: 2px solid var(--ui-ink);
   outline-offset: 4px;
 }
 
-@media (max-width: 700px) {
-  .tree-overlay article[data-chapter="photosynthesis"]:has(.oxygen-balance) {
-    --photosynthesis-top: 22vh;
-    --oxygen-guide-height: clamp(228px, 37vh, 302px);
-    padding-top: calc(var(--photosynthesis-top) + var(--ui-main-heading-size) + var(--oxygen-guide-height) + 28px);
-    overflow-y: auto;
-  }
+.tree-overlay article[data-chapter="prototype"] {
+  position: absolute;
+  inset: 18% 4% 12%;
+  overflow: auto;
+  pointer-events: auto;
+  color: var(--ui-ink);
+  font-family: var(--ui-font-display);
+}
 
-  .tree-overlay article[data-chapter="photosynthesis"] .chapter-context-guide:has(.oxygen-balance) {
-    width: 85%;
-    max-height: var(--oxygen-guide-height);
-  }
+.tree-overlay article[data-chapter="prototype"] > h2 {
+  margin: 0;
+  font: 500 var(--ui-main-heading-size)/1.05 var(--ui-font-display);
+}
+
+.prototype-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px 28px;
+  padding: 4px;
+}
+
+.prototype-list .oxygen-balance-panel { inline-size: 182px; }
+.prototype-list h3 { margin: 0 0 8px; font-size: 15px; }
+
+.tree-overlay .oxygen-balance-lines {
+  background: var(--oxygen-paper);
+  display: grid;
+  --oxygen-label-space: 18px;
+  --oxygen-moving-space: calc(100% - 3 * var(--oxygen-label-space));
+  grid-template-rows:
+    minmax(var(--oxygen-label-space), 1fr)
+    calc(var(--oxygen-label-space) + var(--oxygen-moving-space) * var(--oxygen-smaller-flow, 0))
+    calc(var(--oxygen-label-space) + var(--oxygen-moving-space) * var(--oxygen-larger-flow, 0));
+}
+
+.oxygen-balance-lines > div {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.oxygen-balance-lines > div + div {
+  border-block-start: 1px solid var(--oxygen-rule);
+}
+
+.oxygen-balance-lines > div[hidden] {
+  display: none;
+}
+
+.oxygen-balance-lines:is(.similar-flows, :has(> div[hidden])) {
+  --oxygen-moving-space: calc(100% - 2 * var(--oxygen-label-space));
+  grid-template-rows: 1fr calc(var(--oxygen-label-space) + var(--oxygen-moving-space) * var(--oxygen-larger-flow, 0));
+}
+
+.oxygen-balance-lines:has(> div[hidden] + div[hidden]) {
+  grid-template-rows: 1fr;
+}
+
+.oxygen-balance-lines.similar-flows {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.oxygen-balance-lines.similar-flows .oxygen-balance-reserve {
+  grid-column: 1 / -1;
+}
+
+.oxygen-balance-lines.similar-flows > div:last-child {
+  border-inline-start: 1px solid var(--oxygen-rule);
+}
+
+.oxygen-balance-lines.production-at-bottom:not(.similar-flows) .oxygen-balance-production {
+  order: 1;
+}
+
+.oxygen-balance-lines abbr {
+  text-decoration: none;
+}
+
+.oxygen-balance-lines .oxygen-balance-reserve {
+  background: linear-gradient(
+    to top,
+    color-mix(in srgb, var(--ui-oxygen) 42%, var(--oxygen-paper)) var(--oxygen-level, 0%),
+    transparent var(--oxygen-level, 0%)
+  );
 }
