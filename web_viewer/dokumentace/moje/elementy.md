@@ -20,7 +20,7 @@ history:
 
 # Elementy
 
-- Zvýrazněné linky jsou přibližně tří- až 3,4násobně silné při zachování barvy; zvýrazněné částice H₂O, O₂ a CO₂ mají 2,5násobnou velikost. Zvýraznění i návrat trvají přibližně 180 ms; při omezení pohybu jsou okamžité.
+- Zvýrazněné linky jsou přibližně tří- až 3,4násobně silné při zachování barvy; zvýrazněné částice H₂O, O₂ a CO₂ mají 3,5násobnou velikost. Zvýraznění i návrat trvají přibližně 180 ms; při omezení pohybu jsou okamžité.
 - Definované zvýraznění spojení se spouští také při najetí na celou plochu souvisejícího okna nebo jeho otevřený detail. Trvá po dobu najetí nebo otevření alespoň jednoho souvisejícího detailu v aktivní kapitole; po skončení obou stavů se obnoví původní vzhled. Prázdná plocha nadále propouští ovládání stromu.
 
 ### Voda linka

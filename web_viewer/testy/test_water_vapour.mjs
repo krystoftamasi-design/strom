@@ -19,7 +19,7 @@ assert.ok(active.every(p => p.mesh.position.y > endpoint.y), 'Vapour rises from 
 const particle = active[0];
 const scale = particle.mesh.scale.x;
 system.setElementHighlight('water', true);
-assert.ok(Math.abs(particle.mesh.scale.x / scale - 2.1) < 1e-8, 'Water shares gas highlight factor');
+assert.ok(Math.abs(particle.mesh.scale.x / scale - 3.5) < 1e-8, 'Water shares gas highlight factor');
 system.setElementHighlight('water', false);
 assert.ok(Math.abs(particle.mesh.scale.x - scale) < 1e-8, 'Closing restores size');
 system.setTranspiration(0);
