@@ -98,17 +98,13 @@ function createElementUiOkno({ panel, body, reveal, toggle, model, definition })
     availabilityValue.append(availabilityOutput, availabilityUnit);
     availability.append(availabilityLabel, availabilityValue);
     const isAvailabilityWindow = ['voda', 'svetlo'].includes(definition.id);
-    const isTopMeasured = isAvailabilityWindow || definition.id !== 'co2';
-    const topMetric = isTopMeasured ? current : unavailable;
-    const bottomMetric = isAvailabilityWindow ? availability : isTopMeasured ? unavailable : current;
-    const bottomFlow = definition.id === 'voda' ? 'availability'
-      : definition.id === 'svetlo' ? 'light-availability'
-        : isTopMeasured ? 'respiration' : 'measured';
+    const isCo2 = definition.id === 'co2';
+    const topMetric = isAvailabilityWindow ? availability : isCo2 ? unavailable : current;
+    const bottomMetric = isAvailabilityWindow || isCo2 ? current : unavailable;
 
     if (current) {
       const bar = document.createElement('div');
       bar.className = 'element-ui-balance-bar';
-      bar.dataset.bottomFlow = bottomFlow;
 
       const fill = document.createElement('span');
       fill.className = 'element-ui-balance-fill';
@@ -122,8 +118,8 @@ function createElementUiOkno({ panel, body, reveal, toggle, model, definition })
       markers.className = 'element-ui-balance-markers';
       fill.append(track, markers);
       for (const side of ['top', 'bottom']) {
-        const isConsumption = side === (isAvailabilityWindow ? 'top' : 'bottom');
-        const isAdjustable = isAvailabilityWindow && side === 'bottom';
+        const isConsumption = side === 'bottom';
+        const isAdjustable = isAvailabilityWindow && side === 'top';
         const marker = document.createElement('span');
         marker.className = `element-ui-balance-marker element-ui-balance-marker-${side}`;
         marker.classList.toggle('element-ui-balance-consumption', isConsumption);
@@ -137,12 +133,12 @@ function createElementUiOkno({ panel, body, reveal, toggle, model, definition })
 
       bar.append(fill);
 
-      if (bottomFlow === 'availability' || bottomFlow === 'light-availability') {
+      if (isAvailabilityWindow) {
         const slider = document.createElement('input');
         slider.type = 'range';
         slider.min = '0'; slider.max = '1000'; slider.step = '1';
         slider.className = 'element-ui-flow-slider element-ui-balance-slider';
-        if (bottomFlow === 'light-availability') {
+        if (definition.id === 'svetlo') {
           slider.setAttribute('aria-label', 'Dostupnost světla');
           slider.addEventListener('input', () => model.setLightAvailability(Number(slider.value) / 1000));
         } else {
@@ -512,8 +508,8 @@ export function createTreeAnnotations({ shell, model, createSeasonControl, setEl
       const clamp01 = value => (Number.isFinite(value) ? Math.max(0, Math.min(1, value)) : 0);
       const balanceValues = windowId => {
         const clean = value => (Number.isFinite(value) && value > 0 ? value : 0);
-        if (windowId === 'svetlo') return [clean(model.activity) * 100, clean(model.light) * 100];
-        if (windowId === 'voda') return [clean(model.waterConsumption) * 60, clean(model.waterInput) * 60];
+        if (windowId === 'svetlo') return [clean(model.light) * 100, clean(model.activity) * 100];
+        if (windowId === 'voda') return [clean(model.waterInput) * 60, clean(model.waterConsumption) * 60];
         if (windowId === 'kyslik') return [clean(model.oxygenGramsPerMinute), clean(model.respirationOxygen)];
         if (windowId === 'co2') return [clean(model.respirationCO2), clean(model.co2GramsPerMinute)];
         if (windowId === 'cukry') return [clean(model.glucoseGramsPerMinute), clean(model.respirationSugar)];
@@ -524,10 +520,10 @@ export function createTreeAnnotations({ shell, model, createSeasonControl, setEl
         const slider = bar.querySelector('input');
         const maxWater = Number(slider?.dataset.scaleMax) || waterAvailabilityMax(model);
         const [rawTop, rawBottom] = balanceValues(panel.dataset.windowId);
-        const topValue = vyhladitHodnotu(smoothedValues, `${panel.dataset.windowId}:top`, rawTop, dt);
-        const bottomValue = slider?.matches(':active')
-          ? (smoothedValues.set(`${panel.dataset.windowId}:bottom`, rawBottom), rawBottom)
-          : vyhladitHodnotu(smoothedValues, `${panel.dataset.windowId}:bottom`, rawBottom, dt);
+        const topValue = slider?.matches(':active')
+          ? (smoothedValues.set(`${panel.dataset.windowId}:top`, rawTop), rawTop)
+          : vyhladitHodnotu(smoothedValues, `${panel.dataset.windowId}:top`, rawTop, dt);
+        const bottomValue = vyhladitHodnotu(smoothedValues, `${panel.dataset.windowId}:bottom`, rawBottom, dt);
         const isWaterBalance = panel.dataset.windowId === 'voda';
         const isLightBalance = panel.dataset.windowId === 'svetlo';
         const scaleMax = isWaterBalance ? maxWater * 60 : isLightBalance ? 100 : 7;
@@ -545,7 +541,7 @@ export function createTreeAnnotations({ shell, model, createSeasonControl, setEl
           bottomMarker.style.zIndex = topLarger ? '1' : '0';
         }
 
-        if (bar.dataset.bottomFlow === 'light-availability' && slider) {
+        if (isLightBalance && slider) {
           const lightLevel = clamp01(model.light);
           const percent = Math.round(lightLevel * 100);
           panel.querySelector('.element-ui-availability output').textContent = String(percent);
