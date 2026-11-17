@@ -183,6 +183,7 @@ function createOxygenBalance() {
     </div>
   `;
   const circle = panel.querySelector('.oxygen-balance');
+  const [, productionSection, consumptionSection] = circle.children;
   const capacityInput = panel.querySelector('input');
   capacityInput.addEventListener('change', () => {
     if (capacityInput.validity.valid && Number.isSafeInteger(capacityInput.valueAsNumber)) {
@@ -202,8 +203,14 @@ function createOxygenBalance() {
       reserve = Math.max(0, Math.min(capacity, reserve + (production - consumption) * modelMinutes));
       circle.style.setProperty('--oxygen-level', `${100 * reserve / capacity}%`);
       const scale = Math.max(capacity, 60 * (production + consumption));
-      circle.style.setProperty('--oxygen-smaller-flow', String(60 * Math.min(production, consumption) / scale));
-      circle.style.setProperty('--oxygen-larger-flow', String(60 * Math.max(production, consumption) / scale));
+      const smaller = Math.min(production, consumption);
+      const larger = Math.max(production, consumption);
+      const similar = smaller > 0 && smaller >= 0.9 * larger;
+      productionSection.hidden = production <= 0;
+      consumptionSection.hidden = consumption <= 0;
+      circle.style.setProperty('--oxygen-smaller-flow', String(60 * smaller / scale));
+      circle.style.setProperty('--oxygen-larger-flow', String(60 * larger / scale));
+      circle.classList.toggle('similar-flows', similar);
       circle.classList.toggle('production-at-bottom', production > consumption);
     }
   };
