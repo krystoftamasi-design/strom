@@ -123,9 +123,11 @@ function createElementUiOkno({ panel, body, reveal, toggle, model, definition })
       fill.append(track, markers);
       for (const side of ['top', 'bottom']) {
         const isConsumption = side === (isAvailabilityWindow ? 'top' : 'bottom');
+        const isAdjustable = isAvailabilityWindow && side === 'bottom';
         const marker = document.createElement('span');
         marker.className = `element-ui-balance-marker element-ui-balance-marker-${side}`;
         marker.classList.toggle('element-ui-balance-consumption', isConsumption);
+        marker.classList.toggle('element-ui-balance-adjustable', isAdjustable);
         const cap = document.createElement('span');
         cap.className = 'element-ui-balance-marker-cap';
         if (!isAvailabilityWindow) cap.textContent = isConsumption ? 'S' : 'P';
@@ -527,9 +529,21 @@ export function createTreeAnnotations({ shell, model, createSeasonControl, setEl
           ? (smoothedValues.set(`${panel.dataset.windowId}:bottom`, rawBottom), rawBottom)
           : vyhladitHodnotu(smoothedValues, `${panel.dataset.windowId}:bottom`, rawBottom, dt);
         const isWaterBalance = panel.dataset.windowId === 'voda';
-        const scaleMax = isWaterBalance ? 100 : 7;
-        bar.style.setProperty('--balance-top', `${100 * clamp01(topValue / scaleMax)}%`);
-        bar.style.setProperty('--balance-bottom', `${100 * clamp01(bottomValue / scaleMax)}%`);
+        const isLightBalance = panel.dataset.windowId === 'svetlo';
+        const scaleMax = isWaterBalance ? maxWater * 60 : isLightBalance ? 100 : 7;
+        const topRatio = clamp01(topValue / scaleMax);
+        const bottomRatio = clamp01(bottomValue / scaleMax);
+        bar.style.setProperty('--balance-top', `${100 * topRatio}%`);
+        bar.style.setProperty('--balance-bottom', `${100 * bottomRatio}%`);
+        bar.style.setProperty('--balance-top-ratio', String(topRatio));
+        bar.style.setProperty('--balance-bottom-ratio', String(bottomRatio));
+        const topMarker = bar.querySelector('.element-ui-balance-marker-top');
+        const bottomMarker = bar.querySelector('.element-ui-balance-marker-bottom');
+        if (topMarker && bottomMarker) {
+          const topLarger = topRatio > bottomRatio;
+          topMarker.style.zIndex = topLarger ? '0' : '1';
+          bottomMarker.style.zIndex = topLarger ? '1' : '0';
+        }
 
         if (bar.dataset.bottomFlow === 'light-availability' && slider) {
           const lightLevel = clamp01(model.light);

@@ -464,7 +464,7 @@ body.scene-night .tree-overlay .element-ui-balance-track {
 
 .tree-overlay .element-ui-balance-marker {
   --balance-ink: var(--ui-topic);
-  right: clamp(0px, calc(100% - var(--balance-position, 0%)), calc(100% - var(--balance-marker-width)));
+  right: calc((100% - var(--balance-marker-width)) * (1 - var(--balance-ratio, 0)));
   /* Apply after the brush mask to restore solid paint and keep its soft edges. */
   filter: url('../web_assets/okna/affinity-bilance-kryti.svg#brush');
 }
@@ -499,6 +499,7 @@ body.scene-night .tree-overlay .element-ui-balance-track {
 
 .tree-overlay .element-ui-balance-marker-top {
   --balance-position: var(--balance-top);
+  --balance-ratio: var(--balance-top-ratio, 0);
   --balance-texture: url('../web_assets/okna/affinity-bilance-horni.png?v=affinity-windows-markers-5');
 }
 
@@ -509,6 +510,7 @@ body.scene-night .tree-overlay .element-ui-balance-track {
 
 .tree-overlay .element-ui-balance-marker-bottom {
   --balance-position: var(--balance-bottom);
+  --balance-ratio: var(--balance-bottom-ratio, 0);
   --balance-texture: url('../web_assets/okna/affinity-bilance-dolni.png?v=affinity-windows-markers-5');
 }
 
@@ -517,17 +519,30 @@ body.scene-night .tree-overlay .element-ui-balance-track {
   bottom: 7%;
 }
 
+.tree-overlay .element-ui-balance-adjustable .element-ui-balance-marker-cap::before {
+  content: '';
+  width: 3px;
+  height: clamp(6px, .8vh, 8px);
+  border-inline: 1px solid rgba(255, 255, 255, .92);
+  border-radius: .5px;
+  opacity: .9;
+}
+
+.tree-overlay .element-ui-balance-bar:has(.element-ui-balance-slider:is(:hover, :focus-visible, :active)) .element-ui-balance-adjustable .element-ui-balance-marker-cap::before {
+  opacity: 1;
+  transform: scaleY(1.15);
+}
+
 .tree-overlay .element-ui-balance-consumption {
   --balance-ink: color-mix(in srgb, var(--ui-topic) 57%, #38231c);
-  z-index: 1;
 }
 
 .tree-overlay .element-ui-balance-slider {
   appearance: none;
   position: absolute;
   z-index: 2;
-  inset: -3px 0;
-  width: 100%;
+  inset: -3px calc(var(--balance-track-end) - 2px) -3px calc(var(--balance-track-start) - 2px);
+  width: calc(100% - var(--balance-track-start) - var(--balance-track-end) + 4px);
   height: calc(100% + 6px);
   margin: 0;
   padding: 0;
@@ -545,7 +560,7 @@ body.scene-night .tree-overlay .element-ui-balance-track {
 
 .tree-overlay .element-ui-balance-slider::-webkit-slider-thumb {
   appearance: none;
-  width: 12px;
+  width: var(--balance-marker-width);
   height: 25px;
   background: transparent;
   border: 0;
