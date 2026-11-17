@@ -402,27 +402,33 @@ body.scene-night .tree-overlay .element-ui-okno .ui-word {
 
 .tree-overlay .element-ui-balance-fill {
   position: absolute;
-  inset: 0 -3%;
+  inset: 0;
   pointer-events: none;
   overflow: hidden;
 }
 
-.tree-overlay .element-ui-balance-fill::before,
+.tree-overlay :is(.element-ui-balance-track, .element-ui-balance-marker) {
+  position: absolute;
+  /* Apply after the brush mask to restore solid paint and keep its soft edges. */
+  filter: url('../web_assets/okna/affinity-bilance-kryti.svg#brush');
+}
+
+.tree-overlay .element-ui-balance-track::before,
 .tree-overlay .element-ui-balance-marker::before {
   content: '';
   position: absolute;
   inset: 0;
   background: var(--balance-ink);
-  mask: var(--balance-texture) center / 100% 100% no-repeat;
+  mask: var(--balance-texture) center / 106% 100% no-repeat;
 }
 
-.tree-overlay .element-ui-balance-fill::before {
-  --balance-ink: color-mix(in srgb, var(--ui-topic) 38%, transparent);
+.tree-overlay .element-ui-balance-track {
+  inset: 0;
+  --balance-ink: color-mix(in srgb, var(--ui-topic) 28%, #dbcac4);
   --balance-texture: url('../web_assets/okna/affinity-bilance.png');
 }
 
 .tree-overlay .element-ui-balance-marker {
-  position: absolute;
   inset-block: 0;
   right: calc(100% - clamp(10px, var(--balance-position, 0%), 100%));
   width: 100%;
@@ -430,8 +436,9 @@ body.scene-night .tree-overlay .element-ui-okno .ui-word {
   justify-content: flex-end;
   align-items: start;
   box-sizing: border-box;
-  padding: 2px 4.6% 0 0;
+  padding: 2px 2.5% 0 0;
   isolation: isolate;
+  --balance-ink: var(--ui-topic);
   color: white;
   font: 700 clamp(7px, 1vh, 10px)/1 var(--ui-font-text);
 }
@@ -441,17 +448,20 @@ body.scene-night .tree-overlay .element-ui-okno .ui-word {
 }
 
 .tree-overlay .element-ui-balance-marker-top {
-  --balance-ink: var(--ui-topic);
   --balance-texture: url('../web_assets/okna/affinity-bilance-horni.png');
   --balance-position: var(--balance-top);
 }
 
 .tree-overlay .element-ui-balance-marker-bottom {
-  --balance-ink: color-mix(in srgb, var(--ui-topic) 70%, #47271e);
   --balance-texture: url('../web_assets/okna/affinity-bilance-dolni.png');
   --balance-position: var(--balance-bottom);
   align-items: end;
   padding-bottom: 2px;
+}
+
+.tree-overlay .element-ui-balance-consumption {
+  --balance-ink: color-mix(in srgb, var(--ui-topic) 57%, #38231c);
+  z-index: 1;
 }
 
 .tree-overlay .element-ui-balance-slider {
@@ -481,6 +491,8 @@ body.scene-night .tree-overlay .element-ui-okno .ui-word {
   height: 25px;
   background: transparent;
   border: 0;
+  box-shadow: none;
+  cursor: inherit;
 }
 
 .tree-overlay .element-ui-balance-slider:focus-visible {

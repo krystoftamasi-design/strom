@@ -108,10 +108,15 @@ function createElementUiOkno({ panel, body, reveal, toggle, model, definition })
       const fill = document.createElement('span');
       fill.className = 'element-ui-balance-fill';
       fill.setAttribute('aria-hidden', 'true');
+      const track = document.createElement('span');
+      track.className = 'element-ui-balance-track';
+      fill.append(track);
       for (const side of ['top', 'bottom']) {
+        const isConsumption = side === (isAvailabilityWindow ? 'top' : 'bottom');
         const marker = document.createElement('span');
         marker.className = `element-ui-balance-marker element-ui-balance-marker-${side}`;
-        if (!isAvailabilityWindow) marker.textContent = side === 'top' ? 'P' : 'S';
+        marker.classList.toggle('element-ui-balance-consumption', isConsumption);
+        if (!isAvailabilityWindow) marker.textContent = isConsumption ? 'S' : 'P';
         fill.append(marker);
       }
 

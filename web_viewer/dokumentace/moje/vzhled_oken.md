@@ -33,6 +33,8 @@ history:
 - Tematická okna Fotosyntézy používají návrh z Affinity. Nahoře je nadpis vlevo a malované tlačítko +/− vpravo. Pod záhlavím jsou dva řádky s popiskem vlevo a hodnotou s jednotkou vpravo. Mezi řádky leží vodorovný pruh s původní texturou z Affinity, vysoký 22 až 32 px.
 - Na tlumeném podkladu pruhu jsou dvě značky. Jejich poloha zleva doprava ukazuje obě hodnoty samostatně. U kyslíku, CO₂ a cukrů je v horním řádku produkce (P) a v dolním spotřeba (S), na škále 0 až 7 g/min. U vody a světla je nahoře spotřeba a dole dostupnost. Škála vody je 0 až 100 l/h a škála světla 0 až 7 %. Ovládání dostupnosti má rozšířenou plochu a viditelný klávesnicový fokus.
 
+- Výplně vodorovného pruhu Fotosyntézy jsou krycí. Spotřeba má tmavší barvu a při překryvu leží nad druhou značkou.
+
 ### Obecný obsah
 
 - Údaje tvoří svislý blok: nadpis → hodnota s jednotkou → vzorec nebo přehled vstupů. Ve Fotosyntéze je vzorec nebo přehled vstupů v detailu.
