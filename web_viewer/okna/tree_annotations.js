@@ -169,30 +169,20 @@ function createElementUiOkno({ panel, body, reveal, toggle, model, definition })
 function createOxygenBalance() {
   let capacity = 1000;
   let reserve = capacity / 4;
-  const grams = new Intl.NumberFormat('cs-CZ', { maximumFractionDigits: 0 });
-  const rate = new Intl.NumberFormat('cs-CZ', { minimumFractionDigits: 1, maximumFractionDigits: 1 });
-  const percent = new Intl.NumberFormat('cs-CZ', { style: 'percent', maximumFractionDigits: 1 });
   const panel = document.createElement('section');
   panel.className = 'oxygen-balance-panel';
   panel.setAttribute('aria-label', 'Zkušební bilance O₂');
   panel.innerHTML = `
     <div class="oxygen-balance">
-      <div class="oxygen-balance-reserve">Zásoba O₂ <output aria-live="off">—</output></div>
-      <div class="oxygen-balance-production">
-        <span>Produkce <strong>—</strong></span><output aria-live="off">—</output>
-      </div>
-      <div class="oxygen-balance-consumption">
-        <span>Spotřeba <strong>—</strong></span><output aria-live="off">—</output>
-      </div>
+      <div class="oxygen-balance-reserve"><abbr title="Zásoba">Z</abbr></div>
+      <div class="oxygen-balance-production"><abbr title="Produkce">P</abbr></div>
+      <div><abbr title="Spotřeba">S</abbr></div>
     </div>
     <div class="oxygen-balance-settings">
       <label>Max. zásoba (g) <input type="number" min="1" step="1" value="${capacity}" required></label>
-      <small>Podíly za 1 modelovou hodinu</small>
     </div>
   `;
   const circle = panel.querySelector('.oxygen-balance');
-  const [reserveOutput, productionOutput, consumptionOutput] = circle.querySelectorAll('output');
-  const [productionShare, consumptionShare] = circle.querySelectorAll('strong');
   const capacityInput = panel.querySelector('input');
   capacityInput.addEventListener('change', () => {
     if (capacityInput.validity.valid && Number.isSafeInteger(capacityInput.valueAsNumber)) {
@@ -201,13 +191,6 @@ function createOxygenBalance() {
     }
     capacityInput.value = String(capacity);
   });
-
-  function updateShare(label, property, gramsPerMinute) {
-    const share = 60 * gramsPerMinute / capacity;
-    circle.style.setProperty(property, `${100 * Math.min(1, share)}%`);
-    const text = percent.format(share);
-    if (label.textContent !== text) label.textContent = text;
-  }
 
   return {
     panel,
@@ -218,14 +201,10 @@ function createOxygenBalance() {
 
       reserve = Math.max(0, Math.min(capacity, reserve + (production - consumption) * modelMinutes));
       circle.style.setProperty('--oxygen-level', `${100 * reserve / capacity}%`);
-      const reserveText = `${grams.format(reserve)} g`;
-      const productionText = `${rate.format(production)} g/min`;
-      const consumptionText = `${rate.format(consumption)} g/min`;
-      if (reserveOutput.value !== reserveText) reserveOutput.value = reserveText;
-      if (productionOutput.value !== productionText) productionOutput.value = productionText;
-      if (consumptionOutput.value !== consumptionText) consumptionOutput.value = consumptionText;
-      updateShare(productionShare, '--oxygen-production', production);
-      updateShare(consumptionShare, '--oxygen-consumption', consumption);
+      const scale = Math.max(capacity, 60 * (production + consumption));
+      circle.style.setProperty('--oxygen-smaller-flow', String(60 * Math.min(production, consumption) / scale));
+      circle.style.setProperty('--oxygen-larger-flow', String(60 * Math.max(production, consumption) / scale));
+      circle.classList.toggle('production-at-bottom', production > consumption);
     }
   };
 }

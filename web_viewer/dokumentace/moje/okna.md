@@ -69,7 +69,7 @@ history:
 - Výchozí stav detailu: zavřený.
 - Související element: [O₂ částice](elementy.md#o₂).
 
-Pod kontextovým textem je prototyp bilance O₂. Zkušební zásoba začíná na 250 g a při běhu času ve Fotosyntéze se mění o rozdíl mezi produkcí a spotřebou. Zůstává mezi nulou a maximem nastaveným pod kruhem, výchozí maximum je 1 000 g. Snížení maxima pod aktuální zásobu omezí zásobu na nové maximum. Produkce a spotřeba se zobrazují v `g/min` a jako procento maxima, které by odpovídající tok při aktuální rychlosti představoval za jednu modelovou hodinu. Zásoba i maximum se drží při změně kapitoly a po načtení stránky se vrátí na výchozí hodnoty.
+Pod kontextovým textem je prototyp bilance O₂. Zkušební zásoba začíná na 250 g a při běhu času ve Fotosyntéze se mění o rozdíl mezi produkcí a spotřebou. Zůstává mezi nulou a maximem nastaveným pod kruhem, výchozí maximum je 1 000 g. Snížení maxima pod aktuální zásobu omezí zásobu na nové maximum. Velikost částí produkce a spotřeby vychází z podílu na maximu za jednu modelovou hodinu. Když jejich součet převýší maximum, části se poměrně zmenší, aby se vešly do kruhu. Zásoba i maximum se drží při změně kapitoly a po načtení stránky se vrátí na výchozí hodnoty.
 
 #### CO₂
 
