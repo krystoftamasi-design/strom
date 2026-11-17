@@ -395,12 +395,15 @@ body.scene-night .tree-overlay .element-ui-okno .ui-word {
   color: var(--ui-ink);
 }
 
+.tree-overlay .element-ui-flow-window .element-ui-values .element-ui-unit {
+  margin-left: 3px;
+  font-size: clamp(9px, min(.7vw, 1.35vh), 12px);
+}
+
 .tree-overlay .element-ui-balance-bar {
-  --balance-shaft: clamp(6px, .8vh, 9px);
   --balance-marker-width: clamp(11px, 1.3vh, 14px);
-  --balance-marker-overlap: 1px;
   position: relative;
-  height: clamp(22px, 3.1vh, 32px);
+  height: clamp(24px, 3.2vh, 32px);
 }
 
 .tree-overlay .element-ui-balance-fill {
@@ -419,27 +422,22 @@ body.scene-night .tree-overlay .element-ui-okno .ui-word {
 }
 
 .tree-overlay .element-ui-balance-track {
-  --balance-ink: color-mix(in srgb, var(--ui-topic) 28%, #dbcac4);
+  --balance-ink: #a7a7a7;
   --balance-texture: url('../web_assets/okna/affinity-bilance.png');
   --balance-track-end: clamp(8px, 1vh, 11px);
   right: 0;
 }
 
-.tree-overlay .element-ui-balance-track::before,
-.tree-overlay .element-ui-balance-marker::before {
-  content: '';
-  position: absolute;
-  left: 0;
-  top: 50%;
-  transform: translateY(-50%);
-  height: var(--balance-shaft);
-  background: var(--balance-ink);
-  /* Sample the straight middle of the Affinity brush. */
-  mask: var(--balance-texture) center var(--balance-shaft-y, 50%) / 175% 400% no-repeat;
+body.scene-night .tree-overlay .element-ui-balance-track {
+  --balance-ink: color-mix(in srgb, var(--ui-ink) 42%, #5a5d58);
 }
 
 .tree-overlay .element-ui-balance-track::before {
-  right: calc(var(--balance-track-end) - 2px);
+  content: '';
+  position: absolute;
+  inset: 0 calc(var(--balance-track-end) - 2px) 0 0;
+  background: var(--balance-ink);
+  mask: var(--balance-texture) left center / 115% 100% no-repeat;
 }
 
 .tree-overlay .element-ui-balance-track::after {
@@ -449,7 +447,7 @@ body.scene-night .tree-overlay .element-ui-okno .ui-word {
   width: var(--balance-track-end);
   background: var(--balance-ink);
   /* Keep the original flare, with a fixed width independent of the bar. */
-  mask: var(--balance-texture) 96.4% center / 946% 100% no-repeat;
+  mask: var(--balance-texture) right center / 1120% 100% no-repeat;
 }
 
 .tree-overlay .element-ui-balance-marker {
@@ -459,44 +457,51 @@ body.scene-night .tree-overlay .element-ui-okno .ui-word {
 }
 
 .tree-overlay .element-ui-balance-marker::before {
-  right: calc(var(--balance-marker-width) / 2);
+  content: '';
+  position: absolute;
+  inset: 0 calc(var(--balance-marker-width) - 2px) 0 0;
+  background: var(--balance-ink);
+  mask: var(--balance-texture) left center / 120% 100% no-repeat;
+}
+
+.tree-overlay .element-ui-balance-marker::after {
+  content: '';
+  position: absolute;
+  inset: 0 0 0 auto;
+  width: var(--balance-marker-width);
+  background: var(--balance-ink);
+  mask: var(--balance-texture) right center / 1000% 100% no-repeat;
 }
 
 .tree-overlay .element-ui-balance-marker-cap {
   position: absolute;
   right: 0;
+  z-index: 1;
   width: var(--balance-marker-width);
-  height: clamp(12px, 1.55vh, 16px);
   display: grid;
   place-items: center;
-  border-radius: 3px;
-  background: var(--balance-ink);
   color: white;
-  font: 700 clamp(8px, 1vh, 10px)/1 var(--ui-font-text);
-  /* Crop the end of the same brush to the narrow label. */
-  mask: var(--balance-texture) 98% var(--balance-cap-y) / 1280% 124% no-repeat;
+  font: 700 clamp(8px, .95vh, 10px)/1 var(--ui-font-text);
 }
 
 .tree-overlay .element-ui-balance-marker-top {
   --balance-position: var(--balance-top);
   --balance-texture: url('../web_assets/okna/affinity-bilance-horni.png');
-  --balance-shaft-y: 56%;
-  --balance-cap-y: top;
 }
 
 .tree-overlay .element-ui-balance-marker-top .element-ui-balance-marker-cap {
-  bottom: calc(50% - var(--balance-marker-overlap));
+  top: 2px;
+  bottom: 48%;
 }
 
 .tree-overlay .element-ui-balance-marker-bottom {
   --balance-position: var(--balance-bottom);
   --balance-texture: url('../web_assets/okna/affinity-bilance-dolni.png');
-  --balance-shaft-y: 47%;
-  --balance-cap-y: bottom;
 }
 
 .tree-overlay .element-ui-balance-marker-bottom .element-ui-balance-marker-cap {
-  top: calc(50% - var(--balance-marker-overlap));
+  top: 48%;
+  bottom: 2px;
 }
 
 .tree-overlay .element-ui-balance-consumption {
@@ -1116,7 +1121,7 @@ body.scene-night .chapter-context-guide .transpiration-legend {
   width: clamp(21px, 3vh, 25px);
   aspect-ratio: 1;
   background: var(--flow-toggle-fill, var(--ui-topic));
-  mask: url('../web_assets/oxygen_bubble_2.png') 40% 45% / 150% no-repeat;
+  mask: url('../web_assets/oxygen_bubble_2.png') 38% 42.5% / 150% no-repeat;
 }
 
 @media (hover: hover) {

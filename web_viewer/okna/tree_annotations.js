@@ -90,7 +90,12 @@ function createElementUiOkno({ panel, body, reveal, toggle, model, definition })
     availabilityLabel.textContent = 'dostupnost';
     const availabilityValue = document.createElement('strong');
     availabilityValue.className = 'element-ui-availability';
-    availabilityValue.textContent = '—';
+    const availabilityOutput = document.createElement('output');
+    availabilityOutput.textContent = '—';
+    const availabilityUnit = document.createElement('span');
+    availabilityUnit.className = 'element-ui-unit';
+    availabilityUnit.textContent = definition.id === 'svetlo' ? '%' : 'l/h';
+    availabilityValue.append(availabilityOutput, availabilityUnit);
     availability.append(availabilityLabel, availabilityValue);
     const isAvailabilityWindow = ['voda', 'svetlo'].includes(definition.id);
     const isTopMeasured = isAvailabilityWindow || definition.id !== 'co2';
@@ -521,7 +526,7 @@ export function createTreeAnnotations({ shell, model, createSeasonControl, setEl
         if (bar.dataset.bottomFlow === 'light-availability' && slider) {
           const lightLevel = clamp01(model.light);
           const percent = Math.round(lightLevel * 100);
-          panel.querySelector('.element-ui-availability').textContent = `${percent} %`;
+          panel.querySelector('.element-ui-availability output').textContent = String(percent);
           slider.disabled = !model.ready || model.sunElevation <= 0;
           if (slider.disabled || !slider.matches(':active')) slider.value = String(Math.round(lightLevel * 1000));
           slider.setAttribute('aria-valuetext', `${percent} procent`);
@@ -531,7 +536,7 @@ export function createTreeAnnotations({ shell, model, createSeasonControl, setEl
           const waterLevel = clamp01(model.waterInput / maxWater);
           if (!slider.matches(':active')) slider.value = String(Math.round(waterLevel * 1000));
           const displayed = Number.isFinite(model.waterInput) ? (model.waterInput * 60).toLocaleString('cs-CZ', { maximumFractionDigits: 1, minimumFractionDigits: 1 }) : '—';
-          panel.querySelector('.element-ui-availability').textContent = `${displayed} l/h`;
+          panel.querySelector('.element-ui-availability output').textContent = displayed;
           slider.setAttribute('aria-valuetext', `${displayed} litrů za hodinu`);
           slider.disabled = !model.ready;
         }
