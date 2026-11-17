@@ -116,7 +116,10 @@ function createElementUiOkno({ panel, body, reveal, toggle, model, definition })
         const marker = document.createElement('span');
         marker.className = `element-ui-balance-marker element-ui-balance-marker-${side}`;
         marker.classList.toggle('element-ui-balance-consumption', isConsumption);
-        if (!isAvailabilityWindow) marker.textContent = isConsumption ? 'S' : 'P';
+        const cap = document.createElement('span');
+        cap.className = 'element-ui-balance-marker-cap';
+        if (!isAvailabilityWindow) cap.textContent = isConsumption ? 'S' : 'P';
+        marker.append(cap);
         fill.append(marker);
       }
 
