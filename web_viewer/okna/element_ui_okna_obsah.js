@@ -102,7 +102,7 @@ export const oknaPodleKapitol = {
 
 export const kontextoveTexty = {
   seasons: {
-    vychozi: 'Otoč kruhem u paty stromu a sleduj, jak se během roku mění koruna. Čas dne mění světlo a stín.',
+    vychozi: 'Když buk shodí listy, přestane tvořit cukry fotosyntézou. Živé buňky v kmeni a kořenech ale i v zimě získávají energii z uložených cukrů.',
     varianty: {},
   },
   seeds: {

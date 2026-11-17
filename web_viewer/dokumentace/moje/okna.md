@@ -28,7 +28,7 @@ history:
 
 ## Kapitola Období
 
-- Samostatný nadpis a krátký průvodce pomáhají použít kruh ročních období a sledovat denní světlo a stín. Čas se ovládá dole u data.
+- Průvodce propojuje ztrátu listů s útlumem fotosyntézy a vysvětluje, proč živé buňky kmene a kořenů dýchají i v zimě. Navazuje na [Mýty a porozumění](strategi_problems.md#mýty-a-porozumění). Roční období se mění kruhem u stromu. Čas se ovládá dole u data.
 
 ## Kapitola Fotosyntéza
 
