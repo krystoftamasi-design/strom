@@ -56,6 +56,13 @@ history:
 
 ## Fotosyntéza
 
+### Zásoba cukrů a čas
+
+- Návrh: doplnit jednoduchou názornou zásobu cukrů, která se v průběhu simulovaného času zvyšuje o přebytek produkce a snižuje při vyšší spotřebě. Po vyčerpání zásoby omezit spotřebu na dostupnou produkci a sladit s ní dýchání v oknech O₂ a CO₂.
+- Zobrazit produkci nejsvětlejším, zásobu středním a spotřebu nejtmavším odstínem stejné barvy; hodnoty označit textem. Při čerpání vysvětlit, že strom využívá uložené cukry.
+- Cíl: srozumitelně ukázat, proč může spotřeba po určitou dobu převyšovat produkci; jde o zjednodušené znázornění, nikoli přesný model růstu.
+- Stav: Nápad; počáteční stav zásoby a chování při změně rychlosti či přeskočení času je třeba dopracovat.
+
 ### Možné otázky k ověření porozumění
 
 - Návrh: ptát se „Odkud se bere většina hmoty nového dřeva a listů?“.
