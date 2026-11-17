@@ -84,3 +84,20 @@ export function zobrazitHodnotu(nazev, model) {
     maximumFractionDigits: mista,
   });
 }
+
+/** Low-pass filter for displayed telemetry values so rapid frame jitter does not flicker. */
+export function vyhladitHodnotu(stav, klic, hodnota, dtSekund = 0.05, tau = 0.35) {
+  if (!Number.isFinite(hodnota)) {
+    stav.delete(klic);
+    return hodnota;
+  }
+  const predchozi = stav.get(klic);
+  if (!Number.isFinite(predchozi) || !Number.isFinite(dtSekund) || dtSekund <= 0) {
+    stav.set(klic, hodnota);
+    return hodnota;
+  }
+  const alpha = 1 - Math.exp(-Math.min(dtSekund, 0.5) / tau);
+  const dalsi = predchozi + alpha * (hodnota - predchozi);
+  stav.set(klic, dalsi);
+  return dalsi;
+}

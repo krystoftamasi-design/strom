@@ -1,5 +1,5 @@
 import { oknaPodleKapitol, kontextoveTexty, pruvodceTranspiraci } from './element_ui_okna_obsah.js?v=year-guide-1';
-import { veliciny, vstupyVzorce, ohlasitChybuOken } from './element_ui_okna_veliciny.js?v=transpiration-vapour-1';
+import { veliciny, vstupyVzorce, ohlasitChybuOken, vyhladitHodnotu } from './element_ui_okna_veliciny.js?v=affinity-windows-layout-2';
 import { zkontrolovatOkna } from './element_ui_okna_kontrola.js?v=seeds-1';
 
 // Original embedded assets from ui_new.svg, at their exported stroke widths.
@@ -489,8 +489,14 @@ export function createTreeAnnotations({ shell, model, createSeasonControl, setEl
   shell.querySelector('#sharedSeasons').hidden = true;
   const seasonControl = createSeasonControl();
 
+  const smoothedValues = new Map();
+  let lastSmoothTime = performance.now();
+
   return {
     update(chapter, playbackDelta = 0) {
+      const now = performance.now();
+      const dt = (now - lastSmoothTime) / 1000;
+      lastSmoothTime = now;
       if (chapter !== activeChapter && photosynthesisIntro) {
         clearTimeout(photosynthesisIntroTimer);
         photosynthesisIntro.hidden = chapter !== 'photosynthesis';
@@ -515,7 +521,11 @@ export function createTreeAnnotations({ shell, model, createSeasonControl, setEl
         const panel = bar.closest('.element-ui-okno');
         const slider = bar.querySelector('input');
         const maxWater = Number(slider?.dataset.scaleMax) || waterAvailabilityMax(model);
-        const [topValue, bottomValue] = balanceValues(panel.dataset.windowId);
+        const [rawTop, rawBottom] = balanceValues(panel.dataset.windowId);
+        const topValue = vyhladitHodnotu(smoothedValues, `${panel.dataset.windowId}:top`, rawTop, dt);
+        const bottomValue = slider?.matches(':active')
+          ? (smoothedValues.set(`${panel.dataset.windowId}:bottom`, rawBottom), rawBottom)
+          : vyhladitHodnotu(smoothedValues, `${panel.dataset.windowId}:bottom`, rawBottom, dt);
         const isWaterBalance = panel.dataset.windowId === 'voda';
         const scaleMax = isWaterBalance ? 100 : 7;
         bar.style.setProperty('--balance-top', `${100 * clamp01(topValue / scaleMax)}%`);
@@ -540,7 +550,8 @@ export function createTreeAnnotations({ shell, model, createSeasonControl, setEl
         }
       }
       for (const output of shell.querySelectorAll('[data-respiration]')) {
-        const value = model[output.dataset.respiration];
+        const key = output.dataset.respiration;
+        const value = vyhladitHodnotu(smoothedValues, `resp:${key}`, model[key], dt);
         output.textContent = model.ready && Number.isFinite(value) ? value.toLocaleString('cs-CZ', { minimumFractionDigits: 1, maximumFractionDigits: 1 }) : '—';
       }
       for (const definition of oknaPodleKapitol.seeds) {

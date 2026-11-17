@@ -1,6 +1,6 @@
-import { zobrazitHodnotu } from '../okna/element_ui_okna_veliciny.js?v=transpiration-vapour-1';
+import { zobrazitHodnotu, vyhladitHodnotu } from '../okna/element_ui_okna_veliciny.js?v=affinity-windows-layout-2';
 import { SEASONS } from '../ekologie/tree_ecology.js?v=light-slider-1';
-import { createTreeAnnotations } from '../okna/tree_annotations.js?v=affinity-windows-layout-1';
+import { createTreeAnnotations } from '../okna/tree_annotations.js?v=affinity-windows-layout-2';
 
 const chapters = [
   ['seasons', 'Období'], ['photosynthesis', 'Fotosyntéza'], ['transpiration', 'Transpirace'],
@@ -226,7 +226,12 @@ export function createChapters({ model, applySeason, setSun, setAzimuth, setVisu
   drawer.addEventListener('click', event => { if (event.target.closest('button')) saveSettings(); });
   const fmt = (n, digits = 1) => n.toLocaleString('cs-CZ', { maximumFractionDigits: digits });
   const hourly = ratePerMinute => fmt(ratePerMinute * 60, 2);
+  const smoothedValues = new Map();
+  let lastSmoothTime = performance.now();
   function render() {
+    const now = performance.now();
+    const dt = (now - lastSmoothTime) / 1000;
+    lastSmoothTime = now;
     const out = (id, text) => {
       const output = document.getElementById(id);
       if (output) output.textContent = text;
@@ -268,7 +273,9 @@ export function createChapters({ model, applySeason, setSun, setAzimuth, setVisu
     out('ecoRootCondition', rootState);
     document.querySelector('.root-diagram').classList.toggle('rotting', model.rootRot >= 0.05);
     for (const output of shell.querySelectorAll('output[data-ziva-velicina]')) {
-      output.textContent = zobrazitHodnotu(output.dataset.zivaVelicina, model);
+      const key = output.dataset.zivaVelicina;
+      const smoothed = vyhladitHodnotu(smoothedValues, key, model?.[key], dt);
+      output.textContent = zobrazitHodnotu(key, { [key]: smoothed });
     }
     capturedLabel.textContent = `${hourly(model.waterInput)} l/h`;
     if (document.activeElement !== waterInput) waterInput.value = model.waterInput * 60;
