@@ -118,7 +118,9 @@ function createElementUiOkno({ panel, body, reveal, toggle, model, definition })
       const trackShaft = document.createElement('span');
       trackShaft.className = 'element-ui-balance-track-shaft';
       track.append(trackShaft);
-      fill.append(track);
+      const markers = document.createElement('span');
+      markers.className = 'element-ui-balance-markers';
+      fill.append(track, markers);
       for (const side of ['top', 'bottom']) {
         const isConsumption = side === (isAvailabilityWindow ? 'top' : 'bottom');
         const marker = document.createElement('span');
@@ -128,7 +130,7 @@ function createElementUiOkno({ panel, body, reveal, toggle, model, definition })
         cap.className = 'element-ui-balance-marker-cap';
         if (!isAvailabilityWindow) cap.textContent = isConsumption ? 'S' : 'P';
         marker.append(cap);
-        fill.append(marker);
+        markers.append(marker);
       }
 
       bar.append(fill);

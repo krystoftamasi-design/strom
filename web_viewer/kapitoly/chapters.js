@@ -1,6 +1,6 @@
 import { zobrazitHodnotu } from '../okna/element_ui_okna_veliciny.js?v=transpiration-vapour-1';
 import { SEASONS } from '../ekologie/tree_ecology.js?v=light-slider-1';
-import { createTreeAnnotations } from '../okna/tree_annotations.js?v=year-guide-1';
+import { createTreeAnnotations } from '../okna/tree_annotations.js?v=affinity-windows-markers-6';
 
 const chapters = [
   ['seasons', 'Období'], ['photosynthesis', 'Fotosyntéza'], ['transpiration', 'Transpirace'],
@@ -132,8 +132,8 @@ export function createChapters({ model, applySeason, setSun, setAzimuth, setVisu
   document.addEventListener('keydown', event => {
     if (event.key === 'Escape' && !drawer.inert) closeSettings.click();
     if (event.key.toLowerCase() !== 'k' || event.defaultPrevented || event.repeat ||
-        event.ctrlKey || event.altKey || event.metaKey || event.shiftKey ||
-        event.target.closest?.('input:not([type="range"]):not([type="checkbox"]), textarea, select, [contenteditable]')) return;
+      event.ctrlKey || event.altKey || event.metaKey || event.shiftKey ||
+      event.target.closest?.('input:not([type="range"]):not([type="checkbox"]), textarea, select, [contenteditable]')) return;
 
     if (drawer.inert) {
       settingsReturnFocus = document.activeElement;

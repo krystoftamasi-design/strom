@@ -728,7 +728,7 @@
   </style>
   <link rel="stylesheet" href="./kapitoly/chapters.css?v=menu-bold-4">
   <link rel="stylesheet" href="./okna/tree_annotations.css?v=season-guide-1">
-  <link rel="stylesheet" href="./okna/element_ui_okna_vzhled.css?v=affinity-windows-markers-5">
+  <link rel="stylesheet" href="./okna/element_ui_okna_vzhled.css?v=affinity-windows-markers-6">
 </head>
 
 <body>
@@ -1214,22 +1214,22 @@
   <script type="module">
     import * as THREE from 'three';
     import { OrbitControls } from 'three/addons/controls/OrbitControls.js?v=zoom-pixel-ratio-1';
-    import { setupLeafBreeze } from './listy/leaf_breeze.js?v=3';
+    import { setupLeafBreeze } from './listy/leaf_breeze.js?v=4';
     import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
     import { PhotolysisSystem } from './vykreslovani/photolysis_system.js?v=photon-texture-1';
-    import { loadBarkReference, loadBarkAttributes, attachBarkAttributes, createBarkMaterial } from './vykreslovani/bark_material.js?v=stable-shadow-4';
-    import { loadLeafReference, loadLeafAttributes, attachLeafAttributes, createLeafMaterial, createLeafDepthMaterial, setLeafEdgeTransition } from './vykreslovani/leaf_material.js?v=narrow-canopy-shade-6';
-    import { LeafControls } from './listy/leaf_controls.js?v=leaf-limit-90000';
+    import { loadBarkReference, loadBarkAttributes, attachBarkAttributes, createBarkMaterial } from './vykreslovani/bark_material.js?v=opt-lut-1';
+    import { loadLeafReference, loadLeafAttributes, attachLeafAttributes, createLeafMaterial, createLeafDepthMaterial, setLeafEdgeTransition } from './vykreslovani/leaf_material.js?v=opt-lut-1';
+    import { LeafControls } from './listy/leaf_controls.js?v=opt-sort-1';
     import { crossedSpring, advanceVisibleGrowth } from './listy/leaf_growth_timing.js?v=1';
     import { advanceDroughtLeaves, droughtLeafFall } from './listy/drought_leaf_animation.js?v=1';
     import { loadBranchDryingReference, branchDryingFrontWidth } from './listy/leaf_branch_drying.js?v=3';
-    import { CanopyOcclusion } from './vykreslovani/canopy_occlusion.js?v=sky-1';
+    import { CanopyOcclusion } from './vykreslovani/canopy_occlusion.js?v=opt-buf-1';
     import { createSunClouds } from './vykreslovani/sun_clouds.js?v=2';
     import { createWaterBrushMaterial, addWaterBrushAttributes } from './vykreslovani/water_brush.js?v=highlight-width-3';
     import { TreeEcology, SEASONS, MODEL_MINUTES_PER_SECOND } from './ekologie/tree_ecology.js?v=light-slider-1';
-    import { createChapters } from './kapitoly/chapters.js?v=year-guide-1';
+    import { createChapters } from './kapitoly/chapters.js?v=affinity-windows-markers-6';
     import { createSeedChapter } from './kapitoly/seed_chapter.js';
-    import { createTreeBird } from './vykreslovani/tree_bird.js?v=dusk-flight-1';
+    import { createTreeBird } from './vykreslovani/tree_bird.js?v=perch-grid-1';
     import { createSeasonRing } from './obdobi/season_ring.js?v=date-controls-1';
     import { createIntroForest } from './obdobi/intro_forest.js?v=intro-closer-camera-2';
     import { seasonColorForPosition } from './obdobi/season_timeline.js?v=beech-calendar-1';
@@ -1539,6 +1539,7 @@
       uToonSteps: { value: 3.0 },    // Original CONSTANT leaf ramp; three bands for bark
       uRampThreshold: { value: 1.0 }, // Right CONSTANT stop of Material.003
       uLeafAlphaStrength: { value: 1.0 }, // Shared by leaf color and shadow materials
+      uLeafGrowth: { value: 1.0 },
       uCrownAO: { value: 0.45 },
       uAlphaMode: { value: 2.0 }     // Original Blender brush; stochastic pattern is fixed in leaf UV space
     };
@@ -1559,6 +1560,7 @@
     const gltfLoader = new GLTFLoader();
     const leafControls = new LeafControls({
       branchDryingReference,
+      growthUniform: shaderUniforms.uLeafGrowth,
       sizeInput: document.getElementById('sliderLeafSize'),
       countInput: document.getElementById('sliderLeafCount'),
       sizeLabel: document.getElementById('valLeafSize'),
@@ -1619,18 +1621,6 @@
             if (node.isMesh) {
               node.castShadow = true;
               node.receiveShadow = true;
-
-              // Ensure geometry has color attribute to prevent WebGL attribute errors
-              if (!node.geometry.attributes.color) {
-                const count = node.geometry.attributes.position.count;
-                const dummyColors = new Float32Array(count * 3);
-                for (let i = 0; i < count; i++) {
-                  dummyColors[i * 3 + 0] = 0.5;
-                  dummyColors[i * 3 + 1] = 0.0;
-                  dummyColors[i * 3 + 2] = 2.0;
-                }
-                node.geometry.setAttribute('color', new THREE.BufferAttribute(dummyColors, 3));
-              }
 
               const triCount = node.geometry.index ? node.geometry.index.count / 3 : node.geometry.attributes.position.count / 3;
               totalTris += triCount;
@@ -2945,39 +2935,45 @@
       const foundR = new Float32Array(N);
       const canopyY = new Float32Array(N).fill(16.0);
       let countHits = 0;
+      const twoPi = Math.PI * 2;
+      const invTwoPi = N / twoPi;
 
-      leavesList.forEach(node => {
-        if (!node.visible || !node.geometry || !node.geometry.attributes.position) return;
+      for (let m = 0; m < leavesList.length; m++) {
+        const node = leavesList[m];
+        if (!node.visible || !node.geometry || !node.geometry.attributes.position) continue;
         const pos = node.geometry.attributes.position;
+        const posArr = pos.array;
         const index = node.geometry.index;
+        const idxArr = index ? index.array : null;
         const end = Math.min(index ? index.count : pos.count, node.geometry.drawRange.count);
         for (let vertex = 0; vertex < end; vertex += 6) {
-          const i = index ? index.getX(vertex) : vertex;
-          const x = pos.getX(i);
-          const y = pos.getY(i);
-          const z = pos.getZ(i);
+          const i = idxArr ? idxArr[vertex] : vertex;
+          const p3 = i * 3;
+          const y = posArr[p3 + 1];
           if (y < 6.5) continue; // Pouze koruna
+          const x = posArr[p3];
+          const z = posArr[p3 + 2];
           const r = Math.hypot(x, z);
           let az = Math.atan2(z, x);
-          if (az < 0) az += Math.PI * 2;
-          const s = Math.floor((az / (Math.PI * 2)) * N) % N;
-          if (r > foundR[s]) {
-            foundR[s] = r;
-            canopyY[s] = y;
+          if (az < 0) az += twoPi;
+          const sector = Math.min(N - 1, Math.floor(az * invTwoPi));
+          if (r > foundR[sector]) {
+            foundR[sector] = r;
+            canopyY[sector] = y;
             countHits++;
           }
         }
-      });
+      }
 
       if (countHits < 30) return null;
 
       // Plynulé vyhlazení 3-bodovým plovoucím průměrem
-      const smoothR = [];
+      const smoothR = new Array(N);
       for (let s = 0; s < N; s++) {
         const prev = foundR[(s - 1 + N) % N];
         const curr = foundR[s];
         const next = foundR[(s + 1) % N];
-        smoothR.push(prev * 0.25 + curr * 0.5 + next * 0.25);
+        smoothR[s] = prev * 0.25 + curr * 0.5 + next * 0.25;
       }
       return { radii: smoothR, heights: canopyY };
     }
@@ -3709,15 +3705,29 @@
       const dayNightToggle = document.getElementById('chkDayNight');
       if (dayNightToggle) dayNightToggle.checked = false;
     }
+    const _sunDirScratch = new THREE.Vector3();
+    const _upAxis = new THREE.Vector3(0, 1, 0);
+    const _coronaHorizonColor = new THREE.Color(0xff5a1f);
+    const _coronaMidColor = new THREE.Color(0xffc107);
+    const _crownCenter = new THREE.Vector3(0, 11.5, 0);
+    let _lastLightRotText = '';
+    let _lastSunElevText = '';
+    let _lastTimeOfDayText = '';
+    let _lastFpsText = '';
+    let _lastNightScene = null;
     function updateSunAzimuth(deg) {
       sunAzimuthDeg = deg;
       const totalAzimuth = (57 + Math.round(deg)) % 360;
-      valLightRot.textContent = `${Math.round(deg)}° (Azimut ${totalAzimuth}°)`;
+      const text = `${Math.round(deg)}° (Azimut ${totalAzimuth}°)`;
+      if (text !== _lastLightRotText) {
+        _lastLightRotText = text;
+        valLightRot.textContent = text;
+      }
       const rad = THREE.MathUtils.degToRad(deg);
       lightsGroup.rotation.y = rad;
       shaderUniforms.uLightRotRad.value = rad; // <-- Otáčí sluncem i na kmeni
-      const activeSunDir = sun1.position.clone().sub(sun1.target.position).normalize().applyAxisAngle(new THREE.Vector3(0, 1, 0), rad);
-      shaderUniforms.uSunDirection.value.copy(activeSunDir);
+      _sunDirScratch.copy(sun1.position).sub(sun1.target.position).normalize().applyAxisAngle(_upAxis, rad);
+      shaderUniforms.uSunDirection.value.copy(_sunDirScratch);
     }
     sliderLightRot.addEventListener('input', (e) => {
       selectManualSun(e);
@@ -3774,7 +3784,11 @@
 
     function updateSunElevation(deg) {
       sunElevationDeg = Number(deg);
-      if (valSunElevation) valSunElevation.textContent = `${Math.round(sunElevationDeg)}°`;
+      const elevText = `${Math.round(sunElevationDeg)}°`;
+      if (valSunElevation && elevText !== _lastSunElevText) {
+        _lastSunElevText = elevText;
+        valSunElevation.textContent = elevText;
+      }
       if (photolysisSystem) photolysisSystem.setSunElevation(sunElevationDeg);
 
       const pitchRad = THREE.MathUtils.degToRad(sunElevationDeg);
@@ -3783,40 +3797,41 @@
       const height = radius * Math.sin(pitchRad);
       const mult = parseFloat(sliderSun.value) / 100;
       const daylight = THREE.MathUtils.clamp(Math.sin(pitchRad) / Math.sin(Math.PI / 3), 0, 1) * mult;
-      allSuns.forEach((sun, index) => {
+      for (let index = 0; index < allSuns.length; index++) {
+        const sun = allSuns[index];
         const yaw = sunAzimuths[index];
         sun.position.set(horizontal * Math.cos(yaw), height, horizontal * Math.sin(yaw)).add(sun.target.position);
         sun.intensity = sunStrength * daylight;
-      });
+      }
       shaderUniforms.uSunIntensity.value = daylight;
 
       // Keep every visible sun and its ray at the actual light position.
-      sunMesh1.position.copy(sun1.position).sub(sun1.target.position).normalize().multiplyScalar(sunMarkerDistance).add(sun1.target.position);
-      sunMat.opacity = THREE.MathUtils.smoothstep(sunElevationDeg, -6, 0);
-      sunMesh1.visible = sunMat.opacity > 0;
-      sunMat.color.copy(sunHorizonColor).lerp(sunDayColor,
-        THREE.MathUtils.smoothstep(sunElevationDeg, 0, 50));
-      const sunsetTint = THREE.MathUtils.clamp((24 - Math.max(0, sunElevationDeg)) / 24, 0, 1);
-      coronaMesh.position.copy(sunMesh1.position);
-      coronaMesh.visible = false;
-      coronaMat.color.set(0xffc107).lerp(new THREE.Color(0xff5a1f), sunsetTint);
-      coronaMat.opacity = 0.65 * Math.min(1, daylight);
-      sunLabel.position.copy(sunMesh1.position).add(new THREE.Vector3(0, 5, 0));
-      sunLabel.visible = rayLine.visible = sunElevationDeg > 0;
-      crownArrow.visible = false;
-      const updateRay = (ray, position) => {
-        const positions = ray.geometry.attributes.position;
-        positions.setXYZ(0, position.x, position.y, position.z);
+      if (sunHelpersGroup.visible) {
+        sunMesh1.position.copy(sun1.position).sub(sun1.target.position).normalize().multiplyScalar(sunMarkerDistance).add(sun1.target.position);
+        sunMat.opacity = THREE.MathUtils.smoothstep(sunElevationDeg, -6, 0);
+        sunMesh1.visible = sunMat.opacity > 0;
+        sunMat.color.copy(sunHorizonColor).lerp(sunDayColor,
+          THREE.MathUtils.smoothstep(sunElevationDeg, 0, 50));
+        const sunsetTint = THREE.MathUtils.clamp((24 - Math.max(0, sunElevationDeg)) / 24, 0, 1);
+        coronaMesh.position.copy(sunMesh1.position);
+        coronaMesh.visible = false;
+        coronaMat.color.copy(_coronaMidColor).lerp(_coronaHorizonColor, sunsetTint);
+        coronaMat.opacity = 0.65 * Math.min(1, daylight);
+        sunLabel.position.copy(sunMesh1.position).setY(sunMesh1.position.y + 5);
+        sunLabel.visible = rayLine.visible = sunElevationDeg > 0;
+        crownArrow.visible = false;
+        const positions = rayLine.geometry.attributes.position;
+        positions.setXYZ(0, sunMesh1.position.x, sunMesh1.position.y, sunMesh1.position.z);
         positions.needsUpdate = true;
-        ray.geometry.computeBoundingSphere();
-      };
-      updateRay(rayLine, sunMesh1.position);
-      rayLine.computeLineDistances();
-      crownArrow.setDirection(new THREE.Vector3(0, 11.5, 0).sub(sun1.position).normalize());
+        rayLine.geometry.computeBoundingSphere();
+        rayLine.computeLineDistances();
+        _sunDirScratch.copy(_crownCenter).sub(sun1.position).normalize();
+        crownArrow.setDirection(_sunDirScratch);
+      }
 
-      const activeSunDir = sun1.position.clone().sub(sun1.target.position).normalize()
-        .applyAxisAngle(new THREE.Vector3(0, 1, 0), shaderUniforms.uLightRotRad.value);
-      shaderUniforms.uSunDirection.value.copy(activeSunDir);
+      _sunDirScratch.copy(sun1.position).sub(sun1.target.position).normalize()
+        .applyAxisAngle(_upAxis, shaderUniforms.uLightRotRad.value);
+      shaderUniforms.uSunDirection.value.copy(_sunDirScratch);
     }
 
     // A single tilted orbit avoids crossing straight over the tree at noon.
@@ -3862,7 +3877,11 @@
     function updateDayNightScene(now) {
       if (!ecology.ready || document.hidden || now - lastDaylightFrame < 50) return;
       lastDaylightFrame = now;
-      document.body.classList.toggle('scene-night', sunElevationDeg < -3);
+      const isNightScene = sunElevationDeg < -3;
+      if (isNightScene !== _lastNightScene) {
+        _lastNightScene = isNightScene;
+        document.body.classList.toggle('scene-night', isNightScene);
+      }
       const sunAmount = Math.sqrt(Math.max(0, Number(sliderSun.value) / 100));
       const twilight = THREE.MathUtils.smoothstep(sunElevationDeg, -10, 1) * Math.min(1, sunAmount);
       const daylight = THREE.MathUtils.smoothstep(sunElevationDeg, 0, 25) * Math.min(1, sunAmount);
@@ -3873,14 +3892,16 @@
       // Keep the moon exactly opposite the sun's current world-space direction.
       // This follows both the day clock and manual sun rotation without a
       // second, subtly mismatched azimuth calculation.
-      moonMesh.position.copy(sun1.position).sub(sun1.target.position)
-        .normalize().multiplyScalar(-moonRadius).add(sun1.target.position);
       moonMesh.visible = sunElevationDeg < 0;
-      moonMaterial.opacity = moonAmount;
-      moonLight.position.copy(moonMesh.position);
-      moonLight.intensity = 1.125 * moonAmount;
-      shaderUniforms.uMoonDirection.value.copy(moonLight.position).sub(sun1.target.position)
-        .transformDirection(camera.matrixWorldInverse);
+      if (moonMesh.visible || moonAmount > 0) {
+        moonMesh.position.copy(sun1.position).sub(sun1.target.position)
+          .normalize().multiplyScalar(-moonRadius).add(sun1.target.position);
+        moonMaterial.opacity = moonAmount;
+        moonLight.position.copy(moonMesh.position);
+        moonLight.intensity = 1.125 * moonAmount;
+        shaderUniforms.uMoonDirection.value.copy(moonLight.position).sub(sun1.target.position)
+          .transformDirection(camera.matrixWorldInverse);
+      }
       shaderUniforms.uMoonIntensity.value = 0.75 * moonAmount;
       shaderUniforms.uSceneIllumination.value = 0.07 * moonAmount
         + 3.15 * Math.min(1, shaderUniforms.uSunIntensity.value);
@@ -3894,6 +3915,7 @@
     if (chkSunHelper) {
       chkSunHelper.addEventListener('change', (e) => {
         sunHelpersGroup.visible = e.target.checked;
+        if (sunHelpersGroup.visible) updateSunElevation(sunElevationDeg);
         showToast(e.target.checked ? '☀️ Paprsky a popisky zobrazeny' : 'Paprsky a popisky skryty');
       });
     }
@@ -4115,6 +4137,7 @@
         controls.enabled = chapter !== 'intro';
         controls.autoRotate = false;
         sunHelpersGroup.visible = document.getElementById('chkSunHelper').checked;
+        if (sunHelpersGroup.visible) updateSunElevation(sunElevationDeg);
         if (chapter !== 'roots') restoreRootCamera();
         introForest.setActive(chapter === 'intro');
         const sap = ['photosynthesis', 'transpiration', 'roots'].includes(chapter);
@@ -4190,6 +4213,7 @@
     let leafFallAnimationTime = lastTime * 0.001;
     let frameCount = 0;
     let fpsTimer = 0;
+    let lastBreezeShadowUpdate = -Infinity;
     function animate(now) {
       requestAnimationFrame(animate);
 
@@ -4204,8 +4228,11 @@
       if (frameSeconds > 0) frameCount++;
       fpsTimer += frameSeconds;
       if (fpsTimer >= 0.5) {
-        const fps = frameCount / fpsTimer;
-        valFps.textContent = Math.round(fps);
+        const fpsText = String(Math.round(frameCount / fpsTimer));
+        if (fpsText !== _lastFpsText) {
+          _lastFpsText = fpsText;
+          valFps.textContent = fpsText;
+        }
         frameCount = 0;
         fpsTimer = 0;
       }
@@ -4213,8 +4240,10 @@
       if (playbackDelta > 0) chapterApp.tick(playbackDelta);
       controls.update();
       leafBreeze.update(simulationTime);
-      if (typeof coronaMesh !== 'undefined') coronaMesh.quaternion.copy(camera.quaternion);
-      if (typeof sunLabel !== 'undefined') sunLabel.quaternion.copy(camera.quaternion);
+      if (sunHelpersGroup.visible) {
+        if (typeof coronaMesh !== 'undefined') coronaMesh.quaternion.copy(camera.quaternion);
+        if (typeof sunLabel !== 'undefined') sunLabel.quaternion.copy(camera.quaternion);
+      }
       if (playbackDelta > 0 && typeof updateDripZoneAnimation === 'function') updateDripZoneAnimation(playbackDelta, simulationNow);
       // Accelerate during late autumn and winter, before spring growth is due.
       // Keep the same clock and paths so airborne leaves continue their flight.
@@ -4233,7 +4262,11 @@
         if (ecology.dayCycleEnabled) updateSunFromDayClock(timeOfDayHours);
         const h = Math.floor(timeOfDayHours);
         const m = Math.floor((timeOfDayHours - h) * 60);
-        if (valTimeOfDay) valTimeOfDay.textContent = `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}`;
+        const timeText = `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}`;
+        if (valTimeOfDay && timeText !== _lastTimeOfDayText) {
+          _lastTimeOfDayText = timeText;
+          valTimeOfDay.textContent = timeText;
+        }
       }
       // Water balance uses the clock's increment, including intro/night speeds.
       updateWaterAndDrought(modelMinutes);
@@ -4262,10 +4295,15 @@
           startSeasonalRegrowth();
           invalidateShadows();
         }
-        // Animated leaves and their shadow silhouettes must use the same frame.
-        // A cached moving shadow visibly jumps across the neighbouring leaves.
-        if (leavesAnimating || leafRegrowthActive || leafBreeze.active) {
+        // Falling/regrowing leaves and their shadow silhouettes share the same frame.
+        // Gentle breeze updates shadows at a throttled cadence so high leaf counts
+        // do not re-render the full shadow map on every frame.
+        if (leavesAnimating || leafRegrowthActive) {
           invalidateShadows();
+          lastBreezeShadowUpdate = now;
+        } else if (leafBreeze.active && now - lastBreezeShadowUpdate >= 120) {
+          invalidateShadows();
+          lastBreezeShadowUpdate = now;
         }
       }
       if (playbackDelta > 0 && typeof updatePhotonFlow === 'function') updatePhotonFlow(playbackDelta, simulationNow);
@@ -4281,6 +4319,7 @@
         trunkMesh, playbackDelta, ecology.ambientTemperature, sunElevationDeg
       );
       introForest.update();
+      leafControls.sortLeavesForCamera(camera.position);
       renderer.render(scene, camera);
     }
     requestAnimationFrame(animate);
