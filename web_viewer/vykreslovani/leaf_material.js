@@ -231,9 +231,11 @@ const alphaFragment = `
   if (uLeafDepth < 0.5 && uAlphaMode > 1.5) {
     // The brush keeps its stochastic coverage, fixed to the leaf rather than
     // rehashed from the current pixel footprint. Mipmaps integrate fine pores.
+    // Below 0.125, 4x MSAA alpha-to-coverage turns on 0/4 samples (invisible),
+    // so discard immediately before sampling diffuse/procedural/3D LUT textures.
     float stableCoverage = clamp(texture2D(uStableLeafAlpha, vLeafUv).a * uLeafAlphaStrength * leafFade, 0.0, 1.0);
-    if (stableCoverage <= 0.0) discard;
-    diffuseColor.a = stableCoverage;
+    if (stableCoverage < 0.12) discard;
+    diffuseColor.a = stableCoverage >= 0.88 ? 1.0 : stableCoverage;
   } else {
     float leafCoverage = texture2D(uLeafAlpha, vLeafUv).a;
     // Only Material.005 has an alpha ramp. Material.003 uses image alpha directly.
@@ -369,7 +371,7 @@ export function createLeafMaterial(type, reference, uniforms) {
   const mat = new THREE.MeshLambertMaterial({ color: 0xffffff, side: THREE.DoubleSide, alphaToCoverage: uniforms.uAlphaMode.value > 0.5, depthWrite: true });
   mat.name = type === 0 ? 'Material.003 (Blender reference)' : 'Material.005 (Blender reference)';
   mat.toneMapped = false; // Blender's saved AgX High Contrast transform is applied with a LUT.
-  mat.customProgramCacheKey = () => `reference_leaf_${type}_opt_v3_${reference.display3D ? '3d' : '2d'}`;
+  mat.customProgramCacheKey = () => `reference_leaf_${type}_opt_v4_${reference.display3D ? '3d' : '2d'}`;
   const yellowChroma = type === 0 ? rgbChroma(0.78, 0.60, 0.055) : rgbChroma(0.84, 0.54, 0.035);
   const redChroma = type === 0 ? rgbChroma(0.8589947224, 0.0204435382, 0.0008851319) : rgbChroma(0.8589913845, 0.0085899057, 0.0085899057);
   mat.onBeforeCompile = (shader, renderer) => {

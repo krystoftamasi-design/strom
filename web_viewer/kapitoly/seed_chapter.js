@@ -35,14 +35,47 @@ function attachToBranches(flowers, branches) {
     };
   });
   const position = branches.geometry.attributes.position;
-  const vertex = new THREE.Vector3();
-  for (let index = 0; index < position.count; index++) {
-    vertex.fromBufferAttribute(position, index).applyMatrix4(branches.matrixWorld);
-    for (const target of targets) {
-      const distance = vertex.distanceToSquared(target.point);
-      if (distance >= target.distance) continue;
-      target.distance = distance;
-      target.anchor.position.copy(vertex);
+  const posArr = position.array;
+  const e = branches.matrixWorld.elements;
+  const isIdentity = e[0] === 1 && e[1] === 0 && e[2] === 0 && e[3] === 0 &&
+    e[4] === 0 && e[5] === 1 && e[6] === 0 && e[7] === 0 &&
+    e[8] === 0 && e[9] === 0 && e[10] === 1 && e[11] === 0 &&
+    e[12] === 0 && e[13] === 0 && e[14] === 0 && e[15] === 1;
+  const minY = bounds.min.y + size.y * 0.45;
+  const maxY = bounds.min.y + size.y * 0.90;
+  const targetCount = targets.length;
+  if (posArr && position.itemSize === 3 && !position.isInterleavedBufferAttribute) {
+    for (let index = 0, n = position.count; index < n; index++) {
+      const i3 = index * 3;
+      let vx = posArr[i3], vy = posArr[i3 + 1], vz = posArr[i3 + 2];
+      if (!isIdentity) {
+        const tx = e[0] * vx + e[4] * vy + e[8] * vz + e[12];
+        const ty = e[1] * vx + e[5] * vy + e[9] * vz + e[13];
+        const tz = e[2] * vx + e[6] * vy + e[10] * vz + e[14];
+        vx = tx; vy = ty; vz = tz;
+      }
+      if (vy < minY || vy > maxY) continue;
+      for (let t = 0; t < targetCount; t++) {
+        const target = targets[t];
+        const dx = vx - target.point.x;
+        const dy = vy - target.point.y;
+        const dz = vz - target.point.z;
+        const distance = dx * dx + dy * dy + dz * dz;
+        if (distance >= target.distance) continue;
+        target.distance = distance;
+        target.anchor.position.set(vx, vy, vz);
+      }
+    }
+  } else {
+    const vertex = new THREE.Vector3();
+    for (let index = 0; index < position.count; index++) {
+      vertex.fromBufferAttribute(position, index).applyMatrix4(branches.matrixWorld);
+      for (const target of targets) {
+        const distance = vertex.distanceToSquared(target.point);
+        if (distance >= target.distance) continue;
+        target.distance = distance;
+        target.anchor.position.copy(vertex);
+      }
     }
   }
 }
