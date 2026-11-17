@@ -460,14 +460,6 @@ export function createTreeAnnotations({ shell, model, createSeasonControl, setEl
     } else if (article.dataset.chapter === 'intro') {
       // The introduction contains only a standalone title, without a window.
       continue;
-    } else if (article.dataset.chapter === 'seasons') {
-      for (const source of article.querySelectorAll('[data-period-window]')) {
-        const title = source.querySelector('h3');
-        const definition = { id: source.dataset.periodWindow, tema: source.dataset.topic, viditelnyPrepinac: true };
-        const nodes = [...source.children].filter(node => node !== title);
-        card(article, definition.id, 'right', title.textContent, nodes, title, definition);
-        source.remove();
-      }
     } else if (article.dataset.chapter === 'roots') {
       const tipHeading = article.querySelector('h3');
       detail.insertBefore(article.querySelector('.root-diagram'), detail.querySelector('p'));

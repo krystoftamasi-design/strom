@@ -1,6 +1,6 @@
 import { zobrazitHodnotu } from '../okna/element_ui_okna_veliciny.js?v=transpiration-vapour-1';
 import { SEASONS } from '../ekologie/tree_ecology.js?v=light-slider-1';
-import { createTreeAnnotations } from '../okna/tree_annotations.js?v=season-windows-1';
+import { createTreeAnnotations } from '../okna/tree_annotations.js?v=season-guide-1';
 
 const chapters = [
   ['seasons', 'Období'], ['photosynthesis', 'Fotosyntéza'], ['transpiration', 'Transpirace'],
@@ -34,26 +34,6 @@ export function createChapters({ model, applySeason, setSun, setAzimuth, setVisu
       </article>
       <article data-chapter="seasons" hidden>
         <h2 class="scene-chapter-title">Období</h2>
-        <section data-period-window="rok" data-topic="leaves">
-          <h3>Rok</h3>
-          <div class="chapter-metric"><strong><output id="periodSeason" aria-live="off">—</output></strong></div>
-          <p>Porovnej, jak se během roku mění koruna.</p>
-          <div class="period-choice-row period-seasons" role="group" aria-label="Vybrat roční období">
-            <button type="button" data-period-season="spring">Jaro</button><button type="button" data-period-season="summer">Léto</button>
-            <button type="button" data-period-season="autumn">Podzim</button><button type="button" data-period-season="latefall">Zima</button>
-          </div>
-          <button type="button" id="periodYearPlayback" class="period-playback">Ⅱ Pozastavit rok</button>
-        </section>
-        <section data-period-window="den" data-topic="light">
-          <h3>Den</h3>
-          <div class="chapter-metric"><strong><output id="periodTime" aria-live="off">—</output></strong></div>
-          <p>Vyber část dne a sleduj, kam se posune stín.</p>
-          <div class="period-choice-row period-hours" role="group" aria-label="Vybrat čas dne">
-            <button type="button" data-period-hour="8">Ráno</button><button type="button" data-period-hour="12">Poledne</button><button type="button" data-period-hour="22">Noc</button>
-          </div>
-          <label class="period-day-cycle"><input type="checkbox" id="periodDayCycle" checked> Slunce podle hodin</label>
-          <button type="button" id="periodDayPlayback" class="period-playback">Ⅱ Pozastavit čas</button>
-        </section>
       </article>
       <article data-chapter="photosynthesis" hidden></article>
       <article data-chapter="transpiration" hidden></article>
@@ -227,39 +207,6 @@ export function createChapters({ model, applySeason, setSun, setAzimuth, setVisu
   });
   shell.querySelectorAll('h2').forEach(h => { h.tabIndex = -1; });
 
-  const yearPlayback = shell.querySelector('.season-clock button');
-  const dayPlayback = document.getElementById('btnTimePause');
-  const periodYearPlayback = shell.querySelector('#periodYearPlayback');
-  const periodDayPlayback = shell.querySelector('#periodDayPlayback');
-  const periodDayCycle = shell.querySelector('#periodDayCycle');
-  shell.querySelectorAll('[data-period-season]').forEach(button => {
-    button.addEventListener('click', () => {
-      shell.querySelector(`.season-btn[data-season="${button.dataset.periodSeason}"]`)?.click();
-      if (ready) render();
-    });
-  });
-  shell.querySelectorAll('[data-period-hour]').forEach(button => {
-    button.addEventListener('click', () => {
-      const dayCycle = document.getElementById('chkDayNight');
-      if (!dayCycle.checked) {
-        dayCycle.checked = true;
-        dayCycle.dispatchEvent(new Event('change', { bubbles: true }));
-      }
-      const slider = document.getElementById('sliderTimeOfDay');
-      slider.value = button.dataset.periodHour;
-      slider.dispatchEvent(new Event('input', { bubbles: true }));
-      if (ready) render();
-    });
-  });
-  periodYearPlayback.addEventListener('click', () => { yearPlayback.click(); if (ready) render(); });
-  periodDayPlayback.addEventListener('click', () => { dayPlayback.click(); if (ready) render(); });
-  periodDayCycle.addEventListener('change', () => {
-    const dayCycle = document.getElementById('chkDayNight');
-    dayCycle.checked = periodDayCycle.checked;
-    dayCycle.dispatchEvent(new Event('change', { bubbles: true }));
-    if (ready) render();
-  });
-
   // Keep the previous advanced settings persistence, excluding shared conditions.
   const storageKey = 'strom.settings.v1';
   let restoring = false;
@@ -286,16 +233,6 @@ export function createChapters({ model, applySeason, setSun, setAzimuth, setVisu
     };
     const season = SEASONS[model.season];
     out('ecoSeasonLabel', season.label);
-    out('periodSeason', season.label);
-    out('periodTime', document.getElementById('valTimeOfDay').textContent || '—');
-    shell.querySelectorAll('[data-period-season]').forEach(button => {
-      button.setAttribute('aria-pressed', String(button.dataset.periodSeason === model.season));
-    });
-    periodYearPlayback.textContent = yearPlayback.textContent;
-    periodYearPlayback.setAttribute('aria-pressed', yearPlayback.getAttribute('aria-pressed'));
-    periodDayPlayback.textContent = dayPlayback.getAttribute('aria-label');
-    periodDayPlayback.setAttribute('aria-pressed', dayPlayback.getAttribute('aria-pressed'));
-    periodDayCycle.checked = model.dayCycleEnabled;
     out('ecoTemperature', fmt(model.ambientTemperature, 1));
     out('ecoTemperatureNearTree', fmt(model.temperatureNearCanopy, 1));
     const temperatureDifference = Math.round((model.temperatureNearCanopy - model.ambientTemperature) * 10) / 10;

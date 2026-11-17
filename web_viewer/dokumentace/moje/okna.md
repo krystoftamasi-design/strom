@@ -28,10 +28,7 @@ history:
 
 ## Kapitola Období
 
-- Samostatný nadpis a krátký průvodce pomáhají použít kruh ročních období a sledovat denní světlo a stín. Vpravo jsou okna Rok a Den podle [šablony vzhledu](vzhled_oken.md#rozložení).
-- **Rok** ukazuje aktuální roční období. Detail umožňuje zvolit roční období nebo pozastavit a znovu spustit běh roku.
-- **Den** ukazuje aktuální čas. Detail umožňuje skočit na ráno, poledne či noc, řídit slunce podle hodin a pozastavit nebo znovu spustit čas.
-- Detaily jsou výchozí zavřené a jejich stav se zachovává při přepnutí kapitoly. Kruh a spodní ovládání času jsou dostupné i při zavřených detailech.
+- Samostatný nadpis a krátký průvodce pomáhají použít kruh ročních období a sledovat denní světlo a stín. Čas se ovládá dole u data.
 
 ## Kapitola Fotosyntéza
 
