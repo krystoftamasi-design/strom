@@ -1,6 +1,6 @@
 import { zobrazitHodnotu, vyhladitHodnotu } from '../okna/element_ui_okna_veliciny.js?v=affinity-windows-layout-2';
 import { SEASONS } from '../ekologie/tree_ecology.js?v=light-slider-1';
-import { createTreeAnnotations } from '../okna/tree_annotations.js?v=sugar-budburst-fixed-1';
+import { createTreeAnnotations } from '../okna/tree_annotations.js?v=sugar-budburst-growth-1';
 
 const chapters = [
   ['seasons', 'Období'], ['photosynthesis', 'Fotosyntéza'], ['transpiration', 'Transpirace'],
@@ -296,9 +296,9 @@ export function createChapters({ model, applySeason, setSun, setAzimuth, setVisu
     applySugarEvent(event) {
       if (ready && chapter === 'prototype') treeAnnotations.applySugarEvent(event);
     },
-    updateScene(playbackDelta = 0, modelMinutes = 0) {
+    updateScene(playbackDelta = 0, modelMinutes = 0, budburstGrowth = 0) {
       if (!ready) return;
-      treeAnnotations.update(chapter, playbackDelta, modelMinutes);
+      treeAnnotations.update(chapter, playbackDelta, modelMinutes, budburstGrowth);
       // Refresh the current model after evaluation, even while its clock is paused.
       const now = performance.now();
       if (now - lastUI >= 50) { render(); lastUI = now; }

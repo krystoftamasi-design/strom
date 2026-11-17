@@ -265,6 +265,8 @@ export function createTreeAnnotations({ shell, model, createSeasonControl, setEl
   const capacityInput = shell.querySelector('[data-prototype-capacity]');
   let prototypeCapacity = capacityInput.valueAsNumber;
   let prototypeReserve = prototypeCapacity / 4;
+  const fullBudburstSugar = 650;
+  let budburstSugarUsed = 0;
   let leafSugar = 0;
   let leafSugarTransferred = false;
   const sugarEventOutput = shell.querySelector('[data-prototype-sugar-event]');
@@ -596,13 +598,14 @@ export function createTreeAnnotations({ shell, model, createSeasonControl, setEl
     applySugarEvent(event) {
       const budburst = event === 'budburst';
       if (!budburst && leafSugarTransferred) return;
-      const amount = budburst ? Math.min(650, prototypeReserve) : Math.min(leafSugar, prototypeCapacity - prototypeReserve);
-      prototypeReserve += budburst ? -amount : amount;
+      const amount = budburst ? 0 : Math.min(leafSugar, prototypeCapacity - prototypeReserve);
+      if (budburst) budburstSugarUsed = 0;
+      prototypeReserve += amount;
       leafSugar = 0;
       leafSugarTransferred = !budburst;
-      sugarEventOutput.value = `${budburst ? 'Rašení −' : 'Stažení cukrů z listů +'}${eventGrams.format(amount)} g`;
+      sugarEventOutput.value = budburst ? 'Rašení' : `Stažení cukrů z listů +${eventGrams.format(amount)} g`;
     },
-    update(chapter, playbackDelta = 0, modelMinutes = 0) {
+    update(chapter, playbackDelta = 0, modelMinutes = 0, budburstGrowth = 0) {
       const now = performance.now();
       const dt = (now - lastSmoothTime) / 1000;
       lastSmoothTime = now;
@@ -618,9 +621,20 @@ export function createTreeAnnotations({ shell, model, createSeasonControl, setEl
       if (chapterChanged) syncWindowHover();
       if (chapter === 'prototype') {
         const production = model.glucoseGramsPerMinute;
-        const consumption = model.respirationSugar;
-        if (model.ready && Number.isFinite(production) && Number.isFinite(consumption)) {
-          const balance = (production - consumption) * modelMinutes;
+        const respiration = model.respirationSugar;
+        if (model.ready && Number.isFinite(production) && Number.isFinite(respiration)) {
+          const balanceBeforeGrowth = (production - respiration) * modelMinutes;
+          const budburstUse = modelMinutes > 0
+            ? Math.min(fullBudburstSugar * budburstGrowth, fullBudburstSugar - budburstSugarUsed,
+              Math.max(0, prototypeReserve + balanceBeforeGrowth))
+            : 0;
+          const consumption = respiration + (modelMinutes > 0 ? budburstUse / modelMinutes : 0);
+          if (budburstUse > 0) {
+            budburstSugarUsed += budburstUse;
+            const text = `Rašení −${eventGrams.format(budburstSugarUsed)} g`;
+            if (sugarEventOutput.value !== text) sugarEventOutput.value = text;
+          }
+          const balance = balanceBeforeGrowth - budburstUse;
           const toLeaves = leafSugarTransferred ? 0 : Math.min(Math.max(0, balance) * 0.05, 0.05 * prototypeCapacity - leafSugar);
           leafSugar += toLeaves;
           prototypeReserve = Math.max(0, Math.min(prototypeCapacity, prototypeReserve + balance - toLeaves));
