@@ -16,27 +16,122 @@ const ground = (angle, radius) => new THREE.Vector3(Math.cos(angle) * radius, 0,
 const heading = (x, z) => Math.atan2(-z, x); // The beak points along +X.
 const turnBetween = (from, to) => THREE.MathUtils.euclideanModulo(to - from + Math.PI, 2 * Math.PI) - Math.PI;
 
-function findPerch(branches, box, angle, radius, occupied) {
-  const ray = new THREE.Raycaster();
-  const normalMatrix = new THREE.Matrix3().getNormalMatrix(branches.matrixWorld);
-  const normal = new THREE.Vector3();
+function createBranchPerchIndex(branches, box) {
+  const geometry = branches.geometry;
+  const posAttr = geometry.attributes.position;
+  const indexAttr = geometry.index;
+  const vertCount = posAttr.count;
+  const worldPos = new Float32Array(vertCount * 3);
+  const m = branches.matrixWorld.elements;
+  const m0 = m[0], m1 = m[1], m2 = m[2], m4 = m[4], m5 = m[5], m6 = m[6], m8 = m[8], m9 = m[9], m10 = m[10], m12 = m[12], m13 = m[13], m14 = m[14];
+  const src = posAttr.array;
+  const direct = posAttr.itemSize === 3 && !posAttr.isInterleavedBufferAttribute && src instanceof Float32Array;
+  for (let i = 0; i < vertCount; i++) {
+    const x = direct ? src[i * 3] : posAttr.getX(i);
+    const y = direct ? src[i * 3 + 1] : posAttr.getY(i);
+    const z = direct ? src[i * 3 + 2] : posAttr.getZ(i);
+    worldPos[i * 3] = m0 * x + m4 * y + m8 * z + m12;
+    worldPos[i * 3 + 1] = m1 * x + m5 * y + m9 * z + m13;
+    worldPos[i * 3 + 2] = m2 * x + m6 * y + m10 * z + m14;
+  }
+
+  const gridSize = 32;
+  const minX = box.min.x, minZ = box.min.z;
+  const spanX = Math.max(1e-4, box.max.x - minX);
+  const spanZ = Math.max(1e-4, box.max.z - minZ);
+  const invX = gridSize / spanX;
+  const invZ = gridSize / spanZ;
+  const boxHeight = box.max.y - box.min.y;
+  const minY = box.min.y + boxHeight * 0.35;
+  const maxY = box.min.y + boxHeight * 0.82;
+  const cells = Array.from({ length: gridSize * gridSize }, () => []);
+  const triCount = indexAttr ? Math.floor(indexAttr.count / 3) : Math.floor(vertCount / 3);
+  const idxArr = indexAttr?.array;
+
+  for (let t = 0; t < triCount; t++) {
+    const ia = idxArr ? idxArr[t * 3] : t * 3;
+    const ib = idxArr ? idxArr[t * 3 + 1] : t * 3 + 1;
+    const ic = idxArr ? idxArr[t * 3 + 2] : t * 3 + 2;
+    const ay = worldPos[ia * 3 + 1], by = worldPos[ib * 3 + 1], cy = worldPos[ic * 3 + 1];
+    if ((ay < minY && by < minY && cy < minY) || (ay > maxY && by > maxY && cy > maxY)) continue;
+
+    const ax = worldPos[ia * 3], az = worldPos[ia * 3 + 2];
+    const bx = worldPos[ib * 3], bz = worldPos[ib * 3 + 2];
+    const cx = worldPos[ic * 3], cz = worldPos[ic * 3 + 2];
+
+    // Upward normal filter matches findPerch's normal.y >= 0.48 requirement.
+    const ux = bx - ax, uy = by - ay, uz = bz - az;
+    const vx = cx - ax, vy = cy - ay, vz = cz - az;
+    const nx = uy * vz - uz * vy;
+    const ny = uz * vx - ux * vz;
+    const nz = ux * vy - uy * vx;
+    const nLen = Math.hypot(nx, ny, nz);
+    if (nLen <= 1e-10 || ny / nLen < 0.48) continue;
+
+    const x0 = Math.max(0, Math.min(gridSize - 1, Math.floor((Math.min(ax, bx, cx) - minX) * invX)));
+    const x1 = Math.max(0, Math.min(gridSize - 1, Math.floor((Math.max(ax, bx, cx) - minX) * invX)));
+    const z0 = Math.max(0, Math.min(gridSize - 1, Math.floor((Math.min(az, bz, cz) - minZ) * invZ)));
+    const z1 = Math.max(0, Math.min(gridSize - 1, Math.floor((Math.max(az, bz, cz) - minZ) * invZ)));
+    for (let gx = x0; gx <= x1; gx++) {
+      for (let gz = z0; gz <= z1; gz++) {
+        cells[gz * gridSize + gx].push(ia, ib, ic);
+      }
+    }
+  }
+  return { worldPos, cells, gridSize, minX, minZ, invX, invZ };
+}
+
+function findPerch(perchIndex, box, angle, radius, occupied) {
+  const { worldPos, cells, gridSize, minX, minZ, invX, invZ } = perchIndex;
+  const spanY = box.max.y - box.min.y;
   let best, bestScore = Infinity;
   // Probe the camera side of the crown. Favor usable branches below the top
   // foliage, away from the trunk, with an upward-facing landing surface.
   for (const offset of [0, -0.34, 0.34, -0.68, 0.68, -1.02, 1.02]) {
     for (const distance of [0.41, 0.55, 0.69, 0.27]) {
-      const origin = ground(angle + offset, radius * distance);
-      origin.y = box.max.y + 1;
-      ray.set(origin, new THREE.Vector3(0, -1, 0));
-      for (const hit of ray.intersectObject(branches, false)) {
-        const level = (hit.point.y - box.min.y) / (box.max.y - box.min.y);
-        if (level < 0.35 || level > 0.82 || !hit.face ||
-            occupied.some(point => point.distanceToSquared(hit.point) < 2.25)) continue;
-        if (normal.copy(hit.face.normal).applyNormalMatrix(normalMatrix).y < 0.48) continue;
+      const a = angle + offset;
+      const r = radius * distance;
+      const ox = Math.cos(a) * r;
+      const oz = Math.sin(a) * r;
+      const gx = Math.floor((ox - minX) * invX);
+      const gz = Math.floor((oz - minZ) * invZ);
+      if (gx < 0 || gx >= gridSize || gz < 0 || gz >= gridSize) continue;
+      const bucket = cells[gz * gridSize + gx];
+      for (let i = 0; i < bucket.length; i += 3) {
+        const ia = bucket[i], ib = bucket[i + 1], ic = bucket[i + 2];
+        const ax = worldPos[ia * 3], az = worldPos[ia * 3 + 2];
+        const bx = worldPos[ib * 3], bz = worldPos[ib * 3 + 2];
+        const cx = worldPos[ic * 3], cz = worldPos[ic * 3 + 2];
+        const v0x = cx - ax, v0z = cz - az;
+        const v1x = bx - ax, v1z = bz - az;
+        const v2x = ox - ax, v2z = oz - az;
+        const d00 = v0x * v0x + v0z * v0z;
+        const d01 = v0x * v1x + v0z * v1z;
+        const d02 = v0x * v2x + v0z * v2z;
+        const d11 = v1x * v1x + v1z * v1z;
+        const d12 = v1x * v2x + v1z * v2z;
+        const denom = d00 * d11 - d01 * d01;
+        if (Math.abs(denom) <= 1e-12) continue;
+        const invDenom = 1 / denom;
+        const u = (d11 * d02 - d01 * d12) * invDenom;
+        if (u < 0 || u > 1) continue;
+        const v = (d00 * d12 - d01 * d02) * invDenom;
+        if (v < 0 || u + v > 1) continue;
+        const ay = worldPos[ia * 3 + 1], by = worldPos[ib * 3 + 1], cy = worldPos[ic * 3 + 1];
+        const hitY = ay + u * (cy - ay) + v * (by - ay);
+        const level = (hitY - box.min.y) / spanY;
+        if (level < 0.35 || level > 0.82) continue;
+        let blocked = false;
+        for (let k = 0; k < occupied.length; k++) {
+          const p = occupied[k];
+          const dx = p.x - ox, dy = p.y - hitY, dz = p.z - oz;
+          if (dx * dx + dy * dy + dz * dz < 2.25) { blocked = true; break; }
+        }
+        if (blocked) continue;
         const score = Math.abs(level - 0.51) * 3 + Math.abs(offset) * 0.35 + Math.abs(distance - 0.55);
         if (score >= bestScore) continue;
         bestScore = score;
-        best = hit.point;
+        best = new THREE.Vector3(ox, hitY, oz);
       }
     }
   }
@@ -377,10 +472,11 @@ export function createTreeBird({ scene, loader, textureLoader, camera, lighting,
         ) + 1.0;
         const centerAngle = Math.atan2(camera.position.z, camera.position.x);
         const occupied = [];
+        const perchIndex = createBranchPerchIndex(branches, box);
         flock.forEach((bird, index) => {
           bird.cancelDeparture();
           const angle = centerAngle + BIRDS[index].angle;
-          const perch = findPerch(branches, box, angle, radius, occupied);
+          const perch = findPerch(perchIndex, box, angle, radius, occupied);
           if (perch) occupied.push(perch);
           bird.setRoute(angle, radius, orbitRadius + index * 0.45, perch);
         });

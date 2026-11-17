@@ -1268,7 +1268,9 @@
     };
     const renderContext = canvas.getContext('webgl2', rendererOptions) || canvas.getContext('webgl', rendererOptions);
     const renderer = new THREE.WebGLRenderer({ canvas, context: renderContext, ...rendererOptions });
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.5));
+    let maxRenderPixelRatio = Math.min(window.devicePixelRatio || 1, 1.5);
+    let activeRenderPixelRatio = maxRenderPixelRatio;
+    renderer.setPixelRatio(activeRenderPixelRatio);
     renderer.setSize(window.innerWidth, window.innerHeight);
     renderer.toneMapping = THREE.NoToneMapping;
     renderer.toneMappingExposure = 1.08;
@@ -4213,6 +4215,10 @@
     let leafFallAnimationTime = lastTime * 0.001;
     let frameCount = 0;
     let fpsTimer = 0;
+    let adaptiveTime = 0;
+    let adaptiveFrames = 0;
+    let lastPixelRatioChange = lastTime;
+    const adaptiveStartTime = lastTime;
     let lastBreezeShadowUpdate = -Infinity;
     function animate(now) {
       requestAnimationFrame(animate);
@@ -4235,6 +4241,32 @@
         }
         frameCount = 0;
         fpsTimer = 0;
+      }
+
+      if (maxRenderPixelRatio > 1.05 && ecology.ready && !document.hidden && frameSeconds > 0 && frameSeconds <= 0.15 && now - adaptiveStartTime > 1500) {
+        adaptiveFrames++;
+        adaptiveTime += frameSeconds;
+        if (adaptiveTime >= 0.7) {
+          const sampleFps = adaptiveFrames / adaptiveTime;
+          adaptiveTime = 0;
+          adaptiveFrames = 0;
+          const sinceChange = now - lastPixelRatioChange;
+          let nextRatio = activeRenderPixelRatio;
+          if (sampleFps < 38 && activeRenderPixelRatio > 1.0 && sinceChange >= 800) {
+            nextRatio = activeRenderPixelRatio > 1.28 && maxRenderPixelRatio > 1.28 ? 1.2 : 1.0;
+          } else if (sampleFps > 55 && activeRenderPixelRatio < maxRenderPixelRatio && sinceChange >= 2400) {
+            nextRatio = activeRenderPixelRatio < 1.1 && maxRenderPixelRatio > 1.28 ? 1.2 : maxRenderPixelRatio;
+          }
+          if (nextRatio !== activeRenderPixelRatio) {
+            activeRenderPixelRatio = nextRatio;
+            renderer.setPixelRatio(activeRenderPixelRatio);
+            renderer.setSize(window.innerWidth, window.innerHeight, false);
+            lastPixelRatioChange = now;
+          }
+        }
+      } else if (frameSeconds > 0.15) {
+        adaptiveTime = 0;
+        adaptiveFrames = 0;
       }
 
       if (playbackDelta > 0) chapterApp.tick(playbackDelta);
@@ -4327,6 +4359,9 @@
     // 10. RESIZE LISTENER
     window.addEventListener('resize', () => {
       updateCameraProjection();
+      maxRenderPixelRatio = Math.min(window.devicePixelRatio || 1, 1.5);
+      activeRenderPixelRatio = Math.min(activeRenderPixelRatio, maxRenderPixelRatio);
+      renderer.setPixelRatio(activeRenderPixelRatio);
       renderer.setSize(window.innerWidth, window.innerHeight);
       introForest.resize();
     });

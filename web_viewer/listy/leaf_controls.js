@@ -3,6 +3,19 @@ import { createBranchDryingProfile } from './leaf_branch_drying.js?v=3';
 
 const LEAF_MULTIPLIER = 10;
 const MAX_LEAF_COUNT = 90000;
+const SORT_BUCKETS = 64;
+const RADIX_BITS = 8;
+const RADIX_BUCKETS = 1 << RADIX_BITS;
+// Smoothstep(0.7279753035) == 0.82 (red phase threshold for photosynthetic foliage).
+const PHOTO_FRONT_THRESHOLD = (() => {
+  let low = 0, high = 1;
+  for (let i = 0; i < 32; i++) {
+    const mid = (low + high) * 0.5;
+    if (mid * mid * (3 - 2 * mid) < 0.82) low = mid;
+    else high = mid;
+  }
+  return (low + high) * 0.5;
+})();
 
 function leafKey(uv, index, atlas) {
   const x = Math.floor(uv.getX(index) * atlas.size / atlas.tile);
@@ -16,6 +29,45 @@ function hash(value) {
   return (value ^ (value >>> 16)) >>> 0;
 }
 
+// Sort indices [0..count-1] in O(N) by a Float32 value array via IEEE-754 radix sort.
+// Values must be finite and >= 0 (or mapped monotonically to non-negative).
+function radixSortByFloat(orderOut, values, count, scratchA, scratchB, counts) {
+  if (count <= 1) {
+    if (count === 1) orderOut[0] = 0;
+    return;
+  }
+  const bits = new Uint32Array(values.buffer, values.byteOffset, count);
+  for (let i = 0; i < count; i++) scratchA[i] = i;
+  let src = scratchA;
+  let dst = scratchB;
+  for (let shift = 0; shift < 32; shift += RADIX_BITS) {
+    counts.fill(0);
+    for (let i = 0; i < count; i++) {
+      counts[(bits[src[i]] >>> shift) & 0xff]++;
+    }
+    // Skip pass if every entry fell into a single bucket.
+    let nonEmpty = 0;
+    for (let b = 0; b < RADIX_BUCKETS; b++) {
+      if (counts[b] === count) { nonEmpty = 1; break; }
+    }
+    if (nonEmpty === 1) continue;
+    let offset = 0;
+    for (let b = 0; b < RADIX_BUCKETS; b++) {
+      const c = counts[b];
+      counts[b] = offset;
+      offset += c;
+    }
+    for (let i = 0; i < count; i++) {
+      const idx = src[i];
+      dst[counts[(bits[idx] >>> shift) & 0xff]++] = idx;
+    }
+    const tmp = src;
+    src = dst;
+    dst = tmp;
+  }
+  orderOut.set(src.subarray(0, count));
+}
+
 // A leaf is an atlas tile, not four consecutive vertices: the GLBs contain
 // seam duplicates, and their vertex orders differ between the two models.
 function prepareMesh(mesh, atlas, materialIndex) {
@@ -23,12 +75,27 @@ function prepareMesh(mesh, atlas, materialIndex) {
   const positions = geometry.attributes.position;
   const uv = geometry.attributes.referenceUv;
   const original = new Float32Array(positions.count * 3);
+  const posArr = positions.array;
+  for (let i = 0; i < positions.count; i++) {
+    if (positions.itemSize === 3 && !positions.isInterleavedBufferAttribute && posArr instanceof Float32Array) {
+      original[i * 3] = posArr[i * 3];
+      original[i * 3 + 1] = posArr[i * 3 + 1];
+      original[i * 3 + 2] = posArr[i * 3 + 2];
+    } else {
+      original[i * 3] = positions.getX(i);
+      original[i * 3 + 1] = positions.getY(i);
+      original[i * 3 + 2] = positions.getZ(i);
+    }
+  }
   const groups = new Map();
   for (let i = 0; i < positions.count; i++) {
-    original.set([positions.getX(i), positions.getY(i), positions.getZ(i)], i * 3);
     const key = leafKey(uv, i, atlas);
-    if (!groups.has(key)) groups.set(key, { key, vertices: [], indices: [] });
-    groups.get(key).vertices.push(i);
+    let group = groups.get(key);
+    if (!group) {
+      group = { key, vertices: [], indices: [] };
+      groups.set(key, group);
+    }
+    group.vertices.push(i);
   }
   const index = geometry.index;
   for (let i = 0; i < index.count; i += 3) {
@@ -42,9 +109,15 @@ function prepareMesh(mesh, atlas, materialIndex) {
   let offset = 0;
   const ends = [0];
   for (const leaf of leaves) {
-    const box = new THREE.Box3();
-    for (const i of leaf.vertices) box.expandByPoint(new THREE.Vector3().fromArray(original, i * 3));
-    leaf.center = box.getCenter(new THREE.Vector3());
+    let minX = Infinity, minY = Infinity, minZ = Infinity;
+    let maxX = -Infinity, maxY = -Infinity, maxZ = -Infinity;
+    for (const i of leaf.vertices) {
+      const x = original[i * 3], y = original[i * 3 + 1], z = original[i * 3 + 2];
+      if (x < minX) minX = x; if (x > maxX) maxX = x;
+      if (y < minY) minY = y; if (y > maxY) maxY = y;
+      if (z < minZ) minZ = z; if (z > maxZ) maxZ = z;
+    }
+    leaf.center = new THREE.Vector3((minX + maxX) * 0.5, (minY + maxY) * 0.5, (minZ + maxZ) * 0.5);
     sorted.set(leaf.indices, offset);
     offset += leaf.indices.length;
     ends.push(offset);
@@ -68,44 +141,82 @@ function prepareMesh(mesh, atlas, materialIndex) {
   const expandedIndices = new Uint32Array(sorted.length * LEAF_MULTIPLIER);
   expandedIndices.set(sorted);
   const expandedPositions = expanded.attributes.position;
+  const expPosArr = expandedPositions.array;
+  const expNormArr = expanded.attributes.normal?.array;
+  const expTangArr = expanded.attributes.tangent?.array;
+  const srcNormals = geometry.attributes.normal;
+  const srcTangents = geometry.attributes.tangent;
   const vector = new THREE.Vector3();
+  const aVec = new THREE.Vector3();
+  const bVec = new THREE.Vector3();
+  const cVec = new THREE.Vector3();
+  const uAxis = new THREE.Vector3();
+  const normalAxis = new THREE.Vector3();
+  const vAxis = new THREE.Vector3();
+  const centerVec = new THREE.Vector3();
+  const rotQ = new THREE.Quaternion();
+  const rotQ2 = new THREE.Quaternion();
   for (let layer = 1; layer < LEAF_MULTIPLIER; layer++) {
     const vertexOffset = layer * positions.count;
-    for (let i = 0; i < sorted.length; i++) expandedIndices[layer * sorted.length + i] = sorted[i] + vertexOffset;
-    for (const source of leaves.slice(0, baseCount)) {
-      const random = salt => hash(source.key + materialIndex * 7919 + layer * 104729 + salt) / 4294967296;
-      const a = new THREE.Vector3().fromArray(original, source.indices[0] * 3);
-      const b = new THREE.Vector3().fromArray(original, source.indices[1] * 3);
-      const c = new THREE.Vector3().fromArray(original, source.indices[2] * 3);
-      const u = b.sub(a).normalize();
-      const normal = new THREE.Vector3().crossVectors(u, c.sub(a)).normalize();
-      const v = new THREE.Vector3().crossVectors(normal, u).normalize();
-      const extent = Math.max(...source.vertices.map(i => vector.fromArray(original, i * 3).distanceTo(source.center))) * 2;
-      const center = source.center.clone()
-        .addScaledVector(u, (random(13) - 0.5) * extent * 0.65)
-        .addScaledVector(v, (random(29) - 0.5) * extent * 0.65)
-        .addScaledVector(normal, (random(47) - 0.5) * extent * 0.18);
-      const rotation = new THREE.Quaternion().setFromAxisAngle(normal, (random(61) - 0.5) * 1.1)
-        .multiply(new THREE.Quaternion().setFromAxisAngle(u, (random(83) - 0.5) * 0.4));
+    const idxBase = layer * sorted.length;
+    for (let i = 0; i < sorted.length; i++) expandedIndices[idxBase + i] = sorted[i] + vertexOffset;
+    for (let sIdx = 0; sIdx < baseCount; sIdx++) {
+      const source = leaves[sIdx];
+      const seedBase = source.key + materialIndex * 7919 + layer * 104729;
+      const random = salt => hash(seedBase + salt) / 4294967296;
+      aVec.fromArray(original, source.indices[0] * 3);
+      bVec.fromArray(original, source.indices[1] * 3);
+      cVec.fromArray(original, source.indices[2] * 3);
+      uAxis.subVectors(bVec, aVec).normalize();
+      normalAxis.crossVectors(uAxis, cVec.sub(aVec)).normalize();
+      vAxis.crossVectors(normalAxis, uAxis).normalize();
+      let maxDist = 0;
+      for (const i of source.vertices) {
+        const dx = original[i * 3] - source.center.x;
+        const dy = original[i * 3 + 1] - source.center.y;
+        const dz = original[i * 3 + 2] - source.center.z;
+        const d = Math.hypot(dx, dy, dz);
+        if (d > maxDist) maxDist = d;
+      }
+      const extent = maxDist * 2;
+      centerVec.copy(source.center)
+        .addScaledVector(uAxis, (random(13) - 0.5) * extent * 0.65)
+        .addScaledVector(vAxis, (random(29) - 0.5) * extent * 0.65)
+        .addScaledVector(normalAxis, (random(47) - 0.5) * extent * 0.18);
+      rotQ.setFromAxisAngle(normalAxis, (random(61) - 0.5) * 1.1);
+      rotQ2.setFromAxisAngle(uAxis, (random(83) - 0.5) * 0.4);
+      rotQ.multiply(rotQ2);
       const variation = 0.9 + random(101) * 0.2;
-      const vertices = source.vertices.map(i => i + vertexOffset);
-      source.vertices.forEach((i, j) => {
-        vector.fromArray(original, i * 3).sub(source.center).applyQuaternion(rotation).multiplyScalar(variation).add(center);
-        expandedPositions.setXYZ(vertices[j], vector.x, vector.y, vector.z);
-        if (expanded.attributes.normal) {
-          vector.fromBufferAttribute(geometry.attributes.normal, i).applyQuaternion(rotation).normalize();
-          expanded.attributes.normal.setXYZ(vertices[j], vector.x, vector.y, vector.z);
+      const vertices = new Array(source.vertices.length);
+      for (let j = 0; j < source.vertices.length; j++) {
+        const i = source.vertices[j];
+        const dst = i + vertexOffset;
+        vertices[j] = dst;
+        vector.fromArray(original, i * 3).sub(source.center).applyQuaternion(rotQ).multiplyScalar(variation).add(centerVec);
+        expPosArr[dst * 3] = vector.x;
+        expPosArr[dst * 3 + 1] = vector.y;
+        expPosArr[dst * 3 + 2] = vector.z;
+        if (expNormArr) {
+          vector.fromBufferAttribute(srcNormals, i).applyQuaternion(rotQ).normalize();
+          expNormArr[dst * 3] = vector.x;
+          expNormArr[dst * 3 + 1] = vector.y;
+          expNormArr[dst * 3 + 2] = vector.z;
         }
-        if (expanded.attributes.tangent) {
-          vector.fromBufferAttribute(geometry.attributes.tangent, i).applyQuaternion(rotation).normalize();
-          expanded.attributes.tangent.setXYZ(vertices[j], vector.x, vector.y, vector.z);
+        if (expTangArr) {
+          vector.fromBufferAttribute(srcTangents, i).applyQuaternion(rotQ).normalize();
+          expTangArr[dst * 3] = vector.x;
+          expTangArr[dst * 3 + 1] = vector.y;
+          expTangArr[dst * 3 + 2] = vector.z;
         }
-      });
-      leaves.push({ key: source.key, vertices, center });
+      }
+      leaves.push({ key: source.key, vertices, center: centerVec.clone() });
       ends.push(ends[ends.length - 1] + source.indices.length);
     }
   }
-  expanded.setIndex(new THREE.BufferAttribute(expandedIndices, 1));
+  const baseSortedIndices = new Uint32Array(expandedIndices);
+  const indexAttr = new THREE.BufferAttribute(expandedIndices, 1);
+  indexAttr.setUsage(THREE.DynamicDrawUsage);
+  expanded.setIndex(indexAttr);
   mesh.geometry = expanded;
   // The sorted indices place the original layer first. Limit only the shadow
   // draw call, then restore the full visible range without copying GPU buffers.
@@ -125,19 +236,56 @@ function prepareMesh(mesh, atlas, materialIndex) {
     afterShadow.apply(this, args);
   };
   geometry.dispose();
-  return { mesh, original: new Float32Array(expandedPositions.array), leaves, ends, baseCount };
+
+  const totalLeaves = leaves.length;
+  const centers = new Float32Array(totalLeaves * 3);
+  const vertexCenter = new Float32Array(expPosArr.length);
+  for (let i = 0; i < totalLeaves; i++) {
+    const c = leaves[i].center;
+    centers[i * 3] = c.x;
+    centers[i * 3 + 1] = c.y;
+    centers[i * 3 + 2] = c.z;
+    for (const v of leaves[i].vertices) {
+      vertexCenter[v * 3] = c.x;
+      vertexCenter[v * 3 + 1] = c.y;
+      vertexCenter[v * 3 + 2] = c.z;
+    }
+  }
+  const uniformQuadIndices = ends[totalLeaves] === totalLeaves * 6;
+  return {
+    mesh,
+    original: new Float32Array(expPosArr),
+    vertexCenter,
+    centers,
+    baseSortedIndices,
+    uniformQuadIndices,
+    leaves,
+    ends,
+    baseCount,
+    sortScratch: {
+      counts: new Int32Array(SORT_BUCKETS),
+      offsets: new Int32Array(SORT_BUCKETS),
+      buckets: new Uint8Array(totalLeaves),
+      dots: new Float32Array(totalLeaves)
+    }
+  };
 }
 
 export class LeafControls {
-  constructor({ sizeInput, countInput, sizeLabel, countLabel, canopyLabel, typeButtons = [], onChange, branchDryingReference }) {
-    Object.assign(this, { sizeInput, countInput, sizeLabel, countLabel, canopyLabel, typeButtons, onChange });
+  constructor({ sizeInput, countInput, sizeLabel, countLabel, canopyLabel, typeButtons = [], onChange, branchDryingReference, growthUniform = null }) {
+    Object.assign(this, { sizeInput, countInput, sizeLabel, countLabel, canopyLabel, typeButtons, onChange, growthUniform });
     this.models = [];
     this.branchDryingProfile = createBranchDryingProfile(branchDryingReference);
     this.type = 'all';
     this.visible = true;
     this.scale = Number(sizeInput.value) / 100;
     this.growthProgress = 1.0;
+    if (this.growthUniform) this.growthUniform.value = 1.0;
     this.count = Number(countInput.value);
+    this.lastSortDir = new THREE.Vector3();
+    this.lastSortDist = 0;
+    this.hasSortedView = false;
+    this.needsResort = true;
     sizeInput.addEventListener('input', () => { this.scale = Number(sizeInput.value) / 100; this.applySize(); this.notify(); });
     countInput.addEventListener('input', () => { this.count = Number(countInput.value); this.applyCount(); this.notify(); });
     typeButtons.forEach(button => button.addEventListener('click', () => this.setType(button.dataset.leafType)));
@@ -155,67 +303,117 @@ export class LeafControls {
     const profile = this.branchDryingProfile;
     this.seasonOrigin = profile.origin;
     this.dryingStats = profile.stats;
-    this.models.forEach(({ mesh, leaves, baseCount }, type) => {
-      const priorities = new Float32Array(mesh.geometry.attributes.position.count);
-      const regionPriorities = new Float32Array(priorities.length);
-      const redResponses = new Float32Array(priorities.length);
-      const seasonalDelays = new Float32Array(priorities.length);
-      const fallSeeds = new Float32Array(priorities.length);
-      const fallDelays = new Float32Array(priorities.length);
-      const fallCenters = new Float32Array(priorities.length * 3);
-      const fallLandings = new Float32Array(priorities.length * 3);
-      mesh.updateWorldMatrix(true, false);
-      const fallStartTimes = new Float32Array(priorities.length);
+    this.models.forEach((model, type) => {
+      const { mesh, leaves, baseCount } = model;
+      const vertCount = mesh.geometry.attributes.position.count;
+      const leafCount = leaves.length;
+      const seasonPacked = new Uint16Array(vertCount * 4);
+      const fallSeeds = new Float32Array(vertCount);
+      const fallCenters = new Float32Array(vertCount * 3);
+      const fallLandings = new Float32Array(vertCount * 3);
+      const fallStartTimes = new Float32Array(vertCount);
       fallStartTimes.fill(1000000.0);
-      leaves.forEach((leaf, index) => {
-        const { priority, regionPriority, region, distance } = profile.leaf(type, leaf.key, Math.floor(index / baseCount));
+
+      model.dryingPriorities = new Float32Array(leafCount);
+      model.dryingRegionPriorities = new Float32Array(leafCount);
+      model.seasonalDelays = new Float32Array(leafCount);
+      model.fallDelays = new Float32Array(leafCount);
+      model.fallBaseSpeeds = new Float32Array(leafCount);
+      model.fallHeights = new Float32Array(leafCount);
+      model.leafFallStartTimes = new Float32Array(leafCount);
+      model.leafFallStartTimes.fill(1000000.0);
+      model.fallenFlags = new Uint8Array(leafCount);
+      model.scheduledFlags = new Uint8Array(leafCount);
+      model.scheduledIndices = [];
+      model.airborneIndices = [];
+      model.futureScheduledIndices = [];
+      model.fallenCount = 0;
+
+      model.calendarOrder = new Int32Array(leafCount);
+      model.calendarReleaseValues = new Float32Array(leafCount);
+      model.calendarOrderCount = -1;
+      model.cachedSharpness = NaN;
+      model.calendarCursor = 0;
+
+      model.triggerOrder = new Int32Array(leafCount);
+      model.triggerValues = new Float32Array(leafCount);
+      model.cachedTriggerKey = '';
+      model.triggerCursor = 0;
+
+      model.photoOrder = new Int32Array(leafCount);
+      model.photoStopValues = new Float32Array(leafCount);
+      model.cachedPhotoKey = '';
+      model.photoCursor = 0;
+      model.photoLastSeason = 0;
+      model.fallenAtOrBeforeStop = 0;
+      model.fallenAfterStop = 0;
+
+      model.radixScratchA = new Int32Array(leafCount);
+      model.radixScratchB = new Int32Array(leafCount);
+      model.radixCounts = new Int32Array(RADIX_BUCKETS);
+
+      mesh.updateWorldMatrix(true, false);
+      const landing = new THREE.Vector3();
+      for (let index = 0; index < leafCount; index++) {
+        const leaf = leaves[index];
+        const layer = Math.floor(index / baseCount);
+        const { priority, regionPriority, region, distance } = profile.leaf(type, leaf.key, layer);
         leaf.dryingPriority = priority;
         leaf.dryingRegionPriority = regionPriority;
         leaf.dryingRegion = region;
         leaf.pathDistanceMeters = distance;
-        // Stable pigment variation: some leaves respond less to the red autumn pigment.
-        const seed = hash(leaf.key + type * 7919 + Math.floor(index / baseCount) * 104729 + 0x51ed270b);
+        const seed = hash(leaf.key + type * 7919 + layer * 104729 + 0x51ed270b);
         const randomValue = seed / 4294967296;
         const redResponse = 0.25 + Math.pow(randomValue, 0.75) * 0.75;
         leaf.seasonalRedResponse = redResponse;
-        // Roughly 25% of leaves receive a stable, delayed color transition.
-        const delaySeed = hash(leaf.key + type * 15401 + Math.floor(index / baseCount) * 130363 + 0x2a7f19d3);
+        const delaySeed = hash(leaf.key + type * 15401 + layer * 130363 + 0x2a7f19d3);
         const delayRandom = delaySeed / 4294967296;
         const seasonalDelay = delayRandom < 0.25
           ? 0.18 + (hash(delaySeed + 0x6d2b79f5) / 4294967296) * 0.22
           : 0.0;
-        const fallSeed = hash(leaf.key + type * 22441 + Math.floor(index / baseCount) * 170141 + 0x7f4a7c15) / 4294967296;
-        const fallDelay = hash(leaf.key + type * 31847 + Math.floor(index / baseCount) * 196613 + 0x3c6ef372) / 4294967296;
-        const landing = mesh.localToWorld(leaf.center.clone());
+        const fallSeed = hash(leaf.key + type * 22441 + layer * 170141 + 0x7f4a7c15) / 4294967296;
+        const fallDelay = hash(leaf.key + type * 31847 + layer * 196613 + 0x3c6ef372) / 4294967296;
+        landing.copy(leaf.center);
+        mesh.localToWorld(landing);
         const height = Math.max(0.01, landing.y - 0.045);
         landing.y = 0.045;
         mesh.worldToLocal(landing);
         leaf.fallBaseSpeed = 2.1 + fallSeed * 1.5;
         leaf.fallHeight = height;
-        // A red leaf stays on the branch for five seconds, then the batch
-        // rolls out over roughly one second according to the rate slider.
         leaf.fallDelay = 0;
         leaf.seasonalDelay = seasonalDelay;
         leaf.fallStartTime = 1000000.0;
-        // All corners of a leaf share a value: color changes per whole leaf.
-        for (const index of leaf.vertices) {
-          priorities[index] = priority;
-          regionPriorities[index] = regionPriority;
-          redResponses[index] = redResponse;
-          seasonalDelays[index] = seasonalDelay;
-          fallSeeds[index] = fallSeed;
-          fallDelays[index] = fallDelay;
-          leaf.center.toArray(fallCenters, index * 3);
-          landing.toArray(fallLandings, index * 3);
-          fallStartTimes[index] = leaf.fallStartTime;
+
+        model.dryingPriorities[index] = priority;
+        model.dryingRegionPriorities[index] = regionPriority;
+        model.seasonalDelays[index] = seasonalDelay;
+        model.fallDelays[index] = fallDelay;
+        model.fallBaseSpeeds[index] = leaf.fallBaseSpeed;
+        model.fallHeights[index] = height;
+
+        const p0 = Math.round(THREE.MathUtils.clamp(priority, 0, 1) * 65535);
+        const p1 = Math.round(THREE.MathUtils.clamp(regionPriority, 0, 1) * 65535);
+        const p2 = Math.round(THREE.MathUtils.clamp(redResponse, 0, 1) * 65535);
+        const p3 = Math.round(THREE.MathUtils.clamp(seasonalDelay, 0, 1) * 65535);
+
+        for (const v of leaf.vertices) {
+          const v4 = v * 4;
+          seasonPacked[v4] = p0;
+          seasonPacked[v4 + 1] = p1;
+          seasonPacked[v4 + 2] = p2;
+          seasonPacked[v4 + 3] = p3;
+          fallSeeds[v] = fallSeed;
+          fallCenters[v * 3] = leaf.center.x;
+          fallCenters[v * 3 + 1] = leaf.center.y;
+          fallCenters[v * 3 + 2] = leaf.center.z;
+          fallLandings[v * 3] = landing.x;
+          fallLandings[v * 3 + 1] = landing.y;
+          fallLandings[v * 3 + 2] = landing.z;
+          fallStartTimes[v] = 1000000.0;
         }
-      });
-      mesh.geometry.setAttribute('dryingPriority', new THREE.BufferAttribute(priorities, 1));
-      mesh.geometry.setAttribute('dryingRegionPriority', new THREE.BufferAttribute(regionPriorities, 1));
-      mesh.geometry.setAttribute('seasonalRedResponse', new THREE.BufferAttribute(redResponses, 1));
-      mesh.geometry.setAttribute('seasonalDelay', new THREE.BufferAttribute(seasonalDelays, 1));
+      }
+      mesh.geometry.setAttribute('leafSeasonData', new THREE.BufferAttribute(seasonPacked, 4, true));
       mesh.geometry.setAttribute('leafFallSeed', new THREE.BufferAttribute(fallSeeds, 1));
-      mesh.geometry.setAttribute('leafFallDelay', new THREE.BufferAttribute(fallDelays, 1));
       mesh.geometry.setAttribute('leafFallCenter', new THREE.BufferAttribute(fallCenters, 3));
       mesh.geometry.setAttribute('leafFallLanding', new THREE.BufferAttribute(fallLandings, 3));
       mesh.geometry.setAttribute('leafCameraDrift', new THREE.BufferAttribute(new Float32Array(fallCenters.length), 3));
@@ -229,6 +427,106 @@ export class LeafControls {
     this.hasScheduledFall = false;
     this.foliageCache = null;
     this.photosyntheticFoliageCache = null;
+  }
+
+  _ensureCalendarOrder(model, selectedCount, sharpness) {
+    if (model.cachedSharpness === sharpness && model.calendarOrderCount === selectedCount) return false;
+    const dpArr = model.dryingPriorities;
+    const drpArr = model.dryingRegionPriorities;
+    const relArr = model.calendarReleaseValues;
+    for (let i = 0; i < selectedCount; i++) {
+      const p = Math.max(0, Math.min(1, dpArr[i]));
+      const rp = Math.max(0, Math.min(1, drpArr[i]));
+      const dp = p + (rp - p) * sharpness;
+      const r = (1 - dp - 0.1) / 0.9;
+      relArr[i] = r < 0 ? 0 : r > 1 ? 1 : r;
+    }
+    radixSortByFloat(model.calendarOrder, relArr, selectedCount, model.radixScratchA, model.radixScratchB, model.radixCounts);
+    model.cachedSharpness = sharpness;
+    model.calendarOrderCount = selectedCount;
+    model.calendarCursor = 0;
+    return true;
+  }
+
+  _ensureTriggerOrder(model, selectedCount, sharpness, speed, dryingFrontWidth) {
+    const key = `${selectedCount}:${sharpness}:${speed}:${dryingFrontWidth}`;
+    if (model.cachedTriggerKey === key) return false;
+    const dpArr = model.dryingPriorities;
+    const drpArr = model.dryingRegionPriorities;
+    const delArr = model.seasonalDelays;
+    const trigArr = model.triggerValues;
+    for (let i = 0; i < selectedCount; i++) {
+      const p = Math.max(0, Math.min(1, dpArr[i]));
+      const rp = Math.max(0, Math.min(1, drpArr[i]));
+      const dp = p + (rp - p) * sharpness;
+      const leafStart = 0.385 + (1 - dp) * 0.38;
+      const leafDuration = Math.min(0.12 / speed, 1 - leafStart);
+      const frontWidth = leafDuration + (Math.min(leafDuration, dryingFrontWidth) - leafDuration) * sharpness;
+      const frontEdge = leafStart + 0.5 * leafDuration + 0.5 * frontWidth;
+      const delay = delArr[i];
+      trigArr[i] = delay + frontEdge * (1 - delay);
+    }
+    radixSortByFloat(model.triggerOrder, trigArr, selectedCount, model.radixScratchA, model.radixScratchB, model.radixCounts);
+    model.cachedTriggerKey = key;
+    model.triggerCursor = 0;
+    return true;
+  }
+
+  _ensurePhotoOrder(model, selectedCount, sharpness, speed, dryingFrontWidth) {
+    const key = `${selectedCount}:${sharpness}:${speed}:${dryingFrontWidth}`;
+    if (model.cachedPhotoKey === key) return;
+    const dpArr = model.dryingPriorities;
+    const drpArr = model.dryingRegionPriorities;
+    const delArr = model.seasonalDelays;
+    const stopArr = model.photoStopValues;
+    const offset = (PHOTO_FRONT_THRESHOLD - 0.5);
+    for (let i = 0; i < selectedCount; i++) {
+      const dp = dpArr[i] + (drpArr[i] - dpArr[i]) * sharpness;
+      const clampedDp = dp < 0 ? 0 : dp > 1 ? 1 : dp;
+      const leafStart = 0.385 + (1 - clampedDp) * 0.38;
+      const duration = Math.min(0.12 / speed, 1 - leafStart);
+      const width = duration + (Math.min(duration, dryingFrontWidth) - duration) * sharpness;
+      const center = leafStart + 0.5 * duration;
+      const delay = delArr[i] < 0 ? 0 : delArr[i] > 0.40 ? 0.40 : delArr[i];
+      const targetDelayed = center + offset * width;
+      if (targetDelayed <= 0) stopArr[i] = 0;
+      else if (targetDelayed > 1) stopArr[i] = 2.0;
+      else stopArr[i] = delay + (1 - delay) * targetDelayed;
+    }
+    radixSortByFloat(model.photoOrder, stopArr, selectedCount, model.radixScratchA, model.radixScratchB, model.radixCounts);
+    model.cachedPhotoKey = key;
+    model.photoCursor = 0;
+    model.photoLastSeason = 0;
+    model.fallenAtOrBeforeStop = 0;
+    model.fallenAfterStop = model.fallenCount;
+  }
+
+  _syncFallenUpToTime(model, time) {
+    const future = model.futureScheduledIndices;
+    if (future.length === 0) return;
+    const times = model.leafFallStartTimes;
+    const flags = model.fallenFlags;
+    const stopVals = model.photoStopValues;
+    const hasPhotoOrder = model.cachedPhotoKey !== '';
+    let write = 0;
+    for (let i = 0; i < future.length; i++) {
+      const idx = future[i];
+      const st = times[idx];
+      if (st >= 1000000.0) continue;
+      if (st <= time) {
+        if (!flags[idx]) {
+          flags[idx] = 1;
+          model.fallenCount++;
+          if (hasPhotoOrder) {
+            if (stopVals[idx] <= model.photoLastSeason) model.fallenAtOrBeforeStop++;
+            else model.fallenAfterStop++;
+          }
+        }
+      } else {
+        future[write++] = idx;
+      }
+    }
+    future.length = write;
   }
 
   updateLeafFall(seasonProgress, time, { dryingSpeed, dryingSharpness, dryingFrontWidth, fallSpeed = 1, maxAirborne = 700, enabled, calendarFallProgress, cameraPosition }) {
@@ -266,68 +564,174 @@ export class LeafControls {
     this.fallMultiplier = fallMultiplier;
     const sharpness = THREE.MathUtils.clamp(dryingSharpness, 0, 1);
 
-    this.models.forEach(({ mesh, leaves, selectedCount }) => {
-      if (!mesh.visible) return;
+    for (const model of this.models) {
+      const { mesh, leaves, selectedCount } = model;
+      if (!mesh.visible) continue;
       const startTimes = mesh.geometry.attributes.leafFallStartTime;
+      const startArr = startTimes.array;
       const cameraDrift = mesh.geometry.attributes.leafCameraDrift;
+      const driftArr = cameraDrift.array;
+      const leafTimes = model.leafFallStartTimes;
+      const fallenFlags = model.fallenFlags;
+      const scheduledFlags = model.scheduledFlags;
+      const scheduled = model.scheduledIndices;
+      const airborne = model.airborneIndices;
       const drift = new THREE.Vector3();
+      const centerTmp = new THREE.Vector3();
       let changed = false;
       let driftChanged = false;
+
+      const rebuiltOrder = hasCalendar
+        ? this._ensureCalendarOrder(model, selectedCount, sharpness)
+        : this._ensureTriggerOrder(model, selectedCount, sharpness, speed, dryingFrontWidth);
+
+      const hasPhotoOrder = model.cachedPhotoKey !== '';
+      const photoStops = model.photoStopValues;
+      const unscheduleLeaf = (leaf, index) => {
+        leaf.fallStartTime = 1000000.0;
+        leafTimes[index] = 1000000.0;
+        if (fallenFlags[index]) {
+          fallenFlags[index] = 0;
+          model.fallenCount--;
+          if (hasPhotoOrder) {
+            if (photoStops[index] <= model.photoLastSeason) model.fallenAtOrBeforeStop--;
+            else model.fallenAfterStop--;
+          }
+        }
+        scheduledFlags[index] = 0;
+        for (const v of leaf.vertices) startArr[v] = 1000000.0;
+        changed = true;
+      };
+
       const scheduleFall = (leaf, index, startTime) => {
+        const wasScheduled = scheduledFlags[index] === 1;
+        const wasFallen = fallenFlags[index] === 1;
         leaf.fallStartTime = startTime;
+        leafTimes[index] = startTime;
         this.hasScheduledFall = true;
+        if (!wasScheduled) {
+          scheduledFlags[index] = 1;
+          scheduled.push(index);
+          airborne.push(index);
+        } else if (!airborne.includes(index)) {
+          airborne.push(index);
+        }
+        if (startTime <= time) {
+          if (!wasFallen) {
+            fallenFlags[index] = 1;
+            model.fallenCount++;
+            if (hasPhotoOrder) {
+              if (photoStops[index] <= model.photoLastSeason) model.fallenAtOrBeforeStop++;
+              else model.fallenAfterStop++;
+            }
+          }
+        } else {
+          if (wasFallen) {
+            fallenFlags[index] = 0;
+            model.fallenCount--;
+            if (hasPhotoOrder) {
+              if (photoStops[index] <= model.photoLastSeason) model.fallenAtOrBeforeStop--;
+              else model.fallenAfterStop--;
+            }
+          }
+          model.futureScheduledIndices.push(index);
+        }
         drift.set(0, 0, 0);
         // Store the gust at release so turning the camera cannot steer a leaf.
         if (cameraPosition && hash(leaf.key + index * 104729 + 0x31ed270b) / 4294967296 < 0.005) {
-          const center = mesh.localToWorld(leaf.center.clone());
-          drift.subVectors(cameraPosition, center);
+          centerTmp.copy(leaf.center);
+          mesh.localToWorld(centerTmp);
+          drift.subVectors(cameraPosition, centerTmp);
           drift.y = 0;
           drift.setLength(Math.min(13, drift.length() * 0.6));
-          mesh.worldToLocal(drift.add(center)).sub(leaf.center);
+          mesh.worldToLocal(drift.add(centerTmp)).sub(leaf.center);
         }
-        for (const vertex of leaf.vertices) {
-          startTimes.setX(vertex, startTime);
-          cameraDrift.setXYZ(vertex, drift.x, drift.y, drift.z);
+        for (const v of leaf.vertices) {
+          startArr[v] = startTime;
+          driftArr[v * 3] = drift.x;
+          driftArr[v * 3 + 1] = drift.y;
+          driftArr[v * 3 + 2] = drift.z;
         }
         changed = true;
         driftChanged = true;
       };
-      for (let index = 0; index < selectedCount; index++) {
-        const leaf = leaves[index];
-        const priority = THREE.MathUtils.clamp(leaf.dryingPriority, 0, 1);
-        const regionPriority = THREE.MathUtils.clamp(leaf.dryingRegionPriority, 0, 1);
-        const dryingPriority = THREE.MathUtils.lerp(priority, regionPriority, sharpness);
-        const leafStart = 0.385 + (1 - dryingPriority) * 0.38;
-        const leafDuration = Math.min(0.12 / speed, 1 - leafStart);
-        const frontWidth = THREE.MathUtils.lerp(leafDuration, Math.min(leafDuration, dryingFrontWidth), sharpness);
-        const frontEdge = leafStart + 0.5 * leafDuration + 0.5 * frontWidth;
-        const delay = leaf.seasonalDelay || 0;
-        const redTriggerSeason = delay + frontEdge * (1 - delay);
-        // The calendar supplies the October–November fall window separately
-        // from pigment colour, so a colour adjustment cannot move its dates.
-        const releaseOrder = THREE.MathUtils.clamp((1 - dryingPriority - 0.1) / 0.9, 0, 1);
-        const releasedByCalendar = hasCalendar && calendarProgress > 0
-          && (calendarProgress >= 0.9995 || calendarProgress >= releaseOrder);
-        const readyToFall = hasCalendar
-          ? releasedByCalendar
-          : seasonProgress >= redTriggerSeason;
 
-        if (movingBackwards || !readyToFall) {
-          if (leaf.fallStartTime !== 1000000.0) {
-            leaf.fallStartTime = 1000000.0;
-            for (const vertex of leaf.vertices) startTimes.setX(vertex, leaf.fallStartTime);
-            changed = true;
-          }
-        } else if (releasedByCalendar && leaf.fallStartTime > time) {
-          // The calendar releases leaves; real time runs their full falling animation.
-          // At winter this also starts every remaining leaf, regardless of the rate cap.
-          scheduleFall(leaf, index, time);
-        } else if (leaf.fallStartTime === 1000000.0 && this.fallEmissionTokens >= 1) {
-          this.fallEmissionTokens -= 1;
-          scheduleFall(leaf, index, time + leaf.fallDelay);
+      if (movingBackwards) {
+        for (let i = 0; i < scheduled.length; i++) {
+          const idx = scheduled[i];
+          if (leafTimes[idx] !== 1000000.0) unscheduleLeaf(leaves[idx], idx);
         }
-        if (time >= leaf.fallStartTime && time <= leaf.fallStartTime + this.fallDuration(leaf)) animating = true;
+        scheduled.length = 0;
+        airborne.length = 0;
+        model.futureScheduledIndices.length = 0;
+        model.calendarCursor = 0;
+        model.triggerCursor = 0;
+      } else {
+        // Check already-scheduled leaves only when ordering parameters changed or fall is disabled.
+        if (scheduled.length > 0 && (rebuiltOrder || (hasCalendar && calendarProgress <= 0))) {
+          const relVals = model.calendarReleaseValues;
+          const trigVals = model.triggerValues;
+          let write = 0;
+          for (let i = 0; i < scheduled.length; i++) {
+            const idx = scheduled[i];
+            if (idx >= selectedCount) continue;
+            const ready = hasCalendar
+              ? calendarProgress > 0 && (calendarProgress >= 0.9995 || calendarProgress >= relVals[idx])
+              : seasonProgress >= trigVals[idx];
+            if (!ready) {
+              if (leafTimes[idx] !== 1000000.0) unscheduleLeaf(leaves[idx], idx);
+            } else {
+              scheduled[write++] = idx;
+            }
+          }
+          scheduled.length = write;
+        }
+
+        if (hasCalendar) {
+          if (calendarProgress > 0) {
+            const order = model.calendarOrder;
+            const relVals = model.calendarReleaseValues;
+            const releaseAll = calendarProgress >= 0.9995;
+            while (model.calendarCursor < selectedCount) {
+              const idx = order[model.calendarCursor];
+              if (!releaseAll && calendarProgress < relVals[idx]) break;
+              if (leafTimes[idx] > time) {
+                scheduleFall(leaves[idx], idx, time);
+              }
+              model.calendarCursor++;
+            }
+          }
+        } else {
+          const order = model.triggerOrder;
+          const trigVals = model.triggerValues;
+          const fallDelays = model.fallDelays;
+          while (model.triggerCursor < selectedCount) {
+            const idx = order[model.triggerCursor];
+            if (seasonProgress < trigVals[idx]) break;
+            if (leafTimes[idx] === 1000000.0) {
+              if (this.fallEmissionTokens < 1) break;
+              this.fallEmissionTokens -= 1;
+              scheduleFall(leaves[idx], idx, time + fallDelays[idx]);
+            }
+            model.triggerCursor++;
+          }
+        }
       }
+
+      // Check only active airborne/settling leaves and prune completed ones.
+      let airborneWrite = 0;
+      for (let i = 0; i < airborne.length; i++) {
+        const idx = airborne[i];
+        const st = leafTimes[idx];
+        if (idx >= selectedCount || st === 1000000.0) continue;
+        const end = st + model.fallHeights[idx] / (model.fallBaseSpeeds[idx] * fallMultiplier) + 7.65;
+        if (time <= end) {
+          airborne[airborneWrite++] = idx;
+          if (time >= st) animating = true;
+        }
+      }
+      airborne.length = airborneWrite;
+
       if (changed) {
         startTimes.needsUpdate = true;
         this.foliageCache = null;
@@ -335,7 +739,7 @@ export class LeafControls {
       }
       if (driftChanged) cameraDrift.needsUpdate = true;
       if (changed) animating = true;
-    });
+    }
     return animating;
   }
 
@@ -347,16 +751,17 @@ export class LeafControls {
     let selected = 0;
     let attached = 0;
     let nextFallTime = Infinity;
-    for (const { mesh, leaves, ends } of this.models) {
-      for (let index = 0; index < leaves.length; index++) {
-        if (ends[index + 1] > mesh.geometry.drawRange.count) break;
-        selected++;
-        if (mesh.visible && leaves[index].fallStartTime > time) {
-          attached++;
-          if (leaves[index].fallStartTime < 1000000.0) {
-            nextFallTime = Math.min(nextFallTime, leaves[index].fallStartTime);
-          }
-        }
+    for (const model of this.models) {
+      const count = model.selectedCount ?? 0;
+      selected += count;
+      if (!model.mesh.visible) continue;
+      this._syncFallenUpToTime(model, time);
+      attached += count - model.fallenCount;
+      const future = model.futureScheduledIndices;
+      const times = model.leafFallStartTimes;
+      for (let i = 0; i < future.length; i++) {
+        const st = times[future[i]];
+        if (st > time && st < nextFallTime) nextFallTime = st;
       }
     }
     // Growth scales both leaf dimensions, so active area scales quadratically.
@@ -378,23 +783,38 @@ export class LeafControls {
     const speed = Math.max(dryingSpeed, 0.05);
     const sharpness = THREE.MathUtils.clamp(dryingSharpness, 0, 1);
     let selected = 0, producing = 0, nextFallTime = Infinity;
-    for (const { mesh, leaves, ends } of this.models) {
-      for (let index = 0; index < leaves.length; index++) {
-        if (ends[index + 1] > mesh.geometry.drawRange.count) break;
-        selected++;
-        const leaf = leaves[index];
-        if (!mesh.visible || leaf.fallStartTime <= time) continue;
-        nextFallTime = Math.min(nextFallTime, leaf.fallStartTime);
-        const priority = THREE.MathUtils.lerp(leaf.dryingPriority, leaf.dryingRegionPriority, sharpness);
-        const leafStart = 0.385 + (1 - THREE.MathUtils.clamp(priority, 0, 1)) * 0.38;
-        const duration = Math.min(0.12 / speed, 1 - leafStart);
-        const width = THREE.MathUtils.lerp(duration, Math.min(duration, dryingFrontWidth), sharpness);
-        const center = leafStart + 0.5 * duration;
-        const delay = THREE.MathUtils.clamp(leaf.seasonalDelay || 0, 0, 0.40);
-        const delayed = THREE.MathUtils.clamp((seasonProgress - delay) / Math.max(0.001, 1 - delay), 0, 1);
-        const front = THREE.MathUtils.clamp((delayed - center + 0.5 * width) / Math.max(width, 0.000001), 0, 1);
-        const leafProgress = front * front * (3 - 2 * front);
-        if (leafProgress < 0.82) producing++;
+    for (const model of this.models) {
+      const count = model.selectedCount ?? 0;
+      selected += count;
+      if (!model.mesh.visible || count === 0) continue;
+      this._ensurePhotoOrder(model, count, sharpness, speed, dryingFrontWidth);
+      this._syncFallenUpToTime(model, time);
+      const order = model.photoOrder;
+      const stopVals = model.photoStopValues;
+      const fallen = model.fallenFlags;
+      // Advance or retreat photoCursor to match current seasonProgress.
+      while (model.photoCursor < count && stopVals[order[model.photoCursor]] <= seasonProgress) {
+        const idx = order[model.photoCursor++];
+        if (fallen[idx]) {
+          model.fallenAfterStop--;
+          model.fallenAtOrBeforeStop++;
+        }
+      }
+      while (model.photoCursor > 0 && stopVals[order[model.photoCursor - 1]] > seasonProgress) {
+        const idx = order[--model.photoCursor];
+        if (fallen[idx]) {
+          model.fallenAtOrBeforeStop--;
+          model.fallenAfterStop++;
+        }
+      }
+      model.photoLastSeason = seasonProgress;
+      producing += (count - model.photoCursor) - model.fallenAfterStop;
+
+      const future = model.futureScheduledIndices;
+      const times = model.leafFallStartTimes;
+      for (let i = 0; i < future.length; i++) {
+        const st = times[future[i]];
+        if (st > time && st < nextFallTime) nextFallTime = st;
       }
     }
     const value = selected > 0 ? producing / selected * this.growthProgress ** 2 : 0;
@@ -404,11 +824,17 @@ export class LeafControls {
   }
 
   hasUnfinishedLeafFall(time) {
-    for (const { mesh, leaves, selectedCount } of this.models) {
-      if (!mesh.visible) continue;
-      for (let index = 0; index < selectedCount; index++) {
-        const leaf = leaves[index];
-        if (leaf.fallStartTime !== 1000000.0 && time < leaf.fallStartTime + this.fallDuration(leaf)) return true;
+    const fallMultiplier = this.fallMultiplier ?? 1;
+    for (const model of this.models) {
+      if (!model.mesh.visible) continue;
+      const airborne = model.airborneIndices;
+      const times = model.leafFallStartTimes;
+      for (let i = 0; i < airborne.length; i++) {
+        const idx = airborne[i];
+        const st = times[idx];
+        if (st !== 1000000.0 && time < st + model.fallHeights[idx] / (model.fallBaseSpeeds[idx] * fallMultiplier) + 7.65) {
+          return true;
+        }
       }
     }
     return false;
@@ -453,27 +879,43 @@ export class LeafControls {
     this.hasScheduledFall = false;
     this.foliageCache = null;
     this.photosyntheticFoliageCache = null;
-    this.models.forEach(({ mesh, leaves }) => {
+    for (const model of this.models) {
+      const { mesh, leaves, scheduledIndices } = model;
       const startTimes = mesh.geometry.attributes.leafFallStartTime;
+      const startArr = startTimes.array;
+      const leafTimes = model.leafFallStartTimes;
       let changed = false;
-      for (const leaf of leaves) {
+      for (let i = 0; i < scheduledIndices.length; i++) {
+        const idx = scheduledIndices[i];
+        const leaf = leaves[idx];
+        model.scheduledFlags[idx] = 0;
+        model.fallenFlags[idx] = 0;
         if (leaf.fallStartTime === 1000000.0) continue;
         leaf.fallStartTime = 1000000.0;
-        for (const vertex of leaf.vertices) startTimes.setX(vertex, leaf.fallStartTime);
+        leafTimes[idx] = 1000000.0;
+        for (const v of leaf.vertices) startArr[v] = 1000000.0;
         changed = true;
       }
+      scheduledIndices.length = 0;
+      model.airborneIndices.length = 0;
+      model.futureScheduledIndices.length = 0;
+      model.fallenCount = 0;
+      model.fallenAtOrBeforeStop = 0;
+      model.fallenAfterStop = 0;
+      model.calendarCursor = 0;
+      model.triggerCursor = 0;
       if (changed) startTimes.needsUpdate = true;
-    });
+    }
   }
 
   applySize() {
-    for (const { mesh, leaves, original } of this.models) {
+    const scale = this.growthUniform ? this.scale : this.scale * this.growthProgress;
+    for (const { mesh, original, vertexCenter } of this.models) {
       const position = mesh.geometry.attributes.position;
-      for (const { center, vertices } of leaves) {
-        for (const i of vertices) position.setXYZ(i,
-          center.x + (original[i * 3] - center.x) * this.scale * this.growthProgress,
-          center.y + (original[i * 3 + 1] - center.y) * this.scale * this.growthProgress,
-          center.z + (original[i * 3 + 2] - center.z) * this.scale * this.growthProgress);
+      const arr = position.array;
+      for (let i = 0; i < arr.length; i++) {
+        const c = vertexCenter[i];
+        arr[i] = c + (original[i] - c) * scale;
       }
       position.needsUpdate = true;
       mesh.geometry.computeBoundingBox();
@@ -486,7 +928,11 @@ export class LeafControls {
     const next = THREE.MathUtils.clamp(Number(progress), 0, 1.0);
     if (Math.abs(next - this.growthProgress) < 0.0001) return;
     this.growthProgress = next;
-    this.applySize();
+    if (this.growthUniform) {
+      this.growthUniform.value = next;
+    } else {
+      this.applySize();
+    }
   }
 
   maxForBaseCount(baseCount) {
@@ -514,18 +960,37 @@ export class LeafControls {
         ? remaining : Math.round(this.count * baseCount / baseTotal);
       if (mesh.geometry.hasAttribute('leafFallStartTime')) {
         const times = mesh.geometry.attributes.leafFallStartTime;
+        const startArr = times.array;
+        const leafTimes = model.leafFallStartTimes;
+        const fallenFlags = model.fallenFlags;
         const before = model.selectedCount ?? 0;
+        const resetFrom = this.visible ? count : 0;
         let reset = false;
-        for (let index = this.visible ? count : 0; index < before; index++) {
+        for (let index = resetFrom; index < before; index++) {
           const leaf = leaves[index];
+          model.scheduledFlags[index] = 0;
+          if (fallenFlags[index]) {
+            fallenFlags[index] = 0;
+            model.fallenCount--;
+          }
           if (leaf.fallStartTime === 1000000.0) continue;
           leaf.fallStartTime = 1000000.0;
-          for (const vertex of leaf.vertices) times.setX(vertex, leaf.fallStartTime);
+          leafTimes[index] = 1000000.0;
+          for (const v of leaf.vertices) startArr[v] = 1000000.0;
           reset = true;
         }
-        if (reset) times.needsUpdate = true;
+        if (reset) {
+          times.needsUpdate = true;
+          model.calendarCursor = 0;
+          model.triggerCursor = 0;
+          model.cachedPhotoKey = '';
+        }
       }
-      model.selectedCount = count;
+      if (model.selectedCount !== count) {
+        model.selectedCount = count;
+        model.cachedPhotoKey = '';
+        this.needsResort = true;
+      }
       mesh.geometry.setDrawRange(0, ends[count]);
       mesh.visible = isEnabled && this.visible;
       remaining -= count;
@@ -533,6 +998,113 @@ export class LeafControls {
     const formatted = this.count.toLocaleString('cs-CZ');
     this.countLabel.textContent = formatted;
     if (this.canopyLabel) this.canopyLabel.textContent = `🍃 Koruna a listy (${formatted} listů)`;
+  }
+
+  // Reorder active indices roughly front-to-back in O(N) when the camera moves significantly,
+  // while keeping [0..baseCount) first so onBeforeShadow can slice the original layer unchanged.
+  sortLeavesForCamera(cameraPosition) {
+    if (!this.visible || this.models.length === 0 || !cameraPosition) return;
+    const dx = cameraPosition.x;
+    const dy = cameraPosition.y - 13.0;
+    const dz = cameraPosition.z;
+    const dist = Math.hypot(dx, dy, dz) || 1;
+    const nx = dx / dist, ny = dy / dist, nz = dz / dist;
+    if (this.hasSortedView && !this.needsResort) {
+      const dot = nx * this.lastSortDir.x + ny * this.lastSortDir.y + nz * this.lastSortDir.z;
+      const distChange = Math.abs(dist - this.lastSortDist) / (this.lastSortDist || 1);
+      if (dot > 0.978 && distChange < 0.25) return;
+    }
+    this.lastSortDir.set(nx, ny, nz);
+    this.lastSortDist = dist;
+    this.hasSortedView = true;
+    this.needsResort = false;
+
+    const camX = cameraPosition.x, camY = cameraPosition.y, camZ = cameraPosition.z;
+    for (const model of this.models) {
+      const count = model.selectedCount ?? 0;
+      if (!model.mesh.visible || count <= 1) continue;
+      const indexAttr = model.mesh.geometry.index;
+      const dstArr = indexAttr.array;
+      const srcArr = model.baseSortedIndices;
+      const centers = model.centers;
+      const { counts, offsets, buckets, dots } = model.sortScratch;
+      const baseLimit = Math.min(count, model.baseCount);
+
+      const sortRange = (startLeaf, endLeaf) => {
+        const rangeCount = endLeaf - startLeaf;
+        if (rangeCount <= 1) {
+          if (rangeCount === 1) {
+            const s = model.ends[startLeaf];
+            const e = model.ends[startLeaf + 1];
+            for (let k = s; k < e; k++) dstArr[k] = srcArr[k];
+          }
+          return;
+        }
+        let minD = Infinity, maxD = -Infinity;
+        for (let i = startLeaf; i < endLeaf; i++) {
+          const c3 = i * 3;
+          const cx = centers[c3] - camX;
+          const cy = centers[c3 + 1] - camY;
+          const cz = centers[c3 + 2] - camZ;
+          const d = cx * cx + cy * cy + cz * cz;
+          dots[i] = d;
+          if (d < minD) minD = d;
+          if (d > maxD) maxD = d;
+        }
+        const span = maxD - minD;
+        if (span <= 1e-6) {
+          const startIdx = model.ends[startLeaf];
+          const endIdx = model.ends[endLeaf];
+          for (let k = startIdx; k < endIdx; k++) dstArr[k] = srcArr[k];
+          return;
+        }
+        const invSpan = SORT_BUCKETS / span;
+        counts.fill(0);
+        const uniformQuads = model.uniformQuadIndices;
+        for (let i = startLeaf; i < endLeaf; i++) {
+          let b = ((dots[i] - minD) * invSpan) | 0;
+          if (b < 0) b = 0;
+          else if (b >= SORT_BUCKETS) b = SORT_BUCKETS - 1;
+          buckets[i] = b;
+          counts[b] += uniformQuads ? 6 : (model.ends[i + 1] - model.ends[i]);
+        }
+        let acc = model.ends[startLeaf];
+        for (let b = 0; b < SORT_BUCKETS; b++) {
+          offsets[b] = acc;
+          acc += counts[b];
+        }
+        if (uniformQuads) {
+          for (let i = startLeaf; i < endLeaf; i++) {
+            const dst = offsets[buckets[i]];
+            offsets[buckets[i]] = dst + 6;
+            const src = i * 6;
+            dstArr[dst] = srcArr[src];
+            dstArr[dst + 1] = srcArr[src + 1];
+            dstArr[dst + 2] = srcArr[src + 2];
+            dstArr[dst + 3] = srcArr[src + 3];
+            dstArr[dst + 4] = srcArr[src + 4];
+            dstArr[dst + 5] = srcArr[src + 5];
+          }
+        } else {
+          for (let i = startLeaf; i < endLeaf; i++) {
+            const s = model.ends[i];
+            const e = model.ends[i + 1];
+            const len = e - s;
+            const dst = offsets[buckets[i]];
+            offsets[buckets[i]] = dst + len;
+            for (let k = 0; k < len; k++) dstArr[dst + k] = srcArr[s + k];
+          }
+        }
+      };
+
+      sortRange(0, baseLimit);
+      sortRange(baseLimit, count);
+      if (indexAttr.clearUpdateRanges) {
+        indexAttr.clearUpdateRanges();
+        indexAttr.addUpdateRange(0, model.ends[count]);
+      }
+      indexAttr.needsUpdate = true;
+    }
   }
 
   setType(type) {

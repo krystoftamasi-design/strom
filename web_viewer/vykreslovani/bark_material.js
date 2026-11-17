@@ -37,11 +37,13 @@ export function createBarkMaterial(reference, leafReference, uniforms, water = {
   const material = new THREE.MeshLambertMaterial({ color: 0xffffff, side: THREE.FrontSide });
   material.name = 'Bark_GraphML_Tree (Blender reference)';
   material.toneMapped = false;
-  material.customProgramCacheKey = () => 'blender_bark_reference_emissive_water_v3';
-  material.onBeforeCompile = shader => {
+  material.customProgramCacheKey = () => `blender_bark_reference_emissive_water_v4_${leafReference.display3D ? '3d' : '2d'}`;
+  material.onBeforeCompile = (shader, renderer) => {
+    const use3D = Boolean(leafReference.display3D && (!renderer || renderer.capabilities?.isWebGL2));
     Object.assign(shader.uniforms, {
       uBarkDiffuse: { value: leafReference.diffuse },
       uBarkDisplay: { value: leafReference.display },
+      uBarkDisplay3D: { value: leafReference.display3D },
       uBarkInvert: { value: reference.invert },
       uBarkDarken: { value: reference.darken },
       uBarkThreshold: { value: reference.ramp[1].position },
@@ -69,7 +71,7 @@ export function createBarkMaterial(reference, leafReference, uniforms, water = {
     `);
     shader.fragmentShader = `
       uniform sampler2D uBarkDiffuse;
-      uniform sampler2D uBarkDisplay;
+      ${use3D ? 'uniform mediump sampler3D uBarkDisplay3D;' : 'uniform sampler2D uBarkDisplay;'}
       uniform float uBarkInvert;
       uniform float uBarkDarken;
       uniform float uBarkThreshold;
@@ -104,6 +106,11 @@ export function createBarkMaterial(reference, leafReference, uniforms, water = {
           mix(waterNoiseHash(cell + vec3(0, 1, 1)), waterNoiseHash(cell + vec3(1, 1, 1)), f.x), f.y);
         return mix(z0, z1, f.z);
       }
+      ${use3D ? `
+      vec3 barkDisplayTransform(vec3 color) {
+        vec3 uvw = clamp(color, 0.0, 1.0) * (63.0 / 64.0) + (0.5 / 64.0);
+        return texture(uBarkDisplay3D, uvw).rgb;
+      }` : `
       vec3 barkDisplaySlice(vec3 color, float slice) {
         return texture2D(uBarkDisplay,vec2((slice*64.0+color.r*63.0+0.5)/4096.0,(color.g*63.0+0.5)/64.0)).rgb;
       }
@@ -112,7 +119,7 @@ export function createBarkMaterial(reference, leafReference, uniforms, water = {
         float b=color.b*63.0;
         vec3 srgb=mix(barkDisplaySlice(color,floor(b)),barkDisplaySlice(color,min(floor(b)+1.0,63.0)),fract(b));
         return mix(pow((srgb+0.055)/1.055,vec3(2.4)),srgb/12.92,lessThanEqual(srgb,vec3(0.04045)));
-      }
+      }`}
     `);
     shader.fragmentShader = shader.fragmentShader.replace('#include <color_fragment>', `
       // The original image -> Invert Color -> Diffuse BSDF, in linear RGB.
@@ -129,10 +136,13 @@ export function createBarkMaterial(reference, leafReference, uniforms, water = {
       // Blender's actual Noise -> Manhattan Voronoi -> EASE ramp sampled on
       // this mesh. No invented trunk/root color or screen-space grain.
       vec3 result=mix(base,min(base,vBarkPattern),uBarkDarken);
-      outgoingLight=barkDisplayTransform(result) * uSceneIllumination;
-      float moonFacing = max(dot(normalize(normal), normalize(uMoonDirection)), 0.0);
-      outgoingLight += mix(barkDisplayTransform(result), vec3(1.0), 0.18)
-        * vec3(0.72, 0.84, 1.0) * uMoonIntensity * (0.06 + 0.55 * moonFacing);
+      vec3 barkDisplay = barkDisplayTransform(result);
+      outgoingLight = barkDisplay * uSceneIllumination;
+      if (uMoonIntensity > 0.0001) {
+        float moonFacing = max(dot(normalize(normal), normalize(uMoonDirection)), 0.0);
+        outgoingLight += mix(barkDisplay, vec3(1.0), 0.18)
+          * vec3(0.72, 0.84, 1.0) * uMoonIntensity * (0.06 + 0.55 * moonFacing);
+      }
       if (uWaterSurface.x > 0.0) {
         float distanceAlongWood = vBarkWaterDistance;
         // Positive front codes retraction, negative front codes revelation.

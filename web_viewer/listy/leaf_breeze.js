@@ -15,26 +15,25 @@ export function setupLeafBreeze(materials, { leafCenters = false } = {}) {
     uniform float uBreezeStrength;
     uniform float uBreezeTime;
     mat3 leafBreezeRotation(vec3 center) {
+      if (uBreezeStrength <= 0.0001${leafCenters ? ' || leafFallAge() > 0.0' : ''}) return mat3(1.0);
       float phase = dot(center, vec3(1.37, 0.61, 1.91));
       float gust = 0.65 + 0.35 * sin(uBreezeTime * 0.53 + center.x * 0.24);
       float angle = uBreezeStrength * gust *
         (0.10 * sin(uBreezeTime * 1.65 + phase) + 0.045 * sin(uBreezeTime * 3.1 + phase * 1.7));
-      ${leafCenters ? 'if (leafFallAge() > 0.0) angle = 0.0;' : ''}
       float s = sin(angle), c = cos(angle);
       return mat3(c, -s, 0.0, s, c, 0.0, 0.0, 0.0, 1.0);
     }
     vec3 leafBreezeOffset(vec3 center) {
+      if (uBreezeStrength <= 0.0001${leafCenters ? ' || leafFallAge() > 0.0' : ''}) return vec3(0.0);
       float phase = dot(center, vec3(0.37, 0.21, 0.41));
-      float amount = uBreezeStrength;
-      ${leafCenters ? 'if (leafFallAge() > 0.0) amount = 0.0;' : ''}
       return vec3(sin(uBreezeTime * 1.1 + phase), sin(uBreezeTime * 1.7 + phase) * 0.2,
-        cos(uBreezeTime * 0.9 + phase)) * (0.045 * amount);
+        cos(uBreezeTime * 0.9 + phase)) * (0.045 * uBreezeStrength);
     }
   `;
   for (const material of materials) {
     const compile = material.onBeforeCompile;
     const cacheKey = material.customProgramCacheKey();
-    material.customProgramCacheKey = () => `${cacheKey}_breeze_1`;
+    material.customProgramCacheKey = () => `${cacheKey}_breeze_2`;
     material.onBeforeCompile = function(shader, renderer) {
       compile.call(this, shader, renderer);
       shader.uniforms.uBreezeStrength = strength;
@@ -45,7 +44,10 @@ export function setupLeafBreeze(materials, { leafCenters = false } = {}) {
       shader.vertexShader = shader.vertexShader.replace('#include <beginnormal_vertex>',
         `#include <beginnormal_vertex>\nobjectNormal = leafBreezeRotation(${center}) * objectNormal;`);
       shader.vertexShader = shader.vertexShader.replace('#include <begin_vertex>',
-        `#include <begin_vertex>\ntransformed = ${center} + leafBreezeRotation(${center}) * (transformed - ${center}) + leafBreezeOffset(${center});`);
+        `#include <begin_vertex>
+        if (uBreezeStrength > 0.0001${leafCenters ? ' && leafFallAge() <= 0.0' : ''}) {
+          transformed = ${center} + leafBreezeRotation(${center}) * (transformed - ${center}) + leafBreezeOffset(${center});
+        }`);
     };
     material.needsUpdate = true;
   }

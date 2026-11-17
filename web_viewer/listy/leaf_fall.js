@@ -35,8 +35,7 @@ export const leafFallDeclarations = `
     float height = length((modelMatrix * vec4(leafFallCenter - leafFallLanding, 0.0)).xyz);
     return height / leafFallSpeed() + 0.65;
   }
-  mat3 leafFallRotation(vec3 originalNormal) {
-    float age = leafFallAge();
+  mat3 leafFallRotationWithAge(vec3 originalNormal, float age) {
     if (age <= 0.0) return mat3(1.0);
     float flight = leafFlightTime();
     float t = min(age, flight);
@@ -60,14 +59,15 @@ export const leafFallDeclarations = `
     if (axisLength > 0.0001) rotation = leafAxisRotation(axis / axisLength, atan(axisLength, dot(n, target)) * settle) * rotation;
     return rotation;
   }
-  vec3 leafFallPosition(vec3 position, mat3 rotation) {
-    float age = leafFallAge();
+  mat3 leafFallRotation(vec3 originalNormal) {
+    return leafFallRotationWithAge(originalNormal, leafFallAge());
+  }
+  vec3 leafFallPositionWithAge(vec3 position, mat3 rotation, float age) {
     vLeafFallProgress = 0.0;
     if (age <= 0.0) return position;
     float flight = leafFlightTime();
     float t = min(age, flight);
     float phase = leafFallSeed * 6.2831853;
-    float height = length((modelMatrix * vec4(leafFallCenter - leafFallLanding, 0.0)).xyz);
     // Accelerate out of the branch, then approach an aerodynamic terminal speed.
     float drop = leafFallSpeed() * (t - 0.65 * (1.0 - exp(-t / 0.65)));
     float totalDrop = leafFallSpeed() * (flight - 0.65 * (1.0 - exp(-flight / 0.65)));
@@ -106,5 +106,8 @@ export const leafFallDeclarations = `
     center += up * sin(t * 4.3 + phase) * 0.10 * release * airborne;
     vLeafFallProgress = smoothstep(flight + 4.0, flight + 7.0, age);
     return center + rotation * (position - leafFallCenter);
+  }
+  vec3 leafFallPosition(vec3 position, mat3 rotation) {
+    return leafFallPositionWithAge(position, rotation, leafFallAge());
   }
 `;
