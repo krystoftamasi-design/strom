@@ -139,12 +139,11 @@ body .tree-overlay [data-chapter] .chapter-context-guide h2 { font-weight: 400; 
 
 /* Removable oxygen balance prototype beneath the photosynthesis guide. */
 .tree-overlay .oxygen-balance-panel {
-  --oxygen-paper: #f1f6f7;
+  --oxygen-paper: #bfc0c0;
   --oxygen-flow-blue: #37699d;
-  --oxygen-rule: color-mix(in srgb, var(--ui-ink) 45%, var(--oxygen-paper));
   margin-block-start: 14px;
   color: var(--ui-ink);
-  font: 500 clamp(11px, 1.65vh, 14px)/1.1 var(--ui-font-display);
+  font: 300 clamp(11px, 1.65vh, 14px)/1.1 var(--ui-font-display);
 }
 
 .tree-overlay .oxygen-balance {
@@ -153,7 +152,7 @@ body .tree-overlay [data-chapter] .chapter-context-guide h2 { font-weight: 400; 
   aspect-ratio: 1;
   overflow: hidden;
   box-sizing: border-box;
-  border: 1px solid var(--oxygen-rule);
+  border: 0;
   border-radius: 50%;
   background: var(--oxygen-paper);
   text-align: center;
@@ -161,7 +160,7 @@ body .tree-overlay [data-chapter] .chapter-context-guide h2 { font-weight: 400; 
 }
 
 body.scene-night .tree-overlay .oxygen-balance-panel {
-  --oxygen-paper: #19262c;
+  --oxygen-paper: #454749;
 }
 
 .oxygen-balance-panel abbr {
@@ -202,7 +201,6 @@ body.scene-night .tree-overlay .oxygen-balance-panel {
   align-items: end;
   justify-content: center;
   margin-block-end: 4px;
-  border-block-end: 1px solid var(--oxygen-rule);
 }
 
 .oxygen-balance-flows > div > span::before {
@@ -231,18 +229,17 @@ body.scene-night .tree-overlay .oxygen-balance-panel {
 }
 
 .oxygen-balance-settings {
-  --oxygen-paper: #f1f6f7;
-  --oxygen-rule: color-mix(in srgb, var(--ui-ink) 45%, var(--oxygen-paper));
+  --oxygen-paper: #bfc0c0;
 }
 
-body.scene-night .oxygen-balance-settings { --oxygen-paper: #19262c; }
+body.scene-night .oxygen-balance-settings { --oxygen-paper: #454749; }
 
 .oxygen-balance-settings input {
   box-sizing: border-box;
   inline-size: 7em;
   min-block-size: 28px;
   padding: 2px 5px;
-  border: 1px solid var(--oxygen-rule);
+  border: 0;
   border-radius: 4px;
   background: var(--oxygen-paper);
   color: inherit;
@@ -250,8 +247,8 @@ body.scene-night .oxygen-balance-settings { --oxygen-paper: #19262c; }
 }
 
 .oxygen-balance-settings input:focus-visible {
-  outline: 2px solid var(--ui-ink);
-  outline-offset: 4px;
+  outline: none;
+  background: color-mix(in srgb, var(--oxygen-paper) 65%, var(--ui-oxygen));
 }
 
 .tree-overlay article[data-chapter="prototype"] {
@@ -261,11 +258,12 @@ body.scene-night .oxygen-balance-settings { --oxygen-paper: #19262c; }
   pointer-events: auto;
   color: var(--ui-ink);
   font-family: var(--ui-font-display);
+  font-weight: 300;
 }
 
 .tree-overlay article[data-chapter="prototype"] > h2 {
   margin: 0;
-  font: 500 var(--ui-main-heading-size)/1.05 var(--ui-font-display);
+  font: 300 var(--ui-main-heading-size)/1.05 var(--ui-font-display);
 }
 
 .prototype-list {
@@ -276,7 +274,10 @@ body.scene-night .oxygen-balance-settings { --oxygen-paper: #19262c; }
 }
 
 .prototype-list .oxygen-balance-panel { inline-size: 182px; }
-.prototype-list h3 { margin: 0 0 8px; font-size: 15px; }
+.prototype-list .oxygen-balance-panel > h3 {
+  margin: 0 0 8px;
+  font: 300 15px/1.1 var(--ui-font-display);
+}
 
 .tree-overlay .oxygen-balance-lines {
   background: var(--oxygen-paper);
@@ -295,10 +296,6 @@ body.scene-night .oxygen-balance-settings { --oxygen-paper: #19262c; }
   justify-content: center;
 }
 
-.oxygen-balance-lines > div + div {
-  border-block-start: 1px solid var(--oxygen-rule);
-}
-
 .oxygen-balance-lines > div[hidden] {
   display: none;
 }
@@ -314,14 +311,11 @@ body.scene-night .oxygen-balance-settings { --oxygen-paper: #19262c; }
 
 .oxygen-balance-lines.similar-flows {
   grid-template-columns: repeat(2, minmax(0, 1fr));
+  column-gap: 1px;
 }
 
 .oxygen-balance-lines.similar-flows .oxygen-balance-reserve {
   grid-column: 1 / -1;
-}
-
-.oxygen-balance-lines.similar-flows > div:last-child {
-  border-inline-start: 1px solid var(--oxygen-rule);
 }
 
 .oxygen-balance-lines.production-at-bottom:not(.similar-flows) .oxygen-balance-production {
