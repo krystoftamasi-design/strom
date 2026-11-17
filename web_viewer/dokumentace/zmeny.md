@@ -771,7 +771,7 @@ history:
 #### Z058 — Vodní pára a hlavní okno Transpirace
 
 - Zadání: H₂O částice, hlavní detail nad údaji, stručnější texty a soubor nápadů.
-- Výsledek: modré H₂O vycházejí z konce vodní linky v Transpiraci a sdílí zvýraznění plynových částic. Hlavní okna otevírají detail vzhůru; Transpirace jej má výchozím stavem otevřený. Texty jsou kratší, dva odložené návrhy jsou v [Nápadech](moje/napady.md).
+- Výsledek: modré H₂O vycházejí z konce vodní linky v Transpiraci a sdílí zvýraznění plynových částic. Hlavní okna otevírají detail vzhůru; Transpirace jej má výchozím stavem otevřený. Texty jsou kratší, dva odložené návrhy jsou v [Nápadech co implementovat](moje/napady_co_implementovat.md).
 - Stav: Implementováno.
 - Ověření: cílený test H₂O a validační test oken prošly; finální vizuální kontrola uživatelem. Průběžné načtení v Chromu nebylo dostupné kvůli nedostupnému připojení prohlížeče.
 

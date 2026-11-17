@@ -8,9 +8,16 @@ history:
     change: Doplněn návrh pořadí pravých oken Fotosyntézy podle příčiny a následku.
 ---
 
-# Nápady
+# Nápady co implementovat
 
 - Návrhy k dalšímu posouzení podle [Strategie](strategie.md); samy nezadávají změnu webu.
+
+## Doporučený postup
+
+1. Dokončit okna Fotosyntézy: vzhled, hodnoty, ovládání a vazby na děje ve stromu. Zvážit naznačení ovládání pruhů a ověřit, zda je srozumitelné.
+2. Projít vzhled a funkčnost kapitoly a potom otestovat porozumění se studenty podle [Strategie](strategie.md). Využít i níže uvedené otázky a podle výsledků upravit nejasná místa.
+3. Teprve po ověření pokračovat další kapitolou; hotovou Fotosyntézu použít jako vzor a obsah přizpůsobit cíli dané kapitoly. U Transpirace prověřit propojení oken s místem děje.
+4. Umístění testu Období, sandbox a zvukový design ponechat k pozdějšímu posouzení; nejsou podmínkou dokončení Fotosyntézy.
 
 ## Obecné
 
@@ -41,7 +48,12 @@ history:
 ### ❗ Propojení oken s místem děje
 
 
-TVORBA KAPITOLY SANBOX
+## Sandbox
+
+- Návrh: vytvořit kapitolu Sandbox; její obsah a účel je třeba upřesnit.
+- Stav: Nápad.
+
+## Fotosyntéza
 
 ### Možné otázky k ověření porozumění
 

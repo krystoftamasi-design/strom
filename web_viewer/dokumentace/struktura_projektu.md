@@ -60,7 +60,7 @@ Produktovou strategii a metriky popisuje [Strategie](moje/strategie.md).
 Prioritní problémy porozumění vymezuje [Problémy k řešení](moje/strategi_problems.md).
 Záznamy uživatelského ověřování jsou v [Testech](moje/tests.md).
 Znění otázek pro účastníky je v [Test structure](moje/test_structure.md).
-Nerealizované návrhy jsou v [Nápadech](moje/napady.md); nejde o definice hotového webu.
+Nerealizované návrhy jsou v [Nápadech co implementovat](moje/napady_co_implementovat.md); nejde o definice hotového webu.
 Návrh průvodních vět pro Fotosyntézu a Transpiraci je v [Kontextových textech](moje/kontextove_texty.md); zatím není nasazený.
 Přehled původních přesunů souborů je v `starsi/presun_souboru.json`.
 
