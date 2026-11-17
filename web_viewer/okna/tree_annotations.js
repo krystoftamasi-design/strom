@@ -486,8 +486,8 @@ export function createTreeAnnotations({ shell, model, createSeasonControl, setEl
     if (article.dataset.chapter === 'prototype') {
       const list = article.querySelector('.prototype-list');
       list.append(...prototypes.map(prototype => prototype.panel));
-      const oxygen = oknaPodleKapitol.photosynthesis.find(definition => definition.id === 'kyslik');
-      if (oxygen && !kontrola.neplatnaOkna.has(oxygen)) configuredCard(article, oxygen);
+      const sugars = oknaPodleKapitol.photosynthesis.find(definition => definition.id === 'cukry');
+      if (sugars && !kontrola.neplatnaOkna.has(sugars)) configuredCard(article, sugars);
       continue;
     }
     if (article.dataset.chapter === 'photosynthesis') {

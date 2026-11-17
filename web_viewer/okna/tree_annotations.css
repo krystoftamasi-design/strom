@@ -183,7 +183,7 @@ body.scene-night .tree-overlay .oxygen-balance-panel {
   background: linear-gradient(
     to top,
     color-mix(in srgb, var(--ui-oxygen) 42%, var(--oxygen-paper)) var(--oxygen-level, 0%),
-    transparent var(--oxygen-level, 0%)
+    var(--oxygen-paper) var(--oxygen-level, 0%)
   );
 }
 
