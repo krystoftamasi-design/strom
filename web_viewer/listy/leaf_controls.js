@@ -3,7 +3,7 @@ import { createBranchDryingProfile } from './leaf_branch_drying.js?v=3';
 
 const LEAF_MULTIPLIER = 10;
 const MAX_LEAF_COUNT = 90000;
-const SORT_BUCKETS = 64;
+const SORT_BUCKETS = 16;
 const RADIX_BITS = 8;
 const RADIX_BUCKETS = 1 << RADIX_BITS;
 // Smoothstep(0.7279753035) == 0.82 (red phase threshold for photosynthetic foliage).
@@ -336,6 +336,7 @@ export class LeafControls {
     this.lastSortDist = 0;
     this.hasSortedView = false;
     this.needsResort = true;
+    this.sortModelPending = 0;
     sizeInput.addEventListener('input', () => { this.scale = Number(sizeInput.value) / 100; this.applySize(); this.notify(); });
     countInput.addEventListener('input', () => { this.count = Number(countInput.value); this.applyCount(); this.notify(); });
     typeButtons.forEach(button => button.addEventListener('click', () => this.setType(button.dataset.leafType)));
@@ -1040,6 +1041,7 @@ export class LeafControls {
         model.selectedCount = count;
         model.cachedPhotoKey = '';
         this.needsResort = true;
+        this.sortModelPending = (1 << this.models.length) - 1;
       }
       mesh.geometry.setDrawRange(0, ends[count]);
       mesh.visible = isEnabled && this.visible;
@@ -1051,6 +1053,7 @@ export class LeafControls {
   }
 
   // Reorder active indices roughly front-to-back in O(N) when the camera moves significantly,
+  // staggering one mesh per frame so orbiting never causes a multi-mesh spike,
   // while keeping [0..baseCount) first so onBeforeShadow can slice the original layer unchanged.
   sortLeavesForCamera(cameraPosition) {
     if (!this.visible || this.models.length === 0 || !cameraPosition) return;
@@ -1059,18 +1062,25 @@ export class LeafControls {
     const dz = cameraPosition.z;
     const dist = Math.hypot(dx, dy, dz) || 1;
     const nx = dx / dist, ny = dy / dist, nz = dz / dist;
-    if (this.hasSortedView && !this.needsResort) {
+    if (this.hasSortedView && !this.needsResort && this.sortModelPending === 0) {
       const dot = nx * this.lastSortDir.x + ny * this.lastSortDir.y + nz * this.lastSortDir.z;
       const distChange = Math.abs(dist - this.lastSortDist) / (this.lastSortDist || 1);
-      if (dot > 0.978 && distChange < 0.25) return;
+      if (dot > 0.955 && distChange < 0.25) return;
     }
-    this.lastSortDir.set(nx, ny, nz);
-    this.lastSortDist = dist;
-    this.hasSortedView = true;
-    this.needsResort = false;
+    if (this.sortModelPending === 0 || this.needsResort) {
+      this.lastSortDir.set(nx, ny, nz);
+      this.lastSortDist = dist;
+      this.hasSortedView = true;
+      this.needsResort = false;
+      this.sortModelPending = (1 << this.models.length) - 1;
+    }
 
     const camX = cameraPosition.x, camY = cameraPosition.y, camZ = cameraPosition.z;
-    for (const model of this.models) {
+    for (let mIdx = 0; mIdx < this.models.length; mIdx++) {
+      const bit = 1 << mIdx;
+      if ((this.sortModelPending & bit) === 0) continue;
+      this.sortModelPending &= ~bit;
+      const model = this.models[mIdx];
       const count = model.selectedCount ?? 0;
       if (!model.mesh.visible || count <= 1) continue;
       const indexAttr = model.mesh.geometry.index;
@@ -1154,6 +1164,8 @@ export class LeafControls {
         indexAttr.addUpdateRange(0, model.ends[count]);
       }
       indexAttr.needsUpdate = true;
+      // Sort at most one leaf mesh per frame to keep orbit frame pacing smooth.
+      break;
     }
   }
 

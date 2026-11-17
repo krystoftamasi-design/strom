@@ -3808,12 +3808,13 @@
       shaderUniforms.uSunIntensity.value = daylight;
 
       // Keep every visible sun and its ray at the actual light position.
+      sunMesh1.position.copy(sun1.position).sub(sun1.target.position).normalize().multiplyScalar(sunMarkerDistance).add(sun1.target.position);
+      sunMat.opacity = THREE.MathUtils.smoothstep(sunElevationDeg, -6, 0);
+      sunMesh1.visible = sunMat.opacity > 0;
+      sunMat.color.copy(sunHorizonColor).lerp(sunDayColor,
+        THREE.MathUtils.smoothstep(sunElevationDeg, 0, 50));
+
       if (sunHelpersGroup.visible) {
-        sunMesh1.position.copy(sun1.position).sub(sun1.target.position).normalize().multiplyScalar(sunMarkerDistance).add(sun1.target.position);
-        sunMat.opacity = THREE.MathUtils.smoothstep(sunElevationDeg, -6, 0);
-        sunMesh1.visible = sunMat.opacity > 0;
-        sunMat.color.copy(sunHorizonColor).lerp(sunDayColor,
-          THREE.MathUtils.smoothstep(sunElevationDeg, 0, 50));
         const sunsetTint = THREE.MathUtils.clamp((24 - Math.max(0, sunElevationDeg)) / 24, 0, 1);
         coronaMesh.position.copy(sunMesh1.position);
         coronaMesh.visible = false;
@@ -4215,8 +4216,11 @@
     let leafFallAnimationTime = lastTime * 0.001;
     let frameCount = 0;
     let fpsTimer = 0;
+    let smoothedFps = 0;
     let adaptiveTime = 0;
     let adaptiveFrames = 0;
+    let adaptiveSlowStreak = 0;
+    let adaptiveFastStreak = 0;
     let lastPixelRatioChange = lastTime;
     const adaptiveStartTime = lastTime;
     let lastBreezeShadowUpdate = -Infinity;
@@ -4234,7 +4238,9 @@
       if (frameSeconds > 0) frameCount++;
       fpsTimer += frameSeconds;
       if (fpsTimer >= 0.5) {
-        const fpsText = String(Math.round(frameCount / fpsTimer));
+        const instantFps = frameCount / fpsTimer;
+        smoothedFps = smoothedFps > 0 ? smoothedFps * 0.55 + instantFps * 0.45 : instantFps;
+        const fpsText = String(Math.round(smoothedFps));
         if (fpsText !== _lastFpsText) {
           _lastFpsText = fpsText;
           valFps.textContent = fpsText;
@@ -4243,22 +4249,34 @@
         fpsTimer = 0;
       }
 
-      if (maxRenderPixelRatio > 1.05 && ecology.ready && !document.hidden && frameSeconds > 0 && frameSeconds <= 0.45 && now - adaptiveStartTime > 1500) {
+      if (maxRenderPixelRatio > 1.05 && ecology.ready && !document.hidden && frameSeconds > 0 && frameSeconds <= 0.45 && now - adaptiveStartTime > 2000) {
         adaptiveFrames++;
         adaptiveTime += frameSeconds;
-        if (adaptiveTime >= 0.7) {
+        if (adaptiveTime >= 0.8) {
           const sampleFps = adaptiveFrames / adaptiveTime;
           adaptiveTime = 0;
           adaptiveFrames = 0;
+          if (sampleFps < 30 && activeRenderPixelRatio > 1.0) {
+            adaptiveSlowStreak++;
+            adaptiveFastStreak = 0;
+          } else if (sampleFps > 58 && activeRenderPixelRatio < maxRenderPixelRatio) {
+            adaptiveFastStreak++;
+            adaptiveSlowStreak = 0;
+          } else {
+            adaptiveSlowStreak = 0;
+            adaptiveFastStreak = 0;
+          }
           const sinceChange = now - lastPixelRatioChange;
           let nextRatio = activeRenderPixelRatio;
-          if (sampleFps < 38 && activeRenderPixelRatio > 1.0 && sinceChange >= 800) {
-            nextRatio = activeRenderPixelRatio > 1.28 && maxRenderPixelRatio > 1.28 ? 1.2 : 1.0;
-          } else if (sampleFps > 55 && activeRenderPixelRatio < maxRenderPixelRatio && sinceChange >= 2400) {
-            nextRatio = activeRenderPixelRatio < 1.1 && maxRenderPixelRatio > 1.28 ? 1.2 : maxRenderPixelRatio;
+          if (adaptiveSlowStreak >= 2 && sinceChange >= 2000) {
+            nextRatio = 1.0;
+          } else if (adaptiveFastStreak >= 4 && sinceChange >= 5000) {
+            nextRatio = maxRenderPixelRatio;
           }
           if (nextRatio !== activeRenderPixelRatio) {
             activeRenderPixelRatio = nextRatio;
+            adaptiveSlowStreak = 0;
+            adaptiveFastStreak = 0;
             renderer.setPixelRatio(activeRenderPixelRatio);
             renderer.setSize(window.innerWidth, window.innerHeight, false);
             lastPixelRatioChange = now;
@@ -4267,6 +4285,8 @@
       } else if (frameSeconds > 0.45) {
         adaptiveTime = 0;
         adaptiveFrames = 0;
+        adaptiveSlowStreak = 0;
+        adaptiveFastStreak = 0;
       }
 
       if (playbackDelta > 0) chapterApp.tick(playbackDelta);
@@ -4333,7 +4353,7 @@
         if (leavesAnimating || leafRegrowthActive) {
           invalidateShadows();
           lastBreezeShadowUpdate = now;
-        } else if (leafBreeze.active && now - lastBreezeShadowUpdate >= 120) {
+        } else if (leafBreeze.active && now - lastBreezeShadowUpdate >= 400) {
           invalidateShadows();
           lastBreezeShadowUpdate = now;
         }
