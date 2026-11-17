@@ -53,7 +53,8 @@ function createElementUiOkno({ panel, body, reveal, toggle, model, definition })
   const header = panel.querySelector(':scope > header');
   const formula = body.querySelector('.ui-window-formula');
   readout.append(header, footer);
-  if (formula && panel.dataset.chapter !== 'photosynthesis') readout.append(formula);
+  const isFlowChapter = ['photosynthesis', 'prototype'].includes(panel.dataset.chapter);
+  if (formula && !isFlowChapter) readout.append(formula);
   panel.insertBefore(readout, reveal);
   const edge = panel.querySelector('.annotation-frame-left');
   for (const frame of panel.querySelectorAll('.annotation-frame')) if (frame !== edge) frame.remove();
@@ -61,7 +62,7 @@ function createElementUiOkno({ panel, body, reveal, toggle, model, definition })
   const stroke = pickUiWindowStroke('vertical');
   panel.style.setProperty('--ui-edge-variant', `url("${stroke.url}")`);
   edge.dataset.variant = stroke.file;
-  if (panel.dataset.chapter === 'photosynthesis' && !definition.hlavni) {
+  if (isFlowChapter && !definition.hlavni) {
     const current = footer.querySelector('.chapter-metric');
     const unavailable = document.createElement('div');
     unavailable.className = 'chapter-metric element-ui-unavailable';
@@ -398,7 +399,7 @@ export function createTreeAnnotations({ shell, model, createSeasonControl, setEl
     expand(definition ? Boolean(definition.otevrene) : article.dataset.chapter === 'intro' || article.dataset.chapter === 'seasons');
     header.append(h, toggle);
     article.append(panel);
-
+    return panel;
   }
 
   // All configured windows use this builder; the records contain their content.
@@ -443,7 +444,8 @@ export function createTreeAnnotations({ shell, model, createSeasonControl, setEl
       }
       const strong = document.createElement('strong');
       const output = document.createElement('output');
-      output.id = value.vystupId || `value-${definition.id}`;
+      const outputId = value.vystupId || `value-${definition.id}`;
+      output.id = article.dataset.chapter === 'prototype' ? `prototype-${outputId}` : outputId;
       output.dataset.zivaVelicina = definition.vypocet;
       output.textContent = '—';
       strong.append(output);
@@ -479,12 +481,15 @@ export function createTreeAnnotations({ shell, model, createSeasonControl, setEl
     }
     const heading = definition.hlavni ? document.createElement('h2') : null;
     if (heading) heading.textContent = definition.nadpis;
-    card(article, definition.id, definition.strana, definition.nadpis, nodes, heading, definition);
+    return card(article, definition.id, definition.strana, definition.nadpis, nodes, heading, definition);
   }
 
   for (const article of content.querySelectorAll('article[data-chapter]')) {
     if (article.dataset.chapter === 'prototype') {
-      article.querySelector('.prototype-list').append(...prototypes.map(prototype => prototype.panel));
+      const list = article.querySelector('.prototype-list');
+      list.append(...prototypes.map(prototype => prototype.panel));
+      const oxygen = oknaPodleKapitol.photosynthesis.find(definition => definition.id === 'kyslik');
+      if (oxygen && !kontrola.neplatnaOkna.has(oxygen)) list.append(configuredCard(article, oxygen));
       continue;
     }
     if (article.dataset.chapter === 'photosynthesis') {
@@ -587,10 +592,11 @@ export function createTreeAnnotations({ shell, model, createSeasonControl, setEl
         const slider = bar.querySelector('input');
         const maxWater = Number(slider?.dataset.scaleMax) || waterAvailabilityMax(model);
         const [rawTop, rawBottom] = balanceValues(panel.dataset.windowId);
+        const balanceKey = `${panel.dataset.chapter}:${panel.dataset.windowId}`;
         const topValue = slider?.matches(':active')
-          ? (smoothedValues.set(`${panel.dataset.windowId}:top`, rawTop), rawTop)
-          : vyhladitHodnotu(smoothedValues, `${panel.dataset.windowId}:top`, rawTop, dt);
-        const bottomValue = vyhladitHodnotu(smoothedValues, `${panel.dataset.windowId}:bottom`, rawBottom, dt);
+          ? (smoothedValues.set(`${balanceKey}:top`, rawTop), rawTop)
+          : vyhladitHodnotu(smoothedValues, `${balanceKey}:top`, rawTop, dt);
+        const bottomValue = vyhladitHodnotu(smoothedValues, `${balanceKey}:bottom`, rawBottom, dt);
         const isWaterBalance = panel.dataset.windowId === 'voda';
         const isLightBalance = panel.dataset.windowId === 'svetlo';
         const scaleMax = isWaterBalance ? maxWater * 60 : isLightBalance ? 100 : 7;
@@ -628,7 +634,7 @@ export function createTreeAnnotations({ shell, model, createSeasonControl, setEl
       }
       for (const output of shell.querySelectorAll('[data-respiration]')) {
         const key = output.dataset.respiration;
-        const value = vyhladitHodnotu(smoothedValues, `resp:${key}`, model[key], dt);
+        const value = vyhladitHodnotu(smoothedValues, `resp:${output.closest(".element-ui-okno").dataset.chapter}:${key}`, model[key], dt);
         output.textContent = model.ready && Number.isFinite(value) ? value.toLocaleString('cs-CZ', { minimumFractionDigits: 1, maximumFractionDigits: 1 }) : '—';
       }
       for (const definition of oknaPodleKapitol.seeds) {

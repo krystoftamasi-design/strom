@@ -1,6 +1,6 @@
 import { zobrazitHodnotu, vyhladitHodnotu } from '../okna/element_ui_okna_veliciny.js?v=affinity-windows-layout-2';
 import { SEASONS } from '../ekologie/tree_ecology.js?v=light-slider-1';
-import { createTreeAnnotations } from '../okna/tree_annotations.js?v=oxygen-prototypes-2';
+import { createTreeAnnotations } from '../okna/tree_annotations.js?v=oxygen-prototypes-3';
 
 const chapters = [
   ['seasons', 'Období'], ['photosynthesis', 'Fotosyntéza'], ['transpiration', 'Transpirace'],
@@ -281,7 +281,7 @@ export function createChapters({ model, applySeason, setSun, setAzimuth, setVisu
     document.querySelector('.root-diagram').classList.toggle('rotting', model.rootRot >= 0.05);
     for (const output of shell.querySelectorAll('output[data-ziva-velicina]')) {
       const key = output.dataset.zivaVelicina;
-      const smoothed = vyhladitHodnotu(smoothedValues, key, model?.[key], dt);
+      const smoothed = vyhladitHodnotu(smoothedValues, output.id, model?.[key], dt);
       output.textContent = zobrazitHodnotu(key, { [key]: smoothed });
     }
     capturedLabel.textContent = `${hourly(model.waterInput)} l/h`;
