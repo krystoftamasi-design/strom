@@ -96,23 +96,24 @@ function createElementUiOkno({ panel, body, reveal, toggle, model, definition })
     const isTopMeasured = isAvailabilityWindow || definition.id !== 'co2';
     const topMetric = isTopMeasured ? current : unavailable;
     const bottomMetric = isAvailabilityWindow ? availability : isTopMeasured ? unavailable : current;
-    const topFlow = isTopMeasured ? 'measured' : 'respiration';
     const bottomFlow = definition.id === 'voda' ? 'availability'
       : definition.id === 'svetlo' ? 'light-availability'
         : isTopMeasured ? 'respiration' : 'measured';
 
     if (current) {
-      topMetric.classList.add('element-ui-flow-top');
-      bottomMetric.classList.add('element-ui-flow-bottom');
-
       const bar = document.createElement('div');
       bar.className = 'element-ui-balance-bar';
-      bar.dataset.topFlow = topFlow;
       bar.dataset.bottomFlow = bottomFlow;
 
       const fill = document.createElement('span');
       fill.className = 'element-ui-balance-fill';
-      fill.style.setProperty('--ui-flow-variant', `url("${new URL('../web_assets/okna/affinity-pruh.png', import.meta.url).href}")`);
+      fill.setAttribute('aria-hidden', 'true');
+      for (const side of ['top', 'bottom']) {
+        const marker = document.createElement('span');
+        marker.className = `element-ui-balance-marker element-ui-balance-marker-${side}`;
+        if (!isAvailabilityWindow) marker.textContent = side === 'top' ? 'P' : 'S';
+        fill.append(marker);
+      }
 
       bar.append(fill);
 
@@ -505,16 +506,9 @@ export function createTreeAnnotations({ shell, model, createSeasonControl, setEl
         const maxWater = Number(slider?.dataset.scaleMax) || waterAvailabilityMax(model);
         const [topValue, bottomValue] = balanceValues(panel.dataset.windowId);
         const isWaterBalance = panel.dataset.windowId === 'voda';
-        const isMassBalance = ['kyslik', 'co2', 'cukry'].includes(panel.dataset.windowId);
-        const isDifference = isMassBalance || isWaterBalance;
         const scaleMax = isWaterBalance ? 100 : 7;
-        const difference = topValue - bottomValue;
-        const topLevel = isDifference ? Math.max(0, difference) : topValue;
-        const bottomLevel = isDifference ? Math.max(0, -difference) : bottomValue;
-        const topInset = 47 * (1 - clamp01(topLevel / scaleMax));
-        const bottomInset = 47 * (1 - clamp01(bottomLevel / scaleMax));
-        bar.style.setProperty('--balance-top', `${topInset}%`);
-        bar.style.setProperty('--balance-bottom', `${bottomInset}%`);
+        bar.style.setProperty('--balance-top', `${100 * clamp01(topValue / scaleMax)}%`);
+        bar.style.setProperty('--balance-bottom', `${100 * clamp01(bottomValue / scaleMax)}%`);
 
         if (bar.dataset.bottomFlow === 'light-availability' && slider) {
           const lightLevel = clamp01(model.light);

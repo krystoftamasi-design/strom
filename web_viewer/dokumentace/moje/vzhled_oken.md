@@ -29,14 +29,15 @@ history:
 
 - Okna mají pevné místo v rozhraní, nezávisle na stromu a kameře; nemají pohybové animace ani spojnice ke stromu.
 - Změny hodnot a otevření detailu neposouvají údaje ani sousední okna. Ve Fotosyntéze má hodnota pevné místo přibližně pro „100 %“ a celý blok údajů je klikací. U ostatních oken prázdná plocha propouští myš ke stromu.
-- Bloky jsou bez výplně a rámečku, s nepravidelným svislým tahem vlevo v barvě tématu.
-- Tematická okna Fotosyntézy mají dvousloupcovou mřížku: vlevo přes všechny tři řádky stojí svislý I-tvarovaný bilancující pruh podle předlohy v `web_assets/okna/affinity-pruh.png` (šířka 36 až 48 px) s úzkou mezerou uprostřed (47 až 53 % výšky); vpravo jsou ve třech řádcích zarovnaných doleva horní údaj, záhlaví s nadpisem a tlačítkem +/− a dolní údaj. U kyslíku, CO₂ a cukrů je nahoře produkce a dole spotřeba. Písmena P a S na koncích pruhu označují produkci a spotřebu; jsou vystředěná v koncích pruhu, bez obrysu či stínu, a mají velikost 10 až 13 px. U světla a vody je nahoře spotřeba a dole dostupnost. Neaktivní plocha pruhu používá tlumenou, méně saturovanou barvu tématu s nízkým krytím; u kyslíku, CO₂ a cukrů zobrazuje plná výplň rozdíl produkce a spotřeby od středu směrem k větší hodnotě na škále 0 až 7 g/min; větší rozdíl vyplní příslušnou polovinu celou. U vody zobrazuje pruh rozdíl spotřeby a dostupnosti na pevné škále 0 až 100 l/h směrem k větší hodnotě; rozdíl 100 l/h a vyšší vyplní polovinu pruhu. U světla se obě hodnoty vyplňují samostatně na škále 0 až 7 %. Ovládání dostupnosti má rozšířenou plochu a viditelný klávesnicový fokus.
+- Bloky jsou bez výplně a rámečku. Mimo Fotosyntézu mají vlevo nepravidelný svislý tah v barvě tématu.
+- Tematická okna Fotosyntézy používají návrh z Affinity. Nahoře je nadpis vlevo a malované tlačítko +/− vpravo. Pod záhlavím jsou dva řádky s popiskem vlevo a hodnotou s jednotkou vpravo. Mezi řádky leží vodorovný pruh s původní texturou z Affinity, vysoký 22 až 32 px.
+- Na tlumeném podkladu pruhu jsou dvě značky. Jejich poloha zleva doprava ukazuje obě hodnoty samostatně. U kyslíku, CO₂ a cukrů je v horním řádku produkce (P) a v dolním spotřeba (S), na škále 0 až 7 g/min. U vody a světla je nahoře spotřeba a dole dostupnost. Škála vody je 0 až 100 l/h a škála světla 0 až 7 %. Ovládání dostupnosti má rozšířenou plochu a viditelný klávesnicový fokus.
 
 ### Obecný obsah
 
 - Údaje tvoří svislý blok: nadpis → hodnota s jednotkou → vzorec nebo přehled vstupů. Ve Fotosyntéze je vzorec nebo přehled vstupů v detailu.
 - Tematický detail má vlastní posuv. Je vpravo od údajů v Transpiraci a ve Fotosyntéze a pod nadpisem v Semenaci. Hlavní okno používá variantu detailu pod údaji.
-- Detail Fotosyntézy se otevírá 24 px vpravo od okna a začíná 6 px pod jeho horním okrajem. Pod vzorcem je odstavec široký nejvýše 88 % detailu, bez levého odsazení od okna a s pravým odstupem 6 % jeho šířky. Text odstavce je zarovnaný doleva a má písmo o jeden bod menší než společná velikost detailu. Vzorec používá velikost 12 až 15 px. Při jednořádkovém vzorci začíná zhruba ve výšce horního pruhu.
+- Detail Fotosyntézy začíná 6 px pod horním okrajem okna. Otevírá se s odstupem 24 px vpravo od okna, do šířky obrazovky 1050 px s odstupem 16 px vlevo. Pod vzorcem je odstavec široký nejvýše 88 % detailu s pravým odstupem 6 % jeho šířky. Text je zarovnaný doleva a má písmo o jeden bod menší než společná velikost detailu. Vzorec používá velikost 12 až 15 px.
 - Nadpis zůstává na jednom řádku bez zmenšování podle délky; při nedostatku místa je dostupný vodorovný posuv.
 - Tlačítko +/− má vlastní prostor vedle nadpisu, odstup 8 px a viditelný fokus. Základní varianta má kruhový obrys o průměru 28 px.
 - Ve Fotosyntéze má tlačítko výplň ve tvaru malované částice o šířce přibližně 17 až 20 px a klikací plochu 22 až 28 px v barvě tématu s bílým +/−. Při najetí na okno se výplň zesvětlí a symbol ztmavne.
@@ -48,7 +49,7 @@ history:
 
 - Aktuální vzor oken: Transpirace; původní grafický podklad: [podklad rozhraní](../../web_assets/ui_from_af/Untitled.svg), přibližně 2020 × 1143 px; procenta se vztahují k ploše rozhraní.
 - Transpirace má vlevo průvodce (32 % výšky) a hlavní okno dole; tematická okna jsou vpravo a střed zůstává volný pro strom.
-- Fotosyntéza: Světlo, O₂, CO₂, Cukry a Voda tvoří sloupec vpravo od stromu s levým okrajem 70 % a pravým okrajem 3 % se stejnými mezerami mezi okny. Sloupec má horní odstup 7 % a dolní 6 % výšky. Do šířky 700 px má horní odstup 14 % a levý okraj sloupce 52 % místo 70 %. Při nedostatku výšky se zmenší nadpisy a vnitřní rozestupy, velmi nízká obrazovka umožní svislý posuv. Tlačítko +/− je vpravo od nadpisu, otevřený detail vpravo od okna.
+- Fotosyntéza: Světlo, O₂, CO₂, Cukry a Voda tvoří sloupec vpravo od stromu s levým okrajem 70 % a pravým okrajem 3 % se stejnými mezerami mezi okny. Sloupec má horní odstup 7 % a dolní 6 % výšky. Do šířky 700 px má horní odstup 14 % a levý okraj sloupce 52 % místo 70 %. Šířka okna je 12 % šířky obrazovky s mezemi 132 a 224 px, nejvýše však šířka sloupce. Při nedostatku výšky se zmenší nadpisy a vnitřní rozestupy; velmi nízká obrazovka umožní svislý posuv.
 - Transpirace: vpravo shora Teplota, Chlazení a Příjem vody; první sloupec se přizpůsobuje nezalomenému nadpisu a tlačítku.
 - Hlavní okno Transpirace: levý okraj 6 %, horní okraj 65 %, šířka 55 %, výška 21 %, nejméně 140 px.
 - Pravá okna Transpirace: levý okraj 68 %, šířka 29 %, horní okraje 28 / 48 / 68 %, výška 14 %, nejméně 85 px.
@@ -61,12 +62,12 @@ history:
 - Pravý sloupec začíná na 52 % a má šířku 44 %; okna Transpirace mají horní okraje 26 / 46 / 70 % a výšku 17 %.
 - Hlavní okno: levý okraj 4 %, horní 65 %, šířka 44 %, výška 24 %; minimální výška oken se ruší. Odsazení obsahu je 12 px, tematický tah má šířku 5 px a hlavní 6 px. Tematický detail má nad sebou mezeru 8 px.
 - Používá se společná typografická škála pro úzkou obrazovku, bez výjimek podle délky nadpisu.
-- Vzorce i přehledy vstupů se mohou zalomit. Okna Fotosyntézy začínají na 52 % a jejich detaily se otevírají 16 px vpravo od okna do zbývající šířky pravého sloupce (nejvýše 44 % obrazovky).
+- Vzorce i přehledy vstupů se mohou zalomit. Detaily Fotosyntézy mají šířku nejvýše 42 % obrazovky.
 
 ### Písmo
 
 - Velikosti jsou v CSS pixelech; `vw` je 1 % šířky obrazovky. `clamp(minimum, plynulá velikost, maximum)` omezuje písmo mezi krajními hodnotami. Nejde o pevné velikosti ze SVG.
-- Okna Fotosyntézy používají větší tematický nadpis 25 až 56 px, hodnoty 20 až 30 px a popisky 13 až 18 px; velikosti se přizpůsobují prostoru.
+- Okna Fotosyntézy používají nadpis 25 až 52 px, hodnoty 15 až 24 px a popisky 12 až 18 px; velikosti se přizpůsobují prostoru.
 - Tematický nadpis: Nohemi, váha 400, `clamp(27px, 2.63vw, 53px)`; hlavní nadpis: váha 500, `clamp(40px, 4.57vw, 92px)`. Oba mají řádkování 1,05 a prostrkání −0,035 em, bez vnějších okrajů.
 - Tematická hodnota: Nohemi, váha 600, `clamp(20px, 1.15vw, 26px)`; hlavní hodnota: `clamp(38px, 4vw, 80px)`. Řádkování 1,1; číslice mají stejnou šířku. Nad hlavní hodnotou je odsazení 12 px.
 - Popisky a tematické jednotky: Satoshi, váha 300, `clamp(11px, .83vw, 16px)`, řádkování 1,35. Odstavce hlavního i tematického detailu jsou větší a mají řez medium (váha 500): `clamp(16px, 1.05vw, 20px)`, řádkování 1,4; na úzké obrazovce 14 px. Tematická jednotka má odstup 4 px od čísla; hlavní jednotka dědí velikost a barvu hodnoty bez tohoto odstupu. Odstavce detailu mají dolní mezeru 8 px, poslední 0.

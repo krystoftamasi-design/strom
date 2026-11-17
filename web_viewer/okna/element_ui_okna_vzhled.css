@@ -369,43 +369,18 @@ body.scene-night .tree-overlay .element-ui-okno .ui-word {
 }
 
 .tree-overlay .element-ui-flow-window .element-ui-readout {
-  display: grid;
-  grid-template-columns: auto minmax(0, 1fr);
-  grid-template-rows: auto auto auto;
-  align-items: center;
-  row-gap: clamp(3px, 0.55vh, 6px);
-  column-gap: clamp(10px, 1.3vw, 18px);
+  gap: 2px;
 }
 
 .tree-overlay .element-ui-flow-window .element-ui-values {
-  display: contents;
+  display: grid;
+  gap: 0;
 }
 
 .tree-overlay .element-ui-flow-window .chapter-metric {
-  display: flex;
-  flex-direction: row-reverse;
-  flex-wrap: nowrap;
-  align-items: baseline;
-  justify-content: flex-end;
+  flex-wrap: wrap;
+  justify-content: space-between;
   gap: 6px;
-  margin: 0;
-  padding: 0;
-  text-align: left;
-}
-
-.tree-overlay .element-ui-flow-window .element-ui-flow-top {
-  grid-column: 2;
-  grid-row: 1;
-}
-
-.tree-overlay .element-ui-flow-window .element-ui-readout > header {
-  grid-column: 2;
-  grid-row: 2;
-}
-
-.tree-overlay .element-ui-flow-window .element-ui-flow-bottom {
-  grid-column: 2;
-  grid-row: 3;
 }
 
 .tree-overlay .element-ui-flow-window .element-ui-unavailable>span:last-child {
@@ -421,63 +396,76 @@ body.scene-night .tree-overlay .element-ui-okno .ui-word {
 }
 
 .tree-overlay .element-ui-balance-bar {
-  grid-column: 1;
-  grid-row: 1 / span 3;
   position: relative;
-  width: clamp(22px, 3.2vh, 32px);
-  height: 100%;
-  min-height: clamp(68px, 9.5vh, 96px);
-  align-self: stretch;
-  justify-self: center;
+  height: clamp(22px, 3.1vh, 32px);
 }
 
 .tree-overlay .element-ui-balance-fill {
   position: absolute;
-  inset: 0;
+  inset: 0 -3%;
   pointer-events: none;
   overflow: hidden;
-  background: color-mix(in srgb, color-mix(in srgb, var(--ui-topic) 40%, #9b9b94) 22%, transparent);
-  mask:
-    var(--ui-flow-variant) center / 100% 100% no-repeat,
-    linear-gradient(#000 0 47%, transparent 47% 53%, #000 53% 100%);
-  mask-composite: intersect;
 }
 
-.tree-overlay .element-ui-balance-fill::after {
+.tree-overlay .element-ui-balance-fill::before,
+.tree-overlay .element-ui-balance-marker::before {
   content: '';
   position: absolute;
   inset: 0;
-  background: var(--ui-topic);
-  clip-path: inset(var(--balance-top, 50%) 0 var(--balance-bottom, 50%) 0);
+  background: var(--balance-ink);
+  mask: var(--balance-texture) center / 100% 100% no-repeat;
 }
 
-.tree-overlay .element-ui-okno:is([data-window-id="kyslik"], [data-window-id="co2"], [data-window-id="cukry"]) .element-ui-balance-bar::before,
-.tree-overlay .element-ui-okno:is([data-window-id="kyslik"], [data-window-id="co2"], [data-window-id="cukry"]) .element-ui-balance-bar::after {
-  position: absolute;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  z-index: 2;
-  color: var(--ui-ink);
-  font: 700 clamp(10px, 1.25vh, 13px)/1 var(--ui-font-text);
-  pointer-events: none;
+.tree-overlay .element-ui-balance-fill::before {
+  --balance-ink: color-mix(in srgb, var(--ui-topic) 38%, transparent);
+  --balance-texture: url('../web_assets/okna/affinity-bilance.png');
 }
-.tree-overlay .element-ui-okno:is([data-window-id="kyslik"], [data-window-id="co2"], [data-window-id="cukry"]) .element-ui-balance-bar::before { content: 'P'; top: 10%; }
-.tree-overlay .element-ui-okno:is([data-window-id="kyslik"], [data-window-id="co2"], [data-window-id="cukry"]) .element-ui-balance-bar::after { content: 'S'; top: 90%; }
+
+.tree-overlay .element-ui-balance-marker {
+  position: absolute;
+  inset-block: 0;
+  right: calc(100% - clamp(10px, var(--balance-position, 0%), 100%));
+  width: 100%;
+  display: flex;
+  justify-content: flex-end;
+  align-items: start;
+  box-sizing: border-box;
+  padding: 2px 4.6% 0 0;
+  isolation: isolate;
+  color: white;
+  font: 700 clamp(7px, 1vh, 10px)/1 var(--ui-font-text);
+}
+
+.tree-overlay .element-ui-balance-marker::before {
+  z-index: -1;
+}
+
+.tree-overlay .element-ui-balance-marker-top {
+  --balance-ink: var(--ui-topic);
+  --balance-texture: url('../web_assets/okna/affinity-bilance-horni.png');
+  --balance-position: var(--balance-top);
+}
+
+.tree-overlay .element-ui-balance-marker-bottom {
+  --balance-ink: color-mix(in srgb, var(--ui-topic) 70%, #47271e);
+  --balance-texture: url('../web_assets/okna/affinity-bilance-dolni.png');
+  --balance-position: var(--balance-bottom);
+  align-items: end;
+  padding-bottom: 2px;
+}
 
 .tree-overlay .element-ui-balance-slider {
   appearance: none;
-  writing-mode: vertical-lr;
-  direction: rtl;
   position: absolute;
   z-index: 2;
-  inset: 0 -8px;
-  width: calc(100% + 16px);
-  height: 100%;
+  inset: -3px 0;
+  width: 100%;
+  height: calc(100% + 6px);
   margin: 0;
   padding: 0;
   border: 0;
   background: transparent;
-  cursor: ns-resize;
+  cursor: ew-resize;
   pointer-events: auto;
   touch-action: none;
 }
@@ -489,8 +477,8 @@ body.scene-night .tree-overlay .element-ui-okno .ui-word {
 
 .tree-overlay .element-ui-balance-slider::-webkit-slider-thumb {
   appearance: none;
-  width: 25px;
-  height: 12px;
+  width: 12px;
+  height: 25px;
   background: transparent;
   border: 0;
 }
@@ -1018,24 +1006,20 @@ body.scene-night .chapter-context-guide .transpiration-legend {
 }
 
 .tree-overlay .element-ui-okno[data-chapter="photosynthesis"][data-side="right"] {
-  --ui-heading-size: clamp(25px, min(3.2vw, 5vh), 56px);
-  --ui-value-size: clamp(20px, min(1.7vw, 3vh), 30px);
-  --ui-text-size: clamp(13px, min(1vw, 2vh), 18px);
+  --ui-heading-size: clamp(25px, min(2.8vw, 4.8vh), 52px);
+  --ui-value-size: clamp(15px, min(1.4vw, 2.6vh), 24px);
+  --ui-text-size: clamp(12px, min(1vw, 2vh), 18px);
   --ui-text-style: 400 var(--ui-text-size)/1.35 var(--ui-font-text);
   --ui-toggle-size: clamp(26px, 3.8vh, 32px);
   position: relative;
   inset: auto;
   display: block;
-  width: max-content;
+  width: clamp(132px, 12vw, 224px);
   max-width: 100%;
   height: auto;
   min-height: 0;
   padding: 0;
   text-align: left;
-}
-
-.tree-overlay .element-ui-okno[data-chapter="photosynthesis"] .element-ui-balance-bar {
-  width: clamp(36px, 5vh, 48px);
 }
 
 .tree-overlay .element-ui-okno[data-chapter="photosynthesis"][data-side="right"] .element-ui-readout {
@@ -1045,8 +1029,8 @@ body.scene-night .chapter-context-guide .transpiration-legend {
 }
 
 .tree-overlay .element-ui-okno[data-chapter="photosynthesis"][data-side="right"] .element-ui-readout>header {
-  grid-template-columns: max-content var(--ui-toggle-size);
-  justify-content: start;
+  grid-template-columns: minmax(0, 1fr) var(--ui-toggle-size);
+  align-items: center;
 }
 
 .tree-overlay .element-ui-okno[data-chapter="photosynthesis"][data-side="right"] .element-ui-trigger {
@@ -1129,6 +1113,16 @@ body.scene-night .chapter-context-guide .transpiration-legend {
   }
 }
 
+/* The detail opens toward the scene when there is little space to the right. */
+@media (max-width: 1050px) {
+  .tree-overlay .element-ui-okno[data-chapter="photosynthesis"][data-side="right"] .annotation-reveal {
+    left: auto;
+    right: calc(100% + 16px);
+    width: min(42vw, 38ch);
+    max-width: none;
+  }
+}
+
 .tree-overlay [data-chapter="photosynthesis"] .chapter-context-guide {
   top: calc(var(--photosynthesis-top) + var(--photosynthesis-height) + 15vh);
   max-height: max(0px, calc(83% - var(--photosynthesis-top) - var(--photosynthesis-height) - 15vh));
@@ -1165,14 +1159,6 @@ body.scene-night .chapter-context-guide .transpiration-legend {
 
   .tree-overlay .element-ui-okno[data-chapter="photosynthesis"][data-side="right"] {
     max-width: 44vw;
-  }
-
-  .tree-overlay .element-ui-okno[data-chapter="photosynthesis"][data-side="right"] .annotation-reveal {
-    left: calc(100% + 16px);
-    width: min(30vw, 38ch);
-    max-width: calc(44vw - 100% - 16px);
-    max-height: 17vh;
-    margin: 0;
   }
 
   .tree-overlay [data-chapter="photosynthesis"] {
