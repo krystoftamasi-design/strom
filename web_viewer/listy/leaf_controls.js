@@ -1,9 +1,8 @@
 import * as THREE from 'three';
 import { createBranchDryingProfile } from './leaf_branch_drying.js?v=3';
 
-const LEAF_MULTIPLIER = 7;
-const MAX_LEAF_COUNT = 60000;
-const BASE_RENDER_LIMIT = 40000;
+const LEAF_MULTIPLIER = 10;
+const MAX_LEAF_COUNT = 90000;
 
 function leafKey(uv, index, atlas) {
   const x = Math.floor(uv.getX(index) * atlas.size / atlas.tile);
@@ -139,8 +138,6 @@ export class LeafControls {
     this.scale = Number(sizeInput.value) / 100;
     this.growthProgress = 1.0;
     this.count = Number(countInput.value);
-    this.renderLimit = BASE_RENDER_LIMIT;
-    this.fastSamples = 0;
     sizeInput.addEventListener('input', () => { this.scale = Number(sizeInput.value) / 100; this.applySize(); this.notify(); });
     countInput.addEventListener('input', () => { this.count = Number(countInput.value); this.applyCount(); this.notify(); });
     typeButtons.forEach(button => button.addEventListener('click', () => this.setType(button.dataset.leafType)));
@@ -498,31 +495,6 @@ export class LeafControls {
     return Math.round(max * baseCount / this.total);
   }
 
-  // Extra density is optional. Ramp it up only after sustained headroom and
-  // drop it faster when frame rate falls, without changing the slider request.
-  reportFrameRate(fps) {
-    if (!this.models.length || !this.visible || this.count <= BASE_RENDER_LIMIT || !Number.isFinite(fps)) {
-      this.fastSamples = 0;
-      return;
-    }
-    let next = this.renderLimit;
-    if (fps < 49) {
-      next = Math.max(BASE_RENDER_LIMIT, next - 5000);
-      this.fastSamples = 0;
-    } else if (fps >= 57 && next < this.count) {
-      if (++this.fastSamples >= 5) {
-        next = Math.min(this.count, next + 2500);
-        this.fastSamples = 0;
-      }
-    } else {
-      this.fastSamples = 0;
-    }
-    if (next !== this.renderLimit) {
-      this.renderLimit = next;
-      this.applyCount();
-    }
-  }
-
   applyCount() {
     // Visibility is initialized before the GLB arrives. Keep the requested
     // count until there are meshes to measure instead of clamping it to zero.
@@ -534,14 +506,12 @@ export class LeafControls {
     this.countInput.max = this.maxForBaseCount(baseTotal);
     this.count = Math.max(0, Math.min(Math.round(this.count), Number(this.countInput.max)));
     this.countInput.value = this.count;
-    if (this.count <= BASE_RENDER_LIMIT) this.renderLimit = BASE_RENDER_LIMIT;
-    const renderedCount = Math.min(this.count, this.renderLimit);
-    let remaining = renderedCount;
+    let remaining = this.count;
     this.models.forEach((model) => {
       const { mesh, baseCount, ends, leaves } = model;
       const isEnabled = enabled.includes(model);
       const count = !isEnabled ? 0 : model === enabled.at(-1)
-        ? remaining : Math.round(renderedCount * baseCount / baseTotal);
+        ? remaining : Math.round(this.count * baseCount / baseTotal);
       if (mesh.geometry.hasAttribute('leafFallStartTime')) {
         const times = mesh.geometry.attributes.leafFallStartTime;
         const before = model.selectedCount ?? 0;
@@ -560,8 +530,8 @@ export class LeafControls {
       mesh.visible = isEnabled && this.visible;
       remaining -= count;
     });
-    const formatted = renderedCount.toLocaleString('cs-CZ');
-    this.countLabel.textContent = renderedCount === this.count ? formatted : `${formatted} / ${this.count.toLocaleString('cs-CZ')}`;
+    const formatted = this.count.toLocaleString('cs-CZ');
+    this.countLabel.textContent = formatted;
     if (this.canopyLabel) this.canopyLabel.textContent = `🍃 Koruna a listy (${formatted} listů)`;
   }
 

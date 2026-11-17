@@ -41,7 +41,7 @@ history:
 
 - Klávesa K otevře panel s pokročilými nastaveními modelu a scény. Další stisk K nebo Escape panel zavře.
 - Záhlaví otevřeného panelu Nastavení zobrazení ukazuje aktuální FPS.
-- Posuvník Počet listů má rozsah do 60 000. Nad 40 000 se hustota postupně zvyšuje jen při dostatečné snímkové frekvenci a při jejím poklesu se sníží. Pokud se počet liší od nastavení, panel zobrazí skutečný a požadovaný počet.
+- Posuvník Počet listů nastavuje pevnou hustotu koruny v rozsahu 0 až 90 000 listů nezávisle na FPS.
 
 #### Ovládání času
 
