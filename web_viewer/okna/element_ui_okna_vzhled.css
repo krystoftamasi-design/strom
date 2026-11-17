@@ -1094,8 +1094,17 @@ body.scene-night .chapter-context-guide .transpiration-legend {
   padding: 7vh 3% 6vh max(4%, calc(97% - 2 * var(--flow-window-width) - var(--flow-gap)));
 }
 
-.tree-overlay article[data-chapter="photosynthesis"]:has(> [data-window-id="kyslik"]:not(.collapsed)) {
+.tree-overlay article[data-chapter="photosynthesis"]:has(> [data-window-id="kyslik"]:not(.collapsed)),
+.tree-overlay article[data-chapter="photosynthesis"]:has(> [data-window-id="co2"]:not(.collapsed)):has(> [data-window-id="cukry"]:not(.collapsed)) {
   column-gap: calc(var(--flow-detail-width) + 2 * var(--flow-gap));
+}
+
+.tree-overlay article[data-chapter="photosynthesis"]:has(> [data-window-id="kyslik"]:not(.collapsed)):has(> [data-window-id="co2"]:not(.collapsed)):has(> [data-window-id="cukry"]:not(.collapsed)) {
+  column-gap: calc(2 * var(--flow-detail-width) + 3 * var(--flow-gap));
+}
+
+.tree-overlay article[data-chapter="photosynthesis"]:has(> [data-window-id="co2"]:not(.collapsed)) > [data-window-id="kyslik"] {
+  grid-row: 3;
 }
 
 .tree-overlay .element-ui-okno[data-chapter="photosynthesis"][data-window-id="svetlo"] {
@@ -1201,6 +1210,15 @@ body.scene-night .chapter-context-guide .transpiration-legend {
   font-variant-numeric: tabular-nums;
 }
 
+.tree-overlay .element-ui-okno[data-chapter="photosynthesis"][data-side="right"][data-window-id="voda"] {
+  display: flex;
+  flex-direction: column-reverse;
+}
+
+.tree-overlay .element-ui-okno[data-chapter="photosynthesis"][data-side="right"][data-window-id="voda"] .element-ui-readout {
+  align-self: stretch;
+}
+
 .tree-overlay .element-ui-okno[data-chapter="photosynthesis"][data-side="right"] .annotation-reveal {
   position: absolute;
   top: 6px;
@@ -1212,6 +1230,33 @@ body.scene-night .chapter-context-guide .transpiration-legend {
   max-height: 17vh;
   margin: 0;
   text-align: left;
+}
+
+.tree-overlay .element-ui-okno[data-chapter="photosynthesis"][data-side="right"][data-window-id="svetlo"] .annotation-reveal {
+  position: relative;
+  top: auto;
+  left: auto;
+  right: auto;
+  width: 100%;
+  height: auto;
+  max-height: 14vh;
+  margin-top: 8px;
+}
+
+.tree-overlay .element-ui-okno[data-chapter="photosynthesis"][data-side="right"][data-window-id="voda"] .annotation-reveal {
+  position: relative;
+  top: auto;
+  left: auto;
+  right: auto;
+  width: 100%;
+  height: auto;
+  max-height: 14vh;
+  margin-bottom: 8px;
+}
+
+.tree-overlay .element-ui-okno[data-chapter="photosynthesis"][data-side="right"]:is([data-window-id="co2"], [data-window-id="cukry"]) .annotation-reveal {
+  left: auto;
+  right: calc(100% + var(--flow-gap));
 }
 
 .tree-overlay .element-ui-flow-window .annotation-body>.ui-window-formula {
