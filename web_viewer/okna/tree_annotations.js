@@ -265,10 +265,15 @@ export function createTreeAnnotations({ shell, model, createSeasonControl, setEl
   const capacityInput = shell.querySelector('[data-prototype-capacity]');
   let prototypeCapacity = capacityInput.valueAsNumber;
   let prototypeReserve = prototypeCapacity / 4;
+  let leafSugar = 0;
+  let leafSugarTransferred = false;
+  const sugarEventOutput = shell.querySelector('[data-prototype-sugar-event]');
+  const eventGrams = new Intl.NumberFormat('cs-CZ', { maximumFractionDigits: 1 });
   capacityInput.addEventListener('change', () => {
     if (capacityInput.validity.valid && Number.isSafeInteger(capacityInput.valueAsNumber)) {
       prototypeCapacity = capacityInput.valueAsNumber;
       prototypeReserve = Math.min(prototypeReserve, prototypeCapacity);
+      leafSugar = Math.min(leafSugar, 0.05 * prototypeCapacity);
     }
     capacityInput.value = String(prototypeCapacity);
   });
@@ -588,6 +593,15 @@ export function createTreeAnnotations({ shell, model, createSeasonControl, setEl
   let lastSmoothTime = performance.now();
 
   return {
+    applySugarEvent(event) {
+      const budburst = event === 'budburst';
+      if (!budburst && leafSugarTransferred) return;
+      const amount = budburst ? 0.65 * prototypeReserve : Math.min(leafSugar, prototypeCapacity - prototypeReserve);
+      prototypeReserve += budburst ? -amount : amount;
+      leafSugar = 0;
+      leafSugarTransferred = !budburst;
+      sugarEventOutput.value = `${budburst ? 'Rašení −' : 'Stažení cukrů z listů +'}${eventGrams.format(amount)} g`;
+    },
     update(chapter, playbackDelta = 0, modelMinutes = 0) {
       const now = performance.now();
       const dt = (now - lastSmoothTime) / 1000;
@@ -606,7 +620,10 @@ export function createTreeAnnotations({ shell, model, createSeasonControl, setEl
         const production = model.glucoseGramsPerMinute;
         const consumption = model.respirationSugar;
         if (model.ready && Number.isFinite(production) && Number.isFinite(consumption)) {
-          prototypeReserve = Math.max(0, Math.min(prototypeCapacity, prototypeReserve + (production - consumption) * modelMinutes));
+          const balance = (production - consumption) * modelMinutes;
+          const toLeaves = leafSugarTransferred ? 0 : Math.min(Math.max(0, balance) * 0.05, 0.05 * prototypeCapacity - leafSugar);
+          leafSugar += toLeaves;
+          prototypeReserve = Math.max(0, Math.min(prototypeCapacity, prototypeReserve + balance - toLeaves));
           for (const prototype of prototypes) prototype.update(production, consumption, prototypeCapacity, prototypeReserve);
         }
       }
