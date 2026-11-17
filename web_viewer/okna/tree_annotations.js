@@ -175,10 +175,10 @@ function createOxygenBalance() {
   panel.innerHTML = `
     <div class="oxygen-balance">
       <abbr title="Zásoba">Z</abbr>
-    </div>
-    <div class="oxygen-balance-flows">
-      <div><span></span><abbr title="Produkce">P</abbr></div>
-      <div><span></span><abbr title="Spotřeba">S</abbr></div>
+      <div class="oxygen-balance-flows">
+        <div><span></span><abbr title="Produkce">P</abbr></div>
+        <div><span></span><abbr title="Spotřeba">S</abbr></div>
+      </div>
     </div>
     <div class="oxygen-balance-settings">
       <label>Max. zásoba (g) <input type="number" min="1" step="1" value="${capacity}" required></label>

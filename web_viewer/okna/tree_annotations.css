@@ -143,12 +143,11 @@ body .tree-overlay [data-chapter] .chapter-context-guide h2 { font-weight: 400; 
   --oxygen-rule: color-mix(in srgb, var(--ui-ink) 45%, var(--oxygen-paper));
   margin-block-start: 14px;
   color: var(--ui-ink);
-  font: 500 clamp(11px, 1.65vh, 14px)/1.1 var(--ui-font-text);
+  font: 500 clamp(11px, 1.65vh, 14px)/1.1 var(--ui-font-display);
 }
 
 .tree-overlay .oxygen-balance {
-  display: grid;
-  place-items: center;
+  position: relative;
   inline-size: min(100%, clamp(134px, 22vh, 182px));
   aspect-ratio: 1;
   overflow: hidden;
@@ -168,6 +167,11 @@ body.scene-night .tree-overlay .oxygen-balance-panel {
   text-decoration: none;
 }
 
+.oxygen-balance > abbr {
+  position: absolute;
+  inset: 12% 0 auto;
+}
+
 .tree-overlay .oxygen-balance {
   background: linear-gradient(
     to top,
@@ -177,11 +181,16 @@ body.scene-night .tree-overlay .oxygen-balance-panel {
 }
 
 .oxygen-balance-flows {
+  position: absolute;
+  inset: 29% 21% 17%;
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  inline-size: min(100%, clamp(134px, 22vh, 182px));
-  margin-block-start: 8px;
   text-align: center;
+}
+
+.oxygen-balance-flows > div {
+  display: grid;
+  grid-template-rows: minmax(0, 1fr) auto;
 }
 
 .oxygen-balance-flows > div:first-child { grid-column: 1; }
@@ -191,7 +200,6 @@ body.scene-night .tree-overlay .oxygen-balance-panel {
   display: flex;
   align-items: end;
   justify-content: center;
-  block-size: 60px;
   margin-block-end: 4px;
   border-block-end: 1px solid var(--oxygen-rule);
 }
@@ -200,7 +208,7 @@ body.scene-night .tree-overlay .oxygen-balance-panel {
   content: '';
   inline-size: 40%;
   block-size: var(--flow-height, 0%);
-  background: var(--ui-oxygen);
+  background: color-mix(in srgb, var(--ui-oxygen) 60%, var(--ui-ink));
 }
 
 .oxygen-balance-flows[hidden],
@@ -242,7 +250,7 @@ body.scene-night .tree-overlay .oxygen-balance-panel {
 @media (max-width: 700px) {
   .tree-overlay article[data-chapter="photosynthesis"]:has(.oxygen-balance) {
     --photosynthesis-top: 22vh;
-    --oxygen-guide-height: clamp(298px, 43vh, 374px);
+    --oxygen-guide-height: clamp(228px, 37vh, 302px);
     padding-top: calc(var(--photosynthesis-top) + var(--ui-main-heading-size) + var(--oxygen-guide-height) + 28px);
     overflow-y: auto;
   }
