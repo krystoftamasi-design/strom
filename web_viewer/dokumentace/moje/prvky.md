@@ -40,6 +40,7 @@ history:
 #### Manager
 
 - Klávesa K otevře panel s pokročilými nastaveními modelu a scény. Další stisk K nebo Escape panel zavře.
+- Záhlaví otevřeného panelu Nastavení zobrazení ukazuje aktuální FPS.
 - Posuvník Počet listů umožňuje zobrazit až 40 000 listů.
 
 #### Ovládání času
