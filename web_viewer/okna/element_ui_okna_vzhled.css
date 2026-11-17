@@ -396,6 +396,8 @@ body.scene-night .tree-overlay .element-ui-okno .ui-word {
 }
 
 .tree-overlay .element-ui-balance-bar {
+  --balance-shaft: clamp(4px, .55vh, 6px);
+  --balance-marker-overlap: 1px;
   position: relative;
   height: clamp(22px, 3.1vh, 32px);
 }
@@ -407,58 +409,63 @@ body.scene-night .tree-overlay .element-ui-okno .ui-word {
   overflow: hidden;
 }
 
-.tree-overlay :is(.element-ui-balance-track, .element-ui-balance-marker) {
+.tree-overlay .element-ui-balance-track {
   position: absolute;
+  inset: 0;
+  --balance-ink: color-mix(in srgb, var(--ui-topic) 28%, #dbcac4);
   /* Apply after the brush mask to restore solid paint and keep its soft edges. */
   filter: url('../web_assets/okna/affinity-bilance-kryti.svg#brush');
 }
 
-.tree-overlay .element-ui-balance-track::before,
-.tree-overlay .element-ui-balance-marker::before {
+.tree-overlay .element-ui-balance-track::before {
   content: '';
   position: absolute;
   inset: 0;
   background: var(--balance-ink);
   /* Start on the straight shaft of the brush, keeping its right-hand cap. */
-  mask: var(--balance-texture) 90% center / 138% 100% no-repeat;
-}
-
-.tree-overlay .element-ui-balance-track {
-  inset: 0;
-  --balance-ink: color-mix(in srgb, var(--ui-topic) 28%, #dbcac4);
-  --balance-texture: url('../web_assets/okna/affinity-bilance.png');
+  mask: url('../web_assets/okna/affinity-bilance.png') 90% center / 138% 100% no-repeat;
 }
 
 .tree-overlay .element-ui-balance-marker {
-  inset-block: 0;
+  --balance-ink: var(--ui-topic);
+  position: absolute;
   /* Reserve enough shaft before the marker even at zero. */
   right: calc((100% - var(--balance-position, 0%)) * .8);
-  width: 100%;
-  display: flex;
-  justify-content: flex-end;
-  align-items: start;
-  box-sizing: border-box;
-  padding: 2px 2.5% 0 0;
-  isolation: isolate;
-  --balance-ink: var(--ui-topic);
+  width: clamp(11px, 1.3vh, 14px);
+  height: clamp(12px, 1.55vh, 16px);
+  display: grid;
+  place-items: center;
+  border-radius: 999px;
+  background: var(--balance-ink);
   color: white;
-  font: 700 clamp(7px, 1vh, 10px)/1 var(--ui-font-text);
+  font: 700 clamp(8px, 1vh, 10px)/1 var(--ui-font-text);
 }
 
 .tree-overlay .element-ui-balance-marker::before {
-  z-index: -1;
+  content: '';
+  position: absolute;
+  right: 50%;
+  width: 100vw;
+  height: var(--balance-shaft);
+  background: var(--balance-ink);
 }
 
 .tree-overlay .element-ui-balance-marker-top {
-  --balance-texture: url('../web_assets/okna/affinity-bilance-horni.png');
   --balance-position: var(--balance-top);
+  bottom: calc(50% - var(--balance-marker-overlap));
+}
+
+.tree-overlay .element-ui-balance-marker-top::before {
+  bottom: calc(var(--balance-marker-overlap) - var(--balance-shaft) / 2);
 }
 
 .tree-overlay .element-ui-balance-marker-bottom {
-  --balance-texture: url('../web_assets/okna/affinity-bilance-dolni.png');
   --balance-position: var(--balance-bottom);
-  align-items: end;
-  padding-bottom: 2px;
+  top: calc(50% - var(--balance-marker-overlap));
+}
+
+.tree-overlay .element-ui-balance-marker-bottom::before {
+  top: calc(var(--balance-marker-overlap) - var(--balance-shaft) / 2);
 }
 
 .tree-overlay .element-ui-balance-consumption {
