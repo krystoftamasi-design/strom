@@ -509,11 +509,11 @@ body.scene-night .oxygen-balance-settings { --oxygen-paper: #454749; }
 .tree-overlay .season-center-tick {
   position: absolute;
   inset: auto auto 0 48%;
-  width: 12px;
-  height: clamp(14px, 3.8vh, 38px);
-  border-radius: 1px;
+  width: 6px;
+  height: clamp(28px, 5.5vh, 56px);
+  border-radius: 3px;
   background: var(--ui-ink);
-  mask: url('../../obrazky/textury/OVLADACI%20LINKA/LINKA.png') center / 100% 100% no-repeat;
+  z-index: 2;
   translate: -50% 0;
   pointer-events: none;
 }
