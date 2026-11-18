@@ -3689,6 +3689,9 @@
     const sliderSunElevation = document.getElementById('sliderSunElevation');
     const valSunElevation = document.getElementById('valSunElevation');
     let timeOfDayHours = 12;
+    let displayedSunHour = timeOfDayHours;
+    let wasSeekingSeason = false;
+    let sunSeekTransition = null;
     let timePaused = false;
     let timePlaybackSpeed = 1;
     const btnTimePause = document.getElementById('btnTimePause');
@@ -4108,6 +4111,9 @@
           syncSeasonFoliage();
           // Start the intro just before sunrise.
           timeOfDayHours = 2;
+          displayedSunHour = timeOfDayHours;
+          wasSeekingSeason = false;
+          sunSeekTransition = null;
           sliderSunElevation.value = 0;
           sliderLightRot.value = 90;
           ecology.dayCycleEnabled = true;
@@ -4235,13 +4241,14 @@
       // Hold the sun while the ring is moving across dates.
       const previousSeason = ecology.seasonPosition;
       const advanced = chapterApp.advanceSeason(playbackDelta);
+      const seekingSeason = !chapterApp.introduction && Boolean(seasonRingControl?.isSeeking);
       let nextHour = timeOfDayHours;
       let modelMinutes = 0;
       if (chapterApp.introduction) {
         const night = timeOfDayHours >= 18 || timeOfDayHours < 6;
         modelMinutes = playbackDelta * MODEL_MINUTES_PER_SECOND * (night ? 14 : 5);
         nextHour = (timeOfDayHours + modelMinutes / 60) % 24;
-      } else if (!seasonRingControl?.isSeeking) {
+      } else if (!seekingSeason) {
         const solarHour = solarHoursForMonthClock(monthClockForSeason(ecology.seasonPosition));
         nextHour = ((solarHour % 24) + 24) % 24;
         if (advanced) {
@@ -4249,11 +4256,26 @@
           modelMinutes = Math.max(0, (solarHour - previousHour) * 60);
         }
       }
-      if (nextHour !== timeOfDayHours) {
-        timeOfDayHours = nextHour;
+      if (seekingSeason) sunSeekTransition = null;
+      else if (wasSeekingSeason && !reducedElementMotion.matches) {
+        sunSeekTransition = { from: displayedSunHour, start: now };
+      }
+      wasSeekingSeason = seekingSeason;
+      timeOfDayHours = nextHour;
+      let sunHour = seekingSeason ? displayedSunHour : nextHour;
+      const animatingSun = sunSeekTransition !== null;
+      if (sunSeekTransition) {
+        const progress = Math.min(1, (now - sunSeekTransition.start) / 220);
+        const distance = ((nextHour - sunSeekTransition.from + 36) % 24) - 12;
+        const eased = 1 - (1 - progress) ** 3;
+        sunHour = progress === 1 ? nextHour : (sunSeekTransition.from + distance * eased + 24) % 24;
+        if (progress === 1) sunSeekTransition = null;
+      }
+      if (sunHour !== displayedSunHour) {
+        displayedSunHour = sunHour;
         if (ecology.dayCycleEnabled) {
-          updateSunFromDayClock(timeOfDayHours);
-          if (!advanced && !chapterApp.introduction) invalidateShadows();
+          updateSunFromDayClock(sunHour);
+          if ((animatingSun || !advanced) && !chapterApp.introduction) invalidateShadows();
         }
       }
       updateWaterAndDrought(modelMinutes);
