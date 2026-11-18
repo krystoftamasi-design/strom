@@ -63,6 +63,15 @@ history:
 - Cíl: srozumitelně ukázat, proč může spotřeba po určitou dobu převyšovat produkci; jde o zjednodušené znázornění, nikoli přesný model růstu.
 - Stav: Nápad; počáteční stav zásoby a chování při změně rychlosti či přeskočení času je třeba dopracovat.
 
+### Jeden denní cyklus za měsíc
+
+- Roční kalendář řídí datum i polohu slunce. Každý měsíc má jeden cyklus dne a noci, tedy dvanáct cyklů za rok. Při rychlosti 1× může měsíc trvat 24 sekund, z toho 20 sekund den a 4 sekundy noc. Pro bilanci mají den a noc po 12 modelových hodinách. Kratší noční animace tak stále zahrnuje celou noční spotřebu.
+- Pauza a rychlost platí pro datum, slunce i zásobu společně. Ruční posun období rovnou nastaví polohu slunce a referenční zásobu pro vybrané datum. Přeskočený čas se nepromítne do odparu, dýchání ani sezónních událostí.
+- P a S ukazují okamžitou produkci a spotřebu v g/min. Z se mění podle bilance celého dne přepočtené na měsíc. Změny vody a světla se do zásoby započítávají až od okamžiku změny.
+- Odběr cukrů při rašení probíhá postupně s růstem listů. Odečítá se od Z a současně se přičítá ke spotřebě S. Podzimní přenos cukrů z listů se při začátku opadu přičítá k P a doplňuje Z do výše kapacity.
+- Při ověřování porovnat množství odparu a příjmu vody za celý cyklus před a po zrychlení noci. Změna rychlosti přehrávání nesmí sama změnit bilanci za stejné období. Ověřit také, že pauza zásobu zastaví, ruční posun nespustí rašení ani podzimní přesun podruhé a že se odběr při rašení neodečte dvakrát. Při dlouhém suchu nebo malé kapacitě se zásoba drží mezi nulou a maximem.
+- Návrh k implementaci. Cílem je krátká viditelná noc a srozumitelná měsíční bilance.
+
 ### Možné otázky k ověření porozumění
 
 - Návrh: ptát se „Odkud se bere většina hmoty nového dřeva a listů?“.
