@@ -1,6 +1,6 @@
 import { zobrazitHodnotu, vyhladitHodnotu } from '../okna/element_ui_okna_veliciny.js?v=affinity-windows-layout-2';
 import { SEASONS } from '../ekologie/tree_ecology.js?v=light-slider-1';
-import { createTreeAnnotations } from '../okna/tree_annotations.js?v=affinity-stock-1';
+import { createTreeAnnotations } from '../okna/tree_annotations.js?v=annual-sugar-2';
 
 const chapters = [
   ['seasons', 'Období'], ['photosynthesis', 'Fotosyntéza'], ['transpiration', 'Transpirace'],
@@ -53,8 +53,8 @@ export function createChapters({ model, applySeason, setSun, setAzimuth, setVisu
       <article data-chapter="prototype" hidden tabindex="0">
         <h2>Prototyp</h2>
         <div class="oxygen-balance-settings">
-          <label>Max. zásoba cukrů (g) <input data-prototype-capacity type="number" min="1" step="1" value="1000" required></label>
-          <output data-prototype-sugar-event></output>
+          <label>Max. zásoba cukrů (g) <input data-prototype-capacity type="number" min="1" step="1" value="40000" required></label>
+          <span>Zásoba cukrů <output data-prototype-sugar-stock aria-live="off">—</output></span>
         </div>
         <div class="prototype-list"></div>
       </article>
@@ -293,12 +293,9 @@ export function createChapters({ model, applySeason, setSun, setAzimuth, setVisu
     get introduction() { return chapter === 'intro'; },
     get chapter() { return chapter; },
     select,
-    applySugarEvent(event) {
-      if (ready && chapter === 'prototype') treeAnnotations.applySugarEvent(event);
-    },
-    updateScene(playbackDelta = 0, modelMinutes = 0, budburstGrowth = 0) {
+    updateScene(playbackDelta = 0) {
       if (!ready) return;
-      treeAnnotations.update(chapter, playbackDelta, modelMinutes, budburstGrowth);
+      treeAnnotations.update(chapter, playbackDelta);
       // Refresh the current model after evaluation, even while its clock is paused.
       const now = performance.now();
       if (now - lastUI >= 50) { render(); lastUI = now; }

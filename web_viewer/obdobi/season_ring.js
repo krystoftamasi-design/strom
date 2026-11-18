@@ -1,5 +1,5 @@
 import * as THREE from '../web_assets/vendor/three.module.js';
-import { createSeasonTimeline } from './season_timeline.js?v=date-controls-1';
+import { createSeasonTimeline } from './season_timeline.js?v=annual-sugar-1';
 
 const SEASONS = ['spring', 'summer', 'autumn', 'latefall'];
 const LABELS = ['JARO', 'LÉTO', 'PODZIM', 'ZIMA'];
@@ -230,7 +230,7 @@ export function createSeasonRing({ scene, camera, controls, canvas, model }) {
         timeline.moveTo(timeline.position + advance);
         wheelRemaining -= advance;
       }
-      timeline.update(chapter, Boolean(drag), playbackDelta);
+      const advanced = timeline.update(chapter, Boolean(drag), playbackDelta);
       group.visible = chapter !== 'intro';
       interactive = chapter !== 'intro';
       if (!drag) {
@@ -239,6 +239,7 @@ export function createSeasonRing({ scene, camera, controls, canvas, model }) {
         group.rotation.y = rotationForDate(position);
       }
       labels.forEach(label => { label.material.opacity = 1; });
+      return advanced;
     }
   };
 }

@@ -87,11 +87,17 @@ export function createSeasonTimeline(model) {
         position = model.seasonPosition;
         lastValue = Number(slider.value);
       }
+      let advanced = false;
       if (!dragging) {
         if (Number(slider.value) !== lastValue) { readSlider(); setAutomatic(false); }
-        if (automatic && playbackDelta > 0) { position += playbackDelta / YEAR_SECONDS * 4; writeSlider(); }
+        if (automatic && playbackDelta > 0) {
+          position += playbackDelta / YEAR_SECONDS * 4;
+          writeSlider();
+          advanced = true;
+        }
       }
       showDate();
+      return advanced;
     }
   };
 }

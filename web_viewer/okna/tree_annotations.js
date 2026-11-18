@@ -1,6 +1,7 @@
 import { oknaPodleKapitol, kontextoveTexty, pruvodceTranspiraci } from './element_ui_okna_obsah.js?v=affinity-stock-1';
 import { veliciny, vstupyVzorce, ohlasitChybuOken, vyhladitHodnotu } from './element_ui_okna_veliciny.js?v=affinity-windows-layout-2';
 import { zkontrolovatOkna } from './element_ui_okna_kontrola.js?v=seeds-1';
+import { createAnnualSugarCurve, createSeasonalSugarBalance, sugarProductionFactor } from '../ekologie/rocni_zasoba_cukru.js?v=2';
 
 // Original embedded assets from ui_new.svg, at their exported stroke widths.
 const strokes = {
@@ -316,18 +317,14 @@ export function createTreeAnnotations({ shell, model, createSeasonControl, setEl
   const prototypes = [createSugarStock(), createOxygenBalance('lines'), createOxygenBalance('rectangle')];
   const capacityInput = shell.querySelector('[data-prototype-capacity]');
   let prototypeCapacity = capacityInput.valueAsNumber;
-  let prototypeReserve = prototypeCapacity / 4;
-  const fullBudburstSugar = 650;
-  let budburstSugarUsed = 0;
-  let leafSugar = 0;
-  let leafSugarTransferred = false;
-  const sugarEventOutput = shell.querySelector('[data-prototype-sugar-event]');
-  const eventGrams = new Intl.NumberFormat('cs-CZ', { maximumFractionDigits: 1 });
+  let sugarBalance;
+  let curveCrownArea;
+  const sugarStockOutput = shell.querySelector('[data-prototype-sugar-stock]');
+  const stockKg = new Intl.NumberFormat('cs-CZ', { maximumFractionDigits: 2 });
   capacityInput.addEventListener('change', () => {
     if (capacityInput.validity.valid && Number.isSafeInteger(capacityInput.valueAsNumber)) {
       prototypeCapacity = capacityInput.valueAsNumber;
-      prototypeReserve = Math.min(prototypeReserve, prototypeCapacity);
-      leafSugar = Math.min(leafSugar, 0.05 * prototypeCapacity);
+      sugarBalance = undefined;
     }
     capacityInput.value = String(prototypeCapacity);
   });
@@ -659,17 +656,7 @@ export function createTreeAnnotations({ shell, model, createSeasonControl, setEl
   let lastSmoothTime = performance.now();
 
   return {
-    applySugarEvent(event) {
-      const budburst = event === 'budburst';
-      if (!budburst && leafSugarTransferred) return;
-      const amount = budburst ? 0 : Math.min(leafSugar, prototypeCapacity - prototypeReserve);
-      if (budburst) budburstSugarUsed = 0;
-      prototypeReserve += amount;
-      leafSugar = 0;
-      leafSugarTransferred = !budburst;
-      sugarEventOutput.value = budburst ? 'Rašení' : `Stažení cukrů z listů +${eventGrams.format(amount)} g`;
-    },
-    update(chapter, playbackDelta = 0, modelMinutes = 0, budburstGrowth = 0) {
+    update(chapter, playbackDelta = 0) {
       const now = performance.now();
       const dt = (now - lastSmoothTime) / 1000;
       lastSmoothTime = now;
@@ -683,28 +670,6 @@ export function createTreeAnnotations({ shell, model, createSeasonControl, setEl
       const chapterChanged = chapter !== activeChapter;
       activeChapter = chapter;
       if (chapterChanged) syncWindowHover();
-      if (chapter === 'prototype') {
-        const production = model.glucoseGramsPerMinute;
-        const respiration = model.respirationSugar;
-        if (model.ready && Number.isFinite(production) && Number.isFinite(respiration)) {
-          const balanceBeforeGrowth = (production - respiration) * modelMinutes;
-          const budburstUse = modelMinutes > 0
-            ? Math.min(fullBudburstSugar * budburstGrowth, fullBudburstSugar - budburstSugarUsed,
-              Math.max(0, prototypeReserve + balanceBeforeGrowth))
-            : 0;
-          const consumption = respiration + (modelMinutes > 0 ? budburstUse / modelMinutes : 0);
-          if (budburstUse > 0) {
-            budburstSugarUsed += budburstUse;
-            const text = `Rašení −${eventGrams.format(budburstSugarUsed)} g`;
-            if (sugarEventOutput.value !== text) sugarEventOutput.value = text;
-          }
-          const balance = balanceBeforeGrowth - budburstUse;
-          const toLeaves = leafSugarTransferred ? 0 : Math.min(Math.max(0, balance) * 0.05, 0.05 * prototypeCapacity - leafSugar);
-          leafSugar += toLeaves;
-          prototypeReserve = Math.max(0, Math.min(prototypeCapacity, prototypeReserve + balance - toLeaves));
-          for (const prototype of prototypes) prototype.update(production, consumption, prototypeCapacity, prototypeReserve);
-        }
-      }
       const clamp01 = value => (Number.isFinite(value) ? Math.max(0, Math.min(1, value)) : 0);
       const balanceValues = windowId => {
         const clean = value => (Number.isFinite(value) && value > 0 ? value : 0);
@@ -779,7 +744,23 @@ export function createTreeAnnotations({ shell, model, createSeasonControl, setEl
       }
       syncHighlights();
       seasonRow.hidden = chapter === 'intro';
-      seasonControl.update(chapter, playbackDelta);
+      const previousSeason = model.seasonPosition;
+      const advanced = seasonControl.update(chapter, playbackDelta);
+      if (chapter === 'intro' || !model.ready) return;
+      if (!sugarBalance || curveCrownArea !== model.crownArea) {
+        const annualCurve = createAnnualSugarCurve(model, prototypeCapacity);
+        sugarBalance = createSeasonalSugarBalance(annualCurve, prototypeCapacity);
+        curveCrownArea = model.crownArea;
+      }
+      const { reserve, budburstRate, autumnRate } = sugarBalance.update(previousSeason, model.seasonPosition, advanced,
+        sugarProductionFactor(model));
+      if (chapter !== 'prototype') return;
+      const text = `${stockKg.format(reserve / 1000)} kg`;
+      if (sugarStockOutput.value !== text) sugarStockOutput.value = text;
+      for (const prototype of prototypes) {
+        prototype.update(model.glucoseGramsPerMinute + autumnRate, model.respirationSugar + budburstRate,
+          prototypeCapacity, reserve);
+      }
     }
   };
 }

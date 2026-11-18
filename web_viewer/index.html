@@ -1227,10 +1227,10 @@
     import { createSunClouds } from './vykreslovani/sun_clouds.js?v=2';
     import { createWaterBrushMaterial, addWaterBrushAttributes } from './vykreslovani/water_brush.js?v=highlight-width-3';
     import { TreeEcology, SEASONS, MODEL_MINUTES_PER_SECOND } from './ekologie/tree_ecology.js?v=light-slider-1';
-    import { createChapters } from './kapitoly/chapters.js?v=affinity-stock-1';
+    import { createChapters } from './kapitoly/chapters.js?v=annual-sugar-2';
     import { createSeedChapter } from './kapitoly/seed_chapter.js';
     import { createTreeBird } from './vykreslovani/tree_bird.js?v=perch-grid-1';
-    import { createSeasonRing } from './obdobi/season_ring.js?v=date-controls-1';
+    import { createSeasonRing } from './obdobi/season_ring.js?v=annual-sugar-1';
     import { createIntroForest } from './obdobi/intro_forest.js?v=intro-closer-camera-2';
     import { seasonColorForPosition } from './obdobi/season_timeline.js?v=beech-calendar-1';
     import { BEECH_CALENDAR, seasonDayForPosition, beechLeafFallProgress, beechLeafGrowthProgress } from './obdobi/beech_phenology.js?v=1';
@@ -3139,18 +3139,10 @@
 
     // The presentation and interactive ring both drive this same leaf lifecycle.
     function updateSeasonalLeaves(delta, realDelta) {
-      if (!ecology.ready) return 0;
-      let budburstGrowth = 0;
+      if (!ecology.ready) return;
       const seasonPhase = ((ecology.seasonPosition % 4) + 4) % 4;
       const reachedSpring = previousSeasonPhase !== null && previousSeasonPhase >= 2 && seasonPhase < 1;
       const crossedBudburst = crossedSpring(previousSeasonPosition, ecology.seasonPosition);
-      if (previousSeasonPosition !== null && ecology.seasonPosition > previousSeasonPosition) {
-        const previousDay = seasonDayForPosition(previousSeasonPosition);
-        const day = seasonDayForPosition(ecology.seasonPosition);
-        if (previousDay < BEECH_CALENDAR.colourStart && day >= BEECH_CALENDAR.colourStart && day < BEECH_CALENDAR.leafFallEnd) {
-          chapterApp.applySugarEvent('autumn');
-        }
-      }
       if (crossedBudburst) springGrowthDue = true;
       if (seasonPhase >= 1 && seasonPhase < 3.5) seasonalNewLeaves = false;
       if (((seasonPhase >= 3.5 || reachedSpring) && !seasonalNewLeaves || crossedBudburst) && !seasonalRegrowthPending) {
@@ -3179,7 +3171,6 @@
         }
       }
       if (leafRegrowthActive) {
-        const growthBefore = leafRegrowthProgress;
         if (seasonalRegrowthActive) {
           const day = seasonDayForPosition(ecology.seasonPosition);
           const calendarTarget = day < BEECH_CALENDAR.budburst ? 1 : beechLeafGrowthProgress(ecology.seasonPosition);
@@ -3188,10 +3179,6 @@
         setLeafRegrowthProgress(seasonalRegrowthActive
           ? advanceVisibleGrowth(leafRegrowthProgress, seasonalGrowthTarget, realDelta, timePlaybackSpeed, getLeafRegrowthSpeed())
           : leafRegrowthProgress + delta * 0.45 * getLeafRegrowthSpeed());
-        if (seasonalRegrowthActive) {
-          const growthAfter = leafRegrowthProgress >= 0.999 ? 1 : leafRegrowthProgress;
-          budburstGrowth = Math.max(0, growthAfter - growthBefore);
-        }
         if (leafRegrowthProgress >= 0.999) {
           leafRegrowthActive = false;
           seasonalRegrowthActive = false;
@@ -3199,7 +3186,6 @@
         }
       }
       updateEffectiveSeason();
-      return budburstGrowth;
     }
 
     function updateSapFlowDynamics() {
@@ -4350,7 +4336,7 @@
       // Water balance uses the clock's increment, including intro/night speeds.
       updateWaterAndDrought(modelMinutes);
       updateSapRetraction(delta);
-      const budburstGrowth = playbackDelta > 0 ? updateSeasonalLeaves(playbackDelta, delta) : 0;
+      if (playbackDelta > 0) updateSeasonalLeaves(playbackDelta, delta);
       if (typeof sapUniforms !== 'undefined') sapUniforms.uTime.value = simulationTime * 0.5;
       updateDayNightScene(now);
       if (playbackDelta > 0 && typeof leafControls !== 'undefined' && typeof shaderUniforms !== 'undefined') {
@@ -4372,7 +4358,6 @@
           && (droughtLeafProgress === 0 || ecology.hydration > 0.95)
           && !leafControls.hasUnfinishedLeafFall(leafFallAnimationTime)) {
           startSeasonalRegrowth();
-          chapterApp.applySugarEvent('budburst');
           invalidateShadows();
         }
         // Falling leaves update shadows every frame; slower spring regrowth and
@@ -4393,7 +4378,7 @@
       camera.updateMatrixWorld();
       const cloudAmount = sunClouds.update(ecology, delta);
       studioColor.copy(baseSceneBackground).lerp(overcastBackground, cloudAmount * 0.55);
-      chapterApp.updateScene(playbackDelta, modelMinutes, budburstGrowth);
+      chapterApp.updateScene(playbackDelta);
       updateHighlights(delta);
       seedChapter.update(chapterApp.chapter === 'seeds', ecology.seasonPosition, trunkMesh, seedHighlight, playbackDelta);
       treeBird.update(
