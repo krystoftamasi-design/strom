@@ -225,16 +225,25 @@ export class TreeEcology {
   }
 
   // The viewer supplies the same model-minute increment used by its clock.
-  step(minutes) {
+  step(minutes, daytimeLight = null) {
     if (!this.ready) return this;
     minutes = Math.max(0, Number(minutes) || 0);
     const modelDays = minutes / 1440;
     // Small substeps keep stress feedback stable near an empty reservoir.
     const steps = Math.max(1, Math.ceil(minutes / 1));
+    const meanWaterBalance = daytimeLight !== null;
+    const foliage = clamp(this.activeFoliage, 0, 1);
+    const threshold = this.capacity * (0.12 + 0.23 * foliage * daytimeLight);
+    const meanTranspiration = this.baseTranspiration * foliage * daytimeLight / 2;
+    const maintenance = this.baseTranspiration * 0.015 * (0.2 + foliage * 0.8);
+    if (meanWaterBalance) this.evaluate(0);
     for (let i = 0; i < steps; i++) {
       this.elapsedMinutes += minutes / steps;
-      this.evaluate(minutes / steps);
-      this.reserve = clamp(this.reserve + (this.inflow - this.consumption) * minutes / steps, 0, this.capacity);
+      if (!meanWaterBalance) this.evaluate(minutes / steps);
+      const waterUse = meanWaterBalance
+        ? maintenance + meanTranspiration * clamp(this.reserve / threshold, 0, 1)
+        : this.consumption;
+      this.reserve = clamp(this.reserve + (this.inflow - waterUse) * minutes / steps, 0, this.capacity);
       // Normalised soil surplus with a two-model-day drainage time. A brief
       // oversupply builds wetness without immediately damaging roots.
       const wetnessInput = clamp(this.excessWater / Math.max(this.baseTranspiration, 0.001), 0, 2);

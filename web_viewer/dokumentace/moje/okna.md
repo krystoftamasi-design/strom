@@ -108,7 +108,7 @@ history:
 - Detailní text: „Voda zavodňuje listy a jejím odparem se koruna ochlazuje.“
 - Vstup výpočtu: `voda`.
 - Hodnota: spotřeba vody v `l/h`, zobrazena na jedno desetinné místo.
-- Zásoba: aktuální množství dostupné vody ve stromu v litrech. Samostatný pruh ukazuje podíl na kapacitě zásoby.
+- Zásoba: aktuální množství dostupné vody ve stromu v litrech. Samostatný pruh ukazuje podíl na kapacitě zásoby. Při běhu roku se její celodenní bilance započítává podle uplynulých kalendářních dní. Denní odpar se pro tuto bilanci průměruje s nocí. Údaj o spotřebě dál ukazuje okamžitou hodnotu.
 - Ovládání: ukazatel dostupnosti nastavuje přísun vody podle společného pravidla oken kapitoly.
 - Výchozí stav detailu: zavřený.
 - Související element: [Voda linka](elementy.md#voda-linka).

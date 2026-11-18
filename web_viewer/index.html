@@ -1173,7 +1173,7 @@
     import { CanopyOcclusion } from './vykreslovani/canopy_occlusion.js?v=opt-buf-1';
     import { createSunClouds } from './vykreslovani/sun_clouds.js?v=2';
     import { createWaterBrushMaterial, addWaterBrushAttributes } from './vykreslovani/water_brush.js?v=highlight-width-3';
-    import { TreeEcology, SEASONS, MODEL_MINUTES_PER_SECOND } from './ekologie/tree_ecology.js?v=stock-percentage-1';
+    import { TreeEcology, SEASONS, MODEL_MINUTES_PER_SECOND } from './ekologie/tree_ecology.js?v=calendar-water-1';
     import { createChapters } from './kapitoly/chapters.js?v=stock-percentage-bar-1';
     import { createSeedChapter } from './kapitoly/seed_chapter.js';
     import { createTreeBird } from './vykreslovani/tree_bird.js?v=perch-grid-1';
@@ -3070,7 +3070,7 @@
       updateEffectiveSeason();
     }
 
-    function updateWaterAndDrought(modelMinutes) {
+    function updateWaterAndDrought(modelMinutes, daytimeLight) {
       if (!ecology.ready) return;
       ecology.hourOfDay = timeOfDayHours;
       ecology.sunElevation = sunElevationDeg;
@@ -3084,7 +3084,7 @@
         shaderUniforms.uDryingSharpness.value,
         shaderUniforms.uDryingFrontWidth.value
       );
-      ecology.step(modelMinutes);
+      ecology.step(modelMinutes, daytimeLight);
       treeWaterLiters = ecology.reserve;
       droughtDryProgress = ecology.dryness;
       updateSapFlowDynamics();
@@ -3784,6 +3784,8 @@
 
     // A single tilted orbit avoids crossing straight over the tree at noon.
     const sunPathInclination = THREE.MathUtils.degToRad(35);
+    const daytimeSunSamples = Array.from({ length: 12 }, (_, hour) =>
+      Math.sin((hour + 0.5) * Math.PI / 12) * Math.cos(sunPathInclination) / Math.sin(Math.PI / 3));
     let _lastSliderSunElev = NaN;
     let _lastSliderLightRot = NaN;
     function updateSunFromDayClock(hour) {
@@ -4262,8 +4264,8 @@
         const solarHour = solarHoursForMonthClock(monthClockForSeason(ecology.seasonPosition));
         nextHour = ((solarHour % 24) + 24) % 24;
         if (advanced) {
-          const previousHour = solarHoursForMonthClock(monthClockForSeason(previousSeason));
-          modelMinutes = Math.max(0, (solarHour - previousHour) * 60);
+          const calendarDate = position => seasonDayForPosition(position) + 365 * Math.floor(position / 4);
+          modelMinutes = Math.max(0, (calendarDate(ecology.seasonPosition) - calendarDate(previousSeason)) * 1440);
         }
       }
       if (seekingSeason) sunSeekTransition = null;
@@ -4288,7 +4290,13 @@
           if ((animatingSun || !advanced) && !chapterApp.introduction) invalidateShadows();
         }
       }
-      updateWaterAndDrought(modelMinutes);
+      let daytimeLight = null;
+      if (!chapterApp.introduction && ecology.dayCycleEnabled) {
+        const sunIntensity = Number(document.getElementById('sliderSun').value) / 100;
+        daytimeLight = ecology.manualLightAvailability ?? daytimeSunSamples.reduce(
+          (sum, light) => sum + THREE.MathUtils.clamp(light * sunIntensity, 0, 1), 0) / daytimeSunSamples.length;
+      }
+      updateWaterAndDrought(modelMinutes, daytimeLight);
       updateSapRetraction(delta);
       if (playbackDelta > 0) updateSeasonalLeaves(playbackDelta, delta);
       if (typeof sapUniforms !== 'undefined') sapUniforms.uTime.value = simulationTime * 0.5;
