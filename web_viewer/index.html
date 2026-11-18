@@ -3715,11 +3715,8 @@
       btnTimePause.title = pauseLabel;
       btnTimePause.setAttribute('aria-pressed', String(timePaused));
       for (const [button, speed] of timeSpeedButtons) {
-        button.setAttribute('aria-pressed', String(!timePaused && (timePlaybackSpeed === speed || (speed === 2 && timePlaybackSpeed === 4))));
+        button.setAttribute('aria-pressed', String(!timePaused && timePlaybackSpeed === speed));
       }
-      const fasterLabel = timePlaybackSpeed === 4 && !timePaused ? 'Zrychlení 4×' : 'Zrychlení 2×';
-      timeSpeedButtons[1][0].setAttribute('aria-label', fasterLabel);
-      timeSpeedButtons[1][0].title = fasterLabel;
     }
     btnTimePause.addEventListener('click', () => {
       timePaused = !timePaused;
@@ -3727,8 +3724,7 @@
     });
     for (const [button, speed] of timeSpeedButtons) {
       button.addEventListener('click', () => {
-        timePlaybackSpeed = !timePaused && speed === 2 && timePlaybackSpeed === 2 ? 4
-          : !timePaused && (timePlaybackSpeed === speed || (speed === 2 && timePlaybackSpeed === 4)) ? 1 : speed;
+        timePlaybackSpeed = !timePaused && timePlaybackSpeed === speed ? 1 : speed;
         timePaused = false;
         syncTimePlaybackControls();
       });
