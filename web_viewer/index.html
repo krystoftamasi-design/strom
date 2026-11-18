@@ -4347,7 +4347,9 @@
         if (fundedGrowth !== undefined) {
           setSeasonalCanopyLimit(fundedGrowth);
           seasonalRegrowthActive = false;
-          leafRegrowthActive = false;
+          // The funded batch grows together. Its leaf count stays fixed during the animation.
+          leafRegrowthActive = fundedGrowth > 0;
+          if (leafRegrowthActive) setLeafRegrowthProgress(0.05);
           leafWasDry = false;
           invalidateShadows();
         }

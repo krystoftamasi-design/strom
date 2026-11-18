@@ -135,7 +135,7 @@ Definice spojení
 
 ### Růst listů
 
-- Nové listy při jarním rašení vyraší najednou, i po rychlém posunu přes jaro. Pokud cukry pokryjí jen část koruny, vyberou se listy od konce pořadí opadu. Jako první se tedy do výběru počítají ty, které na podzim opadly poslední.
+- Nové listy při jarním rašení vyraší v jedné skupině a společně se rozvinou, i po rychlém posunu přes jaro. Pokud cukry pokryjí jen část koruny, vyberou se listy od konce pořadí opadu. Jako první se tedy do výběru počítají ty, které na podzim opadly poslední.
 - Při téměř vyčerpané zásobě vody se listy postupně zbarví jako na podzim a následně opadávají. Vypnutí přísunu vody nespustí uschnutí okamžitě, dokud má strom ještě zásobu. Při obnovení zavodnění se listy v růstovém období obnoví.
 
 ### Slunce
