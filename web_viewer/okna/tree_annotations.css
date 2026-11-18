@@ -230,6 +230,7 @@ body.scene-night .tree-overlay .oxygen-balance-panel {
 
 .tree-overlay .element-ui-stock-switchable.is-round > .element-ui-stock-label {
   grid-column: 1 / -1;
+  translate: 4px 0;
 }
 
 .tree-overlay .element-ui-stock-switchable.is-round > .element-ui-stock-circle {
@@ -247,12 +248,16 @@ body.scene-night .tree-overlay .oxygen-balance-panel {
 
 .tree-overlay .element-ui-stock-switchable.is-round .element-ui-stock-trend:not([hidden]) {
   position: absolute;
-  left: calc(clamp(56px, 11vh, 100px) / 2);
+  left: calc(clamp(56px, 11vh, 100px) / 2 - 4px);
   top: 50%;
   translate: -50% -50%;
   rotate: -90deg;
-  color: #fff;
-  text-shadow: 0 1px 3px #333;
+  color: #000;
+  text-shadow: none;
+}
+
+.tree-overlay .element-ui-stock-switchable.is-round .element-ui-stock-readout > strong {
+  translate: -4px 0;
 }
 
 .tree-overlay .element-ui-stock-switchable.is-round > .element-ui-balance-bar,
