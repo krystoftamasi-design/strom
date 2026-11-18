@@ -1384,13 +1384,13 @@ body[data-chapter="photosynthesis"] .season-date-card .time-playback-panel {
 }
 
 body[data-chapter="photosynthesis"] .season-date-card .time-playback-buttons button {
-  width: clamp(52px, 4.3vw, 68px);
-  height: clamp(52px, 4.3vw, 68px);
+  width: clamp(62px, 5.1vw, 80px);
+  height: clamp(62px, 5.1vw, 80px);
 }
 
 body[data-chapter="photosynthesis"] .season-date-card .time-playback-buttons svg {
-  width: clamp(32px, 2.6vw, 42px);
-  height: clamp(32px, 2.6vw, 42px);
+  width: clamp(40px, 3.2vw, 50px);
+  height: clamp(40px, 3.2vw, 50px);
 }
 
 .tree-overlay article[data-chapter="photosynthesis"] .chapter-context-guide {
