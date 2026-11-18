@@ -189,51 +189,32 @@ body.scene-night .tree-overlay .oxygen-balance-panel {
   text-decoration: none;
 }
 
-.oxygen-balance > abbr {
+.tree-overlay .sugar-stock {
+  --sugar-ink: #ff0adf;
+  /* Taper the wave near empty and full so the fill stays inside the scale. */
+  --wave-radius: min(6%, var(--oxygen-level), calc(100% - var(--oxygen-level)));
+  border-radius: 49% 51% 53% 47% / 48% 50% 50% 52%;
+}
+
+.sugar-stock-liquid {
   position: absolute;
-  inset: 12% 0 auto;
+  inset: calc(100% - var(--oxygen-level) + max(0%, var(--wave-radius) - 1px)) 0 0;
+  background: var(--sugar-ink);
 }
 
-.tree-overlay .oxygen-balance {
-  background: linear-gradient(
-    to top,
-    color-mix(in srgb, var(--ui-sugar) 42%, var(--oxygen-paper)) var(--oxygen-level, 0%),
-    var(--oxygen-paper) var(--oxygen-level, 0%)
-  );
-}
-
-.oxygen-balance-flows {
+.sugar-stock-wave {
   position: absolute;
-  inset: 29% 21% 17%;
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  text-align: center;
+  inset: calc(100% - var(--oxygen-level) - var(--wave-radius)) auto auto 0;
+  inline-size: 200%;
+  block-size: calc(2 * var(--wave-radius));
+  color: var(--sugar-ink);
+  animation: sugar-stock-ripple 6s linear infinite;
 }
 
-.oxygen-balance-flows > div {
-  display: grid;
-  grid-template-rows: minmax(0, 1fr) auto;
+@keyframes sugar-stock-ripple {
+  to { transform: translateX(-50%); }
 }
 
-.oxygen-balance-flows > div:first-child { grid-column: 1; }
-.oxygen-balance-flows > div:last-child { grid-column: 2; }
-
-.oxygen-balance-flows > div > span {
-  display: flex;
-  align-items: end;
-  justify-content: center;
-  margin-block-end: 4px;
-}
-
-.oxygen-balance-flows > div > span::before {
-  content: '';
-  inline-size: 40%;
-  block-size: var(--flow-height, 0%);
-  transition: block-size 180ms ease-out, background-color 180ms ease-out;
-  background: var(--prototype-flow-color);
-}
-
-.oxygen-balance-flows > div,
 .oxygen-balance-lines > div:not(.oxygen-balance-reserve) {
   transition: opacity 180ms ease-out, background-color 180ms ease-out;
 }
@@ -352,11 +333,11 @@ body.scene-night .oxygen-balance-settings { --oxygen-paper: #454749; }
 
 @media (prefers-reduced-motion: reduce) {
   .tree-overlay .oxygen-balance,
-  .oxygen-balance-flows > div,
-  .oxygen-balance-flows > div > span::before,
   .oxygen-balance-lines > div:not(.oxygen-balance-reserve) {
     transition: none;
   }
+
+  .sugar-stock-wave { animation: none; }
 }
 
 .oxygen-balance-lines .oxygen-balance-reserve {

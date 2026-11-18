@@ -234,25 +234,50 @@ function enablePrototypeRotation(circle) {
   });
 }
 
+function createSugarStock() {
+  const panel = document.createElement('section');
+  panel.className = 'oxygen-balance-panel';
+  panel.innerHTML = `
+    <h3>Zásoba cukrů</h3>
+    <div class="oxygen-balance sugar-stock" aria-hidden="true">
+      <div class="sugar-stock-liquid"></div>
+      <svg class="sugar-stock-wave" viewBox="0 0 240 16" preserveAspectRatio="none">
+        <defs>
+          <g id="prototype-sugar-wave">
+            <path fill="currentColor" d="M0 8 C16 3 25 2 39 7 S59 13 73 8 S94 2 105 7 Q112 11 120 8 V16 H0 Z"/>
+            <path fill="none" stroke="#ffadf3" stroke-width="0.75" stroke-linecap="round"
+              d="M4 10 Q20 4 32 8 M40 10 Q55 15 70 11 M76 10 Q93 4 102 9"/>
+          </g>
+        </defs>
+        <use href="#prototype-sugar-wave"/>
+        <use href="#prototype-sugar-wave" x="120"/>
+      </svg>
+    </div>`;
+  const circle = panel.querySelector('.sugar-stock');
+  return {
+    panel,
+    update(_production, _consumption, capacity, reserve) {
+      circle.style.setProperty('--oxygen-level', `${100 * reserve / capacity}%`);
+    }
+  };
+}
+
 function createOxygenBalance(variant) {
-  const lines = variant !== 'bars';
   const rectangle = variant === 'rectangle';
   const panel = document.createElement('section');
   panel.className = 'oxygen-balance-panel';
   panel.setAttribute('aria-label', 'Zkušební bilance cukrů');
   panel.innerHTML = `
-    <h3>${rectangle ? 'Obdélník' : lines ? 'Dělicí čáry' : 'Sloupce'}</h3>
-    <div class="oxygen-balance${lines ? ' oxygen-balance-lines' : ''}${rectangle ? ' oxygen-balance-rectangle' : ''}">
-      ${lines ? '<div class="oxygen-balance-reserve"><abbr title="Zásoba">Z</abbr></div>' : '<abbr title="Zásoba">Z</abbr><div class="oxygen-balance-flows">'}
-      <div class="oxygen-balance-production">${lines ? '' : '<span></span>'}<abbr title="Produkce">P</abbr></div>
-      <div>${lines ? '' : '<span></span>'}<abbr title="Spotřeba">S</abbr></div>
-      ${lines ? '' : '</div>'}
+    <h3>${rectangle ? 'Obdélník' : 'Dělicí čáry'}</h3>
+    <div class="oxygen-balance oxygen-balance-lines${rectangle ? ' oxygen-balance-rectangle' : ''}">
+      <div class="oxygen-balance-reserve"><abbr title="Zásoba">Z</abbr></div>
+      <div class="oxygen-balance-production"><abbr title="Produkce">P</abbr></div>
+      <div><abbr title="Spotřeba">S</abbr></div>
     </div>
   `;
   const circle = panel.querySelector('.oxygen-balance');
   if (!rectangle) enablePrototypeRotation(circle);
-  const flows = panel.querySelector('.oxygen-balance-flows');
-  const [productionSection, consumptionSection] = lines ? [...circle.children].slice(1) : flows.children;
+  const [, productionSection, consumptionSection] = circle.children;
   return {
     panel,
     update(production, consumption, capacity, reserve) {
@@ -261,19 +286,13 @@ function createOxygenBalance(variant) {
       consumptionSection.setAttribute('aria-hidden', String(consumption <= 0));
       productionSection.classList.toggle('stronger-flow', production > consumption);
       consumptionSection.classList.toggle('stronger-flow', consumption > production);
-      if (lines) {
-        const smaller = Math.min(production, consumption);
-        const larger = Math.max(production, consumption);
-        const lineScale = Math.max(capacity, 60 * (production + consumption));
-        circle.style.setProperty('--oxygen-smaller-flow', String(60 * smaller / lineScale));
-        circle.style.setProperty('--oxygen-larger-flow', String(60 * larger / lineScale));
-        circle.classList.toggle('similar-flows', smaller > 0 && smaller >= 0.9 * larger);
-        circle.classList.toggle('production-at-bottom', production > consumption);
-        return;
-      }
-      const scale = Math.max(capacity, 60 * production, 60 * consumption);
-      productionSection.style.setProperty('--flow-height', `${6000 * production / scale}%`);
-      consumptionSection.style.setProperty('--flow-height', `${6000 * consumption / scale}%`);
+      const smaller = Math.min(production, consumption);
+      const larger = Math.max(production, consumption);
+      const lineScale = Math.max(capacity, 60 * (production + consumption));
+      circle.style.setProperty('--oxygen-smaller-flow', String(60 * smaller / lineScale));
+      circle.style.setProperty('--oxygen-larger-flow', String(60 * larger / lineScale));
+      circle.classList.toggle('similar-flows', smaller > 0 && smaller >= 0.9 * larger);
+      circle.classList.toggle('production-at-bottom', production > consumption);
     }
   };
 }
@@ -294,7 +313,7 @@ export function createTreeAnnotations({ shell, model, createSeasonControl, setEl
   let activeChapter = null;
   let photosynthesisIntro = null;
   let photosynthesisIntroTimer = null;
-  const prototypes = ['bars', 'lines', 'rectangle'].map(createOxygenBalance);
+  const prototypes = [createSugarStock(), createOxygenBalance('lines'), createOxygenBalance('rectangle')];
   const capacityInput = shell.querySelector('[data-prototype-capacity]');
   let prototypeCapacity = capacityInput.valueAsNumber;
   let prototypeReserve = prototypeCapacity / 4;
