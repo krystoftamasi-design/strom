@@ -33,7 +33,7 @@ function pickUiWindowStroke(direction) {
   return { ...stroke, url: new URL(`../web_assets/${stroke.file}`, import.meta.url).href };
 }
 
-function createBalanceBar({ top, bottom, adjustable = false, stock = false }) {
+function createBalanceBar({ top, bottom, adjustable = false }) {
   const bar = document.createElement('div');
   bar.className = 'element-ui-balance-bar';
   bar.innerHTML = `
@@ -52,13 +52,6 @@ function createBalanceBar({ top, bottom, adjustable = false, stock = false }) {
     cap.textContent = letter;
     marker.append(cap);
     markers.append(marker);
-  }
-  if (stock) {
-    const ends = document.createElement('span');
-    ends.className = 'element-ui-stock-ends';
-    ends.setAttribute('aria-hidden', 'true');
-    ends.innerHTML = '<span>−</span><span>+</span>';
-    bar.append(ends);
   }
   return bar;
 }
@@ -177,7 +170,7 @@ function createElementUiOkno({ panel, body, reveal, toggle, model, definition })
         const label = document.createElement('span');
         label.className = 'chapter-metric';
         label.textContent = 'zásoba';
-        const stockBar = createBalanceBar({ top: 'Z', stock: true });
+        const stockBar = createBalanceBar({ top: 'Z' });
         const metric = document.createElement('div');
         metric.className = 'chapter-metric';
         const value = document.createElement('strong');
@@ -697,13 +690,7 @@ export function createTreeAnnotations({ shell, model, createSeasonControl, setEl
         const bottomRatio = clamp01(bottomValue / scaleMax);
         bar.style.setProperty('--balance-top-ratio', String(topRatio));
         bar.style.setProperty('--balance-bottom-ratio', String(bottomRatio));
-        const topMarker = bar.querySelector('.element-ui-balance-marker-top');
-        const bottomMarker = bar.querySelector('.element-ui-balance-marker-bottom');
-        if (topMarker && bottomMarker) {
-          const topLarger = topRatio > bottomRatio;
-          topMarker.style.zIndex = topLarger ? '0' : '1';
-          bottomMarker.style.zIndex = topLarger ? '1' : '0';
-        }
+        bar.classList.toggle('is-top-shorter', topRatio <= bottomRatio);
 
         if (isLightBalance && slider) {
           const lightLevel = clamp01(model.light);

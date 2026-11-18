@@ -22,6 +22,7 @@
   --ui-text-size: clamp(11px, .83vw, 16px);
   --ui-text-style: 300 var(--ui-text-size)/1.35 var(--ui-font-text);
   --ui-formula-size: clamp(8px, .6vw, 12px);
+  --flow-window-width: clamp(144px, 13vw, 248px);
 }
 
 body.scene-night .tree-overlay {
@@ -419,14 +420,27 @@ body.scene-night .tree-overlay .element-ui-okno .ui-word {
 }
 
 .tree-overlay .element-ui-balance-bar {
-  --balance-track-start: clamp(10px, 1.3vh, 13px);
-  --balance-track-end: clamp(11px, 1.45vh, 14px);
-  --balance-marker-width: clamp(11px, 1.45vh, 14px);
+  --balance-track-start: clamp(11px, 1.45vh, 14px);
+  --balance-track-end: clamp(12px, 1.55vh, 15px);
+  --balance-marker-width: clamp(12px, 1.55vh, 15px);
   --balance-track-color: #192138;
   --balance-production: var(--ui-topic);
   --balance-consumption: color-mix(in srgb, var(--ui-topic) 63%, #fff);
+  --balance-top-stop: calc(var(--balance-marker-width) / 2 + (100% - var(--balance-marker-width)) * var(--balance-top-ratio, 0));
+  --balance-bottom-stop: calc(var(--balance-marker-width) / 2 + (100% - var(--balance-marker-width)) * var(--balance-bottom-ratio, 0));
+  --balance-near-stop: var(--balance-bottom-stop);
+  --balance-far-stop: var(--balance-top-stop);
+  --balance-near-color: var(--balance-consumption);
+  --balance-far-color: var(--balance-production);
   position: relative;
-  height: clamp(24px, 3.2vh, 32px);
+  height: clamp(26px, 3.55vh, 35px);
+}
+
+.tree-overlay .element-ui-balance-bar.is-top-shorter {
+  --balance-near-stop: var(--balance-top-stop);
+  --balance-far-stop: var(--balance-bottom-stop);
+  --balance-near-color: var(--balance-production);
+  --balance-far-color: var(--balance-consumption);
 }
 
 .tree-overlay .element-ui-flow-window[data-topic="co2"] .element-ui-balance-bar {
@@ -456,6 +470,25 @@ body.scene-night .tree-overlay .element-ui-okno .ui-word {
 .tree-overlay .element-ui-balance-markers {
   position: absolute;
   inset: 0 var(--balance-track-end) 0 var(--balance-track-start);
+}
+
+/* Both flows share one opaque shaft, with a hard stop at each marker center. */
+.tree-overlay .element-ui-balance-markers::before {
+  content: '';
+  position: absolute;
+  inset: 40% 0 38.5%;
+  background: linear-gradient(to right,
+    var(--balance-near-color) var(--balance-near-stop),
+    var(--balance-far-color) var(--balance-near-stop) var(--balance-far-stop),
+    transparent var(--balance-far-stop));
+}
+
+.tree-overlay .element-ui-stock .element-ui-balance-markers::before {
+  background: linear-gradient(to right, var(--balance-production) var(--balance-top-stop), transparent 0);
+}
+
+.tree-overlay .element-ui-stock.is-unavailable .element-ui-balance-markers {
+  visibility: hidden;
 }
 
 body.scene-night .tree-overlay .element-ui-balance-track {
@@ -491,16 +524,8 @@ body.scene-night .tree-overlay .element-ui-balance-track {
 .tree-overlay .element-ui-balance-marker {
   --balance-ink: var(--balance-production);
   right: calc((100% - var(--balance-marker-width)) * (1 - var(--balance-ratio, 0)));
-  /* Apply after the brush mask to restore solid paint and keep its soft edges. */
+  /* Preserve the soft brush edges on the marker cap. */
   filter: url('../web_assets/okna/affinity-bilance-kryti.svg#brush');
-}
-
-.tree-overlay .element-ui-balance-marker::before {
-  content: '';
-  position: absolute;
-  inset: 0 calc(var(--balance-marker-width) - 2px) 0 0;
-  background: var(--balance-ink);
-  mask: var(--balance-texture) left center / 140% 100% no-repeat;
 }
 
 .tree-overlay .element-ui-balance-marker::after {
@@ -537,6 +562,11 @@ body.scene-night .tree-overlay .element-ui-balance-track {
   --balance-ink: var(--balance-consumption);
   --balance-ratio: var(--balance-bottom-ratio, 0);
   --balance-texture: url('../web_assets/okna/affinity-bilance-dolni.png?v=affinity-windows-markers-5');
+  z-index: 1;
+}
+
+.tree-overlay .element-ui-balance-bar.is-top-shorter .element-ui-balance-marker-top {
+  z-index: 2;
 }
 
 .tree-overlay .element-ui-balance-marker-bottom .element-ui-balance-marker-cap {
@@ -558,37 +588,26 @@ body.scene-night .tree-overlay .element-ui-balance-track {
   transform: scaleY(1.15);
 }
 
-.tree-overlay .element-ui-stock.is-unavailable .element-ui-balance-marker {
-  visibility: hidden;
-}
-
-.tree-overlay .element-ui-stock-ends {
+.tree-overlay .element-ui-stock .element-ui-balance-bar::before,
+.tree-overlay .element-ui-stock .element-ui-balance-bar::after {
+  content: '';
   position: absolute;
-  inset: 0;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  font: 700 clamp(8px, 1vh, 11px)/1 var(--ui-font-text);
+  inset-block: 0;
+  z-index: 1;
+  background: var(--stock-end-symbol) center / 68% auto no-repeat;
   pointer-events: none;
 }
 
-.tree-overlay .element-ui-stock-ends span {
+.tree-overlay .element-ui-stock .element-ui-balance-bar::before {
+  --stock-end-symbol: url('../web_assets/okna/affinity-zasoba-min.png');
+  left: 0;
   width: var(--balance-track-start);
-  color: #ff674e;
-  text-align: center;
 }
 
-.tree-overlay .element-ui-stock-ends span:last-child {
+.tree-overlay .element-ui-stock .element-ui-balance-bar::after {
+  --stock-end-symbol: url('../web_assets/okna/affinity-zasoba-max.png');
+  right: 0;
   width: var(--balance-track-end);
-  color: #95d956;
-}
-
-body.scene-night .tree-overlay .element-ui-stock-ends span {
-  color: #8d200e;
-}
-
-body.scene-night .tree-overlay .element-ui-stock-ends span:last-child {
-  color: #215001;
 }
 
 .tree-overlay .element-ui-balance-slider {
@@ -1140,7 +1159,6 @@ body.scene-night .chapter-context-guide .transpiration-legend {
 }
 
 .tree-overlay .photosynthesis-windows {
-  --flow-window-width: clamp(132px, 12vw, 224px);
   --flow-gap: clamp(16px, 2vw, 30px);
   --flow-columns-gap: var(--flow-gap);
   --flow-detail-width: clamp(145px, 15vw, 280px);
@@ -1201,11 +1219,6 @@ body.scene-night .chapter-context-guide .transpiration-legend {
 }
 
 .tree-overlay .element-ui-okno[data-chapter="photosynthesis"][data-side="right"] {
-  --ui-heading-size: clamp(25px, min(2.8vw, 4.8vh), 52px);
-  --ui-value-size: clamp(15px, min(1.4vw, 2.6vh), 24px);
-  --ui-text-size: clamp(12px, min(1vw, 2vh), 18px);
-  --ui-text-style: 400 var(--ui-text-size)/1.35 var(--ui-font-text);
-  --ui-toggle-size: clamp(26px, 3.8vh, 32px);
   position: relative;
   inset: auto;
   display: block;
@@ -1242,7 +1255,7 @@ body.scene-night .chapter-context-guide .transpiration-legend {
   isolation: isolate;
   border: 0;
   color: var(--flow-heading-ink);
-  font-size: 12px;
+  font-size: clamp(12px, 1.5vh, 13px);
   font-weight: 600;
 }
 
@@ -1252,10 +1265,10 @@ body.scene-night .chapter-context-guide .transpiration-legend {
   inset: 0;
   margin: auto;
   z-index: -1;
-  width: clamp(17px, 2.4vh, 23px);
+  width: clamp(19px, 2.65vh, 25px);
   aspect-ratio: 1;
   background: var(--flow-toggle-fill, var(--flow-accent, var(--ui-topic)));
-  mask: url('../web_assets/okna/affinity-prepinac.svg') center / contain no-repeat;
+  mask: url('../web_assets/okna/affinity-prepinac.png') center / contain no-repeat;
   transform: rotate(var(--flow-toggle-angle, 90deg));
 }
 
@@ -1263,8 +1276,13 @@ body.scene-night .chapter-context-guide .transpiration-legend {
 .tree-overlay [data-chapter="photosynthesis"] :is([data-window-id="co2"], [data-window-id="cukry"]) { --flow-toggle-angle: 180deg; }
 .tree-overlay [data-chapter="photosynthesis"] [data-window-id="voda"] { --flow-toggle-angle: -90deg; }
 
-.tree-overlay .element-ui-flow-window {
+.tree-overlay .element-ui-okno.element-ui-flow-window {
   --flow-heading-ink: #192138;
+  --ui-heading-size: clamp(27px, min(3vw, 5.2vh), 56px);
+  --ui-value-size: clamp(16px, min(1.5vw, 2.85vh), 26px);
+  --ui-text-size: clamp(13px, min(1.1vw, 2.2vh), 20px);
+  --ui-text-style: 400 var(--ui-text-size)/1.35 var(--ui-font-text);
+  --ui-toggle-size: clamp(28px, 4.1vh, 35px);
 }
 
 .tree-overlay .element-ui-flow-window[data-topic="co2"] {
@@ -1410,7 +1428,7 @@ body.scene-night .tree-overlay .element-ui-flow-window {
   }
 
   .tree-overlay .photosynthesis-windows {
-    --flow-window-width: min(132px, 42vw);
+    --flow-window-width: min(144px, 42vw);
     top: 39vh;
     bottom: 12vh;
     padding-block: 0;
@@ -1430,7 +1448,7 @@ body.scene-night .tree-overlay .element-ui-flow-window {
       0 -1px var(--flow-text-halo), 0 1px var(--flow-text-halo), 0 0 4px var(--flow-text-halo);
   }
 
-  .tree-overlay article[data-chapter="photosynthesis"] :is(.element-ui-trigger, .element-ui-balance-marker-cap, .element-ui-stock-ends) {
+  .tree-overlay article[data-chapter="photosynthesis"] :is(.element-ui-trigger, .element-ui-balance-marker-cap) {
     text-shadow: none;
   }
 
