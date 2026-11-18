@@ -71,6 +71,32 @@ history:
 - **Volné nápady:** sandbox s kácením nebo požárem a zobrazením uvolněného uhlíku; dále sníh. Nejde o požadavky ani doložené potřeby účastníka. (00:25:31–00:26:32, 00:28:18)
 - **UNISAL:** autor popisuje dřívější zjištění málo výrazného úvodního menu pomocí predikce pozornosti ze snímku. V rozhovoru se zároveň zpochybňuje přesnost a reakce na pohyb. Výstup není skutečným měřením Pavlova pohledu ani ověřením použitelnosti. (00:15:27–00:17:45)
 
+## Test s mámou — 18. 11. 2026
+
+- Persona: dospělá návštěvnice s menší zkušeností s webovými rozhraními a jejich ovládáním. Máma se účastnila už [předchozího testu](#test-s-mámou--31-10-2026). Její zkušenost pomáhá odhalit, kde web spoléhá na znalost ovládacích zvyklostí nebo na rychlou orientaci ve více údajích.
+- Kontext: moderovaný test kapitoly Fotosyntéza. Zadáním bylo otevřít kapitolu a vlastními slovy popsat vztah mezi dvěma prvky simulace. Později moderátor ukázal pozastavení, najetí na prvek a nasměroval pozornost na zásobu cukrů.
+- Zdroj a rozsah: automatický přepis bez časových značek a označení mluvčích. Zachycuje komentáře a reakce během testu jedné účastnice. Samostatné splnění zadání ani četnost potíží u cílové skupiny studentů z něj nelze určit.
+
+### Pozorované potíže
+
+- **Tempo a zaměření pozornosti:** při střídání dne a noci se scéna měnila dřív, než se účastnice stihla zorientovat v právě sledovaném údaji. Výrazný pohyb částic ji rušil. Řekla, že k prohlédnutí potřebuje simulaci zastavit, a zkusila sledovat jen jednu věc.
+- **Rozpoznání prvků:** Slunce nejprve vnímala jako kouli. Podle stejné modré barvy hledala souvislost mezi prvky a význam růžové a oranžové jí zprvu nebyl jasný. Popisky při najetí moderátor ukázal až v průběhu testu.
+- **Průběh roku:** u kruhu si nebyla jistá, ve které části období právě je a kde období začíná a končí. Navrhla zvýraznit aktuální období po celou dobu jeho trvání.
+- **Zásoba cukrů:** zprvu si údaje nevšimla. Po nasměrování na zásobu jí chyběla předchozí hodnota pro srovnání. Navrhla šipku ukazující, že zásoba klesá.
+
+### Co fungovalo
+
+- Pozornost nejprve přitáhl 3D model. Účastnice při sledování denní scény vlastními slovy spojila sluneční světlo s příjmem CO₂ a uvolňováním kyslíku.
+- Po nasměrování na zásobu cukrů dokázala část průběhu sledovat a všimla si, že hodnota stoupá. K porovnání mezi obdobími potřebovala oporu v rozhraní.
+
+### Podněty k řešení a ověření
+
+- Vyzkoušet pomalejší nebo postupný průchod dějem se snadno rozpoznatelným pozastavením. Ověřit, zda účastník zvládne sám najít ovládání a vysvětlit jednu souvislost mezi prvky.
+- Zpřehlednit označení Slunce a částic. Ověřit, podle čeho účastník prvky identifikuje a zda najde jejich popis bez nápovědy.
+- Na kruhu zřetelně vyznačit aktuální období a postup uvnitř něj. Ověřit, zda účastník určí aktuální období i jeho konec.
+- U zásoby cukrů vyzkoušet ukazatel směru změny nebo zobrazení dřívější hodnoty. Ověřit, zda účastník zvládne porovnat zásobu ve dvou obdobích bez zapamatování hodnoty.
+- Stav podnětů: Čeká na návrh a ověření.
+
 ## Konzultace s Bobem — datum neuvedeno
 
 - Kontext: návrhy z konzultace zaznamenané podle sdělení autora projektu. Nejde o výsledek uživatelského testu ani o ověření srozumitelnosti.
