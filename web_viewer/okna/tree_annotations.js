@@ -133,7 +133,7 @@ function createElementUiOkno({ panel, body, reveal, toggle, model, definition })
     if (current) {
       const bar = createBalanceBar({
         top: isAvailabilityWindow ? '' : 'P',
-        bottom: isAvailabilityWindow ? '' : 'S',
+        bottom: definition.id === 'voda' ? '' : 'S',
         adjustable: isAvailabilityWindow,
       });
 
