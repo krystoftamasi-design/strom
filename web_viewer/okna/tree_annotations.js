@@ -167,9 +167,11 @@ function createElementUiOkno({ panel, body, reveal, toggle, model, definition })
         const { zdroj = 'model', hodnota, maximum, jednotka } = definition.zasoba;
         const stock = document.createElement('div');
         stock.className = 'element-ui-stock';
-        const label = document.createElement('span');
-        label.className = 'chapter-metric';
-        label.textContent = 'zásoba';
+        const label = document.createElement('div');
+        label.className = 'chapter-metric element-ui-stock-label';
+        const labelText = document.createElement('span');
+        labelText.textContent = 'zásoba';
+        label.append(labelText);
         const stockBar = createBalanceBar({ top: 'Z' });
         const metric = document.createElement('div');
         metric.className = 'chapter-metric';
@@ -185,7 +187,11 @@ function createElementUiOkno({ panel, body, reveal, toggle, model, definition })
         const unit = document.createElement('span');
         unit.className = 'element-ui-unit';
         unit.textContent = jednotka;
-        value.append(output, unit);
+        const trend = document.createElement('span');
+        trend.className = 'element-ui-stock-trend';
+        trend.setAttribute('role', 'img');
+        trend.hidden = true;
+        value.append(output, unit, trend);
         metric.append(value);
         stock.append(label, stockBar, metric);
         footer.append(stock);
@@ -317,6 +323,7 @@ export function createTreeAnnotations({ shell, model, createSeasonControl, setEl
   let curveCrownArea;
   const sugarStockOutput = shell.querySelector('[data-prototype-sugar-stock]');
   const stockKg = new Intl.NumberFormat('cs-CZ', { maximumFractionDigits: 2 });
+  const previousStocks = new WeakMap();
   capacityInput.addEventListener('change', () => {
     if (capacityInput.validity.valid && Number.isSafeInteger(capacityInput.valueAsNumber)) {
       prototypeCapacity = capacityInput.valueAsNumber;
@@ -744,10 +751,21 @@ export function createTreeAnnotations({ shell, model, createSeasonControl, setEl
         const value = isSugar ? reserve / 1000 : model[output.dataset.stockValue];
         const maximum = isSugar ? prototypeCapacity / 1000 : model[output.dataset.stockMaximum];
         const available = Number.isFinite(value) && Number.isFinite(maximum) && maximum > 0;
-        const format = isSugar ? stockKg : stockNumber;
-        const displayed = available ? format.format(value) : '—';
+        const displayed = available ? stockNumber.format(value) : '—';
         if (output.value !== displayed) output.value = displayed;
         const stock = output.closest('.element-ui-stock');
+        const trend = stock.querySelector('.element-ui-stock-trend');
+        const previous = previousStocks.get(output);
+        if (!available || previous === undefined) {
+          trend.hidden = true;
+        } else if (value !== previous) {
+          const growing = value > previous;
+          trend.textContent = growing ? '→' : '←';
+          trend.title = growing ? 'Zásoba roste' : 'Zásoba klesá';
+          trend.setAttribute('aria-label', trend.title);
+          trend.hidden = false;
+        }
+        previousStocks.set(output, available ? value : undefined);
         stock.classList.toggle('is-unavailable', !available);
         stock.style.setProperty('--balance-top-ratio', String(available ? clamp01(value / maximum) : 0));
       }

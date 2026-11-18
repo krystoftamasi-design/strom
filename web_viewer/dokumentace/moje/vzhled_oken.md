@@ -34,7 +34,7 @@ history:
 - Podklad pruhu je ve dne tmavě modrý a v noci světlejší. Poloha obou značek zleva doprava ukazuje hodnoty samostatně. U kyslíku, CO₂ a cukrů je v horním řádku produkce (P) a v dolním spotřeba (S), na škále 0 až 7 g/min. U vody a světla patří horní řádek i horní značka dostupnosti, dolní řádek i dolní značka spotřebě. Škála vody odpovídá rozsahu dostupnosti vody a škála světla je 0 až 100 %. Ovládání dostupnosti má viditelný úchyt, rozšířenou plochu a viditelný klávesnicový fokus.
 
 - Tah má zrcadlové koncovky široké 11 až 14 px. Mezi nimi se barva kratšího toku mění na barvu delšího toku a pak na barvu nevyplněné části. Spotřeba má světlejší odstín. Značky s texturou štětce jsou široké 12 až 15 px a písmena jsou v nich vystředěná. Při hodnotě zaokrouhlené na nulu zůstává písmenová značka na začátku pruhu a výplň daného toku má nulovou délku. Úchyt posuvníku dostupnosti lze ovládat i na nule.
-- Volitelná zásoba má vlastní pruh vpravo od toků. Nad ním je popisek „zásoba“, pod ním aktuální množství s jednotkou. Značka Z ukazuje podíl na kapacitě. Původní štětcové znaky z Affinity zabírají polovinu šířky koncovky. Vlevo je červený znak s otvorem nahoru, vpravo zelený s otvorem dolů.
+- Volitelná zásoba má vlastní pruh vpravo od toků. Nad ním je popisek „zásoba“ ve stejném stylu jako „produkce“ a o 15 % větší. Pod pruhem je aktuální množství s jednotkou, nejvýše s jedním desetinným místem. Šipka vedle jednotky ukazuje směr poslední změny zásoby, doprava při růstu a doleva při poklesu. Značka Z ukazuje podíl na kapacitě. Původní štětcové znaky z Affinity zabírají polovinu šířky koncovky. Vlevo je červený znak s otvorem nahoru, vpravo zelený s otvorem dolů.
 
 ### Obecný obsah
 

@@ -49,6 +49,15 @@ body[data-chapter="intro"] .chapter-panel.tree-overlay {
 .tree-overlay .chapter-tags span { font-size: 9px; padding: 3px 6px; }
 .tree-overlay .chapter-metric { margin: 6px 0; padding: 8px; gap: 3px; }
 .tree-overlay .chapter-metric output { font-size: 23px; }
+
+.tree-overlay .element-ui-stock .chapter-metric.element-ui-stock-label > span {
+  font-size: calc(1.15 * var(--ui-text-size));
+}
+
+.tree-overlay .element-ui-stock-trend {
+  margin-inline-start: 4px;
+  font: 400 .9em/1 system-ui, sans-serif;
+}
 .tree-overlay .chapter-temperature { padding: 8px; margin-bottom: 8px; }
 .tree-overlay .chapter-equation { margin-top: 12px; padding: 10px; font-size: 11px; }
 .tree-overlay .water-route { font-size: 10px; padding: 6px 0; margin-bottom: 4px; }
