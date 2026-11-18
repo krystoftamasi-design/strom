@@ -1184,7 +1184,10 @@ body.scene-night .chapter-context-guide .transpiration-legend {
 .tree-overlay .element-ui-okno[data-chapter="photosynthesis"][data-side="right"] {
   position: relative;
   inset: auto;
-  display: block;
+  display: grid;
+  grid-template-columns: var(--flow-window-width) var(--flow-detail-width);
+  grid-template-rows: auto;
+  column-gap: var(--flow-gap);
   width: 100%;
   height: auto;
   min-height: 0;
@@ -1285,16 +1288,16 @@ body.scene-night .tree-overlay .element-ui-flow-window {
 }
 
 .tree-overlay .element-ui-okno[data-chapter="photosynthesis"][data-side="right"] .annotation-reveal {
-  position: absolute;
-  top: 6px;
-  bottom: auto;
-  left: calc(100% + var(--flow-gap));
-  right: auto;
-  width: var(--flow-detail-width);
-  height: auto;
-  max-height: min(17vh, 100%);
-  margin: 0;
+  align-self: start;
+  margin-top: 6px;
   text-align: left;
+}
+
+.tree-overlay .element-ui-okno[data-chapter="photosynthesis"] :is(.annotation-reveal, .annotation-reveal-inner, .annotation-body, .annotation-body p) {
+  height: auto;
+  max-height: none;
+  overflow: visible;
+  overflow-wrap: anywhere;
 }
 
 .tree-overlay .element-ui-flow-window .annotation-body>.ui-window-formula {

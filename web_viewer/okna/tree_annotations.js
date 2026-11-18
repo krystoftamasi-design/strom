@@ -1,4 +1,4 @@
-import { oknaPodleKapitol, kontextoveTexty, pruvodceTranspiraci } from './element_ui_okna_obsah.js?v=sugar-stock-1';
+import { oknaPodleKapitol, kontextoveTexty, pruvodceTranspiraci } from './element_ui_okna_obsah.js?v=compact-details-1';
 import { veliciny, vstupyVzorce, ohlasitChybuOken, vyhladitHodnotu } from './element_ui_okna_veliciny.js?v=affinity-windows-layout-2';
 import { zkontrolovatOkna } from './element_ui_okna_kontrola.js?v=seeds-1';
 import { createAnnualSugarCurve, createSeasonalSugarBalance, sugarProductionFactor } from '../ekologie/rocni_zasoba_cukru.js?v=4';

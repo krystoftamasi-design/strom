@@ -41,7 +41,7 @@ export const oknaPodleKapitol = {
       zobrazitVzorec: true,
       zobrazitHodnotu: true,
       text: [
-        'Dostupné světlo dopadá na listy. Jeho využití při fotosyntéze závisí také na vodě a dalších podmínkách.',
+        'Listy využívají světlo podle dostupnosti vody a dalších podmínek.',
       ],
     },
     {
@@ -54,7 +54,7 @@ export const oknaPodleKapitol = {
       zobrazitVzorec: true,
       zobrazitHodnotu: true,
       text: [
-        'O₂ vzniká při fotosyntéze a strom ho spotřebovává při dýchání. Spotřeba je orientační výukový odhad.',
+        'Fotosyntéza uvolňuje O₂. Dýchání ho spotřebovává v odhadovaném množství.',
       ],
     },
     {
@@ -67,7 +67,7 @@ export const oknaPodleKapitol = {
       zobrazitVzorec: true,
       zobrazitHodnotu: true,
       text: [
-        'CO₂ strom přijímá při fotosyntéze a uvolňuje při dýchání. Produkce je orientační výukový odhad.',
+        'Fotosyntéza přijímá CO₂. Dýchání ho uvolňuje v odhadovaném množství.',
       ],
     },
     {
@@ -82,7 +82,7 @@ export const oknaPodleKapitol = {
       zobrazitVzorec: true,
       zobrazitHodnotu: true,
       text: [
-        'Cukry ukládají energii a slouží jako stavební materiál. Spotřeba je orientační odhad cukrů využitých při dýchání, bez zahrnutí růstu.',
+        'Cukry ukládají energii a staví tkáně. Spotřeba ukazuje odhad pro dýchání.',
       ],
     },
     {
@@ -96,7 +96,7 @@ export const oknaPodleKapitol = {
       zobrazitVzorec: true,
       zobrazitHodnotu: true,
       text: [
-        'Voda proudí do listů, ochlazuje korunu odparem a pomáhá udržovat listy zavodněné.',
+        'Voda zavodňuje listy a jejím odparem se koruna ochlazuje.',
       ],
     },
   ],

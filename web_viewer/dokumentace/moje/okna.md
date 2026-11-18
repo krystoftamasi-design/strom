@@ -49,7 +49,7 @@ history:
 
 - Nadpis: `Světlo`.
 - Téma: světlo; strana: vpravo; tematické okno.
-- Detailní text: „Dostupné světlo dopadá na listy. Jeho využití při fotosyntéze závisí také na vodě a dalších podmínkách.“
+- Detailní text: „Listy využívají světlo podle dostupnosti vody a dalších podmínek.“
 - Spotřeba: aktivita fotosyntézy v procentech jako výukový ukazatel využití světla, nikoli měření energie.
 - Dostupnost: intenzita světla modelu v procentech, nezávislá na vodě.
 - Vstupy výpočtu: zapnuté.
@@ -62,7 +62,7 @@ history:
 
 - Nadpis: `O₂`.
 - Téma: kyslík; strana: vpravo.
-- Detailní text: „O₂ vzniká při fotosyntéze a strom ho spotřebovává při dýchání. Spotřeba je orientační výukový odhad.“
+- Detailní text: „Fotosyntéza uvolňuje O₂. Dýchání ho spotřebovává v odhadovaném množství.“
 - Vstupy výpočtu: `Světlo × voda × listy × CO₂ × teplota`.
 - Hodnota: produkce O₂ v `g/min`, zobrazena na jedno desetinné místo.
 - Spotřeba O₂: orientační odhad dýchání v `g/min`.
@@ -75,7 +75,7 @@ history:
 
 - Nadpis: `CO₂`.
 - Téma: CO₂; strana: vpravo.
-- Detailní text: „CO₂ strom přijímá při fotosyntéze a uvolňuje při dýchání. Produkce je orientační výukový odhad.“
+- Detailní text: „Fotosyntéza přijímá CO₂. Dýchání ho uvolňuje v odhadovaném množství.“
 - Vstupy výpočtu: `Světlo × voda × listy × CO₂ × teplota`.
 - Hodnota: spotřeba CO₂ v `g/min`, zobrazena na jedno desetinné místo.
 - Produkce CO₂: orientační odhad dýchání v `g/min`.
@@ -89,7 +89,7 @@ history:
 - Nadpis: `Cukry`.
 - Téma: cukry; strana: vpravo.
 - Popisek: „Tvorba cukrů ≈ glukóza“.
-- Detailní text: „Cukry ukládají energii a slouží jako stavební materiál. Spotřeba je orientační odhad cukrů využitých při dýchání, bez zahrnutí růstu.“
+- Detailní text: „Cukry ukládají energii a staví tkáně. Spotřeba ukazuje odhad pro dýchání.“
 - Hodnota: `glucoseGramsPerMinute`, jednotka `g/min`, jedno desetinné místo.
 - Spotřeba cukrů: orientační odhad dýchání v `g/min`.
 - Zásoba: aktuální výukový odhad v kilogramech podle [společné bilance cukrů](#kapitola-prototyp). Značka Z ukazuje podíl na nastavené kapacitě.
@@ -105,7 +105,7 @@ history:
 
 - Nadpis: `Voda`.
 - Téma: voda; strana: vpravo.
-- Detailní text: „Voda proudí do listů, ochlazuje korunu odparem a pomáhá udržovat listy zavodněné.“
+- Detailní text: „Voda zavodňuje listy a jejím odparem se koruna ochlazuje.“
 - Vstup výpočtu: `voda`.
 - Hodnota: spotřeba vody v `l/h`, zobrazena na jedno desetinné místo.
 - Zásoba: aktuální množství dostupné vody ve stromu v litrech. Samostatný pruh ukazuje podíl na kapacitě zásoby.
