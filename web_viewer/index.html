@@ -2376,6 +2376,7 @@
         greenGroup.userData.flowMinDistance = glucoseMinDistance;
         greenGroup.userData.flowMaxDistance = glucoseMaxDistance;
         greenGroup.userData.flowCutoff = glucoseCutoff;
+        greenGroup.userData.flowRevealBottom = glucoseRevealBottom;
         photosynthesisGroup.add(greenRootFlowMesh);
       }
       updatePhotosynthesisLabelsPosition();
@@ -3181,8 +3182,9 @@
       sapUniforms.uFlowCutoff.value = THREE.MathUtils.lerp(
         sapFlowMinDistance - 0.4, sapFlowMaxDistance + 0.4, flowProgress);
       const glucoseFlow = greenRootFlowMesh?.userData;
+      const winter = ecology.season === 'latefall';
       if (greenRootFlowMesh) {
-        greenRootFlowMesh.visible = !night && ecology.season !== 'latefall' && ecology.activity > 0;
+        greenRootFlowMesh.visible = !winter;
         const glucoseDirection = ecology.season === 'spring' ? 1.0 : -1.0;
         greenRootFlowMesh.traverse(node => {
           if (node.material?.uniforms?.uFlowDirection) {
@@ -3191,11 +3193,16 @@
         });
       }
       if (glucoseFlow?.flowCutoff && glucoseFlow.flowMinDistance < glucoseFlow.flowMaxDistance) {
-        sugarFlowRetraction = greenRootFlowMesh.visible ? Math.max(0, sugarFlowRetraction - delta / 3.6) : 1;
+        const sugarTarget = winter ? 1 : night ? 0 : target;
+        const sugarStep = delta / 3.6;
+        sugarFlowRetraction = winter ? 1
+          : sugarFlowRetraction + THREE.MathUtils.clamp(sugarTarget - sugarFlowRetraction, -sugarStep, sugarStep);
+        const sugarRevealing = sugarTarget === 0;
+        glucoseFlow.flowRevealBottom.value = sugarRevealing ? 0 : 1;
         glucoseFlow.flowCutoff.value = THREE.MathUtils.lerp(
           glucoseFlow.flowMaxDistance + 0.4,
           glucoseFlow.flowMinDistance - 0.4,
-          1 - sugarFlowRetraction);
+          sugarRevealing ? 1 - sugarFlowRetraction : sugarFlowRetraction);
       }
     }
 
