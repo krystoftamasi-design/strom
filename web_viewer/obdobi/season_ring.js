@@ -1,5 +1,5 @@
 import * as THREE from '../web_assets/vendor/three.module.js';
-import { createSeasonTimeline } from './season_timeline.js?v=annual-sugar-1';
+import { createSeasonTimeline } from './season_timeline.js?v=month-clock-1';
 
 const SEASONS = ['spring', 'summer', 'autumn', 'latefall'];
 const LABELS = ['JARO', 'LÉTO', 'PODZIM', 'ZIMA'];
@@ -223,6 +223,7 @@ export function createSeasonRing({ scene, camera, controls, canvas, model }) {
       const now = performance.now();
       const elapsed = Math.min(0.1, Math.max(0, (now - lastUpdate) / 1000));
       lastUpdate = now;
+      const movingByWheel = wheelRemaining > 0;
       if (chapter === 'intro') wheelRemaining = 0;
       else if (!drag && wheelRemaining > 0) {
         const step = reduceMotion.matches ? wheelRemaining : wheelRemaining * (1 - Math.exp(-2.5 * elapsed));
@@ -230,7 +231,7 @@ export function createSeasonRing({ scene, camera, controls, canvas, model }) {
         timeline.moveTo(timeline.position + advance);
         wheelRemaining -= advance;
       }
-      const advanced = timeline.update(chapter, Boolean(drag), playbackDelta);
+      const advanced = timeline.update(chapter, Boolean(drag) || movingByWheel, playbackDelta);
       group.visible = chapter !== 'intro';
       interactive = chapter !== 'intro';
       if (!drag) {

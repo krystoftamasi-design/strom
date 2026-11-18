@@ -649,7 +649,10 @@ export function createTreeAnnotations({ shell, model, createSeasonControl, setEl
   let lastSmoothTime = performance.now();
 
   return {
-    update(chapter, playbackDelta = 0) {
+    advanceSeason(chapter, playbackDelta) {
+      return seasonControl.update(chapter, playbackDelta);
+    },
+    update(chapter, previousSeason, advanced) {
       const now = performance.now();
       const dt = (now - lastSmoothTime) / 1000;
       lastSmoothTime = now;
@@ -731,8 +734,6 @@ export function createTreeAnnotations({ shell, model, createSeasonControl, setEl
       }
       syncHighlights();
       seasonRow.hidden = chapter === 'intro';
-      const previousSeason = model.seasonPosition;
-      const advanced = seasonControl.update(chapter, playbackDelta);
       if (chapter === 'intro' || !model.ready) return;
       if (!sugarBalance || curveCrownArea !== model.crownArea) {
         const annualCurve = createAnnualSugarCurve(model, prototypeCapacity);

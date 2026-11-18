@@ -100,10 +100,6 @@ body.scene-night .tree-overlay .season-date-card { color: #f0f2e9; }
   clip-path: none; overflow: visible; pointer-events: auto; display: flex; gap: 5px;
   padding: 8px; border-radius: 12px; background: #1c2a22;
 }
-.season-clock { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin: 10px 0 14px; }
-.season-clock output { color: #d9e6cb; font: 500 12px 'Satoshi', sans-serif; }
-.season-clock button { border: 1px solid #81956a66; border-radius: 7px; padding: 6px 8px; background: #c5dda412; color: #c5dda4; font: 400 10px 'Nohemi', sans-serif; cursor: pointer; }
-.season-clock button:focus-visible { outline: 2px solid #c5dda4; outline-offset: 2px; }
 
 /* Photosynthesis windows are styled in element_ui_okna_vzhled.css. */
 @media (max-width: 1050px) and (min-width: 701px) { .tree-annotation { width: 205px; } .tree-overlay .chapter-shared { width: 224px; left: 12px; bottom: 12px; } }

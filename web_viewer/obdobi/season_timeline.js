@@ -1,4 +1,7 @@
-import { beechColourForPosition, seasonPositionForColour, seasonDayForPosition } from './beech_phenology.js?v=1';
+import {
+  beechColourForPosition, seasonPositionForColour, seasonDayForPosition,
+  monthClockForSeason, seasonForMonthClock,
+} from './beech_phenology.js?v=month-clock-1';
 const YEAR_SECONDS = 288;
 export function seasonColorForPosition(position) {
   return beechColourForPosition(position);
@@ -11,14 +14,9 @@ export function createSeasonTimeline(model) {
   slider.step = '0.1';
   let position = positionForSlider(Number(slider.value));
   let lastValue = Number(slider.value);
-  let automatic = true;
   let writing = false;
   let active = false;
   let displayedDay = null;
-  const clock = document.createElement('div');
-  clock.className = 'season-clock';
-  clock.innerHTML = '<button type="button" aria-pressed="true">Ⅱ Pozastavit rok</button>';
-  document.querySelector('#chapterShared .shared-body').prepend(clock);
   const dateCard = document.createElement('aside');
   dateCard.className = 'season-date-card';
   dateCard.setAttribute('aria-label', 'Datum modelového roku');
@@ -26,15 +24,8 @@ export function createSeasonTimeline(model) {
   const playback = document.querySelector('.time-playback-panel');
   if (playback) dateCard.prepend(playback);
   document.querySelector('.chapter-panel').append(dateCard);
-  const button = clock.querySelector('button');
   const output = dateCard.querySelector('output');
   const dateFormat = new Intl.DateTimeFormat('cs-CZ', { day: 'numeric', month: 'long', timeZone: 'UTC' });
-  function setAutomatic(value) {
-    automatic = value;
-    button.textContent = automatic ? 'Ⅱ Pozastavit rok' : '▶ Pokračovat v roce';
-    button.setAttribute('aria-pressed', String(automatic));
-  }
-  button.addEventListener('click', () => setAutomatic(!automatic));
   function readSlider() {
     const next = positionForSlider(Number(slider.value));
     // Keep the slider bidirectional. The previous monotonic conversion
@@ -57,7 +48,6 @@ export function createSeasonTimeline(model) {
   }
   slider.addEventListener('input', () => {
     if (writing || !active) return;
-    setAutomatic(false);
     readSlider();
   });
   function showDate() {
@@ -69,7 +59,6 @@ export function createSeasonTimeline(model) {
   }
   return {
     get position() { return position; },
-    pause() { setAutomatic(false); },
     moveTo(next) {
       // The visible time ring only advances; it cannot undo elapsed time.
       if (!Number.isFinite(next) || next <= position) return;
@@ -89,9 +78,9 @@ export function createSeasonTimeline(model) {
       }
       let advanced = false;
       if (!dragging) {
-        if (Number(slider.value) !== lastValue) { readSlider(); setAutomatic(false); }
-        if (automatic && playbackDelta > 0) {
-          position += playbackDelta / YEAR_SECONDS * 4;
+        if (Number(slider.value) !== lastValue) readSlider();
+        else if (playbackDelta > 0) {
+          position = seasonForMonthClock(monthClockForSeason(position) + playbackDelta / (YEAR_SECONDS / 12));
           writeSlider();
           advanced = true;
         }

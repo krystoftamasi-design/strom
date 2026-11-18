@@ -129,7 +129,6 @@
     }
 
     body[data-chapter="intro"] .time-playback-panel,
-    body[data-chapter="intro"] .time-of-day-control,
     body[data-chapter="intro"] .manager-controlled {
       display: none !important;
     }
@@ -446,44 +445,6 @@
       pointer-events: none;
     }
 
-    .time-of-day-control {
-      pointer-events: auto;
-      min-width: 210px;
-      display: flex;
-      align-items: center;
-      flex-wrap: wrap;
-      gap: 10px;
-      padding: 8px 12px;
-      border: 1px solid var(--bg-panel-border);
-      border-radius: 12px;
-      background: var(--bg-panel);
-      backdrop-filter: blur(14px);
-      box-shadow: 0 4px 15px rgba(0, 0, 0, .2);
-      color: var(--text-muted);
-      font: 11px var(--font-mono);
-    }
-
-    .time-of-day-timeline {
-      min-width: 155px;
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      gap: 5px;
-    }
-
-    .time-of-day-control .time-label {
-      display: flex;
-      justify-content: space-between;
-      gap: 14px;
-    }
-
-    .time-of-day-control input {
-      width: 100%;
-      margin: 0;
-      accent-color: #f6c85f;
-      cursor: pointer;
-    }
-
     .time-playback-buttons {
       display: flex;
       flex-wrap: wrap;
@@ -555,12 +516,6 @@
         flex-wrap: wrap;
         justify-content: flex-end;
         gap: 6px;
-      }
-
-      .time-of-day-control {
-        min-width: 155px;
-        flex: 1 1 100%;
-        order: 2;
       }
 
       .stat-pill {
@@ -1154,14 +1109,6 @@
 
   <!-- HUD Bottom Bar -->
   <div class="hud-bottom">
-    <div class="time-of-day-control manager-controlled manager-hidden">
-      <div class="time-of-day-timeline">
-        <label class="time-label" for="sliderTimeOfDay"><span>Čas dne · <output id="valTimePlaybackSpeed"
-              aria-live="polite">1×</output></span><strong id="valTimeOfDay">poledne</strong></label>
-        <input type="range" id="sliderTimeOfDay" min="0" max="24" step="0.1" value="12"
-          aria-label="Čas dne od půlnoci do půlnoci">
-      </div>
-    </div>
     <div class="time-playback-buttons time-playback-panel" role="group" aria-label="Běh času">
       <button type="button" id="btnTimePause" aria-pressed="false" aria-label="Pozastavit čas" title="Pozastavit čas">
         <svg viewBox="0 0 24 24" aria-hidden="true">
@@ -1227,13 +1174,16 @@
     import { createSunClouds } from './vykreslovani/sun_clouds.js?v=2';
     import { createWaterBrushMaterial, addWaterBrushAttributes } from './vykreslovani/water_brush.js?v=highlight-width-3';
     import { TreeEcology, SEASONS, MODEL_MINUTES_PER_SECOND } from './ekologie/tree_ecology.js?v=light-slider-1';
-    import { createChapters } from './kapitoly/chapters.js?v=annual-sugar-4-affinity-detail-1';
+    import { createChapters } from './kapitoly/chapters.js?v=month-clock-1';
     import { createSeedChapter } from './kapitoly/seed_chapter.js';
     import { createTreeBird } from './vykreslovani/tree_bird.js?v=perch-grid-1';
-    import { createSeasonRing } from './obdobi/season_ring.js?v=annual-sugar-1';
+    import { createSeasonRing } from './obdobi/season_ring.js?v=month-clock-1';
     import { createIntroForest } from './obdobi/intro_forest.js?v=intro-closer-camera-2';
     import { seasonColorForPosition } from './obdobi/season_timeline.js?v=beech-calendar-1';
-    import { BEECH_CALENDAR, seasonDayForPosition, beechLeafFallProgress, beechLeafGrowthProgress } from './obdobi/beech_phenology.js?v=1';
+    import {
+      BEECH_CALENDAR, seasonDayForPosition, beechLeafFallProgress, beechLeafGrowthProgress,
+      monthClockForSeason, solarHoursForMonthClock
+    } from './obdobi/beech_phenology.js?v=month-clock-1';
 
     const ecology = new TreeEcology();
 
@@ -3714,7 +3664,6 @@
     const _crownCenter = new THREE.Vector3(0, 11.5, 0);
     let _lastLightRotText = '';
     let _lastSunElevText = '';
-    let _lastTimeOfDayText = '';
     let _lastFpsText = '';
     let _lastNightScene = null;
     function updateSunAzimuth(deg) {
@@ -3739,30 +3688,17 @@
     // Slider výšky slunce nad obzorem (Elevace)
     const sliderSunElevation = document.getElementById('sliderSunElevation');
     const valSunElevation = document.getElementById('valSunElevation');
-    const sliderTimeOfDay = document.getElementById('sliderTimeOfDay');
-    const valTimeOfDay = document.getElementById('valTimeOfDay');
-    let timeOfDayHours = Number(sliderTimeOfDay.value);
-    let adjustingTimeOfDay = false;
+    let timeOfDayHours = 12;
     let timePaused = false;
     let timePlaybackSpeed = 1;
     const btnTimePause = document.getElementById('btnTimePause');
     const btnTimeFaster = document.getElementById('btnTimeFaster');
     const btnTimeFastest = document.getElementById('btnTimeFastest');
-    const valTimePlaybackSpeed = document.getElementById('valTimePlaybackSpeed');
-    function getDayClockSpeed() {
-      const isNight = timeOfDayHours >= 18 || timeOfDayHours < 6;
-      // Úvod má vlastní tempo: den 5×, noc 14×.
-      const clockSpeed = chapterApp.introduction
-        ? (isNight ? 14 : 5)
-        : (isNight ? 12 : 1) * 0.5;
-      return timePaused ? 0 : timePlaybackSpeed * clockSpeed;
-    }
     function syncTimePlaybackControls() {
       const pauseLabel = timePaused ? 'Pokračovat v čase' : 'Pozastavit čas';
       btnTimePause.setAttribute('aria-label', pauseLabel);
       btnTimePause.title = pauseLabel;
       btnTimePause.setAttribute('aria-pressed', String(timePaused));
-      valTimePlaybackSpeed.textContent = `${timePaused ? 'Pauza · ' : ''}${timePlaybackSpeed.toLocaleString('cs-CZ')}×`;
       btnTimeFaster.setAttribute('aria-pressed', String(!timePaused && timePlaybackSpeed === 2));
       btnTimeFastest.setAttribute('aria-pressed', String(!timePaused && timePlaybackSpeed === 4));
     }
@@ -3780,10 +3716,6 @@
       timePaused = false;
       syncTimePlaybackControls();
     });
-    sliderTimeOfDay.addEventListener('pointerdown', () => { adjustingTimeOfDay = true; });
-    window.addEventListener('pointerup', () => { adjustingTimeOfDay = false; });
-    window.addEventListener('pointercancel', () => { adjustingTimeOfDay = false; });
-
     function updateSunElevation(deg) {
       sunElevationDeg = Number(deg);
       const elevText = `${Math.round(sunElevationDeg)}°`;
@@ -3841,7 +3773,6 @@
     const sunPathInclination = THREE.MathUtils.degToRad(35);
     let _lastSliderSunElev = NaN;
     let _lastSliderLightRot = NaN;
-    let _lastSliderDayHour = NaN;
     function updateSunFromDayClock(hour) {
       const angle = (hour - 6) / 24 * Math.PI * 2;
       const arc = Math.sin(angle);
@@ -3859,18 +3790,6 @@
       updateSunElevation(elevation);
       updateSunAzimuth(azimuth);
     }
-
-    if (sliderTimeOfDay) sliderTimeOfDay.addEventListener('input', e => {
-      const hour = parseFloat(e.target.value);
-      timeOfDayHours = hour;
-      updateSunFromDayClock(hour);
-      invalidateShadows();
-      if (valTimeOfDay) {
-        const h = Math.floor(hour) % 24;
-        const m = Math.round((hour - Math.floor(hour)) * 60) % 60;
-        valTimeOfDay.textContent = `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}`;
-      }
-    });
 
     if (sliderSunElevation) {
       sliderSunElevation.addEventListener('input', (e) => {
@@ -4189,10 +4108,8 @@
           syncSeasonFoliage();
           // Start the intro just before sunrise.
           timeOfDayHours = 2;
-          sliderTimeOfDay.value = 2;
           sliderSunElevation.value = 0;
           sliderLightRot.value = 90;
-          valTimeOfDay.textContent = '02:00';
           ecology.dayCycleEnabled = true;
           document.getElementById('chkDayNight').checked = true;
           updateSunFromDayClock(timeOfDayHours);
@@ -4315,25 +4232,30 @@
         : 1;
       leafFallAnimationTime += playbackDelta * (seasonalRegrowthPending ? 12 : winterFallSpeed);
       shaderUniforms.uLeafFallTime.value = leafFallAnimationTime;
-      // Calculate time once, before crossing day/night boundaries. The clock,
-      // weather and water balance all consume this same model-minute increment.
-      const modelMinutes = adjustingTimeOfDay ? 0 : delta * MODEL_MINUTES_PER_SECOND * getDayClockSpeed();
-      if (modelMinutes > 0 && sliderTimeOfDay) {
-        timeOfDayHours = (timeOfDayHours + modelMinutes / 60) % 24;
-        if (!Number.isFinite(_lastSliderDayHour) || Math.abs(timeOfDayHours - _lastSliderDayHour) >= 0.05) {
-          _lastSliderDayHour = timeOfDayHours;
-          sliderTimeOfDay.value = timeOfDayHours;
-        }
-        if (ecology.dayCycleEnabled) updateSunFromDayClock(timeOfDayHours);
-        const h = Math.floor(timeOfDayHours);
-        const m = Math.floor((timeOfDayHours - h) * 60);
-        const timeText = `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}`;
-        if (valTimeOfDay && timeText !== _lastTimeOfDayText) {
-          _lastTimeOfDayText = timeText;
-          valTimeOfDay.textContent = timeText;
+      // Calendar seeks reposition the sun without charging water for skipped time.
+      const previousSeason = ecology.seasonPosition;
+      const advanced = chapterApp.advanceSeason(playbackDelta);
+      let nextHour = timeOfDayHours;
+      let modelMinutes = 0;
+      if (chapterApp.introduction) {
+        const night = timeOfDayHours >= 18 || timeOfDayHours < 6;
+        modelMinutes = playbackDelta * MODEL_MINUTES_PER_SECOND * (night ? 14 : 5);
+        nextHour = (timeOfDayHours + modelMinutes / 60) % 24;
+      } else {
+        const solarHour = solarHoursForMonthClock(monthClockForSeason(ecology.seasonPosition));
+        nextHour = ((solarHour % 24) + 24) % 24;
+        if (advanced) {
+          const previousHour = solarHoursForMonthClock(monthClockForSeason(previousSeason));
+          modelMinutes = Math.max(0, (solarHour - previousHour) * 60);
         }
       }
-      // Water balance uses the clock's increment, including intro/night speeds.
+      if (nextHour !== timeOfDayHours) {
+        timeOfDayHours = nextHour;
+        if (ecology.dayCycleEnabled) {
+          updateSunFromDayClock(timeOfDayHours);
+          if (!advanced && !chapterApp.introduction) invalidateShadows();
+        }
+      }
       updateWaterAndDrought(modelMinutes);
       updateSapRetraction(delta);
       if (playbackDelta > 0) updateSeasonalLeaves(playbackDelta, delta);
@@ -4378,7 +4300,7 @@
       camera.updateMatrixWorld();
       const cloudAmount = sunClouds.update(ecology, delta);
       studioColor.copy(baseSceneBackground).lerp(overcastBackground, cloudAmount * 0.55);
-      chapterApp.updateScene(playbackDelta);
+      chapterApp.updateScene(previousSeason, advanced);
       updateHighlights(delta);
       seedChapter.update(chapterApp.chapter === 'seeds', ecology.seasonPosition, trunkMesh, seedHighlight, playbackDelta);
       treeBird.update(
