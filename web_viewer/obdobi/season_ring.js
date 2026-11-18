@@ -107,7 +107,7 @@ export function createSeasonRing({ scene, camera, controls, canvas, model }) {
       '#include <common>\nuniform vec3 uRingInk;')
       .replace('#include <map_fragment>', '#include <map_fragment>\ndiffuseColor.rgb = uRingInk;');
   };
-  const tickGeometry = new THREE.PlaneGeometry(0.32, 1.2);
+  const tickGeometry = new THREE.PlaneGeometry(0.55, 1.2);
   tickGeometry.rotateX(-Math.PI / 2);
   for (let section = 0; section < sectionCount; section++) {
     const angle = (section - 0.5) * sectionAngle;
