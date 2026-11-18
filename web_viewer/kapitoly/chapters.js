@@ -200,6 +200,7 @@ export function createChapters({ model, applySeason, setSun, setAzimuth, setVisu
       setInput('sliderSunElevation', saved.elevation);
       setInput('sliderLightRot', saved.azimuth);
     }
+    if (id === 'photosynthesis' && chapter !== id) applySeason('summer');
     chapter = id;
     titleTestButton.hidden = id !== 'photosynthesis';
     shell.querySelectorAll('[data-chapter]').forEach(a => { a.hidden = a.dataset.chapter !== id; });

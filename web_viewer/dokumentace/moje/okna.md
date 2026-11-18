@@ -35,7 +35,7 @@ history:
 ### Okna
 
 - Okna používají [společnou šablonu](vzhled_oken.md#šablona-jednoho-okna-podle-transpirace) ve variantě s vodorovnými pruhy. Kliknutí v bloku údajů přepne detail. Posuvníky světla a vody se ovládají samostatně myší, dotykem nebo klávesnicí. Stav detailu se zachovává při změně kapitoly.
-- Fotosyntéza je samostatný nadpis kapitoly bez okna. Tematická okna jsou vpravo a jejich detaily jsou výchozí zavřené. Polohu otevřeného detailu určuje [vzhled oken](vzhled_oken.md#obecný-obsah).
+- Při každém přechodu do Fotosyntézy se nastaví léto. Fotosyntéza je samostatný nadpis kapitoly bez okna. Tematická okna jsou vpravo a jejich detaily jsou výchozí zavřené. Polohu otevřeného detailu určuje [vzhled oken](vzhled_oken.md#obecný-obsah).
 - Vzorec nebo přehled vstupů se u oken Fotosyntézy zobrazuje až v otevřeném detailu.
 - Okna Světlo, O₂, CO₂, Cukry a Voda obsahují dva údaje o tocích nebo dostupnosti podle [popisu vzhledu](vzhled_oken.md). Cukry a Voda navíc ukazují zásobu. Neznámá hodnota se označí „Zatím nemáme hodnotu“ bez vyplnění ukazatele.
 - Ukazatel dostupnosti vody nastavuje přísun ke kořenům v l/h. Automatický přísun činí 90 % sezónní kapacity příjmu. Ruční nastavení přetrvá při automatickém běhu. Ruční změna období obnoví automatický přísun. Příjem stromu omezuje sezónní kapacita a stav kořenů.

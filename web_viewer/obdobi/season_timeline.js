@@ -76,6 +76,12 @@ export function createSeasonTimeline(model) {
         position = model.seasonPosition;
         lastValue = Number(slider.value);
       }
+      if (position !== model.seasonPosition) {
+        position = model.seasonPosition;
+        lastValue = Number(slider.value);
+        showDate();
+        return false;
+      }
       let advanced = false;
       if (!dragging) {
         if (Number(slider.value) !== lastValue) readSlider();
