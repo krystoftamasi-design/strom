@@ -1145,22 +1145,6 @@ body.scene-night .chapter-context-guide .transpiration-legend {
   letter-spacing: -.035em;
 }
 
-.tree-overlay .photosynthesis-intro:not([hidden]) {
-  position: absolute;
-  left: 6%;
-  top: calc(var(--photosynthesis-top) + var(--ui-main-heading-size) + 16px);
-  bottom: 16%;
-  height: max-content;
-  max-width: min(38ch, 40vw);
-  margin: 0;
-  color: var(--ui-ink);
-  font: var(--ui-text-style);
-}
-
-.tree-overlay .photosynthesis-intro[hidden] {
-  display: none;
-}
-
 .tree-overlay article[data-chapter="photosynthesis"] {
   position: absolute;
   inset: 0;
@@ -1341,13 +1325,8 @@ body.scene-night .tree-overlay .element-ui-flow-window {
 }
 
 @media (max-width: 700px) {
-  .tree-overlay :is(.photosynthesis-title, .scene-chapter-title, .photosynthesis-intro:not([hidden])) {
+  .tree-overlay :is(.photosynthesis-title, .scene-chapter-title) {
     left: 4%;
-  }
-
-  .tree-overlay .photosynthesis-intro {
-    left: 4%;
-    max-width: 44%;
   }
 
   .tree-overlay .photosynthesis-windows {
@@ -1365,18 +1344,13 @@ body.scene-night .tree-overlay .element-ui-flow-window {
     --flow-text-halo: #162031;
   }
 
-  .tree-overlay article[data-chapter="photosynthesis"] :is(.element-ui-flow-window, .photosynthesis-title, .chapter-context-guide h2, .photosynthesis-intro) {
+  .tree-overlay article[data-chapter="photosynthesis"] :is(.element-ui-flow-window, .photosynthesis-title, .chapter-context-guide h2) {
     text-shadow: -1px 0 var(--flow-text-halo), 1px 0 var(--flow-text-halo),
       0 -1px var(--flow-text-halo), 0 1px var(--flow-text-halo), 0 0 4px var(--flow-text-halo);
   }
 
   .tree-overlay article[data-chapter="photosynthesis"] :is(.element-ui-trigger, .element-ui-balance-marker-cap) {
     text-shadow: none;
-  }
-
-  .tree-overlay .photosynthesis-intro:not([hidden]) {
-    bottom: auto;
-    top: calc(var(--photosynthesis-top) - 3em);
   }
 
   .tree-overlay article:is([data-chapter="photosynthesis"], [data-chapter="seasons"]) .chapter-context-guide {
@@ -1395,17 +1369,18 @@ body[data-chapter="photosynthesis"] .tree-overlay {
 
 body[data-chapter="photosynthesis"] .tree-overlay .season-date-card {
   top: var(--photosynthesis-controls-top);
-  bottom: auto;
-  display: grid;
-  grid-template-columns: max-content max-content;
-  grid-template-areas: "label date" "playback playback";
-  gap: 8px 12px;
-  font-size: clamp(18px, 1.6vw, 30px);
+  bottom: 6vh;
+  align-items: end;
+  width: max-content;
+  font-size: clamp(13px, 1vw, 20px);
 }
 
-body[data-chapter="photosynthesis"] .season-date-card > span { grid-area: label; }
-body[data-chapter="photosynthesis"] .season-date-card > output { grid-area: date; }
-body[data-chapter="photosynthesis"] .season-date-card .time-playback-panel { grid-area: playback; }
+body[data-chapter="photosynthesis"] .season-date-card .time-playback-panel {
+  position: absolute;
+  top: calc(clamp(18px, 1.6vw, 30px) * 1.2 + 8px);
+  left: 0;
+  width: max-content;
+}
 
 body[data-chapter="photosynthesis"] .season-date-card .time-playback-buttons button {
   width: clamp(52px, 4.3vw, 68px);
@@ -1424,6 +1399,10 @@ body[data-chapter="photosynthesis"] .season-date-card .time-playback-buttons svg
 @media (max-width: 700px) {
   body[data-chapter="photosynthesis"] .tree-overlay {
     --photosynthesis-controls-top: 40%;
+  }
+
+  body[data-chapter="photosynthesis"] .tree-overlay .season-date-card {
+    bottom: 4%;
   }
 
   .tree-overlay .photosynthesis-windows {

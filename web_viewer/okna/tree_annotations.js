@@ -314,8 +314,6 @@ export function createTreeAnnotations({ shell, model, createSeasonControl, setEl
   const contextSelections = new Map();
   const contextGuides = new Map();
   let activeChapter = null;
-  let photosynthesisIntro = null;
-  let photosynthesisIntroTimer = null;
   const prototypes = [createSugarStock(), createOxygenBalance('lines'), createOxygenBalance('rectangle')];
   const capacityInput = shell.querySelector('[data-prototype-capacity]');
   let prototypeCapacity = capacityInput.valueAsNumber;
@@ -595,11 +593,6 @@ export function createTreeAnnotations({ shell, model, createSeasonControl, setEl
       title.className = 'photosynthesis-title';
       title.textContent = 'Fotosyntéza';
       article.append(title);
-      photosynthesisIntro = document.createElement('p');
-      photosynthesisIntro.className = 'photosynthesis-intro';
-      photosynthesisIntro.textContent = 'Listy využívají světlo k tvorbě cukrů.';
-      photosynthesisIntro.hidden = true;
-      article.append(photosynthesisIntro);
     }
     if (kontextoveTexty[article.dataset.chapter]) addContextGuide(article, article.dataset.chapter);
     if (article.dataset.chapter === 'transpiration') {
@@ -636,7 +629,7 @@ export function createTreeAnnotations({ shell, model, createSeasonControl, setEl
     // Only empty wrappers can be discarded; live outputs must remain in the DOM.
     const mainBody = article.querySelector('.annotation-body');
     for (const node of [...article.children]) {
-      if (node.classList.contains('tree-annotation') || node.classList.contains('chapter-context-guide') || node.classList.contains('transpiration-prompt') || node.classList.contains('photosynthesis-title') || node.classList.contains('photosynthesis-intro') || node.classList.contains('scene-chapter-title')) continue;
+      if (node.classList.contains('tree-annotation') || node.classList.contains('chapter-context-guide') || node.classList.contains('transpiration-prompt') || node.classList.contains('photosynthesis-title') || node.classList.contains('scene-chapter-title')) continue;
       if (node.classList.contains('chapter-metrics') && !node.children.length) node.remove();
       else if (mainBody) mainBody.append(node);
     }
@@ -666,13 +659,6 @@ export function createTreeAnnotations({ shell, model, createSeasonControl, setEl
       const now = performance.now();
       const dt = (now - lastSmoothTime) / 1000;
       lastSmoothTime = now;
-      if (chapter !== activeChapter && photosynthesisIntro) {
-        clearTimeout(photosynthesisIntroTimer);
-        photosynthesisIntro.hidden = chapter !== 'photosynthesis';
-        if (chapter === 'photosynthesis') {
-          photosynthesisIntroTimer = setTimeout(() => { photosynthesisIntro.hidden = true; }, 20000);
-        }
-      }
       const chapterChanged = chapter !== activeChapter;
       activeChapter = chapter;
       if (chapterChanged) syncWindowHover();
