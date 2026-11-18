@@ -194,6 +194,17 @@ function createElementUiOkno({ panel, body, reveal, toggle, model, definition })
         value.append(output, unit);
         metric.append(trend, value);
         stock.append(label, stockBar, metric);
+        if (zdroj === 'cukry' && panel.dataset.chapter === 'photosynthesis') {
+          stock.classList.add('element-ui-stock-switchable', 'is-round');
+          stock.setAttribute('aria-keyshortcuts', 'T');
+          const circle = document.createElement('div');
+          circle.className = 'oxygen-balance sugar-stock element-ui-stock-circle';
+          circle.setAttribute('aria-hidden', 'true');
+          const fill = document.createElement('div');
+          fill.className = 'sugar-stock-liquid';
+          circle.append(fill);
+          stockBar.after(circle);
+        }
         footer.append(stock);
       }
     }

@@ -1,6 +1,6 @@
 import { zobrazitHodnotu, vyhladitHodnotu } from '../okna/element_ui_okna_veliciny.js?v=affinity-windows-layout-2';
 import { SEASONS } from '../ekologie/tree_ecology.js?v=light-slider-1';
-import { createTreeAnnotations } from '../okna/tree_annotations.js?v=stock-layout-2';
+import { createTreeAnnotations } from '../okna/tree_annotations.js?v=round-sugar-stock-1';
 
 const chapters = [
   ['seasons', 'Období'], ['photosynthesis', 'Fotosyntéza'], ['transpiration', 'Transpirace'],
@@ -139,9 +139,17 @@ export function createChapters({ model, applySeason, setSun, setAzimuth, setVisu
   closeSettings.addEventListener('click', syncDrawer);
   document.addEventListener('keydown', event => {
     if (event.key === 'Escape' && !drawer.inert) closeSettings.click();
-    if (event.key.toLowerCase() !== 'k' || event.defaultPrevented || event.repeat ||
+    const key = event.key.toLowerCase();
+    if ((key !== 'k' && key !== 't') || event.defaultPrevented || event.repeat ||
       event.ctrlKey || event.altKey || event.metaKey || event.shiftKey ||
       event.target.closest?.('input:not([type="range"]):not([type="checkbox"]), textarea, select, [contenteditable]')) return;
+
+    if (key === 't') {
+      if (drawer.inert && document.body.dataset.chapter === 'photosynthesis') {
+        shell.querySelector('.element-ui-stock-switchable')?.classList.toggle('is-round');
+      }
+      return;
+    }
 
     if (drawer.inert) {
       settingsReturnFocus = document.activeElement;
