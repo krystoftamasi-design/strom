@@ -377,6 +377,24 @@ body.scene-night .tree-overlay .element-ui-okno .ui-word {
   gap: 0;
 }
 
+.tree-overlay .element-ui-flow-window .element-ui-values:has(> .element-ui-stock) {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  column-gap: var(--flow-gap);
+  grid-template-rows: repeat(3, auto);
+}
+
+.tree-overlay .element-ui-stock {
+  display: grid;
+  grid-column: 2;
+  grid-row: 1 / 4;
+  grid-template-rows: subgrid;
+  text-align: right;
+}
+
+.tree-overlay .element-ui-stock .chapter-metric {
+  justify-self: end;
+}
+
 .tree-overlay .element-ui-flow-window .chapter-metric {
   flex-wrap: wrap;
   justify-content: space-between;
@@ -404,8 +422,16 @@ body.scene-night .tree-overlay .element-ui-okno .ui-word {
   --balance-track-start: clamp(10px, 1.3vh, 13px);
   --balance-track-end: clamp(11px, 1.45vh, 14px);
   --balance-marker-width: clamp(11px, 1.45vh, 14px);
+  --balance-track-color: #192138;
+  --balance-production: var(--ui-topic);
+  --balance-consumption: color-mix(in srgb, var(--ui-topic) 63%, #fff);
   position: relative;
   height: clamp(24px, 3.2vh, 32px);
+}
+
+.tree-overlay .element-ui-flow-window[data-topic="co2"] .element-ui-balance-bar {
+  --balance-production: #ff361d;
+  --balance-consumption: #ff777c;
 }
 
 .tree-overlay .element-ui-balance-fill {
@@ -422,18 +448,18 @@ body.scene-night .tree-overlay .element-ui-okno .ui-word {
 }
 
 .tree-overlay .element-ui-balance-track {
-  --balance-ink: #a7a7a7;
+  --balance-ink: var(--balance-track-color);
   --balance-texture: url('../web_assets/okna/affinity-bilance.png?v=affinity-windows-markers-5');
   right: 0;
 }
 
 .tree-overlay .element-ui-balance-markers {
   position: absolute;
-  inset: 0 calc(var(--balance-track-end) - 2px) 0 calc(var(--balance-track-start) - 2px);
+  inset: 0 var(--balance-track-end) 0 var(--balance-track-start);
 }
 
 body.scene-night .tree-overlay .element-ui-balance-track {
-  --balance-ink: color-mix(in srgb, var(--ui-ink) 42%, #5a5d58);
+  --balance-ink: #a3adc6;
 }
 
 .tree-overlay .element-ui-balance-track::before {
@@ -463,7 +489,7 @@ body.scene-night .tree-overlay .element-ui-balance-track {
 }
 
 .tree-overlay .element-ui-balance-marker {
-  --balance-ink: var(--ui-topic);
+  --balance-ink: var(--balance-production);
   right: calc((100% - var(--balance-marker-width)) * (1 - var(--balance-ratio, 0)));
   /* Apply after the brush mask to restore solid paint and keep its soft edges. */
   filter: url('../web_assets/okna/affinity-bilance-kryti.svg#brush');
@@ -488,7 +514,7 @@ body.scene-night .tree-overlay .element-ui-balance-track {
 
 .tree-overlay .element-ui-balance-marker-cap {
   position: absolute;
-  right: 0;
+  right: 1px;
   z-index: 1;
   width: clamp(8px, 1.05vh, 10.5px);
   display: grid;
@@ -498,7 +524,6 @@ body.scene-night .tree-overlay .element-ui-balance-track {
 }
 
 .tree-overlay .element-ui-balance-marker-top {
-  --balance-position: var(--balance-top);
   --balance-ratio: var(--balance-top-ratio, 0);
   --balance-texture: url('../web_assets/okna/affinity-bilance-horni.png?v=affinity-windows-markers-5');
 }
@@ -509,7 +534,7 @@ body.scene-night .tree-overlay .element-ui-balance-track {
 }
 
 .tree-overlay .element-ui-balance-marker-bottom {
-  --balance-position: var(--balance-bottom);
+  --balance-ink: var(--balance-consumption);
   --balance-ratio: var(--balance-bottom-ratio, 0);
   --balance-texture: url('../web_assets/okna/affinity-bilance-dolni.png?v=affinity-windows-markers-5');
 }
@@ -533,16 +558,45 @@ body.scene-night .tree-overlay .element-ui-balance-track {
   transform: scaleY(1.15);
 }
 
-.tree-overlay .element-ui-balance-consumption {
-  --balance-ink: color-mix(in srgb, var(--ui-topic) 57%, #38231c);
+.tree-overlay .element-ui-stock.is-unavailable .element-ui-balance-marker {
+  visibility: hidden;
+}
+
+.tree-overlay .element-ui-stock-ends {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font: 700 clamp(8px, 1vh, 11px)/1 var(--ui-font-text);
+  pointer-events: none;
+}
+
+.tree-overlay .element-ui-stock-ends span {
+  width: var(--balance-track-start);
+  color: #ff674e;
+  text-align: center;
+}
+
+.tree-overlay .element-ui-stock-ends span:last-child {
+  width: var(--balance-track-end);
+  color: #95d956;
+}
+
+body.scene-night .tree-overlay .element-ui-stock-ends span {
+  color: #8d200e;
+}
+
+body.scene-night .tree-overlay .element-ui-stock-ends span:last-child {
+  color: #215001;
 }
 
 .tree-overlay .element-ui-balance-slider {
   appearance: none;
   position: absolute;
   z-index: 2;
-  inset: -3px calc(var(--balance-track-end) - 2px) -3px calc(var(--balance-track-start) - 2px);
-  width: calc(100% - var(--balance-track-start) - var(--balance-track-end) + 4px);
+  inset: -3px var(--balance-track-end) -3px var(--balance-track-start);
+  width: calc(100% - var(--balance-track-start) - var(--balance-track-end));
   height: calc(100% + 6px);
   margin: 0;
   padding: 0;
@@ -1064,10 +1118,12 @@ body.scene-night .chapter-context-guide .transpiration-legend {
   letter-spacing: -.035em;
 }
 
-.tree-overlay .photosynthesis-intro {
+.tree-overlay .photosynthesis-intro:not([hidden]) {
   position: absolute;
   left: 6%;
   top: calc(var(--photosynthesis-top) + var(--ui-main-heading-size) + 16px);
+  bottom: 16%;
+  height: max-content;
   max-width: min(38ch, 40vw);
   margin: 0;
   color: var(--ui-ink);
@@ -1079,8 +1135,14 @@ body.scene-night .chapter-context-guide .transpiration-legend {
 }
 
 .tree-overlay article[data-chapter="photosynthesis"] {
+  position: absolute;
+  inset: 0;
+}
+
+.tree-overlay .photosynthesis-windows {
   --flow-window-width: clamp(132px, 12vw, 224px);
   --flow-gap: clamp(16px, 2vw, 30px);
+  --flow-columns-gap: var(--flow-gap);
   --flow-detail-width: clamp(145px, 15vw, 280px);
   position: absolute;
   inset: 0;
@@ -1089,22 +1151,24 @@ body.scene-night .chapter-context-guide .transpiration-legend {
   grid-template-columns: repeat(2, var(--flow-window-width));
   grid-template-rows: repeat(4, max-content);
   align-content: space-between;
-  column-gap: var(--flow-gap);
+  column-gap: var(--flow-columns-gap);
   row-gap: 8px;
-  padding: 7vh 3% 6vh max(4%, calc(97% - 2 * var(--flow-window-width) - var(--flow-gap)));
+  padding: 7vh 3% 6vh max(4%, calc(97% - 2 * var(--flow-window-width) - var(--flow-columns-gap)));
 }
 
-.tree-overlay article[data-chapter="photosynthesis"]:has(> [data-window-id="kyslik"]:not(.collapsed)),
-.tree-overlay article[data-chapter="photosynthesis"]:has(> [data-window-id="co2"]:not(.collapsed)):has(> [data-window-id="cukry"]:not(.collapsed)) {
-  column-gap: calc(var(--flow-detail-width) + 2 * var(--flow-gap));
-}
+@media (min-width: 701px) {
+  .tree-overlay .photosynthesis-windows:has(> [data-window-id="kyslik"]:not(.collapsed)),
+  .tree-overlay .photosynthesis-windows:has(> [data-window-id="co2"]:not(.collapsed)):has(> [data-window-id="cukry"]:not(.collapsed)) {
+    --flow-columns-gap: calc(var(--flow-detail-width) + 2 * var(--flow-gap));
+  }
 
-.tree-overlay article[data-chapter="photosynthesis"]:has(> [data-window-id="kyslik"]:not(.collapsed)):has(> [data-window-id="co2"]:not(.collapsed)):has(> [data-window-id="cukry"]:not(.collapsed)) {
-  column-gap: calc(2 * var(--flow-detail-width) + 3 * var(--flow-gap));
-}
+  .tree-overlay .photosynthesis-windows:has(> [data-window-id="kyslik"]:not(.collapsed)):has(> [data-window-id="co2"]:not(.collapsed)):has(> [data-window-id="cukry"]:not(.collapsed)) {
+    --flow-columns-gap: calc(2 * var(--flow-detail-width) + 3 * var(--flow-gap));
+  }
 
-.tree-overlay article[data-chapter="photosynthesis"]:has(> [data-window-id="co2"]:not(.collapsed)) > [data-window-id="kyslik"] {
-  grid-row: 3;
+  .tree-overlay .photosynthesis-windows:has(> [data-window-id="co2"]:not(.collapsed)) > [data-window-id="kyslik"] {
+    grid-row: 3;
+  }
 }
 
 .tree-overlay .element-ui-okno[data-chapter="photosynthesis"][data-window-id="svetlo"] {
@@ -1152,6 +1216,10 @@ body.scene-night .chapter-context-guide .transpiration-legend {
   text-align: left;
 }
 
+.tree-overlay .element-ui-okno[data-chapter="photosynthesis"][data-side="right"]:is([data-window-id="svetlo"], [data-window-id="voda"]) {
+  width: var(--flow-window-width);
+}
+
 .tree-overlay .element-ui-okno[data-chapter="photosynthesis"][data-side="right"] .element-ui-readout {
   grid-column: 1;
   pointer-events: auto;
@@ -1159,7 +1227,8 @@ body.scene-night .chapter-context-guide .transpiration-legend {
 }
 
 .tree-overlay .element-ui-okno[data-chapter="photosynthesis"][data-side="right"] .element-ui-readout>header {
-  grid-template-columns: minmax(0, 1fr) var(--ui-toggle-size);
+  grid-template-columns: max-content var(--ui-toggle-size);
+  column-gap: 4px;
   align-items: center;
 }
 
@@ -1172,8 +1241,8 @@ body.scene-night .chapter-context-guide .transpiration-legend {
   position: relative;
   isolation: isolate;
   border: 0;
-  color: var(--flow-toggle-symbol, #fff);
-  font-size: 15px;
+  color: var(--flow-heading-ink);
+  font-size: 12px;
   font-weight: 600;
 }
 
@@ -1183,16 +1252,36 @@ body.scene-night .chapter-context-guide .transpiration-legend {
   inset: 0;
   margin: auto;
   z-index: -1;
-  width: clamp(21px, 3vh, 25px);
+  width: clamp(17px, 2.4vh, 23px);
   aspect-ratio: 1;
-  background: var(--flow-toggle-fill, var(--ui-topic));
-  mask: url('../web_assets/oxygen_bubble_2.png') 38% 42.5% / 150% no-repeat;
+  background: var(--flow-toggle-fill, var(--flow-accent, var(--ui-topic)));
+  mask: url('../web_assets/okna/affinity-prepinac.svg') center / contain no-repeat;
+  transform: rotate(var(--flow-toggle-angle, 90deg));
+}
+
+.tree-overlay [data-chapter="photosynthesis"] [data-window-id="kyslik"] { --flow-toggle-angle: 0deg; }
+.tree-overlay [data-chapter="photosynthesis"] :is([data-window-id="co2"], [data-window-id="cukry"]) { --flow-toggle-angle: 180deg; }
+.tree-overlay [data-chapter="photosynthesis"] [data-window-id="voda"] { --flow-toggle-angle: -90deg; }
+
+.tree-overlay .element-ui-flow-window {
+  --flow-heading-ink: #192138;
+}
+
+.tree-overlay .element-ui-flow-window[data-topic="co2"] {
+  --flow-accent: #ff361d;
+}
+
+.tree-overlay .element-ui-flow-window .element-ui-readout h3 {
+  color: var(--flow-heading-ink);
+}
+
+body.scene-night .tree-overlay .element-ui-flow-window {
+  --flow-heading-ink: var(--ui-ink);
 }
 
 @media (hover: hover) {
   .tree-overlay .element-ui-okno.element-ui-flow-window:is(:hover, .is-pointer-over) {
-    --flow-toggle-fill: color-mix(in srgb, var(--ui-topic) 75%, white);
-    --flow-toggle-symbol: #181818;
+    --flow-toggle-fill: color-mix(in srgb, var(--flow-accent, var(--ui-topic)) 75%, white);
   }
 }
 
@@ -1217,6 +1306,11 @@ body.scene-night .chapter-context-guide .transpiration-legend {
 
 .tree-overlay .element-ui-okno[data-chapter="photosynthesis"][data-side="right"][data-window-id="voda"] .element-ui-readout {
   align-self: stretch;
+}
+
+.tree-overlay .element-ui-okno[data-chapter="photosynthesis"][data-side="right"][data-window-id="voda"]:has(.element-ui-stock) {
+  justify-self: end;
+  width: calc(2 * var(--flow-window-width) + var(--flow-gap));
 }
 
 .tree-overlay .element-ui-okno[data-chapter="photosynthesis"][data-side="right"] .annotation-reveal {
@@ -1248,7 +1342,7 @@ body.scene-night .chapter-context-guide .transpiration-legend {
   top: auto;
   left: auto;
   right: auto;
-  width: 100%;
+  width: var(--flow-window-width);
   height: auto;
   max-height: 14vh;
   margin-bottom: 8px;
@@ -1273,7 +1367,7 @@ body.scene-night .chapter-context-guide .transpiration-legend {
 }
 
 @media (max-height: 620px) {
-  .tree-overlay article[data-chapter="photosynthesis"] {
+  .tree-overlay .photosynthesis-windows {
     overflow-y: auto;
   }
 }
@@ -1306,7 +1400,7 @@ body.scene-night .chapter-context-guide .transpiration-legend {
 }
 
 @media (max-width: 700px) {
-  .tree-overlay :is(.photosynthesis-title, .scene-chapter-title) {
+  .tree-overlay :is(.photosynthesis-title, .scene-chapter-title, .photosynthesis-intro:not([hidden])) {
     left: 4%;
   }
 
@@ -1315,10 +1409,45 @@ body.scene-night .chapter-context-guide .transpiration-legend {
     max-width: 44%;
   }
 
+  .tree-overlay .photosynthesis-windows {
+    --flow-window-width: min(132px, 42vw);
+    top: 39vh;
+    bottom: 12vh;
+    padding-block: 0;
+    overflow-y: auto;
+  }
+
   .tree-overlay article[data-chapter="photosynthesis"] {
-    --flow-detail-width: min(42vw, 270px);
-    padding-top: 39vh;
-    padding-bottom: 12vh;
+    --flow-text-halo: #e6e8df;
+  }
+
+  body.scene-night .tree-overlay article[data-chapter="photosynthesis"] {
+    --flow-text-halo: #162031;
+  }
+
+  .tree-overlay article[data-chapter="photosynthesis"] :is(.element-ui-flow-window, .photosynthesis-title, .chapter-context-guide h2, .photosynthesis-intro) {
+    text-shadow: -1px 0 var(--flow-text-halo), 1px 0 var(--flow-text-halo),
+      0 -1px var(--flow-text-halo), 0 1px var(--flow-text-halo), 0 0 4px var(--flow-text-halo);
+  }
+
+  .tree-overlay article[data-chapter="photosynthesis"] :is(.element-ui-trigger, .element-ui-balance-marker-cap, .element-ui-stock-ends) {
+    text-shadow: none;
+  }
+
+  .tree-overlay [data-chapter="photosynthesis"] :is([data-window-id="kyslik"], [data-window-id="co2"], [data-window-id="cukry"]) {
+    --flow-toggle-angle: 90deg;
+  }
+
+  .tree-overlay .element-ui-okno[data-chapter="photosynthesis"][data-side="right"]:is([data-window-id="kyslik"], [data-window-id="co2"], [data-window-id="cukry"]) .annotation-reveal {
+    position: relative;
+    inset: auto;
+    width: 100%;
+    margin-top: 8px;
+  }
+
+  .tree-overlay .photosynthesis-intro:not([hidden]) {
+    bottom: auto;
+    top: calc(var(--photosynthesis-top) - 3em);
   }
 
   .tree-overlay article:is([data-chapter="photosynthesis"], [data-chapter="seasons"]) .chapter-context-guide {

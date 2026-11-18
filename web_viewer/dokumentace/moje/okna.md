@@ -35,7 +35,7 @@ history:
 ### Okna
 
 - Okna používají [společnou šablonu](vzhled_oken.md#šablona-jednoho-okna-podle-transpirace) ve variantě s vodorovnými pruhy. Kliknutí v bloku údajů přepne detail. Posuvníky světla a vody se ovládají samostatně myší, dotykem nebo klávesnicí. Stav detailu se zachovává při změně kapitoly.
-- Fotosyntéza je samostatný nadpis kapitoly bez okna. Tematická okna jsou vpravo; jejich detaily jsou výchozí zavřené a otevírají se vlevo od údajů.
+- Fotosyntéza je samostatný nadpis kapitoly bez okna. Tematická okna jsou vpravo a jejich detaily jsou výchozí zavřené. Polohu otevřeného detailu určuje [vzhled oken](vzhled_oken.md#obecný-obsah).
 - Vzorec nebo přehled vstupů se u oken Fotosyntézy zobrazuje až v otevřeném detailu.
 - Okna Světlo, O₂, CO₂, Cukry a Voda obsahují dva údaje s ukazateli podle [popisu vzhledu](vzhled_oken.md). Neznámá hodnota se označí „Zatím nemáme hodnotu“ bez vyplnění ukazatele.
 - Ukazatel dostupnosti vody nastavuje přísun ke kořenům v l/h. Automatický přísun činí 90 % sezónní kapacity příjmu. Ruční nastavení přetrvá při automatickém běhu. Ruční změna období obnoví automatický přísun. Příjem stromu omezuje sezónní kapacita a stav kořenů.
@@ -107,6 +107,7 @@ history:
 - Detailní text: „Voda proudí do listů, ochlazuje korunu odparem a pomáhá udržovat listy zavodněné.“
 - Vstup výpočtu: `voda`.
 - Hodnota: spotřeba vody v `l/h`, zobrazena na jedno desetinné místo.
+- Zásoba: aktuální množství dostupné vody ve stromu v litrech. Samostatný pruh ukazuje podíl na kapacitě zásoby.
 - Ovládání: ukazatel dostupnosti nastavuje přísun vody podle společného pravidla oken kapitoly.
 - Výchozí stav detailu: zavřený.
 - Související element: [Voda linka](elementy.md#voda-linka).

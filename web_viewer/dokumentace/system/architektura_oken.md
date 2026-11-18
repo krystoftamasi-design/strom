@@ -70,6 +70,7 @@ history:
 - `ekologie/tree_ecology_vzorce.js` obsahuje společné výpočty a jejich vstupy.
 - `okna/element_ui_okna_veliciny.js` určuje popisky, témata, jednotky a formát čísel.
 - V oknech Fotosyntézy se vykreslují dva údaje na okno včetně produkce a spotřeby O₂, CO₂ a cukrů. Posuvník dostupnosti vody volá `model.setWaterInput`.
+- Volitelný záznam `zasoba: { hodnota, maximum, jednotka }` rozšíří okno Fotosyntézy o druhý pruh. Položky `hodnota` a `maximum` jsou názvy číselných vlastností modelu. Podíl určuje polohu značky Z a hodnota se zobrazuje v zadané jednotce.
 
 ### Vstupy výpočtu
 

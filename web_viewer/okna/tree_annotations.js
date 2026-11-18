@@ -1,4 +1,4 @@
-import { oknaPodleKapitol, kontextoveTexty, pruvodceTranspiraci } from './element_ui_okna_obsah.js?v=year-guide-1';
+import { oknaPodleKapitol, kontextoveTexty, pruvodceTranspiraci } from './element_ui_okna_obsah.js?v=affinity-stock-1';
 import { veliciny, vstupyVzorce, ohlasitChybuOken, vyhladitHodnotu } from './element_ui_okna_veliciny.js?v=affinity-windows-layout-2';
 import { zkontrolovatOkna } from './element_ui_okna_kontrola.js?v=seeds-1';
 
@@ -31,6 +31,39 @@ function pickUiWindowStroke(direction) {
   const stroke = bag.pop();
   return { ...stroke, url: new URL(`../web_assets/${stroke.file}`, import.meta.url).href };
 }
+
+function createBalanceBar({ top, bottom, adjustable = false, stock = false }) {
+  const bar = document.createElement('div');
+  bar.className = 'element-ui-balance-bar';
+  bar.innerHTML = `
+    <span class="element-ui-balance-fill" aria-hidden="true">
+      <span class="element-ui-balance-track"><span class="element-ui-balance-track-shaft"></span></span>
+      <span class="element-ui-balance-markers"></span>
+    </span>`;
+  const markers = bar.querySelector('.element-ui-balance-markers');
+  for (const [side, letter] of Object.entries({ top, bottom })) {
+    if (letter === undefined) continue;
+    const marker = document.createElement('span');
+    marker.className = `element-ui-balance-marker element-ui-balance-marker-${side}`;
+    marker.classList.toggle('element-ui-balance-adjustable', adjustable && side === 'top');
+    const cap = document.createElement('span');
+    cap.className = 'element-ui-balance-marker-cap';
+    cap.textContent = letter;
+    marker.append(cap);
+    markers.append(marker);
+  }
+  if (stock) {
+    const ends = document.createElement('span');
+    ends.className = 'element-ui-stock-ends';
+    ends.setAttribute('aria-hidden', 'true');
+    ends.innerHTML = '<span>−</span><span>+</span>';
+    bar.append(ends);
+  }
+  return bar;
+}
+
+const stockNumber = new Intl.NumberFormat('cs-CZ', { maximumFractionDigits: 1 });
+
 function createElementUiOkno({ panel, body, reveal, toggle, model, definition }) {
   panel.classList.add('element-ui-okno');
   panel.dataset.topic ||= 'neutral';
@@ -104,35 +137,11 @@ function createElementUiOkno({ panel, body, reveal, toggle, model, definition })
     const bottomMetric = isAvailabilityWindow || isCo2 ? current : unavailable;
 
     if (current) {
-      const bar = document.createElement('div');
-      bar.className = 'element-ui-balance-bar';
-
-      const fill = document.createElement('span');
-      fill.className = 'element-ui-balance-fill';
-      fill.setAttribute('aria-hidden', 'true');
-      const track = document.createElement('span');
-      track.className = 'element-ui-balance-track';
-      const trackShaft = document.createElement('span');
-      trackShaft.className = 'element-ui-balance-track-shaft';
-      track.append(trackShaft);
-      const markers = document.createElement('span');
-      markers.className = 'element-ui-balance-markers';
-      fill.append(track, markers);
-      for (const side of ['top', 'bottom']) {
-        const isConsumption = side === 'bottom';
-        const isAdjustable = isAvailabilityWindow && side === 'top';
-        const marker = document.createElement('span');
-        marker.className = `element-ui-balance-marker element-ui-balance-marker-${side}`;
-        marker.classList.toggle('element-ui-balance-consumption', isConsumption);
-        marker.classList.toggle('element-ui-balance-adjustable', isAdjustable);
-        const cap = document.createElement('span');
-        cap.className = 'element-ui-balance-marker-cap';
-        if (!isAvailabilityWindow) cap.textContent = isConsumption ? 'S' : 'P';
-        marker.append(cap);
-        markers.append(marker);
-      }
-
-      bar.append(fill);
+      const bar = createBalanceBar({
+        top: isAvailabilityWindow ? '' : 'P',
+        bottom: isAvailabilityWindow ? '' : 'S',
+        adjustable: isAvailabilityWindow,
+      });
 
       if (isAvailabilityWindow) {
         const slider = document.createElement('input');
@@ -160,6 +169,30 @@ function createElementUiOkno({ panel, body, reveal, toggle, model, definition })
 
       footer.replaceChildren(topMetric, bar, bottomMetric);
       panel.classList.add('element-ui-flow-window');
+      if (definition.zasoba) {
+        const { hodnota, maximum, jednotka } = definition.zasoba;
+        const stock = document.createElement('div');
+        stock.className = 'element-ui-stock';
+        const label = document.createElement('span');
+        label.className = 'chapter-metric';
+        label.textContent = 'zásoba';
+        const stockBar = createBalanceBar({ top: 'Z', stock: true });
+        const metric = document.createElement('div');
+        metric.className = 'chapter-metric';
+        const value = document.createElement('strong');
+        const output = document.createElement('output');
+        output.dataset.stockValue = hodnota;
+        output.dataset.stockMaximum = maximum;
+        output.setAttribute('aria-label', `Zásoba – ${definition.nadpis}`);
+        output.textContent = '—';
+        const unit = document.createElement('span');
+        unit.className = 'element-ui-unit';
+        unit.textContent = jednotka;
+        value.append(output, unit);
+        metric.append(value);
+        stock.append(label, stockBar, metric);
+        footer.append(stock);
+      }
     }
   }
   toggle.classList.add('element-ui-trigger');
@@ -428,7 +461,13 @@ export function createTreeAnnotations({ shell, model, createSeasonControl, setEl
       toggle.textContent = open ? '−' : '+';
       toggle.setAttribute('aria-expanded', String(open));
     }
-    const userToggle = () => { dismissToggleHint(); expand(!expanded); };
+    const userToggle = () => {
+      dismissToggleHint();
+      expand(!expanded);
+      if (expanded && article.dataset.chapter === 'photosynthesis' && matchMedia('(max-width: 700px)').matches) {
+        panel.scrollIntoView({ block: 'nearest', inline: 'nearest', behavior: 'instant' });
+      }
+    };
     toggle.addEventListener('click', userToggle);
     if (panel.classList.contains('element-ui-flow-window')) {
       panel.querySelector('.element-ui-readout').addEventListener('click', event => {
@@ -582,6 +621,12 @@ export function createTreeAnnotations({ shell, model, createSeasonControl, setEl
       if (node.classList.contains('chapter-metrics') && !node.children.length) node.remove();
       else if (mainBody) mainBody.append(node);
     }
+    if (article.dataset.chapter === 'photosynthesis') {
+      const windows = document.createElement('div');
+      windows.className = 'photosynthesis-windows';
+      windows.append(...article.querySelectorAll(':scope > .element-ui-okno'));
+      article.append(windows);
+    }
   }
 
   const seasonRow = shell.querySelector('.season-btn-row');
@@ -651,7 +696,7 @@ export function createTreeAnnotations({ shell, model, createSeasonControl, setEl
         if (windowId === 'cukry') return [clean(model.glucoseGramsPerMinute), clean(model.respirationSugar)];
         return [0, 0];
       };
-      for (const bar of shell.querySelectorAll('.element-ui-balance-bar')) {
+      for (const bar of shell.querySelectorAll('.element-ui-values > .element-ui-balance-bar')) {
         const panel = bar.closest('.element-ui-okno');
         const slider = bar.querySelector('input');
         const maxWater = Number(slider?.dataset.scaleMax) || waterAvailabilityMax(model);
@@ -666,8 +711,6 @@ export function createTreeAnnotations({ shell, model, createSeasonControl, setEl
         const scaleMax = isWaterBalance ? maxWater * 60 : isLightBalance ? 100 : 7;
         const topRatio = clamp01(topValue / scaleMax);
         const bottomRatio = clamp01(bottomValue / scaleMax);
-        bar.style.setProperty('--balance-top', `${100 * topRatio}%`);
-        bar.style.setProperty('--balance-bottom', `${100 * bottomRatio}%`);
         bar.style.setProperty('--balance-top-ratio', String(topRatio));
         bar.style.setProperty('--balance-bottom-ratio', String(bottomRatio));
         const topMarker = bar.querySelector('.element-ui-balance-marker-top');
@@ -695,6 +738,16 @@ export function createTreeAnnotations({ shell, model, createSeasonControl, setEl
           slider.setAttribute('aria-valuetext', `${displayed} litrů za hodinu`);
           slider.disabled = !model.ready;
         }
+      }
+      for (const output of shell.querySelectorAll('[data-stock-value]')) {
+        const value = model[output.dataset.stockValue];
+        const maximum = model[output.dataset.stockMaximum];
+        const available = model.ready && Number.isFinite(value) && Number.isFinite(maximum) && maximum > 0;
+        const displayed = available ? stockNumber.format(value) : '—';
+        if (output.value !== displayed) output.value = displayed;
+        const stock = output.closest('.element-ui-stock');
+        stock.classList.toggle('is-unavailable', !available);
+        stock.style.setProperty('--balance-top-ratio', String(available ? clamp01(value / maximum) : 0));
       }
       for (const output of shell.querySelectorAll('[data-respiration]')) {
         const key = output.dataset.respiration;

@@ -90,6 +90,7 @@ export const oknaPodleKapitol = {
       nadpis: 'Voda',
       tema: 'water',
       strana: 'right',
+      zasoba: { hodnota: 'reserve', maximum: 'capacity', jednotka: 'l' },
       vypocet: 'waterConsumptionLitresPerHour',
       zobrazitVzorec: true,
       zobrazitHodnotu: true,
