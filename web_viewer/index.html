@@ -1177,7 +1177,7 @@
     import { createChapters } from './kapitoly/chapters.js?v=photosynthesis-summer-1';
     import { createSeedChapter } from './kapitoly/seed_chapter.js';
     import { createTreeBird } from './vykreslovani/tree_bird.js?v=perch-grid-1';
-    import { createSeasonRing } from './obdobi/season_ring.js?v=photosynthesis-summer-1';
+    import { createSeasonRing } from './obdobi/season_ring.js?v=season-boundary-1';
     import { createIntroForest } from './obdobi/intro_forest.js?v=intro-closer-camera-2';
     import { seasonColorForPosition } from './obdobi/season_timeline.js?v=beech-calendar-1';
     import {
@@ -2310,6 +2310,7 @@
       const trunkRoute = sapPaths.trunk || [];
       if (rootPaths.length >= 3 && trunkRoute.length >= 3) {
         const greenGroup = new THREE.Group();
+        greenGroup.visible = false;
         const glucoseCutoff = { value: -1000000.0 };
         const glucoseRevealBottom = { value: 0.0 };
         let glucoseMinDistance = Infinity;
@@ -2375,7 +2376,6 @@
         greenGroup.userData.flowMinDistance = glucoseMinDistance;
         greenGroup.userData.flowMaxDistance = glucoseMaxDistance;
         greenGroup.userData.flowCutoff = glucoseCutoff;
-        greenGroup.userData.flowRevealBottom = glucoseRevealBottom;
         photosynthesisGroup.add(greenRootFlowMesh);
       }
       updatePhotosynthesisLabelsPosition();
@@ -3182,6 +3182,7 @@
         sapFlowMinDistance - 0.4, sapFlowMaxDistance + 0.4, flowProgress);
       const glucoseFlow = greenRootFlowMesh?.userData;
       if (greenRootFlowMesh) {
+        greenRootFlowMesh.visible = !night && ecology.season !== 'latefall' && ecology.activity > 0;
         const glucoseDirection = ecology.season === 'spring' ? 1.0 : -1.0;
         greenRootFlowMesh.traverse(node => {
           if (node.material?.uniforms?.uFlowDirection) {
@@ -3190,19 +3191,11 @@
         });
       }
       if (glucoseFlow?.flowCutoff && glucoseFlow.flowMinDistance < glucoseFlow.flowMaxDistance) {
-        // Keep the retraction direction consistent across seasons. Only the
-        // animated glucose flow direction changes for spring growth.
-        const winter = ecology.season === 'latefall';
-        const sugarTarget = winter ? 1 : night ? 0 : target;
-        const sugarStep = delta / 3.6;
-        sugarFlowRetraction = winter ? 1
-          : sugarFlowRetraction + THREE.MathUtils.clamp(sugarTarget - sugarFlowRetraction, -sugarStep, sugarStep);
-        const sugarRevealing = sugarTarget === 0;
-        glucoseFlow.flowRevealBottom.value = sugarRevealing ? 0 : 1;
+        sugarFlowRetraction = greenRootFlowMesh.visible ? Math.max(0, sugarFlowRetraction - delta / 3.6) : 1;
         glucoseFlow.flowCutoff.value = THREE.MathUtils.lerp(
           glucoseFlow.flowMaxDistance + 0.4,
           glucoseFlow.flowMinDistance - 0.4,
-          sugarRevealing ? 1 - sugarFlowRetraction : sugarFlowRetraction);
+          1 - sugarFlowRetraction);
       }
     }
 

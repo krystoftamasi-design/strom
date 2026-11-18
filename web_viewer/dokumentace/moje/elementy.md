@@ -59,8 +59,8 @@ Definice spojení
 - Končí dřív uvnitř kořenů.
 - Na jaře proudí ze zásob v kořenech a kmeni k novým listům.
 - V létě proudí z listů do kmene a kořenů.
-- V zimě je linka stažená ve dne i v noci. V ostatních obdobích se po setmění postupně rozvine, pokud byla stažená.
-- Stahování se řídí vlastní délkou trasy.
+- Linka a její částice jsou viditelné jen při aktivní fotosyntéze. V noci, v zimě nebo při zastavení fotosyntézy se ihned skryjí.
+- Po obnovení fotosyntézy se linka postupně rozvine po vlastní trase.
 
 #### Stahování linek
 
@@ -72,7 +72,7 @@ Definice spojení
 
 - Voda a glukóza používají stejný plynulý čas přehrávání s pomalým základním tempem.
 - [Ovládání času](prvky.md) ovlivňuje obě linky shodně včetně pulzace zvýraznění.
-- Odpar, aktivita fotosyntézy a posuvník proudění rychlost obou linek nemění; zastavení fotosyntézy řídí jejich stahování, nikoli tempo animace.
+- Odpar, aktivita fotosyntézy a posuvník proudění rychlost obou linek nemění.
 
 #### Šířka linek
 
