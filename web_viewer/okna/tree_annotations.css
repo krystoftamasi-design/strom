@@ -423,3 +423,14 @@ body.scene-night .oxygen-balance-settings { --oxygen-paper: #454749; }
   position: static;
   inline-size: auto;
 }
+
+.tree-overlay .season-center-tick {
+  position: absolute;
+  inset: auto auto 0 50%;
+  width: 2px;
+  height: clamp(14px, 3.8vh, 38px);
+  border-radius: 1px;
+  background: var(--ui-ink);
+  translate: -50% 0;
+  pointer-events: none;
+}

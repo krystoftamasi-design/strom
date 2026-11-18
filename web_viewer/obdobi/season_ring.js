@@ -18,6 +18,11 @@ export function createSeasonRing({ scene, camera, controls, canvas, model }) {
   scene.add(group);
   const front = Math.atan2(camera.position.x, camera.position.z);
   const timeline = createSeasonTimeline(model);
+  const centerTick = document.createElement('span');
+  centerTick.className = 'season-center-tick';
+  centerTick.hidden = true;
+  centerTick.setAttribute('aria-hidden', 'true');
+  document.querySelector('.chapter-panel').append(centerTick);
   const rotationForDate = position => front - (position - LABEL_CALENDAR_POSITION) * QUARTER;
   group.rotation.y = rotationForDate(timeline.position);
 
@@ -82,8 +87,22 @@ export function createSeasonRing({ scene, camera, controls, canvas, model }) {
   };
   group.add(new THREE.Mesh(geometry, material));
 
+  const tickMaterial = new THREE.MeshBasicMaterial({
+    color: ink, side: THREE.DoubleSide, depthWrite: false, toneMapped: false,
+  });
+  const tickGeometry = new THREE.PlaneGeometry(0.12, 1.05);
+  tickGeometry.rotateX(-Math.PI / 2);
+  for (let section = 0; section < sectionCount; section++) {
+    const angle = (section - 0.5) * sectionAngle;
+    const tick = new THREE.Mesh(tickGeometry, tickMaterial);
+    tick.position.set(Math.sin(angle) * radius, 0.025, Math.cos(angle) * radius);
+    tick.rotation.y = angle;
+    group.add(tick);
+  }
+
   const labels = [];
   let lightInk = false;
+  let activeSeason = model.season;
   const labelWidth = 768, labelHeight = 192, labelResolution = 2;
   for (let i = 0; i < SEASONS.length; i++) {
     const image = document.createElement('canvas');
@@ -114,7 +133,9 @@ export function createSeasonRing({ scene, camera, controls, canvas, model }) {
       context.font = '700 130px Nohemi, sans-serif';
       context.textAlign = 'center';
       context.textBaseline = 'middle';
-      context.fillStyle = lightInk ? '#f2f3e9' : '#171813';
+      context.fillStyle = SEASONS[i] === activeSeason
+        ? (lightInk ? '#9df369' : '#287600')
+        : (lightInk ? '#f2f3e9' : '#171813');
       context.fillText(LABELS[i], labelWidth / 2, labelHeight / 2 + 5);
       texture.needsUpdate = true;
     }
@@ -216,11 +237,6 @@ export function createSeasonRing({ scene, camera, controls, canvas, model }) {
       const background = scene.background;
       const luminance = background.r * 0.2126 + background.g * 0.7152 + background.b * 0.0722;
       const nextLightInk = luminance < 0.22;
-      if (nextLightInk !== lightInk) {
-        lightInk = nextLightInk;
-        ink.set(lightInk ? 0xf2f3e9 : 0x171813);
-        labels.forEach(label => label.userData.draw());
-      }
       const now = performance.now();
       const elapsed = Math.min(0.1, Math.max(0, (now - lastUpdate) / 1000));
       lastUpdate = now;
@@ -233,7 +249,15 @@ export function createSeasonRing({ scene, camera, controls, canvas, model }) {
         wheelRemaining -= advance;
       }
       const advanced = timeline.update(chapter, Boolean(drag) || movingByWheel, playbackDelta);
+      if (nextLightInk !== lightInk || model.season !== activeSeason) {
+        lightInk = nextLightInk;
+        activeSeason = model.season;
+        ink.set(lightInk ? 0xf2f3e9 : 0x171813);
+        tickMaterial.color.copy(ink);
+        labels.forEach(label => label.userData.draw());
+      }
       group.visible = chapter !== 'intro';
+      centerTick.hidden = !group.visible;
       interactive = chapter !== 'intro';
       if (!drag) {
         // No snapping or settling after a drag: keep the selected exact angle.
