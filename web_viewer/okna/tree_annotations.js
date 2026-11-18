@@ -194,17 +194,6 @@ function createElementUiOkno({ panel, body, reveal, toggle, model, definition })
         value.append(output, unit);
         metric.append(trend, value);
         stock.append(label, stockBar, metric);
-        if (zdroj === 'cukry' && panel.dataset.chapter === 'photosynthesis') {
-          stock.classList.add('element-ui-stock-switchable', 'is-round');
-          stock.setAttribute('aria-keyshortcuts', 'T');
-          const circle = document.createElement('div');
-          circle.className = 'oxygen-balance sugar-stock element-ui-stock-circle';
-          circle.setAttribute('aria-hidden', 'true');
-          const fill = document.createElement('div');
-          fill.className = 'sugar-stock-liquid';
-          circle.append(fill);
-          stockBar.after(circle);
-        }
         footer.append(stock);
       }
     }
@@ -658,6 +647,25 @@ export function createTreeAnnotations({ shell, model, createSeasonControl, setEl
   shell.append(seasonRow);
   shell.querySelector('#sharedSeasons').hidden = true;
   const seasonControl = createSeasonControl();
+  const stockPrototypes = document.createElement('div');
+  stockPrototypes.className = 'photosynthesis-stock-prototypes';
+  stockPrototypes.hidden = true;
+  stockPrototypes.setAttribute('role', 'group');
+  stockPrototypes.setAttribute('aria-label', 'Kruhové ukazatele zásob');
+  stockPrototypes.setAttribute('aria-keyshortcuts', 'T');
+  for (const [id, label] of [['cukry', 'Cukry'], ['voda', 'Voda']]) {
+    const stock = shell.querySelector(`[data-chapter="photosynthesis"][data-window-id="${id}"] .element-ui-stock`).cloneNode(true);
+    stock.querySelector('.element-ui-stock-label span').textContent = label;
+    const circle = document.createElement('div');
+    circle.className = 'oxygen-balance sugar-stock element-ui-stock-circle';
+    circle.setAttribute('aria-hidden', 'true');
+    const fill = document.createElement('div');
+    fill.className = 'sugar-stock-liquid';
+    circle.append(fill);
+    stock.querySelector('.element-ui-balance-bar').replaceWith(circle);
+    stockPrototypes.append(stock);
+  }
+  shell.querySelector('.time-playback-panel').after(stockPrototypes);
 
   const smoothedValues = new Map();
   let lastSmoothTime = performance.now();

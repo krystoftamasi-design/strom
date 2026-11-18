@@ -50,9 +50,9 @@ history:
 - V Úvodu jsou tlačítka běhu času skrytá a animace běží automaticky.
 - V ostatních kapitolách jsou tlačítka viditelná a přístupná klávesnicí; fokus má viditelný obrys.
 
-#### Zásoba cukrů
+#### Kruhové ukazatele zásob
 
-- Ve Fotosyntéze klávesa T přepíná zobrazení zásoby cukrů mezi výchozím kruhem a vodorovným pruhem.
+- Ve Fotosyntéze klávesa T zobrazí nebo skryje doplňkové kruhové ukazatele zásoby cukrů a vody. Vodorovné pruhy zůstávají součástí obou oken.
 
 [Zpět na architekturu obsahu](../architektura_obsahu.md)
 

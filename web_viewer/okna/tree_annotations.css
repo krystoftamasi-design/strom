@@ -220,37 +220,50 @@ body.scene-night .tree-overlay .oxygen-balance-panel {
   background: var(--sugar-ink);
 }
 
-.tree-overlay .element-ui-stock-switchable.is-round {
-  --stock-circle-shift: 2rem;
-  grid-template-columns: clamp(56px, 11vh, 100px) auto;
+.tree-overlay .photosynthesis-stock-prototypes {
+  display: none;
+}
+
+body[data-chapter="photosynthesis"] .tree-overlay .photosynthesis-stock-prototypes:not([hidden]) {
+  position: absolute;
+  top: calc(clamp(18px, 1.6vw, 30px) * 1.2 + clamp(62px, 5.1vw, 80px) + 18px);
+  left: 0;
+  display: flex;
+  gap: 14px;
+}
+
+.tree-overlay .photosynthesis-stock-prototypes .element-ui-stock {
+  --stock-circle-size: clamp(38px, 7vh, 64px);
+  grid-template-columns: var(--stock-circle-size) auto;
   grid-template-rows: auto auto;
-  column-gap: 8px;
-  align-content: start;
+  column-gap: 6px;
   text-align: left;
 }
 
-.tree-overlay .element-ui-stock-switchable.is-round > .element-ui-stock-label {
+.tree-overlay .photosynthesis-stock-prototypes .element-ui-stock-label {
   grid-column: 1 / -1;
-  translate: calc(var(--stock-circle-shift) + 4px) 0;
+  color: inherit;
 }
 
-.tree-overlay .element-ui-stock-switchable.is-round > .element-ui-stock-circle {
+.tree-overlay .photosynthesis-stock-prototypes .element-ui-stock-circle {
   grid-column: 1;
   grid-row: 2;
-  translate: var(--stock-circle-shift) 0;
 }
 
-.tree-overlay .element-ui-stock-switchable.is-round > .element-ui-stock-readout {
+.tree-overlay .photosynthesis-stock-prototypes .element-ui-stock-readout.chapter-metric {
   grid-column: 1 / -1;
   grid-row: 2;
   position: relative;
+  display: flex;
   align-items: center;
+  margin: 0;
+  padding: 0 0 0 calc(var(--stock-circle-size) + 6px);
   min-width: 0;
 }
 
-.tree-overlay .element-ui-stock-switchable.is-round .element-ui-stock-trend:not([hidden]) {
+.tree-overlay .photosynthesis-stock-prototypes .element-ui-stock-trend:not([hidden]) {
   position: absolute;
-  left: calc(clamp(56px, 11vh, 100px) / 2 + var(--stock-circle-shift) - 4px);
+  left: calc(var(--stock-circle-size) / 2);
   top: 50%;
   translate: -50% -50%;
   rotate: -90deg;
@@ -258,13 +271,12 @@ body.scene-night .tree-overlay .oxygen-balance-panel {
   text-shadow: none;
 }
 
-.tree-overlay .element-ui-stock-switchable.is-round .element-ui-stock-readout > strong {
-  translate: -4px 0;
+.tree-overlay .photosynthesis-stock-prototypes .element-ui-unit {
+  margin-left: 4px;
 }
 
-.tree-overlay .element-ui-stock-switchable.is-round > .element-ui-balance-bar,
-.tree-overlay .element-ui-stock-switchable:not(.is-round) > .element-ui-stock-circle {
-  display: none;
+.tree-overlay .photosynthesis-stock-prototypes .element-ui-stock:has([data-stock-source="model"]) .element-ui-stock-circle {
+  --sugar-ink: var(--ui-water, #49aaff);
 }
 
 .tree-overlay .element-ui-stock-circle {
