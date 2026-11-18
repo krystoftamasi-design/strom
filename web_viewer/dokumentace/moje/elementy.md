@@ -71,7 +71,7 @@ Definice spojení
 #### Společná rychlost linek
 
 - Voda a glukóza používají stejný plynulý čas přehrávání s pomalým základním tempem.
-- Pauza a rychlosti modelového času 1×, 2× a 4× ovlivňují obě linky shodně včetně pulzace zvýraznění.
+- [Ovládání času](prvky.md) ovlivňuje obě linky shodně včetně pulzace zvýraznění.
 - Odpar, aktivita fotosyntézy a posuvník proudění rychlost obou linek nemění; zastavení fotosyntézy řídí jejich stahování, nikoli tempo animace.
 
 #### Šířka linek
@@ -129,6 +129,7 @@ Definice spojení
 
 - Žluté částice znázorňují světlo přicházející k listům, které mohou fotosyntetizovat. Když aktivita fotosyntézy klesne prakticky na nulu, například u holé koruny, nové fotony se nevysílají. Při aktivní fotosyntéze jejich četnost určuje dostupnost světla.
 - Fotony používají tři varianty žlutého ručního tahu a natáčejí se podle směru letu.
+- Při plném osvětlení se vysílají až čtyři fotony za sekundu modelového času.
 
 ### Růst listů
 

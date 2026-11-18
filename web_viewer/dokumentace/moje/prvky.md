@@ -45,9 +45,9 @@ history:
 
 #### Ovládání času
 
-- Pauza, rychlost 2× a rychlost 4× jsou vlevo před datem vlevo dole, bez výplně panelu; tlačítka mají 38 × 38 px, aktivní stav kruhový obrys a barva se přizpůsobuje dni a noci.
-- Pauza zastaví běh času a dalším stiskem jej obnoví. Volba 2× nebo 4× obnoví běh danou rychlostí; opětovný stisk aktivní rychlosti vrátí 1×.
-- V Úvodu se pauza ani rychlosti 2× a 4× nezobrazují; úvodní animace běží automaticky.
+- Před datem vlevo dole jsou zleva tlačítka zpomalení 0,5×, pauzy a zrychlení 2×. Mají 48 × 48 px, ikony 28 × 28 px a v aktivním stavu kruhový obrys. Panel je bez výplně a barva ovládání se přizpůsobuje dni a noci.
+- Při výchozí rychlosti 1× trvá automatický modelový rok 9 minut a 36 sekund. Pauza zastaví běh času a dalším stiskem jej obnoví. Volba jiné rychlosti obnoví běh zvolenou rychlostí. Opětovný stisk aktivní rychlosti vrátí 1×.
+- V Úvodu jsou tlačítka běhu času skrytá a animace běží automaticky.
 - V ostatních kapitolách jsou tlačítka viditelná a přístupná klávesnicí; fokus má viditelný obrys.
 
 [Zpět na architekturu obsahu](../architektura_obsahu.md)

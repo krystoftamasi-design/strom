@@ -462,8 +462,8 @@
     }
 
     .time-playback-buttons button {
-      width: 36px;
-      height: 34px;
+      width: 48px;
+      height: 48px;
       display: inline-flex;
       align-items: center;
       justify-content: center;
@@ -486,8 +486,8 @@
     }
 
     .time-playback-buttons svg {
-      width: 20px;
-      height: 20px;
+      width: 28px;
+      height: 28px;
       fill: currentColor;
     }
 
@@ -681,7 +681,7 @@
       font-weight: 400;
     }
   </style>
-  <link rel="stylesheet" href="./kapitoly/chapters.css?v=menu-bold-4">
+  <link rel="stylesheet" href="./kapitoly/chapters.css?v=time-controls-1">
   <link rel="stylesheet" href="./okna/tree_annotations.css?v=affinity-detail-1">
   <link rel="stylesheet" href="./okna/element_ui_okna_vzhled.css?v=compact-details-1">
 </head>
@@ -1110,6 +1110,12 @@
   <!-- HUD Bottom Bar -->
   <div class="hud-bottom">
     <div class="time-playback-buttons time-playback-panel" role="group" aria-label="Běh času">
+      <button type="button" id="btnTimeSlower" aria-pressed="false" aria-label="Zpomalit čas na 0,5×"
+        title="Zpomalit čas na 0,5× · druhým kliknutím 1×">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M12 5v14L2 12zM22 5v14l-10-7z" />
+        </svg>
+      </button>
       <button type="button" id="btnTimePause" aria-pressed="false" aria-label="Pozastavit čas" title="Pozastavit čas">
         <svg viewBox="0 0 24 24" aria-hidden="true">
           <g class="time-pause-bars">
@@ -1123,12 +1129,6 @@
         title="Rychlost 2× · druhým kliknutím 1×">
         <svg viewBox="0 0 24 24" aria-hidden="true">
           <path d="M2 5v14l10-7zM12 5v14l10-7z" />
-        </svg>
-      </button>
-      <button type="button" id="btnTimeFastest" aria-pressed="false" aria-label="Rychlost času 4×"
-        title="Rychlost 4× · druhým kliknutím 1×">
-        <svg viewBox="0 0 24 24" aria-hidden="true">
-          <path d="M1 5v14l7-7zM9 5v14l7-7zM17 5v14l7-7z" />
         </svg>
       </button>
     </div>
@@ -2580,7 +2580,7 @@
         photonSpeed: 24.0,
         bubbleSpeed: 2.2,
         bubbleSpawnDistance: 1.5,
-        photonsPerSecond: 8.0
+        photonsPerSecond: 4.0
       });
       window.photolysisSystem = photolysisSystem;
     } catch (err) {
@@ -3693,32 +3693,33 @@
     let wasSeekingSeason = false;
     let sunSeekTransition = null;
     let timePaused = false;
+    const baseTimeRate = 0.5;
     let timePlaybackSpeed = 1;
     const btnTimePause = document.getElementById('btnTimePause');
-    const btnTimeFaster = document.getElementById('btnTimeFaster');
-    const btnTimeFastest = document.getElementById('btnTimeFastest');
+    const timeSpeedButtons = [
+      [document.getElementById('btnTimeSlower'), 0.5],
+      [document.getElementById('btnTimeFaster'), 2],
+    ];
     function syncTimePlaybackControls() {
       const pauseLabel = timePaused ? 'Pokračovat v čase' : 'Pozastavit čas';
       btnTimePause.setAttribute('aria-label', pauseLabel);
       btnTimePause.title = pauseLabel;
       btnTimePause.setAttribute('aria-pressed', String(timePaused));
-      btnTimeFaster.setAttribute('aria-pressed', String(!timePaused && timePlaybackSpeed === 2));
-      btnTimeFastest.setAttribute('aria-pressed', String(!timePaused && timePlaybackSpeed === 4));
+      for (const [button, speed] of timeSpeedButtons) {
+        button.setAttribute('aria-pressed', String(!timePaused && timePlaybackSpeed === speed));
+      }
     }
     btnTimePause.addEventListener('click', () => {
       timePaused = !timePaused;
       syncTimePlaybackControls();
     });
-    btnTimeFaster.addEventListener('click', () => {
-      timePlaybackSpeed = !timePaused && timePlaybackSpeed === 2 ? 1 : 2;
-      timePaused = false;
-      syncTimePlaybackControls();
-    });
-    btnTimeFastest.addEventListener('click', () => {
-      timePlaybackSpeed = !timePaused && timePlaybackSpeed === 4 ? 1 : 4;
-      timePaused = false;
-      syncTimePlaybackControls();
-    });
+    for (const [button, speed] of timeSpeedButtons) {
+      button.addEventListener('click', () => {
+        timePlaybackSpeed = !timePaused && timePlaybackSpeed === speed ? 1 : speed;
+        timePaused = false;
+        syncTimePlaybackControls();
+      });
+    }
     function updateSunElevation(deg) {
       sunElevationDeg = Number(deg);
       const elevText = `${Math.round(sunElevationDeg)}°`;
@@ -4163,7 +4164,7 @@
       const frameSeconds = document.hidden ? 0 : (now - lastTime) / 1000;
       const delta = Math.min(0.1, frameSeconds);
       lastTime = now;
-      const playbackDelta = timePaused ? 0 : delta * timePlaybackSpeed;
+      const playbackDelta = timePaused ? 0 : delta * baseTimeRate * timePlaybackSpeed;
       simulationTime += playbackDelta;
       const simulationNow = simulationTime * 1000;
 

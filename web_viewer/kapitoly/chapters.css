@@ -166,7 +166,7 @@ body.has-chapters .time-playback-panel {
   box-shadow: none; backdrop-filter: none; color: #181818;
 }
 body.has-chapters .time-playback-buttons button {
-  width: 38px; height: 38px; padding: 8px; color: inherit;
+  width: 48px; height: 48px; padding: 8px; color: inherit;
   background: none; border: 1px solid transparent; border-radius: 50%;
 }
 body.has-chapters .time-playback-buttons button:hover,
