@@ -535,12 +535,18 @@ export class PhotolysisSystem {
     const nightRespiration = this.showNightRespiration && this.sunElevationDeg <= 0;
     if (nightRespiration !== this.nightRespiration) {
       this.nightRespiration = nightRespiration;
-      this.respirationTimer = 0;
-      for (const pool of [this.bubblePool, this.carbonPool]) {
-        for (const gas of pool) {
-          gas.active = false;
-          gas.mesh.visible = false;
-        }
+      this.respirationTimer = 0.5;
+      for (const gas of this.bubblePool) {
+        if (!gas.active || gas.inward === nightRespiration) continue;
+        gas.velocity.negate();
+        gas.inward = nightRespiration;
+      }
+      for (const gas of this.carbonPool) {
+        if (!gas.active || gas.outward === nightRespiration) continue;
+        // Swapping both endpoints and progress preserves the current position.
+        [gas.origin, gas.target] = [gas.target, gas.origin];
+        gas.age = gas.maxLifetime - gas.age;
+        gas.outward = nightRespiration;
       }
     }
     if (nightRespiration) {

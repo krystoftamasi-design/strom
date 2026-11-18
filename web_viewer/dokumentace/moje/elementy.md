@@ -104,6 +104,7 @@ Definice spojení
 **Chování elementu**
 
 - Světle modré částice při fotosyntéze odlétají od listů. V noci přicházejí ke koruně a znázorňují spotřebu kyslíku při dýchání. Jejich běžná velikost odpovídá H₂O.
+- Při přechodu dne a noci už viditelné částice O₂ a CO₂ obrátí směr na své aktuální pozici. Nové částice přibývají běžným tempem.
 - Noční animace vysílá dvojici O₂ a CO₂ každou půlsekundu času animace.
 
 ### CO₂
