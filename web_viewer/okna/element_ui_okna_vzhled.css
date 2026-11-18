@@ -424,6 +424,7 @@ body.scene-night .tree-overlay .element-ui-okno .ui-word {
   --balance-track-end: var(--balance-track-start);
   --balance-marker-width: clamp(12px, 1.55vh, 15px);
   --balance-track-color: #192138;
+  --balance-unfilled: color-mix(in srgb, var(--balance-track-color) 84%, transparent);
   --balance-production: var(--ui-topic);
   --balance-consumption: color-mix(in srgb, var(--ui-topic) 63%, #fff);
   --balance-top-stop: calc(var(--balance-marker-width) / 2 + (100% - var(--balance-marker-width)) * var(--balance-top-ratio, 0));
@@ -441,6 +442,20 @@ body.scene-night .tree-overlay .element-ui-okno .ui-word {
   --balance-far-stop: var(--balance-bottom-stop);
   --balance-near-color: var(--balance-production);
   --balance-far-color: var(--balance-consumption);
+}
+
+.tree-overlay .element-ui-balance-bar.is-top-zero,
+.tree-overlay .element-ui-stock.is-unavailable .element-ui-balance-bar {
+  --balance-top-stop: 0px;
+}
+
+.tree-overlay .element-ui-balance-bar.is-bottom-zero {
+  --balance-bottom-stop: 0px;
+}
+
+.tree-overlay .is-top-zero .element-ui-balance-marker-top:not(.element-ui-balance-adjustable),
+.tree-overlay .is-bottom-zero .element-ui-balance-marker-bottom {
+  visibility: hidden;
 }
 
 .tree-overlay .element-ui-flow-window[data-topic="co2"] .element-ui-balance-bar {
@@ -472,7 +487,7 @@ body.scene-night .tree-overlay .element-ui-okno .ui-word {
   inset: 0 var(--balance-track-end) 0 var(--balance-track-start);
 }
 
-/* Both flows share one opaque shaft, with a hard stop at each marker center. */
+/* One stroke for both flows and the empty part, with a hard stop at each marker. */
 .tree-overlay .element-ui-balance-markers::before {
   content: '';
   position: absolute;
@@ -480,19 +495,19 @@ body.scene-night .tree-overlay .element-ui-okno .ui-word {
   background: linear-gradient(to right,
     var(--balance-near-color) var(--balance-near-stop),
     var(--balance-far-color) var(--balance-near-stop) var(--balance-far-stop),
-    transparent var(--balance-far-stop));
+    var(--balance-unfilled) var(--balance-far-stop));
 }
 
 .tree-overlay .element-ui-stock .element-ui-balance-markers::before {
-  background: linear-gradient(to right, var(--balance-production) var(--balance-top-stop), transparent 0);
+  background: linear-gradient(to right, var(--balance-production) var(--balance-top-stop), var(--balance-unfilled) 0);
 }
 
 .tree-overlay .element-ui-stock.is-unavailable .element-ui-balance-markers {
   visibility: hidden;
 }
 
-body.scene-night .tree-overlay .element-ui-balance-track {
-  --balance-ink: #a3adc6;
+body.scene-night .tree-overlay .element-ui-balance-bar {
+  --balance-track-color: #a3adc6;
 }
 
 .tree-overlay .element-ui-balance-track::before,
@@ -507,13 +522,6 @@ body.scene-night .tree-overlay .element-ui-balance-track {
 
 .tree-overlay .element-ui-balance-track::before {
   left: 0;
-}
-
-.tree-overlay .element-ui-balance-track-shaft {
-  position: absolute;
-  inset: 0 calc(var(--balance-track-end) - 2px) 0 calc(var(--balance-track-start) - 2px);
-  background: var(--balance-ink);
-  mask: var(--balance-texture) center / 240% 100% no-repeat;
 }
 
 .tree-overlay .element-ui-balance-track::after {

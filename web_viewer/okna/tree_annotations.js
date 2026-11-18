@@ -38,7 +38,7 @@ function createBalanceBar({ top, bottom, adjustable = false }) {
   bar.className = 'element-ui-balance-bar';
   bar.innerHTML = `
     <span class="element-ui-balance-fill" aria-hidden="true">
-      <span class="element-ui-balance-track"><span class="element-ui-balance-track-shaft"></span></span>
+      <span class="element-ui-balance-track"></span>
       <span class="element-ui-balance-markers"></span>
     </span>`;
   const markers = bar.querySelector('.element-ui-balance-markers');
@@ -689,10 +689,14 @@ export function createTreeAnnotations({ shell, model, createSeasonControl, setEl
         const isWaterBalance = panel.dataset.windowId === 'voda';
         const isLightBalance = panel.dataset.windowId === 'svetlo';
         const scaleMax = isWaterBalance ? maxWater * 60 : isLightBalance ? 100 : 7;
-        const topRatio = clamp01(topValue / scaleMax);
-        const bottomRatio = clamp01(bottomValue / scaleMax);
+        // Match the precision of the readouts: whole percentages, otherwise one decimal.
+        const minimumVisible = isLightBalance ? 0.5 : 0.05;
+        const topRatio = topValue >= minimumVisible ? clamp01(topValue / scaleMax) : 0;
+        const bottomRatio = bottomValue >= minimumVisible ? clamp01(bottomValue / scaleMax) : 0;
         bar.style.setProperty('--balance-top-ratio', String(topRatio));
         bar.style.setProperty('--balance-bottom-ratio', String(bottomRatio));
+        bar.classList.toggle('is-top-zero', topRatio === 0);
+        bar.classList.toggle('is-bottom-zero', bottomRatio === 0);
         bar.classList.toggle('is-top-shorter', topRatio <= bottomRatio);
 
         if (isLightBalance && slider) {
