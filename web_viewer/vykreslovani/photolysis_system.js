@@ -548,7 +548,7 @@ export class PhotolysisSystem {
       if (this.respirationTimer <= 0) {
         this._spawnOxygenBubble(true);
         this._spawnCarbonDioxide(true);
-        this.respirationTimer += 1;
+        this.respirationTimer += 0.5;
       }
     }
 
