@@ -453,8 +453,7 @@ body.scene-night .tree-overlay .element-ui-okno .ui-word {
   --balance-bottom-stop: 0px;
 }
 
-.tree-overlay .is-top-zero .element-ui-balance-marker-top:not(.element-ui-balance-adjustable),
-.tree-overlay .is-bottom-zero .element-ui-balance-marker-bottom {
+.tree-overlay .is-bottom-zero .element-ui-balance-marker-bottom:has(> .element-ui-balance-marker-cap:empty) {
   visibility: hidden;
 }
 
