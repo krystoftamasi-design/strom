@@ -4,8 +4,7 @@ import { createSeasonTimeline } from './season_timeline.js?v=photosynthesis-summ
 const SEASONS = ['spring', 'summer', 'autumn', 'latefall'];
 const LABELS = ['JARO', 'LÉTO', 'PODZIM', 'ZIMA'];
 const QUARTER = Math.PI / 2;
-// Keep label pivots fixed; place the calendar's season midpoint at each label.
-const LABEL_CALENDAR_POSITION = 0.5;
+const RING_MARKER_X = 0.48;
 const angleDifference = value => Math.atan2(Math.sin(value), Math.cos(value));
 
 export function createSeasonRing({ scene, camera, controls, canvas, model }) {
@@ -16,14 +15,34 @@ export function createSeasonRing({ scene, camera, controls, canvas, model }) {
   group.position.y = elevation;
   group.visible = false;
   scene.add(group);
-  const front = Math.atan2(camera.position.x, camera.position.z);
   const timeline = createSeasonTimeline(model);
   const centerTick = document.createElement('span');
   centerTick.className = 'season-center-tick';
+  centerTick.style.left = `${RING_MARKER_X * 100}%`;
   centerTick.hidden = true;
   centerTick.setAttribute('aria-hidden', 'true');
   document.querySelector('.chapter-panel').append(centerTick);
-  const rotationForDate = position => front - (position - LABEL_CALENDAR_POSITION) * QUARTER;
+  const viewProjection = new THREE.Matrix4();
+  function rotationForDate(position) {
+    camera.updateMatrixWorld();
+    const matrix = viewProjection.multiplyMatrices(camera.projectionMatrix, camera.matrixWorldInverse).elements;
+    const ndcX = 2 * RING_MARKER_X - 1;
+    // Intersect the marker's vertical screen line with the ground-level circle.
+    const normalX = matrix[0] - ndcX * matrix[3];
+    const normalZ = matrix[8] - ndcX * matrix[11];
+    const offset = (matrix[4] - ndcX * matrix[7]) * elevation + matrix[12] - ndcX * matrix[15];
+    const length = Math.hypot(normalX, normalZ);
+    let front = Math.atan2(camera.position.x, camera.position.z);
+    if (length > 0 && Math.abs(offset) <= radius * length) {
+      const x = normalX / length;
+      const z = normalZ / length;
+      const distance = -offset / length;
+      const side = Math.sign(-z * camera.position.x + x * camera.position.z) || 1;
+      const span = side * Math.sqrt(Math.max(0, radius * radius - distance * distance));
+      front = Math.atan2(x * distance - z * span, z * distance + x * span);
+    }
+    return front - (position - 0.5) * QUARTER;
+  }
   group.rotation.y = rotationForDate(timeline.position);
 
   // A flat annular ribbon in XZ. The supplied vertical brush runs along it,
@@ -221,7 +240,7 @@ export function createSeasonRing({ scene, camera, controls, canvas, model }) {
     if (canvas.hasPointerCapture(event.pointerId)) canvas.releasePointerCapture(event.pointerId);
     if (!previous.moved && previous.season && event.type !== 'pointercancel') {
       const seasonIndex = SEASONS.indexOf(previous.season);
-      let next = Math.floor(timeline.position / 4) * 4 + seasonIndex + LABEL_CALENDAR_POSITION;
+      let next = Math.floor(timeline.position / 4) * 4 + seasonIndex;
       if (next < timeline.position) next += 4;
       timeline.moveTo(next);
     }
