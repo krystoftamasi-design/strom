@@ -66,7 +66,7 @@ skippedSpring.update(beforeBudburst, beforeBudburst, false, 1);
 const afterSeek = skippedSpring.update(beforeBudburst, firstGrowth, false, 1);
 assert.equal(afterSeek.reserve, 140, 'Seeking across spring leaves sugar available for the visible animation');
 assert.equal(afterSeek.budburstRate, 0);
-const afterGrowth = skippedSpring.update(firstGrowth, laterGrowth, true, 1, 0.5);
+const afterGrowth = skippedSpring.update(firstGrowth, laterGrowth, true, 1, 1);
 assert.equal(afterGrowth.growthGranted, 0.4);
 assert.equal(afterGrowth.reserve, 0);
 

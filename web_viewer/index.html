@@ -1167,7 +1167,7 @@
     import { loadBarkReference, loadBarkAttributes, attachBarkAttributes, createBarkMaterial } from './vykreslovani/bark_material.js?v=opt-lut-1';
     import { loadLeafReference, loadLeafAttributes, attachLeafAttributes, createLeafMaterial, createLeafDepthMaterial, setLeafEdgeTransition } from './vykreslovani/leaf_material.js?v=spring-cover-1';
     import { LeafControls } from './listy/leaf_controls.js?v=spring-cover-1';
-    import { crossedSpring, advanceVisibleGrowth } from './listy/leaf_growth_timing.js?v=1';
+    import { crossedSpring } from './listy/leaf_growth_timing.js?v=1';
     import { advanceDroughtLeaves, droughtLeafFall } from './listy/drought_leaf_animation.js?v=1';
     import { loadBranchDryingReference, branchDryingFrontWidth } from './listy/leaf_branch_drying.js?v=3';
     import { CanopyOcclusion } from './vykreslovani/canopy_occlusion.js?v=opt-buf-1';
@@ -1181,7 +1181,7 @@
     import { createIntroForest } from './obdobi/intro_forest.js?v=intro-closer-camera-2';
     import { seasonColorForPosition } from './obdobi/season_timeline.js?v=beech-calendar-1';
     import {
-      BEECH_CALENDAR, seasonDayForPosition, beechLeafFallProgress, beechLeafGrowthProgress,
+      BEECH_CALENDAR, seasonDayForPosition, beechLeafFallProgress,
       monthClockForSeason, solarHoursForMonthClock
     } from './obdobi/beech_phenology.js?v=month-clock-1';
 
@@ -3023,8 +3023,6 @@
     let previousSeasonPhase = null;
     let previousSeasonPosition = null;
     let springGrowthDue = false;
-    let seasonalGrowthTarget = 0;
-    let seasonalGrowthProgress = 0;
     let seasonalCanopyLimit = 1;
 
     function setSeasonalCanopyLimit(coverage) {
@@ -3043,8 +3041,6 @@
       seasonalRegrowthPending = false;
       droughtLeafProgress = 0;
       springGrowthDue = false;
-      seasonalGrowthTarget = 0;
-      seasonalGrowthProgress = 0;
       setSeasonalCanopyLimit(0);
       seasonalNewLeaves = true;
       seasonalRegrowthActive = true;
@@ -3103,7 +3099,7 @@
     }
 
     // The presentation and interactive ring both drive this same leaf lifecycle.
-    function updateSeasonalLeaves(delta, realDelta) {
+    function updateSeasonalLeaves(delta) {
       if (!ecology.ready) return;
       const seasonPhase = ((ecology.seasonPosition % 4) + 4) % 4;
       const reachedSpring = previousSeasonPhase !== null && previousSeasonPhase >= 2 && seasonPhase < 1;
@@ -3135,20 +3131,11 @@
           leafWasDry = false;
         }
       }
-      if (leafRegrowthActive) {
-        if (seasonalRegrowthActive) {
-          const day = seasonDayForPosition(ecology.seasonPosition);
-          const calendarTarget = day < BEECH_CALENDAR.budburst ? 1 : beechLeafGrowthProgress(ecology.seasonPosition);
-          seasonalGrowthTarget = Math.max(seasonalGrowthTarget, calendarTarget);
-          seasonalGrowthProgress = advanceVisibleGrowth(
-            seasonalGrowthProgress, seasonalGrowthTarget, realDelta, timePlaybackSpeed, getLeafRegrowthSpeed());
-          if (seasonalGrowthProgress >= 0.999) seasonalGrowthProgress = 1;
-        } else {
-          setLeafRegrowthProgress(Math.min(seasonalCanopyLimit, leafRegrowthProgress + delta * 0.45 * getLeafRegrowthSpeed()));
-          if (leafRegrowthProgress >= seasonalCanopyLimit) {
-            leafRegrowthActive = false;
-            leafWasDry = false;
-          }
+      if (leafRegrowthActive && !seasonalRegrowthActive) {
+        setLeafRegrowthProgress(leafRegrowthProgress + delta * 0.45 * getLeafRegrowthSpeed());
+        if (leafRegrowthProgress >= 1) {
+          leafRegrowthActive = false;
+          leafWasDry = false;
         }
       }
       updateEffectiveSeason();
@@ -4126,8 +4113,6 @@
           previousSeasonPhase = null;
           previousSeasonPosition = null;
           springGrowthDue = false;
-          seasonalGrowthTarget = 0;
-          seasonalGrowthProgress = 0;
           setSeasonalCanopyLimit(1);
           seasonalNewLeaves = false;
           seasonalRegrowthActive = false;
@@ -4314,8 +4299,7 @@
       }
       updateWaterAndDrought(modelMinutes, daytimeLight);
       updateSapRetraction(delta);
-      const previousGrowthProgress = seasonalGrowthProgress;
-      if (playbackDelta > 0) updateSeasonalLeaves(playbackDelta, delta);
+      if (playbackDelta > 0) updateSeasonalLeaves(playbackDelta);
       if (typeof sapUniforms !== 'undefined') sapUniforms.uTime.value = simulationTime * 0.5;
       updateDayNightScene(now);
       if (playbackDelta > 0 && typeof leafControls !== 'undefined' && typeof shaderUniforms !== 'undefined') {
@@ -4357,21 +4341,16 @@
       camera.updateMatrixWorld();
       const cloudAmount = sunClouds.update(ecology, delta);
       studioColor.copy(baseSceneBackground).lerp(overcastBackground, cloudAmount * 0.55);
-      const growthRequested = seasonalRegrowthActive ? Math.max(0, seasonalGrowthProgress - previousGrowthProgress) : 0;
-      const canopyFraction = previousGrowthProgress > 0 ? seasonalCanopyLimit / previousGrowthProgress : seasonalCanopyLimit;
-      const growthGranted = chapterApp.updateScene(previousSeason, advanced, growthRequested, canopyFraction);
+      const growthRequested = seasonalRegrowthActive && playbackDelta > 0 ? 1 : 0;
+      const growthGranted = chapterApp.updateScene(previousSeason, advanced, growthRequested, seasonalCanopyLimit);
       if (growthRequested > 0) {
         const fundedGrowth = chapterApp.introduction ? growthRequested : growthGranted;
-        if (fundedGrowth === undefined) {
-          seasonalGrowthProgress = previousGrowthProgress;
-        } else {
-          setSeasonalCanopyLimit(Math.min(seasonalGrowthProgress, seasonalCanopyLimit + fundedGrowth));
-          if (seasonalGrowthProgress === 1) {
-            seasonalRegrowthActive = false;
-            leafRegrowthActive = false;
-            leafWasDry = false;
-            invalidateShadows();
-          }
+        if (fundedGrowth !== undefined) {
+          setSeasonalCanopyLimit(fundedGrowth);
+          seasonalRegrowthActive = false;
+          leafRegrowthActive = false;
+          leafWasDry = false;
+          invalidateShadows();
         }
       }
       updateHighlights(delta);

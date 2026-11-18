@@ -135,7 +135,7 @@ Definice spojení
 
 ### Růst listů
 
-- Po opadu starých listů se nové listy objevují v opačném pořadí, než v jakém opadávají. Pokud zásoba cukrů pokryje jen část rašení, objeví se jen odpovídající část listů. Růst zůstává viditelný i po rychlém posunu přes jaro a vyšší rychlost času ho urychluje.
+- Nové listy při jarním rašení vyraší najednou, i po rychlém posunu přes jaro. Pokud cukry pokryjí jen část koruny, vyberou se listy od konce pořadí opadu. Jako první se tedy do výběru počítají ty, které na podzim opadly poslední.
 - Při téměř vyčerpané zásobě vody se listy postupně zbarví jako na podzim a následně opadávají. Vypnutí přísunu vody nespustí uschnutí okamžitě, dokud má strom ještě zásobu. Při obnovení zavodnění se listy v růstovém období obnoví.
 
 ### Slunce

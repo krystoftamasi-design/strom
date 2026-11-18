@@ -49,9 +49,7 @@ function dailySugarFlows(tree) {
       production += 60 * sample.glucoseGramsPerMinute;
       respiration += 60 * sample.respirationSugar;
     }
-    const growth = day >= BEECH_CALENDAR.budburst && day < BEECH_CALENDAR.fullLeaf
-      ? budburstBudget * (beechLeafGrowthProgress(positionForDay(day + 1)) - leafGrowth)
-      : 0;
+    const growth = day === BEECH_CALENDAR.budburst ? budburstBudget : 0;
     const fall = beechLeafFallProgress(position);
     const fallShare = day >= BEECH_CALENDAR.leafFallStart && day < BEECH_CALENDAR.leafFallEnd
       ? (beechLeafFallProgress(positionForDay(day + 1)) - fall) / (1 - fall)
