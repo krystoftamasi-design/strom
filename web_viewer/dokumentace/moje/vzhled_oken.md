@@ -46,7 +46,7 @@ history:
 - Ve Fotosyntéze tvoří tlačítko původní štětcový kroužek z Affinity, široký 19 až 25 px, se symbolem +/− v průhledném středu. Otvor kroužku míří od detailu. Klikací plocha je 28 až 35 px a kroužek se při najetí na okno zesvětlí.
 - Konkrétní texty, hodnoty, ovládání a výchozí otevření detailů určuje [Obsah oken](okna.md).
 
-- Ve Fotosyntéze má zásoba cukrů výchozí kruhový ukazatel s hladkou růžovou výplní, jejíž výška odpovídá podílu na kapacitě. Popisek „zásoba“ je nad kruhem, aktuální množství a směrová šipka pod ním. Přepnutí popisují [Ovládací prvky](prvky.md).
+- Ve Fotosyntéze má zásoba cukrů výchozí kruhový ukazatel s hladkou růžovou výplní, jejíž výška odpovídá podílu na kapacitě. Popisek „zásoba“ je nad kruhem. Uprostřed kruhu šipka míří nahoru při růstu a dolů při poklesu, množství v kilogramech je vedle kruhu ve výšce jeho středu. Přepnutí popisují [Ovládací prvky](prvky.md).
 
 ### Rozložení
 
