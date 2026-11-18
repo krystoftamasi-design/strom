@@ -1167,55 +1167,18 @@ body.scene-night .chapter-context-guide .transpiration-legend {
 }
 
 .tree-overlay .photosynthesis-windows {
-  --flow-columns-gap: var(--flow-gap);
-  --flow-detail-width: clamp(145px, 15vw, 280px);
+  --flow-detail-width: min(clamp(145px, 15vw, 280px), calc(var(--flow-window-width) + 3vw));
+  --flow-toggle-angle: 0deg;
   position: absolute;
   inset: 0;
   box-sizing: border-box;
   display: grid;
-  grid-template-columns: repeat(2, var(--flow-window-width));
-  grid-template-rows: repeat(4, max-content);
+  grid-template-columns: var(--flow-window-width);
+  grid-auto-rows: max-content;
   align-content: space-between;
-  column-gap: var(--flow-columns-gap);
   row-gap: 8px;
-  padding: 7vh 3% 6vh max(4%, calc(97% - 2 * var(--flow-window-width) - var(--flow-columns-gap)));
-}
-
-@media (min-width: 701px) {
-  .tree-overlay .photosynthesis-windows:has(> [data-window-id="kyslik"]:not(.collapsed)),
-  .tree-overlay .photosynthesis-windows:has(> [data-window-id="co2"]:not(.collapsed)) {
-    --flow-columns-gap: calc(var(--flow-detail-width) + 2 * var(--flow-gap));
-  }
-
-  .tree-overlay .photosynthesis-windows:has(> [data-window-id="kyslik"]:not(.collapsed)):has(> [data-window-id="co2"]:not(.collapsed)) {
-    --flow-columns-gap: calc(2 * var(--flow-detail-width) + 3 * var(--flow-gap));
-  }
-}
-
-.tree-overlay .element-ui-okno[data-chapter="photosynthesis"][data-window-id="svetlo"] {
-  grid-column: 1;
-  grid-row: 1;
-}
-
-.tree-overlay .element-ui-okno[data-chapter="photosynthesis"][data-window-id="kyslik"] {
-  grid-column: 1;
-  grid-row: 2;
-}
-
-.tree-overlay .element-ui-okno[data-chapter="photosynthesis"][data-window-id="co2"] {
-  grid-column: 2;
-  grid-row: 2;
-}
-
-.tree-overlay .element-ui-okno[data-chapter="photosynthesis"][data-window-id="cukry"] {
-  grid-column: 1;
-  grid-row: 3;
-}
-
-.tree-overlay .element-ui-okno[data-chapter="photosynthesis"][data-window-id="voda"] {
-  grid-column: 1 / -1;
-  grid-row: 4;
-  justify-self: start;
+  padding: 7vh 3% 6vh max(4%, calc(97% - 2 * var(--flow-window-width) - var(--flow-gap)));
+  overflow-y: auto;
 }
 
 .tree-overlay .element-ui-okno[data-chapter="photosynthesis"][data-side="right"] {
@@ -1268,10 +1231,6 @@ body.scene-night .chapter-context-guide .transpiration-legend {
   transform: rotate(var(--flow-toggle-angle, 90deg));
 }
 
-.tree-overlay [data-chapter="photosynthesis"] [data-window-id="kyslik"] { --flow-toggle-angle: 0deg; }
-.tree-overlay [data-chapter="photosynthesis"] :is([data-window-id="co2"], [data-window-id="cukry"]) { --flow-toggle-angle: 180deg; }
-.tree-overlay [data-chapter="photosynthesis"] [data-window-id="voda"] { --flow-toggle-angle: -90deg; }
-
 .tree-overlay .element-ui-okno.element-ui-flow-window {
   --flow-heading-ink: #192138;
   --ui-heading-size: clamp(27px, min(3vw, 5.2vh), 56px);
@@ -1313,22 +1272,16 @@ body.scene-night .tree-overlay .element-ui-flow-window {
   font-variant-numeric: tabular-nums;
 }
 
-.tree-overlay .element-ui-okno[data-chapter="photosynthesis"][data-side="right"][data-window-id="voda"] {
-  display: flex;
-  flex-direction: column-reverse;
-}
-
-.tree-overlay .element-ui-okno[data-chapter="photosynthesis"][data-side="right"][data-window-id="voda"] .element-ui-readout {
-  align-self: stretch;
-}
-
-.tree-overlay .element-ui-okno.element-ui-flow-window:has(.element-ui-stock) {
+.tree-overlay article[data-chapter="prototype"] .element-ui-flow-window:has(.element-ui-stock) {
   width: calc(2 * var(--flow-window-width) + var(--flow-gap));
 }
 
-.tree-overlay .element-ui-okno[data-chapter="photosynthesis"]:has(.element-ui-stock) {
-  grid-column: 1 / -1;
-  justify-self: start;
+.tree-overlay .photosynthesis-windows .element-ui-values:has(> .element-ui-stock) {
+  grid-template-columns: repeat(2, var(--flow-window-width));
+}
+
+.tree-overlay .photosynthesis-windows .element-ui-okno:not(.collapsed) .element-ui-stock {
+  translate: calc(var(--flow-detail-width) + var(--flow-gap)) 0;
 }
 
 .tree-overlay .element-ui-okno[data-chapter="photosynthesis"][data-side="right"] .annotation-reveal {
@@ -1339,36 +1292,9 @@ body.scene-night .tree-overlay .element-ui-flow-window {
   right: auto;
   width: var(--flow-detail-width);
   height: auto;
-  max-height: 17vh;
+  max-height: min(17vh, 100%);
   margin: 0;
   text-align: left;
-}
-
-.tree-overlay .element-ui-okno[data-chapter="photosynthesis"][data-side="right"][data-window-id="svetlo"] .annotation-reveal {
-  position: relative;
-  top: auto;
-  left: auto;
-  right: auto;
-  width: 100%;
-  height: auto;
-  max-height: 14vh;
-  margin-top: 8px;
-}
-
-.tree-overlay .element-ui-okno[data-chapter="photosynthesis"][data-side="right"][data-window-id="voda"] .annotation-reveal {
-  position: relative;
-  top: auto;
-  left: auto;
-  right: auto;
-  width: var(--flow-window-width);
-  height: auto;
-  max-height: 14vh;
-  margin-bottom: 8px;
-}
-
-.tree-overlay .element-ui-okno[data-chapter="photosynthesis"][data-side="right"]:is([data-window-id="co2"], [data-window-id="cukry"]) .annotation-reveal {
-  left: auto;
-  right: calc(100% + var(--flow-gap));
 }
 
 .tree-overlay .element-ui-flow-window .annotation-body>.ui-window-formula {
@@ -1382,12 +1308,6 @@ body.scene-night .tree-overlay .element-ui-flow-window {
   margin-inline-end: 6%;
   font-size: calc(var(--ui-detail-text-size) - 1pt);
   text-align: left;
-}
-
-@media (max-height: 620px) {
-  .tree-overlay .photosynthesis-windows {
-    overflow-y: auto;
-  }
 }
 
 .tree-overlay [data-chapter="photosynthesis"] .chapter-context-guide {
@@ -1450,17 +1370,6 @@ body.scene-night .tree-overlay .element-ui-flow-window {
 
   .tree-overlay article[data-chapter="photosynthesis"] :is(.element-ui-trigger, .element-ui-balance-marker-cap) {
     text-shadow: none;
-  }
-
-  .tree-overlay [data-chapter="photosynthesis"] :is([data-window-id="kyslik"], [data-window-id="co2"], [data-window-id="cukry"]) {
-    --flow-toggle-angle: 90deg;
-  }
-
-  .tree-overlay .element-ui-okno[data-chapter="photosynthesis"][data-side="right"]:is([data-window-id="kyslik"], [data-window-id="co2"], [data-window-id="cukry"]) .annotation-reveal {
-    position: relative;
-    inset: auto;
-    width: 100%;
-    margin-top: 8px;
   }
 
   .tree-overlay .photosynthesis-intro:not([hidden]) {
