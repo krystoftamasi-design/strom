@@ -64,12 +64,12 @@ function applyDay(start, leafStart, day, flow, capacity, fraction = 1, productio
   const dormant = day < BEECH_CALENDAR.fullLeaf || day >= BEECH_CALENDAR.leafFallStart;
   const balance = net >= 0 ? surplusToStorage * net : net * (dormant ? dormantDrawShare : 1);
   const budburstUse = Math.min(flow.growth * fraction, Math.max(0, start + balance));
-  const toLeaves = day < BEECH_CALENDAR.colourStart
+  const toLeaves = day < BEECH_CALENDAR.leafFallStart
     ? Math.min(leafShare * Math.max(0, balance - budburstUse), leafShare * capacity - leafStart)
     : 0;
-  const autumnReturn = day === BEECH_CALENDAR.colourStart ? leafStart * fraction : 0;
-  const storageLimit = day < BEECH_CALENDAR.colourStart ? capacity * (1 - leafShare)
-    : day === BEECH_CALENDAR.colourStart ? capacity - leafStart : capacity;
+  const autumnReturn = day === BEECH_CALENDAR.leafFallStart ? leafStart * fraction : 0;
+  const storageLimit = day < BEECH_CALENDAR.leafFallStart ? capacity * (1 - leafShare)
+    : day === BEECH_CALENDAR.leafFallStart ? capacity - leafStart : capacity;
   const beforeReturn = Math.min(storageLimit, Math.max(0, start + balance - budburstUse - toLeaves));
   const reserve = beforeReturn + autumnReturn;
   return { reserve, inLeaves: leafStart + toLeaves - autumnReturn, budburstUse, autumnReturn };
@@ -153,7 +153,7 @@ export function createSeasonalSugarBalance(curve, capacity) {
       return {
         reserve: current.reserve,
         budburstRate: todayGrowth / minutesPerDay,
-        autumnRate: day === BEECH_CALENDAR.colourStart ? leafStart / minutesPerDay : 0,
+        autumnRate: day === BEECH_CALENDAR.leafFallStart ? leafStart / minutesPerDay : 0,
       };
     },
   };
