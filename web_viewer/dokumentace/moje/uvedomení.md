@@ -4,6 +4,7 @@
 - 3D model pravděpodobně nepomáhá tyto vztahy dostatečně pochopit, nebo jsem jeho možnosti nevyužil naplno.
 - Tento problém jsem si uvědomil příliš pozdě.
 - Testování mi dalo skvělé podněty k úpravám a pomohlo mi najít směr, protože před ním jsem byl dost ztracený.
+- Nové prvky je vhodné nejdřív otestovat v jednoduché provizorní podobě bez propracované grafiky a teprve potom doladit jejich vzhled.
 
 ## Pravidla struktury
 
