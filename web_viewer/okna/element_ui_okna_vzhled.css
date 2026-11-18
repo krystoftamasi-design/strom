@@ -1352,7 +1352,6 @@ body.scene-night .tree-overlay .element-ui-flow-window {
 
   .tree-overlay .photosynthesis-windows {
     --flow-window-width: min(144px, 42vw);
-    top: 39vh;
     bottom: 12vh;
     padding-block: 0;
     overflow-y: auto;
@@ -1387,6 +1386,48 @@ body.scene-night .tree-overlay .element-ui-flow-window {
   .tree-overlay :is([data-chapter="photosynthesis"], [data-chapter="seasons"]) {
     --photosynthesis-top: 22%;
     --photosynthesis-height: 24%;
+  }
+}
+
+body[data-chapter="photosynthesis"] .tree-overlay {
+  --photosynthesis-controls-top: 55%;
+}
+
+body[data-chapter="photosynthesis"] .tree-overlay .season-date-card {
+  top: var(--photosynthesis-controls-top);
+  bottom: auto;
+  display: grid;
+  grid-template-columns: max-content max-content;
+  grid-template-areas: "label date" "playback playback";
+  gap: 8px 12px;
+  font-size: clamp(18px, 1.6vw, 30px);
+}
+
+body[data-chapter="photosynthesis"] .season-date-card > span { grid-area: label; }
+body[data-chapter="photosynthesis"] .season-date-card > output { grid-area: date; }
+body[data-chapter="photosynthesis"] .season-date-card .time-playback-panel { grid-area: playback; }
+
+body[data-chapter="photosynthesis"] .season-date-card .time-playback-buttons button {
+  width: clamp(52px, 4.3vw, 68px);
+  height: clamp(52px, 4.3vw, 68px);
+}
+
+body[data-chapter="photosynthesis"] .season-date-card .time-playback-buttons svg {
+  width: clamp(32px, 2.6vw, 42px);
+  height: clamp(32px, 2.6vw, 42px);
+}
+
+.tree-overlay article[data-chapter="photosynthesis"] .chapter-context-guide {
+  max-height: max(0px, calc(var(--photosynthesis-controls-top) - var(--photosynthesis-top) - var(--ui-main-heading-size) - 32px));
+}
+
+@media (max-width: 700px) {
+  body[data-chapter="photosynthesis"] .tree-overlay {
+    --photosynthesis-controls-top: 40%;
+  }
+
+  .tree-overlay .photosynthesis-windows {
+    top: calc(var(--photosynthesis-controls-top) + 96px);
   }
 }
 

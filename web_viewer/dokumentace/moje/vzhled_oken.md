@@ -48,7 +48,7 @@ history:
 
 ### Rozložení
 
-- Fotosyntéza má vlevo samostatný nadpis kapitoly a pod ním kontextového průvodce s vlastním svislým posuvem. Při změně věty se 15 sekund čeká, pak text 3 sekundy mizí a nový se 3 sekundy objevuje.
+- Fotosyntéza má vlevo samostatný nadpis kapitoly a pod ním kontextového průvodce s vlastním svislým posuvem. Při změně věty se 15 sekund čeká, pak text 3 sekundy mizí a nový se 3 sekundy objevuje. Pod průvodcem je datum a pod ním zvětšená tlačítka přehrávání, zarovnaná s nadpisem kapitoly.
 - Kapitola Prototyp obsahuje tři ukazatele v písmu Nohemi Light. Volná plocha ukazatelů je šedá. První ukazuje zásobu cukrů jako sytě růžovou výplň v lehce nepravidelném kruhu. Výška hladiny odpovídá podílu na kapacitě. Hladina má jemné kreslené tahy a plynule se vlní. Ve druhém ukazateli dělí pohyblivé čáry kruh na části, větší tok je dole a podobné toky jsou vedle sebe. Tento kruh lze otáčet tažením nebo šipkami vlevo a vpravo. Třetí ukazatel je úzký obdélník napravo vedle stromu. Popisky P vlevo a S vpravo leží vně obdélníku, aby části mohly být nižší než písmena. Zásoba i toky ve druhé a třetí variantě jsou fialové. Větší tok má tmavší odstín. Nulové toky krátce dohasnou a jejich části se plynule stáhnou. Při omezení pohybu se hladina nevlní a změny hodnot se zobrazí okamžitě. Nad ukazateli je společné nastavení maxima v gramech. Pod prototypy je vlevo pro srovnání živé okno Cukry se stejnou šířkou jako ve Fotosyntéze. Řádky se při změně hodnot nezalamují.
 - Období přebírá samostatný nadpis a průvodce vlevo z Fotosyntézy. Kruh ročních období a ovládání času zůstávají u stromu.
 - Kruh období má krátké štětcové rysky mezi úseky. Pevná ryska dole je mírně vlevo od středu obrazovky v ose stromu. Celý úsek aktuálního období i jeho popisek jsou světle zelené.
@@ -68,7 +68,7 @@ history:
 - Pravý sloupec začíná na 52 % a má šířku 44 %; okna Transpirace mají horní okraje 26 / 46 / 70 % a výšku 17 %.
 - Hlavní okno: levý okraj 4 %, horní 65 %, šířka 44 %, výška 24 %; minimální výška oken se ruší. Odsazení obsahu je 12 px, tematický tah má šířku 5 px a hlavní 6 px. Tematický detail má nad sebou mezeru 8 px.
 - Používá se společná typografická škála pro úzkou obrazovku, bez výjimek podle délky nadpisu.
-- Vzorce i přehledy vstupů se mohou zalomit. Okna Fotosyntézy začínají pod průvodcem ve 39 % výšky obrazovky a jejich posuvná plocha končí nad ovládáním času. Jemný obrys písma pomáhá oddělit text od kresby stromu.
+- Vzorce i přehledy vstupů se mohou zalomit. Na úzké obrazovce začíná posuvná plocha oken Fotosyntézy pod ovládáním času. Jemný obrys písma pomáhá oddělit text od kresby stromu.
 
 ### Písmo
 
