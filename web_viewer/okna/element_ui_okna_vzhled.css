@@ -421,7 +421,7 @@ body.scene-night .tree-overlay .element-ui-okno .ui-word {
 
 .tree-overlay .element-ui-balance-bar {
   --balance-track-start: clamp(11px, 1.45vh, 14px);
-  --balance-track-end: clamp(12px, 1.55vh, 15px);
+  --balance-track-end: var(--balance-track-start);
   --balance-marker-width: clamp(12px, 1.55vh, 15px);
   --balance-track-color: #192138;
   --balance-production: var(--ui-topic);
@@ -433,7 +433,7 @@ body.scene-night .tree-overlay .element-ui-okno .ui-word {
   --balance-near-color: var(--balance-consumption);
   --balance-far-color: var(--balance-production);
   position: relative;
-  height: clamp(26px, 3.55vh, 35px);
+  height: clamp(31px, 4.3vh, 42px);
 }
 
 .tree-overlay .element-ui-balance-bar.is-top-shorter {
@@ -495,13 +495,18 @@ body.scene-night .tree-overlay .element-ui-balance-track {
   --balance-ink: #a3adc6;
 }
 
-.tree-overlay .element-ui-balance-track::before {
+.tree-overlay .element-ui-balance-track::before,
+.tree-overlay .element-ui-balance-track::after {
   content: '';
   position: absolute;
-  inset: 0 auto 0 0;
+  inset-block: 0;
   width: var(--balance-track-start);
   background: var(--balance-ink);
-  mask: var(--balance-texture) left center / auto 100% no-repeat;
+  mask: var(--balance-texture) left center / 1000% 100% no-repeat;
+}
+
+.tree-overlay .element-ui-balance-track::before {
+  left: 0;
 }
 
 .tree-overlay .element-ui-balance-track-shaft {
@@ -512,13 +517,8 @@ body.scene-night .tree-overlay .element-ui-balance-track {
 }
 
 .tree-overlay .element-ui-balance-track::after {
-  content: '';
-  position: absolute;
-  inset: 0 0 0 auto;
-  width: var(--balance-track-end);
-  background: var(--balance-ink);
-  /* Keep the original flare, with a fixed width independent of the bar. */
-  mask: var(--balance-texture) right center / auto 100% no-repeat;
+  right: 0;
+  transform: scaleX(-1);
 }
 
 .tree-overlay .element-ui-balance-marker {
@@ -594,7 +594,7 @@ body.scene-night .tree-overlay .element-ui-balance-track {
   position: absolute;
   inset-block: 0;
   z-index: 1;
-  background: var(--stock-end-symbol) center / 68% auto no-repeat;
+  background: var(--stock-end-symbol) center / 50% auto no-repeat;
   pointer-events: none;
 }
 

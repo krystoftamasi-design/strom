@@ -30,11 +30,11 @@ history:
 - Okna mají pevné místo v rozhraní, nezávisle na stromu a kameře; nemají pohybové animace ani spojnice ke stromu.
 - Změny hodnot neposouvají údaje ani sousední okna. Ve Fotosyntéze má hodnota pevné místo přibližně pro „100 %“ a celý blok údajů je klikací. U ostatních oken prázdná plocha propouští myš ke stromu.
 - Bloky jsou bez výplně a rámečku. Mimo Fotosyntézu mají vlevo nepravidelný svislý tah v barvě tématu.
-- Tematická okna Fotosyntézy používají návrh z Affinity. Vedle nadpisu je malované tlačítko +/−. Pod záhlavím jsou dva řádky s popiskem vlevo a hodnotou s jednotkou vpravo. Mezi řádky leží vodorovný pruh s texturou z Affinity, vysoký 26 až 35 px.
+- Tematická okna Fotosyntézy používají návrh z Affinity. Vedle nadpisu je malované tlačítko +/−. Pod záhlavím jsou dva řádky s popiskem vlevo a hodnotou s jednotkou vpravo. Mezi řádky leží vodorovný pruh s texturou z Affinity, vysoký 31 až 42 px.
 - Podklad pruhu je ve dne tmavě modrý a v noci světlejší. Poloha obou značek zleva doprava ukazuje hodnoty samostatně. U kyslíku, CO₂ a cukrů je v horním řádku produkce (P) a v dolním spotřeba (S), na škále 0 až 7 g/min. U vody a světla patří horní řádek i horní značka dostupnosti, dolní řádek i dolní značka spotřebě. Škála vody odpovídá rozsahu dostupnosti vody a škála světla je 0 až 100 %. Ovládání dostupnosti má viditelný úchyt, rozšířenou plochu a viditelný klávesnicový fokus.
 
-- Tah začíná uvnitř podkladu a končí v úzkých značkách s texturou štětce, širokých 12 až 15 px. Podklad má krátké rozšíření na obou koncích, široké 11 až 15 px. Písmena jsou vystředěná v koncovkách. Společná krycí výplň má na začátku barvu kratšího toku a od jeho značky barvu delšího. Spotřeba má světlejší odstín.
-- Volitelná zásoba má vlastní pruh vpravo od toků. Nad ním je popisek „zásoba“, pod ním aktuální množství s jednotkou. Značka Z ukazuje podíl na kapacitě. Na koncích podkladu jsou původní štětcové znaky z Affinity, vlevo červený s otvorem nahoru a vpravo zelený s otvorem dolů.
+- Tah začíná uvnitř podkladu a končí v úzkých značkách s texturou štětce, širokých 12 až 15 px. Podklad má zrcadlové koncovky široké 11 až 14 px. Písmena jsou vystředěná v koncovkách. Společná krycí výplň má na začátku barvu kratšího toku a od jeho značky barvu delšího. Spotřeba má světlejší odstín.
+- Volitelná zásoba má vlastní pruh vpravo od toků. Nad ním je popisek „zásoba“, pod ním aktuální množství s jednotkou. Značka Z ukazuje podíl na kapacitě. Původní štětcové znaky z Affinity zabírají polovinu šířky koncovky. Vlevo je červený znak s otvorem nahoru, vpravo zelený s otvorem dolů.
 
 ### Obecný obsah
 
