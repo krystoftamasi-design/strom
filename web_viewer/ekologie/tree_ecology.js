@@ -45,6 +45,9 @@ export class TreeEcology {
     this.seasonPosition = 1;
     this.seasonState = { ...SEASONS[this.season] };
     this.manualWaterInput = false;
+    this.manualWaterInputValue = 0;
+    this.automaticWaterFraction = null;
+    this.sugarProductionFraction = 1;
     this.sunElevation = 45;
     this.sunAzimuth = 0;
     this.dayCycleEnabled = true;
@@ -102,7 +105,6 @@ export class TreeEcology {
     // Actual daily use is integrated with daylight, foliage and hydration.
     this.baseTranspiration = this.leafArea * 0.9 / 720;
     this.reserve = this.capacity * oldFraction;
-    if (!this.ready) this.waterInput = this.baseTranspiration * SEASONS[this.season].waterSupply * AUTOMATIC_WATER_SUPPLY_FRACTION;
     this.ready = true;
     this.evaluate(0);
   }
@@ -130,14 +132,14 @@ export class TreeEcology {
       this.manualLightAvailability = null;
     }
     if (this.ready) {
-      if (!this.manualWaterInput) this.waterInput = this.baseTranspiration * this.seasonState.waterSupply * AUTOMATIC_WATER_SUPPLY_FRACTION;
       this.evaluate(0);
     }
   }
 
   setWaterInput(litresPerMinute) {
     this.manualWaterInput = true;
-    this.waterInput = Math.max(0, Number(litresPerMinute) || 0);
+    this.manualWaterInputValue = Math.max(0, Number(litresPerMinute) || 0);
+    this.waterInput = this.manualWaterInputValue;
     if (this.ready) this.evaluate(0);
   }
 
@@ -150,6 +152,9 @@ export class TreeEcology {
   evaluate(minutes) {
     const season = this.seasonState;
     this.seasonalWaterLimit = this.baseTranspiration * season.waterSupply;
+    this.waterInput = this.manualWaterInput && this.automaticWaterFraction === null
+      ? this.manualWaterInputValue
+      : this.seasonalWaterLimit * AUTOMATIC_WATER_SUPPLY_FRACTION * (this.automaticWaterFraction ?? 1);
     this.excessWater = Math.max(0, this.waterInput - this.seasonalWaterLimit);
     // Surplus stays outside the tree and drains gradually; sustained
     // waterlogging damages roots and reduces uptake.
@@ -204,8 +209,8 @@ export class TreeEcology {
     // non-red portion of the canopy produces sugar in this teaching model.
     // One productive leaf quantity: area × attached non-red foliage.
     this.activeLeafArea = this.leafArea * clamp(this.photosyntheticFoliage, 0, 1);
-    this.photosynthesisEfficiency = vypocitatVzorec('photosynthesisEfficiency', this);
-    this.activity = vypocitatVzorec('activity', this);
+    this.photosynthesisEfficiency = vypocitatVzorec('photosynthesisEfficiency', this) * this.sugarProductionFraction;
+    this.activity = vypocitatVzorec('activity', this) * this.sugarProductionFraction;
     // 8 µmol CO₂/m²/s, six CO₂ per glucose; show glucose equivalent, not storage.
     this.glucoseGramsPerMinute = vypocitatVzorec('glucoseGramsPerMinute', this);
     this.oxygenGramsPerMinute = vypocitatVzorec('oxygenGramsPerMinute', this);

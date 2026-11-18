@@ -112,7 +112,7 @@ export function sugarProductionFactor(tree) {
   const availableWater = tree.capacity > 0 ? tree.reserve / tree.capacity : 1;
   const water = Math.max(0, Math.min(1, availableWater / 0.35));
   const light = tree.manualLightAvailability ?? 1;
-  return water * light;
+  return water * light * tree.sugarProductionFraction;
 }
 
 export function createSeasonalSugarBalance(curve, capacity) {

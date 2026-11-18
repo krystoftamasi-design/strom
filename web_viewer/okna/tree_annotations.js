@@ -1,7 +1,7 @@
 import { oknaPodleKapitol, kontextoveTexty, pruvodceTranspiraci } from './element_ui_okna_obsah.js?v=compact-details-1';
 import { veliciny, vstupyVzorce, ohlasitChybuOken, vyhladitHodnotu } from './element_ui_okna_veliciny.js?v=affinity-windows-layout-2';
 import { zkontrolovatOkna } from './element_ui_okna_kontrola.js?v=seeds-1';
-import { createAnnualSugarCurve, createSeasonalSugarBalance, sugarProductionFactor } from '../ekologie/rocni_zasoba_cukru.js?v=4';
+import { createAnnualSugarCurve, createSeasonalSugarBalance, sugarProductionFactor } from '../ekologie/rocni_zasoba_cukru.js?v=stock-percentage-1';
 
 // Original embedded assets from ui_new.svg, at their exported stroke widths.
 const strokes = {
@@ -653,8 +653,14 @@ export function createTreeAnnotations({ shell, model, createSeasonControl, setEl
   stockPrototypes.setAttribute('role', 'group');
   stockPrototypes.setAttribute('aria-label', 'Kruhové ukazatele zásob');
   stockPrototypes.setAttribute('aria-keyshortcuts', 'T');
-  for (const [id, label] of [['cukry', 'Cukry'], ['voda', 'Voda']]) {
-    const stock = shell.querySelector(`[data-chapter="photosynthesis"][data-window-id="${id}"] .element-ui-stock`).cloneNode(true);
+  const percentageControls = new Map();
+  for (const [id, label, setting] of [
+    ['cukry', 'Cukry', 'Podíl automatické produkce cukrů'],
+    ['voda', 'Voda', 'Podíl automatické dostupnosti vody'],
+  ]) {
+    const panel = shell.querySelector(`[data-chapter="photosynthesis"][data-window-id="${id}"]`);
+    const barStock = panel.querySelector('.element-ui-stock');
+    const stock = barStock.cloneNode(true);
     stock.querySelector('.element-ui-stock-label span').textContent = label;
     const circle = document.createElement('div');
     circle.className = 'oxygen-balance sugar-stock element-ui-stock-circle';
@@ -664,13 +670,55 @@ export function createTreeAnnotations({ shell, model, createSeasonControl, setEl
     circle.append(fill);
     stock.querySelector('.element-ui-balance-bar').replaceWith(circle);
     stockPrototypes.append(stock);
+
+    const control = document.createElement('label');
+    control.className = 'photosynthesis-stock-percentage';
+    control.hidden = true;
+    control.innerHTML = '<span></span><input type="range" min="0" max="100" value="100"><output>100 %</output>';
+    control.firstElementChild.textContent = id === 'cukry' ? 'produkce' : 'dostupnost';
+    const input = control.querySelector('input');
+    input.setAttribute('aria-label', setting);
+    input.setAttribute('aria-valuetext', '100 %');
+    input.addEventListener('input', () => {
+      const percentage = `${input.value} %`;
+      control.querySelector('output').value = percentage;
+      input.setAttribute('aria-valuetext', percentage);
+      applyStockPercentages();
+    });
+    barStock.append(control);
+    percentageControls.set(id, { barStock, control, input });
   }
   shell.querySelector('.time-playback-panel').after(stockPrototypes);
+  const waterSlider = shell.querySelector('[data-chapter="photosynthesis"][data-window-id="voda"] .element-ui-balance-slider');
+
+  function applyStockPercentages() {
+    const enabled = !stockPrototypes.hidden;
+    model.sugarProductionFraction = enabled ? percentageControls.get('cukry').input.valueAsNumber / 100 : 1;
+    model.automaticWaterFraction = enabled ? percentageControls.get('voda').input.valueAsNumber / 100 : null;
+    if (model.ready) model.evaluate(0);
+  }
+
+  function setStockPrototypeMode(enabled) {
+    if (stockPrototypes.hidden === !enabled) return;
+    stockPrototypes.hidden = !enabled;
+    waterSlider.hidden = enabled;
+    for (const { barStock, control } of percentageControls.values()) {
+      barStock.classList.toggle('is-percentage', enabled);
+      control.hidden = !enabled;
+    }
+    applyStockPercentages();
+  }
 
   const smoothedValues = new Map();
   let lastSmoothTime = performance.now();
 
   return {
+    toggleStockPrototypes() {
+      setStockPrototypeMode(stockPrototypes.hidden);
+    },
+    closeStockPrototypes() {
+      setStockPrototypeMode(false);
+    },
     advanceSeason(chapter, playbackDelta) {
       return seasonControl.update(chapter, playbackDelta);
     },

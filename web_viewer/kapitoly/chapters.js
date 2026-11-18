@@ -1,6 +1,6 @@
 import { zobrazitHodnotu, vyhladitHodnotu } from '../okna/element_ui_okna_veliciny.js?v=affinity-windows-layout-2';
-import { SEASONS } from '../ekologie/tree_ecology.js?v=light-slider-1';
-import { createTreeAnnotations } from '../okna/tree_annotations.js?v=stock-prototypes-1';
+import { SEASONS } from '../ekologie/tree_ecology.js?v=stock-percentage-1';
+import { createTreeAnnotations } from '../okna/tree_annotations.js?v=stock-percentage-1';
 
 const chapters = [
   ['seasons', 'Období'], ['photosynthesis', 'Fotosyntéza'], ['transpiration', 'Transpirace'],
@@ -146,8 +146,7 @@ export function createChapters({ model, applySeason, setSun, setAzimuth, setVisu
 
     if (key === 't') {
       if (drawer.inert && document.body.dataset.chapter === 'photosynthesis') {
-        const prototypes = shell.querySelector('.photosynthesis-stock-prototypes');
-        prototypes.hidden = !prototypes.hidden;
+        treeAnnotations.toggleStockPrototypes();
       }
       return;
     }
@@ -202,6 +201,7 @@ export function createChapters({ model, applySeason, setSun, setAzimuth, setVisu
       setInput('sliderLightRot', saved.azimuth);
     }
     if (id === 'photosynthesis' && chapter !== id) applySeason('summer');
+    if (id !== 'photosynthesis') treeAnnotations.closeStockPrototypes();
     chapter = id;
     titleTestButton.hidden = id !== 'photosynthesis';
     shell.querySelectorAll('[data-chapter]').forEach(a => { a.hidden = a.dataset.chapter !== id; });

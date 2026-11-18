@@ -52,7 +52,7 @@ history:
 
 #### Kruhové ukazatele zásob
 
-- Ve Fotosyntéze klávesa T zobrazí nebo skryje doplňkové kruhové ukazatele zásoby cukrů a vody. Vodorovné pruhy zůstávají součástí obou oken.
+- Ve Fotosyntéze klávesa T zapíná a vypíná režim kruhových zásob. V tomto režimu pruh zásoby cukrů ovládá produkci a pruh zásoby vody dostupnost. Posuvníky nastavují 0 až 100 % aktuální hodnoty podle simulace a oba začínají na 100 %. Zásoby se zobrazují v kruzích pod ovládáním času. Po vypnutí režimu nebo odchodu z kapitoly se obnoví běžné ovládání simulace.
 
 [Zpět na architekturu obsahu](../architektura_obsahu.md)
 
