@@ -211,6 +211,7 @@ export function createSeasonRing({ scene, camera, controls, canvas, model }) {
 
   return {
     group,
+    get isSeeking() { return Boolean(drag) || wheelRemaining > 0; },
     update(chapter, playbackDelta = 0) {
       const background = scene.background;
       const luminance = background.r * 0.2126 + background.g * 0.7152 + background.b * 0.0722;

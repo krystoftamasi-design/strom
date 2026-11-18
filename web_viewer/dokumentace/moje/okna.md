@@ -28,7 +28,7 @@ history:
 
 ## Kapitola Období
 
-- Průvodce popisuje proměnu koruny buku během roku od jarního rašení až po přezimování pupenů. Roční období se mění kruhem u stromu. Pauza a rychlost dole u data řídí společně kalendář, slunce a zásoby. Každý měsíc běží při rychlosti 1× 24 sekund od úsvitu do dalšího úsvitu, z toho 20 sekund den a 4 sekundy noc. Obě části odpovídají 12 modelovým hodinám. Ruční změna období přestaví slunce podle vybraného data a přeskočený čas se pro vodu a cukry nepřičte.
+- Průvodce popisuje proměnu koruny buku během roku od jarního rašení až po přezimování pupenů. Roční období se mění kruhem u stromu. Pauza a rychlost dole u data řídí společně kalendář, slunce a zásoby. Každý měsíc běží při rychlosti 1× 24 sekund od úsvitu do dalšího úsvitu, z toho 20 sekund den a 4 sekundy noc. Obě části odpovídají 12 modelovým hodinám. Při ručním otáčení kruhem se poloha slunce drží. Po ukončení tahu nebo doběhnutí posunu kolečkem se nastaví podle vybraného data. Přeskočený čas se pro vodu a cukry nepřičte.
 
 ## Kapitola Fotosyntéza
 

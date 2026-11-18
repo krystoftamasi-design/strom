@@ -1177,7 +1177,7 @@
     import { createChapters } from './kapitoly/chapters.js?v=month-clock-1-flow-zero-1';
     import { createSeedChapter } from './kapitoly/seed_chapter.js';
     import { createTreeBird } from './vykreslovani/tree_bird.js?v=perch-grid-1';
-    import { createSeasonRing } from './obdobi/season_ring.js?v=month-clock-1';
+    import { createSeasonRing } from './obdobi/season_ring.js?v=month-clock-2';
     import { createIntroForest } from './obdobi/intro_forest.js?v=intro-closer-camera-2';
     import { seasonColorForPosition } from './obdobi/season_timeline.js?v=beech-calendar-1';
     import {
@@ -4232,7 +4232,7 @@
         : 1;
       leafFallAnimationTime += playbackDelta * (seasonalRegrowthPending ? 12 : winterFallSpeed);
       shaderUniforms.uLeafFallTime.value = leafFallAnimationTime;
-      // Calendar seeks reposition the sun without charging water for skipped time.
+      // Hold the sun while the ring is moving across dates.
       const previousSeason = ecology.seasonPosition;
       const advanced = chapterApp.advanceSeason(playbackDelta);
       let nextHour = timeOfDayHours;
@@ -4241,7 +4241,7 @@
         const night = timeOfDayHours >= 18 || timeOfDayHours < 6;
         modelMinutes = playbackDelta * MODEL_MINUTES_PER_SECOND * (night ? 14 : 5);
         nextHour = (timeOfDayHours + modelMinutes / 60) % 24;
-      } else {
+      } else if (!seasonRingControl?.isSeeking) {
         const solarHour = solarHoursForMonthClock(monthClockForSeason(ecology.seasonPosition));
         nextHour = ((solarHour % 24) + 24) % 24;
         if (advanced) {
