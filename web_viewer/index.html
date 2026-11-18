@@ -682,7 +682,7 @@
     }
   </style>
   <link rel="stylesheet" href="./kapitoly/chapters.css?v=time-controls-1">
-  <link rel="stylesheet" href="./okna/tree_annotations.css?v=season-ticks-1">
+  <link rel="stylesheet" href="./okna/tree_annotations.css?v=season-ticks-2">
   <link rel="stylesheet" href="./okna/element_ui_okna_vzhled.css?v=compact-details-1">
 </head>
 
@@ -1163,7 +1163,7 @@
     import { OrbitControls } from 'three/addons/controls/OrbitControls.js?v=zoom-pixel-ratio-1';
     import { setupLeafBreeze } from './listy/leaf_breeze.js?v=5';
     import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
-    import { PhotolysisSystem } from './vykreslovani/photolysis_system.js?v=photon-texture-1';
+    import { PhotolysisSystem } from './vykreslovani/photolysis_system.js?v=night-respiration-1';
     import { loadBarkReference, loadBarkAttributes, attachBarkAttributes, createBarkMaterial } from './vykreslovani/bark_material.js?v=opt-lut-1';
     import { loadLeafReference, loadLeafAttributes, attachLeafAttributes, createLeafMaterial, createLeafDepthMaterial, setLeafEdgeTransition } from './vykreslovani/leaf_material.js?v=opt-crop-2';
     import { LeafControls } from './listy/leaf_controls.js?v=opt-crop-1';
@@ -1177,7 +1177,7 @@
     import { createChapters } from './kapitoly/chapters.js?v=month-clock-1-compact-details-1';
     import { createSeedChapter } from './kapitoly/seed_chapter.js';
     import { createTreeBird } from './vykreslovani/tree_bird.js?v=perch-grid-1';
-    import { createSeasonRing } from './obdobi/season_ring.js?v=season-ticks-1';
+    import { createSeasonRing } from './obdobi/season_ring.js?v=season-ticks-2';
     import { createIntroForest } from './obdobi/intro_forest.js?v=intro-closer-camera-2';
     import { seasonColorForPosition } from './obdobi/season_timeline.js?v=beech-calendar-1';
     import {
@@ -1753,6 +1753,7 @@
     let sapFlowMinDistance = 0;
     let sapFlowMaxDistance = 0;
     let sapFlowRetraction = 0;
+    let sugarFlowRetraction = 0;
     let sapLeafRedWasStarted = false;
     let sapLeafRedRetractionActive = false;
     var sapWaterLabel = null;
@@ -2580,7 +2581,8 @@
         photonSpeed: 24.0,
         bubbleSpeed: 2.2,
         bubbleSpawnDistance: 1.5,
-        photonsPerSecond: 4.0
+        photonsPerSecond: 4.0,
+        showNightRespiration: true
       });
       window.photolysisSystem = photolysisSystem;
     } catch (err) {
@@ -3168,7 +3170,8 @@
       sapLeafRedWasStarted = leavesStartedTurningRed;
       // The first leaf's red color transition starts the root-to-crown retraction.
       const target = ecology.activity > 0.0001 && !sapLeafRedRetractionActive ? 0 : 1;
-      const nightRetraction = target === 1 && sunElevationDeg <= 0;
+      const night = sunElevationDeg <= 0;
+      const nightRetraction = target === 1 && night;
       const step = delta / (nightRetraction ? 1.2 : 3.6);
       sapFlowRetraction += THREE.MathUtils.clamp(target - sapFlowRetraction, -step, step);
       const revealingFromBottom = target === 0;
@@ -3189,11 +3192,15 @@
       if (glucoseFlow?.flowCutoff && glucoseFlow.flowMinDistance < glucoseFlow.flowMaxDistance) {
         // Keep the retraction direction consistent across seasons. Only the
         // animated glucose flow direction changes for spring growth.
-        glucoseFlow.flowRevealBottom.value = revealingFromBottom ? 0 : 1;
+        const sugarTarget = night ? 0 : target;
+        const sugarStep = delta / 3.6;
+        sugarFlowRetraction += THREE.MathUtils.clamp(sugarTarget - sugarFlowRetraction, -sugarStep, sugarStep);
+        const sugarRevealing = sugarTarget === 0;
+        glucoseFlow.flowRevealBottom.value = sugarRevealing ? 0 : 1;
         glucoseFlow.flowCutoff.value = THREE.MathUtils.lerp(
           glucoseFlow.flowMaxDistance + 0.4,
           glucoseFlow.flowMinDistance - 0.4,
-          flowProgress);
+          sugarRevealing ? 1 - sugarFlowRetraction : sugarFlowRetraction);
       }
     }
 

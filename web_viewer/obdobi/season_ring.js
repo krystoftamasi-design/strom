@@ -28,7 +28,7 @@ export function createSeasonRing({ scene, camera, controls, canvas, model }) {
 
   // A flat annular ribbon in XZ. The supplied vertical brush runs along it,
   // with its transparent sides across the ribbon's width.
-  const positions = [], uvs = [], indices = [];
+  const positions = [], uvs = [], indices = [], seasons = [];
   const sectionsPerSeason = 1;
   const sectionCount = SEASONS.length * sectionsPerSeason;
   const stepsPerSection = 96;
@@ -45,6 +45,7 @@ export function createSeasonRing({ scene, camera, controls, canvas, model }) {
       for (let side = 0; side < 2; side++) {
         const r = radius + (side - 0.5) * ribbonWidth;
         positions.push(Math.sin(angle) * r, 0, Math.cos(angle) * r);
+        seasons.push(section);
         // Fit the whole vertical brush to each arc, without partial repeats/seams.
         uvs.push(side, step / stepsPerSection);
       }
@@ -57,6 +58,7 @@ export function createSeasonRing({ scene, camera, controls, canvas, model }) {
   const geometry = new THREE.BufferGeometry();
   geometry.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
   geometry.setAttribute('uv', new THREE.Float32BufferAttribute(uvs, 2));
+  geometry.setAttribute('aRingSeason', new THREE.Float32BufferAttribute(seasons, 1));
   geometry.setIndex(indices);
   const brush = new THREE.TextureLoader().load(
     new URL('../../obrazky/textury/OVLADACI%20LINKA/LINKA.png', import.meta.url).href);
@@ -64,19 +66,26 @@ export function createSeasonRing({ scene, camera, controls, canvas, model }) {
   brush.colorSpace = THREE.SRGBColorSpace;
   brush.anisotropy = 4;
   const ink = new THREE.Color(0x171813);
+  const activeInk = new THREE.Color(0x52a52e);
+  const activeIndex = { value: SEASONS.indexOf(model.season) };
   const material = new THREE.MeshBasicMaterial({
     map: brush, transparent: true, side: THREE.DoubleSide, depthWrite: false,
     alphaTest: 0.025, toneMapped: false, polygonOffset: true, polygonOffsetFactor: -1
   });
   // Preserve the brush edges and clip each stroke to a softly rounded capsule.
-  material.customProgramCacheKey = () => 'season_ring_linka_contrast_1';
+  material.customProgramCacheKey = () => 'season_ring_linka_active_1';
   material.onBeforeCompile = shader => {
     shader.uniforms.uRingInk = { value: ink };
+    shader.uniforms.uActiveRingInk = { value: activeInk };
+    shader.uniforms.uActiveRingSeason = activeIndex;
+    shader.vertexShader = shader.vertexShader.replace('#include <common>',
+      '#include <common>\nattribute float aRingSeason;\nvarying float vRingSeason;')
+      .replace('#include <begin_vertex>', '#include <begin_vertex>\nvRingSeason = aRingSeason;');
     shader.fragmentShader = shader.fragmentShader.replace('#include <common>',
-      '#include <common>\nuniform vec3 uRingInk;');
+      '#include <common>\nuniform vec3 uRingInk;\nuniform vec3 uActiveRingInk;\nuniform float uActiveRingSeason;\nvarying float vRingSeason;');
     shader.fragmentShader = shader.fragmentShader.replace('#include <map_fragment>',
       `#include <map_fragment>
-       diffuseColor.rgb = uRingInk;
+       diffuseColor.rgb = abs(vRingSeason - uActiveRingSeason) < 0.5 ? uActiveRingInk : uRingInk;
        float strokeLength = ${sectionLength.toFixed(6)};
        float capRadius = ${(ribbonWidth / 2).toFixed(6)};
        float alongStroke = vMapUv.y * strokeLength;
@@ -88,9 +97,17 @@ export function createSeasonRing({ scene, camera, controls, canvas, model }) {
   group.add(new THREE.Mesh(geometry, material));
 
   const tickMaterial = new THREE.MeshBasicMaterial({
-    color: ink, side: THREE.DoubleSide, depthWrite: false, toneMapped: false,
+    map: brush, transparent: true, alphaTest: 0.025,
+    side: THREE.DoubleSide, depthWrite: false, toneMapped: false,
   });
-  const tickGeometry = new THREE.PlaneGeometry(0.12, 1.05);
+  tickMaterial.customProgramCacheKey = () => 'season_ring_brush_tick_1';
+  tickMaterial.onBeforeCompile = shader => {
+    shader.uniforms.uRingInk = { value: ink };
+    shader.fragmentShader = shader.fragmentShader.replace('#include <common>',
+      '#include <common>\nuniform vec3 uRingInk;')
+      .replace('#include <map_fragment>', '#include <map_fragment>\ndiffuseColor.rgb = uRingInk;');
+  };
+  const tickGeometry = new THREE.PlaneGeometry(0.32, 1.2);
   tickGeometry.rotateX(-Math.PI / 2);
   for (let section = 0; section < sectionCount; section++) {
     const angle = (section - 0.5) * sectionAngle;
@@ -134,7 +151,7 @@ export function createSeasonRing({ scene, camera, controls, canvas, model }) {
       context.textAlign = 'center';
       context.textBaseline = 'middle';
       context.fillStyle = SEASONS[i] === activeSeason
-        ? (lightInk ? '#9df369' : '#287600')
+        ? `#${activeInk.getHexString()}`
         : (lightInk ? '#f2f3e9' : '#171813');
       context.fillText(LABELS[i], labelWidth / 2, labelHeight / 2 + 5);
       texture.needsUpdate = true;
@@ -253,7 +270,8 @@ export function createSeasonRing({ scene, camera, controls, canvas, model }) {
         lightInk = nextLightInk;
         activeSeason = model.season;
         ink.set(lightInk ? 0xf2f3e9 : 0x171813);
-        tickMaterial.color.copy(ink);
+        activeInk.set(lightInk ? 0xb2ff7c : 0x52a52e);
+        activeIndex.value = SEASONS.indexOf(activeSeason);
         labels.forEach(label => label.userData.draw());
       }
       group.visible = chapter !== 'intro';
