@@ -3198,7 +3198,7 @@
         });
       }
       if (glucoseFlow?.flowCutoff && glucoseFlow.flowMinDistance < glucoseFlow.flowMaxDistance) {
-        const sugarTarget = winter ? 1 : night ? 0 : target;
+        const sugarTarget = winter ? 1 : target;
         const sugarStep = delta / 3.6;
         sugarFlowRetraction = winter ? 1
           : sugarFlowRetraction + THREE.MathUtils.clamp(sugarTarget - sugarFlowRetraction, -sugarStep, sugarStep);
