@@ -67,10 +67,14 @@ function dailySugarFlows(tree) {
   });
 }
 
-function applyDay(start, leafStart, day, flow, capacity, fraction = 1, production = flow.production, growth = flow.growth * fraction, paidGrowth = 0, fromFraction = 0) {
+function storageBalance(day, flow, fraction, production) {
   const net = production - flow.respiration * fraction;
   const dormant = day < BEECH_CALENDAR.fullLeaf || day >= BEECH_CALENDAR.leafFallStart;
-  const balance = net >= 0 ? surplusToStorage * net : net * (dormant ? dormantDrawShare : 1);
+  return net >= 0 ? surplusToStorage * net : net * (dormant ? dormantDrawShare : 1);
+}
+
+function applyDay(start, leafStart, day, flow, capacity, fraction = 1, production = flow.production, growth = flow.growth * fraction, paidGrowth = 0, fromFraction = 0) {
+  const balance = storageBalance(day, flow, fraction, production);
   const budburstUse = Math.max(paidGrowth, Math.min(growth, start + balance));
   const toLeaves = day < BEECH_CALENDAR.leafFallStart
     ? Math.min(leafShare * Math.max(0, balance - budburstUse), leafShare * capacity - leafStart)
@@ -133,7 +137,7 @@ export function createSeasonalSugarBalance(curve, capacity) {
   let production;
   let appliedGrowth;
   let budburstRate = 0;
-  let seekOffset;
+  let seekAnchor;
 
   function referenceAt(date) {
     const day = dayOfYear(Math.floor(date));
@@ -148,26 +152,56 @@ export function createSeasonalSugarBalance(curve, capacity) {
       fraction - fromFraction, production, appliedGrowth, appliedGrowth, fromFraction);
   }
 
+  function projectSeek(anchor, date, factor) {
+    let { date: position, reserve, inLeaves } = anchor;
+    while (position < date) {
+      const dayStart = Math.floor(position);
+      const next = Math.min(date, dayStart + 1);
+      const day = dayOfYear(dayStart);
+      const { flow } = curve[day];
+      const fraction = next - position;
+      ({ reserve, inLeaves } = applyDay(reserve, inLeaves, day, flow, capacity, fraction,
+        flow.production * factor * fraction, flow.growth * fraction, 0, position - dayStart));
+      position = next;
+    }
+    // Earlier dates undo the modelled change from the same anchor, bounded by the available stores.
+    while (position > date) {
+      const dayStart = Math.ceil(position) - 1;
+      const next = Math.max(date, dayStart);
+      const day = dayOfYear(dayStart);
+      const { flow } = curve[day];
+      const fraction = position - next;
+      const balance = storageBalance(day, flow, fraction, flow.production * factor * fraction);
+      const growth = flow.growth * fraction;
+      if (day < BEECH_CALENDAR.leafFallStart) {
+        const toLeaves = Math.min(inLeaves, leafShare * Math.max(0, balance - growth));
+        inLeaves -= toLeaves;
+        reserve = Math.max(0, Math.min(capacity * (1 - leafShare), reserve - balance + growth + toLeaves));
+      } else {
+        const remaining = 1 - flow.fallShare * (position - dayStart);
+        const returned = remaining > 0 ? Math.min(reserve, inLeaves * flow.fallShare * fraction / remaining) : 0;
+        inLeaves += returned;
+        reserve = Math.max(0, Math.min(capacity - inLeaves, reserve - balance - returned));
+      }
+      position = next;
+    }
+    return { reserve, inLeaves };
+  }
+
   return {
-    update(from, to, automatic, factor, growthRequested = 0) {
+    update(from, to, automatic, factor, growthRequested = 0, seekFactor = factor) {
       const previous = calendarDate(from);
       const date = calendarDate(to);
       const movedManually = cursor !== undefined && cursor !== date
         && (!automatic || cursor !== previous || date < previous);
       if (cursor === undefined || movedManually) {
-        if (movedManually && !seekOffset) {
-          const actual = currentAt(dayOfYear(Math.floor(cursor)), dayFraction(cursor));
-          const reference = referenceAt(cursor);
-          // Keep the playback deviation across successive drag positions, including at the limits.
-          seekOffset = { reserve: actual.reserve - reference.reserve, inLeaves: actual.inLeaves - reference.inLeaves };
+        if (movedManually && !seekAnchor) {
+          seekAnchor = { date: cursor, ...currentAt(dayOfYear(Math.floor(cursor)), dayFraction(cursor)) };
         }
         const day = dayOfYear(Math.floor(date));
-        const reference = referenceAt(date);
-        const leafLimit = day < BEECH_CALENDAR.leafFallStart ? leafShare * capacity
-          : leafShare * capacity * (1 - beechLeafFallProgress(to));
-        leafStart = Math.max(0, Math.min(leafLimit, reference.inLeaves + (seekOffset?.inLeaves ?? 0)));
-        const storageLimit = day < BEECH_CALENDAR.leafFallStart ? capacity * (1 - leafShare) : capacity - leafStart;
-        start = Math.max(0, Math.min(storageLimit, reference.reserve + (seekOffset?.reserve ?? 0)));
+        const projected = seekAnchor ? projectSeek(seekAnchor, date, seekFactor) : referenceAt(date);
+        start = projected.reserve;
+        leafStart = projected.inLeaves;
         cursor = date;
         fromFraction = dayFraction(date);
         production = 0;
@@ -176,7 +210,7 @@ export function createSeasonalSugarBalance(curve, capacity) {
       }
 
       const elapsedDays = date - cursor;
-      if (elapsedDays > 0) seekOffset = undefined;
+      if (elapsedDays > 0) seekAnchor = undefined;
       const elapsedMinutes = elapsedDays > 0 ? (monthClockForSeason(to) - monthClockForSeason(from)) * minutesPerDay : 0;
       let growthUsed = 0;
       while (cursor < date) {

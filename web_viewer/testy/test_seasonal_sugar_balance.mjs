@@ -62,24 +62,38 @@ assert.equal(exhausted.budburstRate, 0, 'Previously funded growth is not charged
 
 const from = seasonForMonthClock(5.2);
 const dryDate = seasonForMonthClock(5.5);
+const summer = seasonForMonthClock(6);
 const autumn = seasonForMonthClock(9.93);
 const winter = seasonForMonthClock(11.1);
-const reference = date => createSeasonalSugarBalance(curve, capacity).update(date, date, false, 1).reserve;
 const seeking = createSeasonalSugarBalance(curve, capacity);
 seeking.update(from, from, false, 1);
 const dryReserve = seeking.update(from, dryDate, true, 0).reserve;
-const deficit = reference(dryDate) - dryReserve;
-assert.ok(deficit > 0);
+const summerReserve = seeking.update(summer, summer, false, 0).reserve;
+assert.ok(summerReserve < dryReserve, 'Time skipped forward with production off only incurs consumption in summer');
+assert.ok(seeking.update(summer, seasonForMonthClock(6.001), false, 1).reserve > summerReserve,
+  'Restoring production changes the projection from the original stock');
+const rewound = seeking.update(summer, from, false, 0).reserve;
+assert.ok(rewound > dryReserve, 'Rewinding reverses summer consumption when production is off');
 const moved = seeking.update(autumn, autumn, false, 0); // The ring can update the date before the frame begins.
-assert.ok(Math.abs(moved.reserve - (reference(autumn) - deficit)) < 1e-6);
-assert.ok(moved.autumnRate > 0);
+assert.ok(moved.autumnRate > 0, 'Autumn can still return sugar already in the leaves');
 seeking.update(autumn, winter, false, 0);
 const back = seeking.update(winter, dryDate, false, 0);
 assert.ok(Math.abs(back.reserve - dryReserve) < 1e-6);
 const resumed = seeking.update(dryDate, seasonForMonthClock(5.501), true, 0);
 assert.ok(resumed.reserve < back.reserve && back.reserve - resumed.reserve < 100);
-const spring = seasonForMonthClock(3.9);
-assert.equal(seeking.update(spring, spring, false, 0).reserve, 0);
-assert.ok(Math.abs(seeking.update(dryDate, dryDate, false, 0).reserve - back.reserve) < 100);
+
+const leafless = createSeasonalSugarBalance(curve.map(day => ({ ...day, leafStart: 0 })), capacity);
+const juneStart = seasonForMonthClock(5);
+const initial = leafless.update(juneStart, juneStart, false, 0).reserve;
+let previousReserve = initial;
+for (let month = 6; month <= 18; month += 1) {
+  const date = seasonForMonthClock(month);
+  const state = leafless.update(date, date, false, 0);
+  assert.ok(state.reserve <= previousReserve);
+  assert.equal(state.autumnRate, 0, 'An empty leaf store cannot refill the reserve');
+  previousReserve = state.reserve;
+}
+assert.equal(previousReserve, 0);
+assert.equal(leafless.update(juneStart, juneStart, false, 0).reserve, initial);
 console.log('PASS: spring growth is limited by sugar reserves and autumn leaf fall returns sugar gradually.');
-console.log('PASS: moving the season ring retains the current sugar deficit and supports a round trip.');
+console.log('PASS: moving the season ring respects zero production and supports a round trip.');
