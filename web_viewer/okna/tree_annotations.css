@@ -50,13 +50,26 @@ body[data-chapter="intro"] .chapter-panel.tree-overlay {
 .tree-overlay .chapter-metric { margin: 6px 0; padding: 8px; gap: 3px; }
 .tree-overlay .chapter-metric output { font-size: 23px; }
 
-.tree-overlay .element-ui-stock .chapter-metric.element-ui-stock-label > span {
-  font-size: calc(1.15 * var(--ui-text-size));
+.tree-overlay .element-ui-stock .chapter-metric.element-ui-stock-label {
+  justify-self: start;
 }
 
-.tree-overlay .element-ui-stock-trend {
-  margin-inline-start: 4px;
-  font: 400 .9em/1 system-ui, sans-serif;
+.tree-overlay .element-ui-stock .chapter-metric.element-ui-stock-label > span {
+  font-size: calc(1.25 * var(--ui-text-size));
+  font-weight: 600;
+}
+
+.tree-overlay .element-ui-stock .chapter-metric.element-ui-stock-readout {
+  justify-self: stretch;
+  flex-wrap: nowrap;
+}
+
+.tree-overlay .element-ui-stock-readout.chapter-metric > .element-ui-stock-trend {
+  font: 700 calc(1.5 * var(--ui-text-size))/1 system-ui, sans-serif;
+}
+
+.tree-overlay .element-ui-stock-readout > strong {
+  margin-inline-start: auto;
 }
 .tree-overlay .chapter-temperature { padding: 8px; margin-bottom: 8px; }
 .tree-overlay .chapter-equation { margin-top: 12px; padding: 10px; font-size: 11px; }

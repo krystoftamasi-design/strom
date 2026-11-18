@@ -174,7 +174,7 @@ function createElementUiOkno({ panel, body, reveal, toggle, model, definition })
         label.append(labelText);
         const stockBar = createBalanceBar({ top: 'Z' });
         const metric = document.createElement('div');
-        metric.className = 'chapter-metric';
+        metric.className = 'chapter-metric element-ui-stock-readout';
         const value = document.createElement('strong');
         const output = document.createElement('output');
         output.dataset.stockSource = zdroj;
@@ -191,8 +191,8 @@ function createElementUiOkno({ panel, body, reveal, toggle, model, definition })
         trend.className = 'element-ui-stock-trend';
         trend.setAttribute('role', 'img');
         trend.hidden = true;
-        value.append(output, unit, trend);
-        metric.append(value);
+        value.append(output, unit);
+        metric.append(trend, value);
         stock.append(label, stockBar, metric);
         footer.append(stock);
       }
