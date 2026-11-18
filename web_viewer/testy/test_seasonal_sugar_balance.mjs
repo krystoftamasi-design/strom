@@ -60,6 +60,16 @@ const exhausted = depleted.update(firstGrowth, laterGrowth, true, 1, 0.5);
 assert.equal(exhausted.growthGranted, 0, 'Further growth stops when the available reserve is empty');
 assert.equal(exhausted.budburstRate, 0, 'Previously funded growth is not charged again');
 
+const skippedSpring = createSeasonalSugarBalance(depletedCurve, capacity);
+const beforeBudburst = seasonForMonthClock(3.7);
+skippedSpring.update(beforeBudburst, beforeBudburst, false, 1);
+const afterSeek = skippedSpring.update(beforeBudburst, firstGrowth, false, 1);
+assert.equal(afterSeek.reserve, 140, 'Seeking across spring leaves sugar available for the visible animation');
+assert.equal(afterSeek.budburstRate, 0);
+const afterGrowth = skippedSpring.update(firstGrowth, laterGrowth, true, 1, 0.5);
+assert.equal(afterGrowth.growthGranted, 0.4);
+assert.equal(afterGrowth.reserve, 0);
+
 const from = seasonForMonthClock(5.2);
 const dryDate = seasonForMonthClock(5.5);
 const summer = seasonForMonthClock(6);

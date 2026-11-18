@@ -465,6 +465,7 @@ export class LeafControls {
       }
       mesh.geometry.setAttribute('leafSeasonData', new THREE.BufferAttribute(seasonPacked, 4, true));
       mesh.geometry.setAttribute('leafFallSeed', new THREE.BufferAttribute(fallSeeds, 1));
+      mesh.geometry.setAttribute('leafGrowthRank', new THREE.BufferAttribute(new Float32Array(vertCount), 1));
       mesh.geometry.setAttribute('leafFallCenter', new THREE.BufferAttribute(fallCenters, 3));
       mesh.geometry.setAttribute('leafFallLanding', new THREE.BufferAttribute(fallLandings, 3));
       mesh.geometry.setAttribute('leafCameraDrift', new THREE.BufferAttribute(new Float32Array(fallCenters.length), 3));
@@ -493,6 +494,12 @@ export class LeafControls {
       relArr[i] = r < 0 ? 0 : r > 1 ? 1 : r;
     }
     radixSortByFloat(model.calendarOrder, relArr, selectedCount, model.radixScratchA, model.radixScratchB, model.radixCounts);
+    const ranks = model.mesh.geometry.attributes.leafGrowthRank;
+    for (let order = 0; order < selectedCount; order++) {
+      const rank = (selectedCount - order - 0.5) / selectedCount;
+      for (const vertex of model.leaves[model.calendarOrder[order]].vertices) ranks.array[vertex] = rank;
+    }
+    ranks.needsUpdate = true;
     model.cachedSharpness = sharpness;
     model.calendarOrderCount = selectedCount;
     model.calendarCursor = 0;
@@ -746,7 +753,8 @@ export class LeafControls {
             while (model.calendarCursor < selectedCount) {
               const idx = order[model.calendarCursor];
               if (!releaseAll && calendarProgress < relVals[idx]) break;
-              if (leafTimes[idx] > time) {
+              const rank = (selectedCount - model.calendarCursor - 0.5) / selectedCount;
+              if (rank < (this.canopyCoverage ?? 1) && leafTimes[idx] > time) {
                 scheduleFall(leaves[idx], idx, time);
               }
               model.calendarCursor++;
@@ -807,7 +815,7 @@ export class LeafControls {
       selected += count;
       if (!model.mesh.visible) continue;
       this._syncFallenUpToTime(model, time);
-      attached += count - model.fallenCount;
+      attached += Math.ceil(count * (this.canopyCoverage ?? 1) - 0.5) - model.fallenCount;
       const future = model.futureScheduledIndices;
       const times = model.leafFallStartTimes;
       for (let i = 0; i < future.length; i++) {
@@ -859,7 +867,8 @@ export class LeafControls {
         }
       }
       model.photoLastSeason = seasonProgress;
-      producing += (count - model.photoCursor) - model.fallenAfterStop;
+      const grown = Math.ceil(count * (this.canopyCoverage ?? 1) - 0.5);
+      producing += Math.max(0, Math.min(grown, count - model.photoCursor) - model.fallenAfterStop);
 
       const future = model.futureScheduledIndices;
       const times = model.leafFallStartTimes;
@@ -986,6 +995,16 @@ export class LeafControls {
     }
   }
 
+  setCanopyCoverage(coverage, sharpness) {
+    this.canopyCoverage = coverage;
+    this.canopySharpness = sharpness;
+    this.foliageCache = null;
+    this.photosyntheticFoliageCache = null;
+    if (coverage < 1) {
+      for (const model of this.models) this._ensureCalendarOrder(model, model.selectedCount ?? 0, sharpness);
+    }
+  }
+
   maxForBaseCount(baseCount) {
     if (!this.total) return 0;
     const max = Math.min(MAX_LEAF_COUNT, this.total * LEAF_MULTIPLIER);
@@ -1039,6 +1058,7 @@ export class LeafControls {
       }
       if (model.selectedCount !== count) {
         model.selectedCount = count;
+        if (this.canopyCoverage < 1) this._ensureCalendarOrder(model, count, this.canopySharpness);
         model.cachedPhotoKey = '';
         this.needsResort = true;
         this.sortModelPending = (1 << this.models.length) - 1;

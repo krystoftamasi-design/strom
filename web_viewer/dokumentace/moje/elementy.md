@@ -135,7 +135,7 @@ Definice spojení
 
 ### Růst listů
 
-- Při rychlém posunu přes jaro se růst nových listů nepřeskočí: po dokončení opadu starých listů se nové viditelně zvětšují i tehdy, když datum již pokročilo dále. Vyšší rychlost času růst zrychlí.
+- Po opadu starých listů se nové listy objevují v opačném pořadí, než v jakém opadávají. Pokud zásoba cukrů pokryje jen část rašení, objeví se jen odpovídající část listů. Růst zůstává viditelný i po rychlém posunu přes jaro a vyšší rychlost času ho urychluje.
 - Při téměř vyčerpané zásobě vody se listy postupně zbarví jako na podzim a následně opadávají. Vypnutí přísunu vody nespustí uschnutí okamžitě, dokud má strom ještě zásobu. Při obnovení zavodnění se listy v růstovém období obnoví.
 
 ### Slunce

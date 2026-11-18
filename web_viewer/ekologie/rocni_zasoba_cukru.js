@@ -161,7 +161,7 @@ export function createSeasonalSugarBalance(curve, capacity) {
       const { flow } = curve[day];
       const fraction = next - position;
       ({ reserve, inLeaves } = applyDay(reserve, inLeaves, day, flow, capacity, fraction,
-        flow.production * factor * fraction, flow.growth * fraction, 0, position - dayStart));
+        flow.production * factor * fraction, 0, 0, position - dayStart));
       position = next;
     }
     // Earlier dates undo the modelled change from the same anchor, bounded by the available stores.
@@ -172,11 +172,10 @@ export function createSeasonalSugarBalance(curve, capacity) {
       const { flow } = curve[day];
       const fraction = position - next;
       const balance = storageBalance(day, flow, fraction, flow.production * factor * fraction);
-      const growth = flow.growth * fraction;
       if (day < BEECH_CALENDAR.leafFallStart) {
-        const toLeaves = Math.min(inLeaves, leafShare * Math.max(0, balance - growth));
+        const toLeaves = Math.min(inLeaves, leafShare * Math.max(0, balance));
         inLeaves -= toLeaves;
-        reserve = Math.max(0, Math.min(capacity * (1 - leafShare), reserve - balance + growth + toLeaves));
+        reserve = Math.max(0, Math.min(capacity * (1 - leafShare), reserve - balance + toLeaves));
       } else {
         const remaining = 1 - flow.fallShare * (position - dayStart);
         const returned = remaining > 0 ? Math.min(reserve, inLeaves * flow.fallShare * fraction / remaining) : 0;
@@ -206,7 +205,7 @@ export function createSeasonalSugarBalance(curve, capacity) {
         fromFraction = dayFraction(date);
         production = 0;
         appliedGrowth = 0;
-        budburstRate = curve[day].budburstUse / minutesPerCalendarDay(day);
+        budburstRate = 0;
       }
 
       const elapsedDays = date - cursor;

@@ -280,6 +280,7 @@ export function createLeafDepthMaterial(type, reference, uniforms) {
     shader.uniforms.uLeafShadowAlpha = { value: reference.shadowAlpha[type] };
     shader.uniforms.uLeafAlphaStrength = uniforms.uLeafAlphaStrength;
     shader.uniforms.uLeafGrowth = uniforms.uLeafGrowth || { value: 1.0 };
+    shader.uniforms.uLeafCoverage = uniforms.uLeafCoverage || { value: 1.0 };
     shader.vertexShader = 'varying vec2 vLeafUv;\n' + shader.vertexShader.replace(
       '#include <begin_vertex>', '#include <begin_vertex>\nvLeafUv = uv;');
     shader.fragmentShader = `uniform sampler2D uLeafShadowAlpha;
@@ -303,9 +304,10 @@ export function createLeafDepthMaterial(type, reference, uniforms) {
       uDryingSharpness: uniforms.uDryingSharpness,
       uDryingFrontWidth: uniforms.uDryingFrontWidth
     });
-    shader.vertexShader = leafFallDeclarations + 'uniform float uLeafGrowth;\n' + shader.vertexShader.replace(
+    shader.vertexShader = leafFallDeclarations + 'attribute float leafGrowthRank; uniform float uLeafCoverage; uniform float uLeafGrowth;\n' + shader.vertexShader.replace(
       '#include <begin_vertex>', `#include <begin_vertex>
         if (uLeafGrowth < 0.9999) transformed = leafFallCenter + (transformed - leafFallCenter) * uLeafGrowth;
+        if (uLeafCoverage <= leafGrowthRank) transformed = leafFallCenter;
         float _depthFallAge = leafFallAge();
         transformed = leafFallPositionWithAge(transformed, leafFallRotationWithAge(normal, _depthFallAge), _depthFallAge);`);
   };
@@ -392,6 +394,7 @@ export function createLeafMaterial(type, reference, uniforms) {
       uLeafDetailAtlas: { value: new THREE.Vector4(reference.detail.atlas.size, reference.detail.atlas.tile, reference.detail.atlas.padding, reference.detail.atlas.grid) },
       uYellowChroma: { value: yellowChroma }, uRedChroma: { value: redChroma },
       uLeafGrowth: uniforms.uLeafGrowth || { value: 1.0 },
+      uLeafCoverage: uniforms.uLeafCoverage || { value: 1.0 },
       uSeasonOffset: uniforms.uSeasonOffset, uLeafFallEnabled: uniforms.uLeafFallEnabled, uLeafFallTime: uniforms.uLeafFallTime, uLeafFallSpeed: uniforms.uLeafFallSpeed, uDryingSpeed: uniforms.uDryingSpeed, uYellowPhaseWidth: uniforms.uYellowPhaseWidth, uDryingSharpness: uniforms.uDryingSharpness, uDryingFrontWidth: uniforms.uDryingFrontWidth, uRampThreshold: uniforms.uRampThreshold, uToonSteps: uniforms.uToonSteps,
       uCrownAO: uniforms.uCrownAO,
       uSceneIllumination: uniforms.uSceneIllumination || { value: 1 },
@@ -402,6 +405,7 @@ export function createLeafMaterial(type, reference, uniforms) {
     });
     shader.vertexShader = leafFallDeclarations + `
       attribute vec2 referenceUv; attribute vec4 leafSeasonData;
+      attribute float leafGrowthRank; uniform float uLeafCoverage;
       uniform vec4 uLeafSourceAtlas; uniform vec4 uLeafDetailAtlas;
       uniform float uLeafGrowth; uniform float uSeasonOffset; uniform float uDryingSpeed; uniform float uYellowPhaseWidth; uniform float uDryingSharpness; uniform float uDryingFrontWidth;
       varying vec2 vReferenceUv; varying vec3 vLeafPhase;
@@ -434,6 +438,7 @@ export function createLeafMaterial(type, reference, uniforms) {
         float _autumn = smoothstep(max(0.82, _rs + 0.10), 1.0, _lp);
         vLeafPhase = vec3(smoothstep(0.0, 0.5, _season), _yellow, _autumn);
         if (uLeafGrowth < 0.9999) transformed = leafFallCenter + (transformed - leafFallCenter) * uLeafGrowth;
+        if (uLeafCoverage <= leafGrowthRank) transformed = leafFallCenter;
         transformed = leafFallPositionWithAge(transformed, fallingLeafRotation, _fallAge);`);
     shader.vertexShader = shader.vertexShader.replace('#include <beginnormal_vertex>', `#include <beginnormal_vertex>\nfloat _fallAge = leafFallAge();\nmat3 fallingLeafRotation = leafFallRotationWithAge(objectNormal, _fallAge);\nobjectNormal = fallingLeafRotation * objectNormal;`);
     shader.vertexShader = 'attribute float canopyVisibility; varying float vCanopyVisibility;\n' + shader.vertexShader.replace(

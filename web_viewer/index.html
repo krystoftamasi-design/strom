@@ -1165,8 +1165,8 @@
     import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
     import { PhotolysisSystem } from './vykreslovani/photolysis_system.js?v=gas-reverse-1';
     import { loadBarkReference, loadBarkAttributes, attachBarkAttributes, createBarkMaterial } from './vykreslovani/bark_material.js?v=opt-lut-1';
-    import { loadLeafReference, loadLeafAttributes, attachLeafAttributes, createLeafMaterial, createLeafDepthMaterial, setLeafEdgeTransition } from './vykreslovani/leaf_material.js?v=opt-crop-2';
-    import { LeafControls } from './listy/leaf_controls.js?v=opt-crop-1';
+    import { loadLeafReference, loadLeafAttributes, attachLeafAttributes, createLeafMaterial, createLeafDepthMaterial, setLeafEdgeTransition } from './vykreslovani/leaf_material.js?v=spring-cover-1';
+    import { LeafControls } from './listy/leaf_controls.js?v=spring-cover-1';
     import { crossedSpring, advanceVisibleGrowth } from './listy/leaf_growth_timing.js?v=1';
     import { advanceDroughtLeaves, droughtLeafFall } from './listy/drought_leaf_animation.js?v=1';
     import { loadBranchDryingReference, branchDryingFrontWidth } from './listy/leaf_branch_drying.js?v=3';
@@ -1174,7 +1174,7 @@
     import { createSunClouds } from './vykreslovani/sun_clouds.js?v=2';
     import { createWaterBrushMaterial, addWaterBrushAttributes } from './vykreslovani/water_brush.js?v=highlight-width-3';
     import { TreeEcology, SEASONS, MODEL_MINUTES_PER_SECOND } from './ekologie/tree_ecology.js?v=calendar-water-1';
-    import { createChapters } from './kapitoly/chapters.js?v=sugar-seek-production-1';
+    import { createChapters } from './kapitoly/chapters.js?v=spring-cover-1';
     import { createSeedChapter } from './kapitoly/seed_chapter.js';
     import { createTreeBird } from './vykreslovani/tree_bird.js?v=perch-grid-1';
     import { createSeasonRing } from './obdobi/season_ring.js?v=season-boundary-1';
@@ -1492,6 +1492,7 @@
       uRampThreshold: { value: 1.0 }, // Right CONSTANT stop of Material.003
       uLeafAlphaStrength: { value: 1.0 }, // Shared by leaf color and shadow materials
       uLeafGrowth: { value: 1.0 },
+      uLeafCoverage: { value: 1.0 },
       uCrownAO: { value: 0.45 },
       uAlphaMode: { value: 2.0 }     // Original Blender brush; stochastic pattern is fixed in leaf UV space
     };
@@ -3026,6 +3027,13 @@
     let seasonalGrowthProgress = 0;
     let seasonalCanopyLimit = 1;
 
+    function setSeasonalCanopyLimit(coverage) {
+      if (coverage === seasonalCanopyLimit) return;
+      seasonalCanopyLimit = coverage;
+      shaderUniforms.uLeafCoverage.value = coverage;
+      leafControls.setCanopyCoverage(coverage, shaderUniforms.uDryingSharpness.value);
+    }
+
     function isLeafGrowthSeason() {
       const day = seasonDayForPosition(ecology.seasonPosition);
       return day >= BEECH_CALENDAR.budburst && day < 243;
@@ -3037,12 +3045,12 @@
       springGrowthDue = false;
       seasonalGrowthTarget = 0;
       seasonalGrowthProgress = 0;
-      seasonalCanopyLimit = 0;
+      setSeasonalCanopyLimit(0);
       seasonalNewLeaves = true;
       seasonalRegrowthActive = true;
       leafRegrowthActive = true;
       leafWasDry = false;
-      setLeafRegrowthProgress(0);
+      setLeafRegrowthProgress(1);
       leafControls.resetLeafFall();
     }
 
@@ -3539,6 +3547,7 @@
     document.getElementById('sliderDryingSharpness').addEventListener('input', event => {
       const sharpness = Number(event.target.value);
       shaderUniforms.uDryingSharpness.value = sharpness / 100;
+      leafControls.setCanopyCoverage(seasonalCanopyLimit, sharpness / 100);
       document.getElementById('valDryingSharpness').textContent = sharpness + ' %';
     });
     document.getElementById('sliderDryingSpeed').addEventListener('input', event => {
@@ -4119,7 +4128,7 @@
           springGrowthDue = false;
           seasonalGrowthTarget = 0;
           seasonalGrowthProgress = 0;
-          seasonalCanopyLimit = 1;
+          setSeasonalCanopyLimit(1);
           seasonalNewLeaves = false;
           seasonalRegrowthActive = false;
           seasonalRegrowthPending = false;
@@ -4349,16 +4358,14 @@
       const cloudAmount = sunClouds.update(ecology, delta);
       studioColor.copy(baseSceneBackground).lerp(overcastBackground, cloudAmount * 0.55);
       const growthRequested = seasonalRegrowthActive ? Math.max(0, seasonalGrowthProgress - previousGrowthProgress) : 0;
-      // Growth scales leaf width and height, so the productive area scales quadratically.
-      const canopyFraction = previousGrowthProgress > 0 ? (seasonalCanopyLimit / previousGrowthProgress) ** 2 : seasonalCanopyLimit;
+      const canopyFraction = previousGrowthProgress > 0 ? seasonalCanopyLimit / previousGrowthProgress : seasonalCanopyLimit;
       const growthGranted = chapterApp.updateScene(previousSeason, advanced, growthRequested, canopyFraction);
       if (growthRequested > 0) {
         const fundedGrowth = chapterApp.introduction ? growthRequested : growthGranted;
         if (fundedGrowth === undefined) {
           seasonalGrowthProgress = previousGrowthProgress;
         } else {
-          seasonalCanopyLimit = Math.min(seasonalGrowthProgress, seasonalCanopyLimit + fundedGrowth);
-          setLeafRegrowthProgress(seasonalCanopyLimit);
+          setSeasonalCanopyLimit(Math.min(seasonalGrowthProgress, seasonalCanopyLimit + fundedGrowth));
           if (seasonalGrowthProgress === 1) {
             seasonalRegrowthActive = false;
             leafRegrowthActive = false;
