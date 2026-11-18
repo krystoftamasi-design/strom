@@ -552,8 +552,12 @@ body.scene-night .oxygen-balance-settings { --oxygen-paper: #454749; }
   width: 6px;
   height: clamp(28px, 5.5vh, 56px);
   border-radius: 3px;
-  background: var(--ui-ink);
+  background: #52a52e;
   z-index: 2;
   translate: -50% 0;
   pointer-events: none;
+}
+
+body.scene-night .tree-overlay .season-center-tick {
+  background: #b2ff7c;
 }
