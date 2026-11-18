@@ -59,7 +59,7 @@ Definice spojení
 - Končí dřív uvnitř kořenů.
 - Na jaře proudí ze zásob v kořenech a kmeni k novým listům.
 - V létě proudí z listů do kmene a kořenů.
-- V noci zůstává rozvinutá. Pokud byla stažená už před setměním, postupně se rozvine.
+- V zimě je linka stažená ve dne i v noci. V ostatních obdobích se po setmění postupně rozvine, pokud byla stažená.
 - Stahování se řídí vlastní délkou trasy.
 
 #### Stahování linek

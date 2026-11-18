@@ -3192,9 +3192,11 @@
       if (glucoseFlow?.flowCutoff && glucoseFlow.flowMinDistance < glucoseFlow.flowMaxDistance) {
         // Keep the retraction direction consistent across seasons. Only the
         // animated glucose flow direction changes for spring growth.
-        const sugarTarget = night ? 0 : target;
+        const winter = ecology.season === 'latefall';
+        const sugarTarget = winter ? 1 : night ? 0 : target;
         const sugarStep = delta / 3.6;
-        sugarFlowRetraction += THREE.MathUtils.clamp(sugarTarget - sugarFlowRetraction, -sugarStep, sugarStep);
+        sugarFlowRetraction = winter ? 1
+          : sugarFlowRetraction + THREE.MathUtils.clamp(sugarTarget - sugarFlowRetraction, -sugarStep, sugarStep);
         const sugarRevealing = sugarTarget === 0;
         glucoseFlow.flowRevealBottom.value = sugarRevealing ? 0 : 1;
         glucoseFlow.flowCutoff.value = THREE.MathUtils.lerp(
