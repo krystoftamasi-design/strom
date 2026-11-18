@@ -3126,7 +3126,7 @@
         }
         if (droppedFromDrought || droughtDryProgress > 0.85) {
           leafRegrowthActive = true;
-          setLeafRegrowthProgress(Math.min(0.05, seasonalCanopyLimit));
+          setLeafRegrowthProgress(0.05);
         } else {
           leafWasDry = false;
         }
@@ -3942,7 +3942,6 @@
       valSeason.textContent = `${season.label} · ${Math.round(colour * 100)} %`;
       seasonBtns.forEach(button => button.classList.toggle('active', button.dataset.season === key));
       applySeasonShift(colour);
-      if (!seasonalRegrowthActive && !seasonalRegrowthPending) setLeafRegrowthProgress(seasonalCanopyLimit);
       syncSeasonFoliage();
     }
 
@@ -4317,7 +4316,7 @@
             enabled: shaderUniforms.uLeafFallEnabled.value > 0.5
           }
         );
-        if (seasonalRegrowthPending && (isLeafGrowthSeason() || springGrowthDue)
+        if (seasonalRegrowthPending && springGrowthDue
           && (droughtLeafProgress === 0 || ecology.hydration > 0.95)
           && !leafControls.hasUnfinishedLeafFall(leafFallAnimationTime)) {
           startSeasonalRegrowth();
