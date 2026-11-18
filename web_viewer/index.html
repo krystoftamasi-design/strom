@@ -1174,7 +1174,7 @@
     import { createSunClouds } from './vykreslovani/sun_clouds.js?v=2';
     import { createWaterBrushMaterial, addWaterBrushAttributes } from './vykreslovani/water_brush.js?v=highlight-width-3';
     import { TreeEcology, SEASONS, MODEL_MINUTES_PER_SECOND } from './ekologie/tree_ecology.js?v=calendar-water-1';
-    import { createChapters } from './kapitoly/chapters.js?v=sugar-season-tuning-1';
+    import { createChapters } from './kapitoly/chapters.js?v=sugar-phenology-1';
     import { createSeedChapter } from './kapitoly/seed_chapter.js';
     import { createTreeBird } from './vykreslovani/tree_bird.js?v=perch-grid-1';
     import { createSeasonRing } from './obdobi/season_ring.js?v=season-boundary-1';
@@ -3133,6 +3133,7 @@
           ? advanceVisibleGrowth(leafRegrowthProgress, seasonalGrowthTarget, realDelta, timePlaybackSpeed, getLeafRegrowthSpeed())
           : leafRegrowthProgress + delta * 0.45 * getLeafRegrowthSpeed());
         if (leafRegrowthProgress >= 0.999) {
+          if (seasonalRegrowthActive) setLeafRegrowthProgress(1);
           leafRegrowthActive = false;
           seasonalRegrowthActive = false;
           leafWasDry = false;
@@ -4298,6 +4299,7 @@
       }
       updateWaterAndDrought(modelMinutes, daytimeLight);
       updateSapRetraction(delta);
+      const springWasGrowing = seasonalRegrowthActive;
       if (playbackDelta > 0) updateSeasonalLeaves(playbackDelta, delta);
       if (typeof sapUniforms !== 'undefined') sapUniforms.uTime.value = simulationTime * 0.5;
       updateDayNightScene(now);
@@ -4340,7 +4342,8 @@
       camera.updateMatrixWorld();
       const cloudAmount = sunClouds.update(ecology, delta);
       studioColor.copy(baseSceneBackground).lerp(overcastBackground, cloudAmount * 0.55);
-      chapterApp.updateScene(previousSeason, advanced);
+      const springGrowth = seasonalRegrowthActive || springWasGrowing ? leafRegrowthProgress : undefined;
+      chapterApp.updateScene(previousSeason, advanced, springGrowth);
       updateHighlights(delta);
       seedChapter.update(chapterApp.chapter === 'seeds', ecology.seasonPosition, trunkMesh, seedHighlight, playbackDelta);
       treeBird.update(

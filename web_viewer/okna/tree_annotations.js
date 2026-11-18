@@ -1,7 +1,7 @@
-import { oknaPodleKapitol, kontextoveTexty, pruvodceTranspiraci } from './element_ui_okna_obsah.js?v=compact-details-1';
+import { oknaPodleKapitol, kontextoveTexty, pruvodceTranspiraci } from './element_ui_okna_obsah.js?v=sugar-phenology-1';
 import { veliciny, vstupyVzorce, ohlasitChybuOken, vyhladitHodnotu } from './element_ui_okna_veliciny.js?v=affinity-windows-layout-2';
 import { zkontrolovatOkna } from './element_ui_okna_kontrola.js?v=seeds-1';
-import { createAnnualSugarCurve, createSeasonalSugarBalance, sugarProductionFactor } from '../ekologie/rocni_zasoba_cukru.js?v=sugar-season-tuning-1';
+import { createAnnualSugarCurve, createSeasonalSugarBalance, sugarProductionFactor } from '../ekologie/rocni_zasoba_cukru.js?v=sugar-phenology-1';
 
 // Original embedded assets from ui_new.svg, at their exported stroke widths.
 const strokes = {
@@ -722,8 +722,10 @@ export function createTreeAnnotations({ shell, model, createSeasonControl, setEl
 
   const smoothedValues = new Map();
   let lastSmoothTime = performance.now();
+  let autumnRate = 0;
 
   return {
+    get sugarProduction() { return model.glucoseGramsPerMinute + autumnRate; },
     toggleStockPrototypes() {
       setStockPrototypeMode(stockPrototypes.hidden);
     },
@@ -733,13 +735,27 @@ export function createTreeAnnotations({ shell, model, createSeasonControl, setEl
     advanceSeason(chapter, playbackDelta) {
       return seasonControl.update(chapter, playbackDelta);
     },
-    update(chapter, previousSeason, advanced) {
+    update(chapter, previousSeason, advanced, springGrowth) {
       const now = performance.now();
       const dt = (now - lastSmoothTime) / 1000;
       lastSmoothTime = now;
       const chapterChanged = chapter !== activeChapter;
       activeChapter = chapter;
       if (chapterChanged) syncWindowHover();
+      let reserve;
+      let budburstRate = 0;
+      autumnRate = 0;
+      if (chapter !== 'intro' && model.ready) {
+        if (!sugarBalance || curveCrownArea !== model.crownArea) {
+          const annualCurve = createAnnualSugarCurve(model, prototypeCapacity);
+          sugarBalance = createSeasonalSugarBalance(annualCurve, prototypeCapacity);
+          curveCrownArea = model.crownArea;
+        }
+        ({ reserve, budburstRate, autumnRate } = sugarBalance.update(previousSeason, model.seasonPosition, advanced,
+          sugarProductionFactor(model), springGrowth));
+      }
+      const sugarProduction = this.sugarProduction;
+      const sugarConsumption = model.respirationSugar + budburstRate;
       const clamp01 = value => (Number.isFinite(value) ? Math.max(0, Math.min(1, value)) : 0);
       const balanceValues = windowId => {
         const clean = value => (Number.isFinite(value) && value > 0 ? value : 0);
@@ -747,7 +763,7 @@ export function createTreeAnnotations({ shell, model, createSeasonControl, setEl
         if (windowId === 'voda') return [clean(model.waterInput) * 60, clean(model.waterConsumption) * 60];
         if (windowId === 'kyslik') return [clean(model.oxygenGramsPerMinute), clean(model.respirationOxygen)];
         if (windowId === 'co2') return [clean(model.respirationCO2), clean(model.co2GramsPerMinute)];
-        if (windowId === 'cukry') return [clean(model.glucoseGramsPerMinute), clean(model.respirationSugar)];
+        if (windowId === 'cukry') return [clean(sugarProduction), clean(sugarConsumption)];
         return [0, 0];
       };
       for (const bar of shell.querySelectorAll('.element-ui-values > .element-ui-balance-bar')) {
@@ -793,7 +809,8 @@ export function createTreeAnnotations({ shell, model, createSeasonControl, setEl
       }
       for (const output of shell.querySelectorAll('[data-respiration]')) {
         const key = output.dataset.respiration;
-        const value = vyhladitHodnotu(smoothedValues, `resp:${output.closest(".element-ui-okno").dataset.chapter}:${key}`, model[key], dt);
+        const raw = key === 'respirationSugar' ? sugarConsumption : model[key];
+        const value = vyhladitHodnotu(smoothedValues, `resp:${output.closest(".element-ui-okno").dataset.chapter}:${key}`, raw, dt);
         output.textContent = model.ready && Number.isFinite(value) ? value.toLocaleString('cs-CZ', { minimumFractionDigits: 1, maximumFractionDigits: 1 }) : '—';
       }
       for (const definition of oknaPodleKapitol.seeds) {
@@ -803,13 +820,6 @@ export function createTreeAnnotations({ shell, model, createSeasonControl, setEl
       syncHighlights();
       seasonRow.hidden = chapter === 'intro';
       if (chapter === 'intro' || !model.ready) return;
-      if (!sugarBalance || curveCrownArea !== model.crownArea) {
-        const annualCurve = createAnnualSugarCurve(model, prototypeCapacity);
-        sugarBalance = createSeasonalSugarBalance(annualCurve, prototypeCapacity);
-        curveCrownArea = model.crownArea;
-      }
-      const { reserve, budburstRate, autumnRate } = sugarBalance.update(previousSeason, model.seasonPosition, advanced,
-        sugarProductionFactor(model));
       for (const output of shell.querySelectorAll('[data-stock-source]')) {
         const stock = output.closest('.element-ui-stock');
         if (stock.classList.contains('is-percentage')) {
@@ -842,8 +852,7 @@ export function createTreeAnnotations({ shell, model, createSeasonControl, setEl
       const text = `${stockKg.format(reserve / 1000)} kg`;
       if (sugarStockOutput.value !== text) sugarStockOutput.value = text;
       for (const prototype of prototypes) {
-        prototype.update(model.glucoseGramsPerMinute + autumnRate, model.respirationSugar + budburstRate,
-          prototypeCapacity, reserve);
+        prototype.update(sugarProduction, sugarConsumption, prototypeCapacity, reserve);
       }
     }
   };

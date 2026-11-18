@@ -82,7 +82,7 @@ export const oknaPodleKapitol = {
       zobrazitVzorec: true,
       zobrazitHodnotu: true,
       text: [
-        'Cukry ukládají energii a staví tkáně. Spotřeba ukazuje odhad pro dýchání.',
+        'Při rašení se do spotřeby počítá růst listů. Na podzim se k produkci přičítají cukry přesunuté z listů do zásoby.',
       ],
     },
     {

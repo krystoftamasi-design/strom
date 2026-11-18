@@ -1,6 +1,6 @@
 import { zobrazitHodnotu, vyhladitHodnotu } from '../okna/element_ui_okna_veliciny.js?v=affinity-windows-layout-2';
 import { SEASONS } from '../ekologie/tree_ecology.js?v=stock-percentage-1';
-import { createTreeAnnotations } from '../okna/tree_annotations.js?v=sugar-season-tuning-1';
+import { createTreeAnnotations } from '../okna/tree_annotations.js?v=sugar-phenology-1';
 
 const chapters = [
   ['seasons', 'Období'], ['photosynthesis', 'Fotosyntéza'], ['transpiration', 'Transpirace'],
@@ -292,7 +292,8 @@ export function createChapters({ model, applySeason, setSun, setAzimuth, setVisu
     document.querySelector('.root-diagram').classList.toggle('rotting', model.rootRot >= 0.05);
     for (const output of shell.querySelectorAll('output[data-ziva-velicina]')) {
       const key = output.dataset.zivaVelicina;
-      const smoothed = vyhladitHodnotu(smoothedValues, output.id, model?.[key], dt);
+      const value = key === 'glucoseGramsPerMinute' ? treeAnnotations.sugarProduction : model?.[key];
+      const smoothed = vyhladitHodnotu(smoothedValues, output.id, value, dt);
       output.textContent = zobrazitHodnotu(key, { [key]: smoothed });
     }
     capturedLabel.textContent = `${hourly(model.waterInput)} l/h`;
@@ -306,9 +307,9 @@ export function createChapters({ model, applySeason, setSun, setAzimuth, setVisu
     advanceSeason(playbackDelta) {
       return ready && treeAnnotations.advanceSeason(chapter, playbackDelta);
     },
-    updateScene(previousSeason = model.seasonPosition, advanced = false) {
+    updateScene(previousSeason = model.seasonPosition, advanced = false, springGrowth) {
       if (!ready) return;
-      treeAnnotations.update(chapter, previousSeason, advanced);
+      treeAnnotations.update(chapter, previousSeason, advanced, springGrowth);
       // Refresh the current model after evaluation, even while its clock is paused.
       const now = performance.now();
       if (now - lastUI >= 50) { render(); lastUI = now; }
