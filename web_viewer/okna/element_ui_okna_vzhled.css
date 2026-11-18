@@ -23,6 +23,7 @@
   --ui-text-style: 300 var(--ui-text-size)/1.35 var(--ui-font-text);
   --ui-formula-size: clamp(8px, .6vw, 12px);
   --flow-window-width: clamp(144px, 13vw, 248px);
+  --flow-gap: clamp(16px, 2vw, 30px);
 }
 
 body.scene-night .tree-overlay {
@@ -1166,7 +1167,6 @@ body.scene-night .chapter-context-guide .transpiration-legend {
 }
 
 .tree-overlay .photosynthesis-windows {
-  --flow-gap: clamp(16px, 2vw, 30px);
   --flow-columns-gap: var(--flow-gap);
   --flow-detail-width: clamp(145px, 15vw, 280px);
   position: absolute;
@@ -1227,10 +1227,6 @@ body.scene-night .chapter-context-guide .transpiration-legend {
   min-height: 0;
   padding: 0;
   text-align: left;
-}
-
-.tree-overlay .element-ui-okno[data-chapter="photosynthesis"][data-side="right"]:is([data-window-id="svetlo"], [data-window-id="voda"]) {
-  width: var(--flow-window-width);
 }
 
 .tree-overlay .element-ui-okno[data-chapter="photosynthesis"][data-side="right"] .element-ui-readout {
@@ -1326,8 +1322,13 @@ body.scene-night .tree-overlay .element-ui-flow-window {
   align-self: stretch;
 }
 
-.tree-overlay .element-ui-okno[data-chapter="photosynthesis"][data-side="right"][data-window-id="voda"]:has(.element-ui-stock) {
+.tree-overlay .element-ui-okno.element-ui-flow-window:has(.element-ui-stock) {
   width: calc(2 * var(--flow-window-width) + var(--flow-gap));
+}
+
+.tree-overlay .element-ui-okno[data-chapter="photosynthesis"]:has(.element-ui-stock) {
+  grid-column: 1 / -1;
+  justify-self: start;
 }
 
 .tree-overlay .element-ui-okno[data-chapter="photosynthesis"][data-side="right"] .annotation-reveal {

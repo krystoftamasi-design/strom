@@ -77,6 +77,7 @@ export const oknaPodleKapitol = {
       tema: 'sugar',
       strana: 'right',
       popis: 'Tvorba cukrů ≈ glukóza',
+      zasoba: { zdroj: 'cukry', jednotka: 'kg' },
       vypocet: 'glucoseGramsPerMinute',
       zobrazitVzorec: true,
       zobrazitHodnotu: true,

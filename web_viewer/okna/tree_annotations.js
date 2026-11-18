@@ -1,4 +1,4 @@
-import { oknaPodleKapitol, kontextoveTexty, pruvodceTranspiraci } from './element_ui_okna_obsah.js?v=affinity-stock-1';
+import { oknaPodleKapitol, kontextoveTexty, pruvodceTranspiraci } from './element_ui_okna_obsah.js?v=sugar-stock-1';
 import { veliciny, vstupyVzorce, ohlasitChybuOken, vyhladitHodnotu } from './element_ui_okna_veliciny.js?v=affinity-windows-layout-2';
 import { zkontrolovatOkna } from './element_ui_okna_kontrola.js?v=seeds-1';
 import { createAnnualSugarCurve, createSeasonalSugarBalance, sugarProductionFactor } from '../ekologie/rocni_zasoba_cukru.js?v=4';
@@ -164,7 +164,7 @@ function createElementUiOkno({ panel, body, reveal, toggle, model, definition })
       footer.replaceChildren(topMetric, bar, bottomMetric);
       panel.classList.add('element-ui-flow-window');
       if (definition.zasoba) {
-        const { hodnota, maximum, jednotka } = definition.zasoba;
+        const { zdroj = 'model', hodnota, maximum, jednotka } = definition.zasoba;
         const stock = document.createElement('div');
         stock.className = 'element-ui-stock';
         const label = document.createElement('span');
@@ -175,8 +175,11 @@ function createElementUiOkno({ panel, body, reveal, toggle, model, definition })
         metric.className = 'chapter-metric';
         const value = document.createElement('strong');
         const output = document.createElement('output');
-        output.dataset.stockValue = hodnota;
-        output.dataset.stockMaximum = maximum;
+        output.dataset.stockSource = zdroj;
+        if (zdroj === 'model') {
+          output.dataset.stockValue = hodnota;
+          output.dataset.stockMaximum = maximum;
+        }
         output.setAttribute('aria-label', `Zásoba – ${definition.nadpis}`);
         output.textContent = '—';
         const unit = document.createElement('span');
@@ -717,16 +720,6 @@ export function createTreeAnnotations({ shell, model, createSeasonControl, setEl
           slider.disabled = !model.ready;
         }
       }
-      for (const output of shell.querySelectorAll('[data-stock-value]')) {
-        const value = model[output.dataset.stockValue];
-        const maximum = model[output.dataset.stockMaximum];
-        const available = model.ready && Number.isFinite(value) && Number.isFinite(maximum) && maximum > 0;
-        const displayed = available ? stockNumber.format(value) : '—';
-        if (output.value !== displayed) output.value = displayed;
-        const stock = output.closest('.element-ui-stock');
-        stock.classList.toggle('is-unavailable', !available);
-        stock.style.setProperty('--balance-top-ratio', String(available ? clamp01(value / maximum) : 0));
-      }
       for (const output of shell.querySelectorAll('[data-respiration]')) {
         const key = output.dataset.respiration;
         const value = vyhladitHodnotu(smoothedValues, `resp:${output.closest(".element-ui-okno").dataset.chapter}:${key}`, model[key], dt);
@@ -746,6 +739,18 @@ export function createTreeAnnotations({ shell, model, createSeasonControl, setEl
       }
       const { reserve, budburstRate, autumnRate } = sugarBalance.update(previousSeason, model.seasonPosition, advanced,
         sugarProductionFactor(model));
+      for (const output of shell.querySelectorAll('[data-stock-source]')) {
+        const isSugar = output.dataset.stockSource === 'cukry';
+        const value = isSugar ? reserve / 1000 : model[output.dataset.stockValue];
+        const maximum = isSugar ? prototypeCapacity / 1000 : model[output.dataset.stockMaximum];
+        const available = Number.isFinite(value) && Number.isFinite(maximum) && maximum > 0;
+        const format = isSugar ? stockKg : stockNumber;
+        const displayed = available ? format.format(value) : '—';
+        if (output.value !== displayed) output.value = displayed;
+        const stock = output.closest('.element-ui-stock');
+        stock.classList.toggle('is-unavailable', !available);
+        stock.style.setProperty('--balance-top-ratio', String(available ? clamp01(value / maximum) : 0));
+      }
       if (chapter !== 'prototype') return;
       const text = `${stockKg.format(reserve / 1000)} kg`;
       if (sugarStockOutput.value !== text) sugarStockOutput.value = text;

@@ -54,7 +54,7 @@ history:
 
 - Aktuální vzor oken: Transpirace; původní grafický podklad: [podklad rozhraní](../../web_assets/ui_from_af/Untitled.svg), přibližně 2020 × 1143 px; procenta se vztahují k ploše rozhraní.
 - Transpirace má vlevo průvodce (32 % výšky) a hlavní okno dole; tematická okna jsou vpravo a střed zůstává volný pro strom.
-- Fotosyntéza má čtyři řádky vpravo od stromu. Světlo, O₂, Cukry a Voda začínají na levé hraně skupiny. CO₂ je vedle O₂ a zásoba vedle Vody. Horní odstup je 7 %, dolní 6 % výšky, pravý odstup přibližně 3 % a mezera mezi sloupci 16 až 30 px. Šířka jednoho sloupce je 13 % šířky obrazovky s mezemi 144 a 248 px. Na úzkých displejích má sloupec nejvýše 42 % šířky displeje. Velmi nízká obrazovka umožní svislý posuv.
+- Fotosyntéza má čtyři řádky vpravo od stromu. Světlo, O₂, Cukry a Voda začínají na levé hraně skupiny. CO₂ je vedle O₂, Cukry a Voda mají každý zásobu v pravém sloupci. Horní odstup je 7 %, dolní 6 % výšky, pravý odstup přibližně 3 % a mezera mezi sloupci 16 až 30 px. Šířka jednoho sloupce je 13 % šířky obrazovky s mezemi 144 a 248 px. Na úzkých displejích má sloupec nejvýše 42 % šířky displeje. Velmi nízká obrazovka umožní svislý posuv.
 - Transpirace: vpravo shora Teplota, Chlazení a Příjem vody; první sloupec se přizpůsobuje nezalomenému nadpisu a tlačítku.
 - Hlavní okno Transpirace: levý okraj 6 %, horní okraj 65 %, šířka 55 %, výška 21 %, nejméně 140 px.
 - Pravá okna Transpirace: levý okraj 68 %, šířka 29 %, horní okraje 28 / 48 / 68 %, výška 14 %, nejméně 85 px.

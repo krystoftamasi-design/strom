@@ -37,11 +37,11 @@ history:
 - Okna používají [společnou šablonu](vzhled_oken.md#šablona-jednoho-okna-podle-transpirace) ve variantě s vodorovnými pruhy. Kliknutí v bloku údajů přepne detail. Posuvníky světla a vody se ovládají samostatně myší, dotykem nebo klávesnicí. Stav detailu se zachovává při změně kapitoly.
 - Fotosyntéza je samostatný nadpis kapitoly bez okna. Tematická okna jsou vpravo a jejich detaily jsou výchozí zavřené. Polohu otevřeného detailu určuje [vzhled oken](vzhled_oken.md#obecný-obsah).
 - Vzorec nebo přehled vstupů se u oken Fotosyntézy zobrazuje až v otevřeném detailu.
-- Okna Světlo, O₂, CO₂, Cukry a Voda obsahují dva údaje s ukazateli podle [popisu vzhledu](vzhled_oken.md). Neznámá hodnota se označí „Zatím nemáme hodnotu“ bez vyplnění ukazatele.
+- Okna Světlo, O₂, CO₂, Cukry a Voda obsahují dva údaje o tocích nebo dostupnosti podle [popisu vzhledu](vzhled_oken.md). Cukry a Voda navíc ukazují zásobu. Neznámá hodnota se označí „Zatím nemáme hodnotu“ bez vyplnění ukazatele.
 - Ukazatel dostupnosti vody nastavuje přísun ke kořenům v l/h. Automatický přísun činí 90 % sezónní kapacity příjmu. Ruční nastavení přetrvá při automatickém běhu. Ruční změna období obnoví automatický přísun. Příjem stromu omezuje sezónní kapacita a stav kořenů.
 - Ukazatel dostupnosti světla nastavuje přes den intenzitu v rozsahu 0 až 100 %. Ovlivňuje tvorbu cukrů i emisi fotonů. V noci je dostupnost nulová a posuvník se zamkne. Nastavená hodnota se obnoví po východu slunce. Ruční změna období vrátí automatickou dostupnost podle slunce.
 - Ukazatele fotosyntetických toků používají maximum modelu pro plnou korunu a plnou účinnost; ukazatel spotřeby vody používá základní odpar včetně udržovací spotřeby. Rozsah dostupnosti vody sahá ke dvojnásobku sezónní kapacity kořenů, případně k aktuálně nastavenému přísunu, je-li vyšší.
-- Dýchání je orientační výukový odhad celého stromu, probíhá ve dne i v noci a jeho ukazatele používají stejné škály jako odpovídající fotosyntetické toky. Při 20 °C je zvolená spotřeba cukru 15 % teoretické produkce plné koruny; každých 10 °C ji zdvojnásobí nebo sníží na polovinu, výpočet omezuje teplotu na −10 až 40 °C. Hodnoty O₂ a CO₂ vycházejí ze vztahu glukóza + 6 O₂ → 6 CO₂ + voda. Jde o zvolený příklad, nikoli kalibraci nebo měření buku. Model zatím nesleduje zásobu cukrů ani jejich spotřebu na růst, takže dýchání zásobou neomezuje. Teplotní závislost udržovacího dýchání je inspirována [modelem GO+](https://gmd.copernicus.org/articles/13/5973/2020/).
+- Dýchání je orientační výukový odhad celého stromu, probíhá ve dne i v noci a jeho ukazatele používají stejné škály jako odpovídající fotosyntetické toky. Při 20 °C je zvolená spotřeba cukru 15 % teoretické produkce plné koruny; každých 10 °C ji zdvojnásobí nebo sníží na polovinu, výpočet omezuje teplotu na −10 až 40 °C. Hodnoty O₂ a CO₂ vycházejí ze vztahu glukóza + 6 O₂ → 6 CO₂ + voda. Jde o zvolený příklad, nikoli kalibraci nebo měření buku. Okamžitý odhad dýchání se počítá nezávisle na velikosti zásoby cukrů. Teplotní závislost udržovacího dýchání je inspirována [modelem GO+](https://gmd.copernicus.org/articles/13/5973/2020/).
 
 #### Světlo
 
@@ -92,6 +92,7 @@ history:
 - Detailní text: „Cukry ukládají energii a slouží jako stavební materiál. Spotřeba je orientační odhad cukrů využitých při dýchání, bez zahrnutí růstu.“
 - Hodnota: `glucoseGramsPerMinute`, jednotka `g/min`, jedno desetinné místo.
 - Spotřeba cukrů: orientační odhad dýchání v `g/min`.
+- Zásoba: aktuální výukový odhad v kilogramech podle [společné bilance cukrů](#kapitola-prototyp). Značka Z ukazuje podíl na nastavené kapacitě.
 - Vstupy výpočtu: zapnuté.
 - Výsledná hodnota: zapnutá.
 - Výchozí stav detailu: zavřený.
