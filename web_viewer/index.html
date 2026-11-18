@@ -1174,7 +1174,7 @@
     import { createSunClouds } from './vykreslovani/sun_clouds.js?v=2';
     import { createWaterBrushMaterial, addWaterBrushAttributes } from './vykreslovani/water_brush.js?v=highlight-width-3';
     import { TreeEcology, SEASONS, MODEL_MINUTES_PER_SECOND } from './ekologie/tree_ecology.js?v=calendar-water-1';
-    import { createChapters } from './kapitoly/chapters.js?v=stock-percentage-bar-1';
+    import { createChapters } from './kapitoly/chapters.js?v=sugar-season-tuning-1';
     import { createSeedChapter } from './kapitoly/seed_chapter.js';
     import { createTreeBird } from './vykreslovani/tree_bird.js?v=perch-grid-1';
     import { createSeasonRing } from './obdobi/season_ring.js?v=season-boundary-1';
@@ -3715,8 +3715,11 @@
       btnTimePause.title = pauseLabel;
       btnTimePause.setAttribute('aria-pressed', String(timePaused));
       for (const [button, speed] of timeSpeedButtons) {
-        button.setAttribute('aria-pressed', String(!timePaused && timePlaybackSpeed === speed));
+        button.setAttribute('aria-pressed', String(!timePaused && (timePlaybackSpeed === speed || (speed === 2 && timePlaybackSpeed === 4))));
       }
+      const fasterLabel = timePlaybackSpeed === 4 && !timePaused ? 'Zrychlení 4×' : 'Zrychlení 2×';
+      timeSpeedButtons[1][0].setAttribute('aria-label', fasterLabel);
+      timeSpeedButtons[1][0].title = fasterLabel;
     }
     btnTimePause.addEventListener('click', () => {
       timePaused = !timePaused;
@@ -3724,7 +3727,8 @@
     });
     for (const [button, speed] of timeSpeedButtons) {
       button.addEventListener('click', () => {
-        timePlaybackSpeed = !timePaused && timePlaybackSpeed === speed ? 1 : speed;
+        timePlaybackSpeed = !timePaused && speed === 2 && timePlaybackSpeed === 2 ? 4
+          : !timePaused && (timePlaybackSpeed === speed || (speed === 2 && timePlaybackSpeed === 4)) ? 1 : speed;
         timePaused = false;
         syncTimePlaybackControls();
       });

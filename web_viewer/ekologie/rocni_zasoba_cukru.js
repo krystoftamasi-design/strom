@@ -6,8 +6,8 @@ import {
 
 const daysPerYear = 365;
 const minutesPerDay = 1440;
-const budburstBudget = 650;
-const leafShare = 0.05;
+const budburstBudget = 350;
+const leafShare = 0.10;
 // Teaching calibration for the mobilisable store. Live photosynthesis and respiration stay unchanged.
 const surplusToStorage = 0.12;
 const dormantDrawShare = 0.53;
