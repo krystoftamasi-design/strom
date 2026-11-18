@@ -3172,7 +3172,7 @@
       const target = ecology.activity > 0.0001 && !sapLeafRedRetractionActive ? 0 : 1;
       const night = sunElevationDeg <= 0;
       const nightRetraction = target === 1 && night;
-      const step = delta / (nightRetraction ? 1.2 : 3.6);
+      const step = delta / (nightRetraction || target === 0 ? 1.2 : 3.6);
       sapFlowRetraction += THREE.MathUtils.clamp(target - sapFlowRetraction, -step, step);
       const revealingFromBottom = target === 0;
       sapUniforms.uFlowRevealBottom.value = revealingFromBottom ? 1 : 0;

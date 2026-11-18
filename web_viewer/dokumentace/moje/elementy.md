@@ -66,7 +66,7 @@ Definice spojení
 
 - Přepnutí kapitoly neresetuje stažení ani stav červenání listů; skryté linky se při návratu krátce neobnovují na plnou délku.
 - Se sluncem na obzoru nebo pod ním se vodní linka plně stáhne za přibližně 1,2 sekundy animace.
-- Ranní rozvinutí a ostatní stahování trvá přibližně 3,6 sekundy animace.
+- Ranní rozvinutí trvá přibližně 1,2 sekundy animace. Ostatní stahování trvá přibližně 3,6 sekundy animace.
 
 #### Společná rychlost linek
 
