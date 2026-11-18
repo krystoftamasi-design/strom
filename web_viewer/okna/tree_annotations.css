@@ -307,29 +307,11 @@ body.scene-night .tree-overlay .photosynthesis-stock-prototypes:not([hidden]) {
   box-shadow: none;
 }
 
-.tree-overlay .element-ui-stock.is-percentage > :not(.photosynthesis-stock-percentage),
 .tree-overlay .element-ui-balance-slider[hidden] {
   display: none;
 }
 
-.tree-overlay .photosynthesis-stock-percentage:not([hidden]) {
-  display: grid;
-  grid-template-rows: subgrid;
-  grid-row: 1 / -1;
-  align-items: center;
-  color: var(--ui-ink);
-  font: var(--ui-text-style);
-}
-
-.tree-overlay .photosynthesis-stock-percentage input {
-  box-sizing: border-box;
-  width: 100%;
-  margin: 0;
-  accent-color: var(--ui-topic);
-  pointer-events: auto;
-}
-
-.tree-overlay .photosynthesis-stock-percentage input:focus-visible {
+.tree-overlay .photosynthesis-stock-percentage:focus-visible {
   outline: 2px solid currentColor;
   outline-offset: 3px;
 }

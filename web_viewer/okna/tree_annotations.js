@@ -671,22 +671,26 @@ export function createTreeAnnotations({ shell, model, createSeasonControl, setEl
     stock.querySelector('.element-ui-balance-bar').replaceWith(circle);
     stockPrototypes.append(stock);
 
-    const control = document.createElement('label');
-    control.className = 'photosynthesis-stock-percentage';
-    control.hidden = true;
-    control.innerHTML = '<span></span><input type="range" min="0" max="100" value="100"><output>100 %</output>';
-    control.firstElementChild.textContent = id === 'cukry' ? 'produkce' : 'dostupnost';
-    const input = control.querySelector('input');
+    const input = document.createElement('input');
+    input.type = 'range';
+    input.min = '0';
+    input.max = '100';
+    input.value = '100';
+    input.className = 'element-ui-balance-slider photosynthesis-stock-percentage';
+    input.hidden = true;
     input.setAttribute('aria-label', setting);
     input.setAttribute('aria-valuetext', '100 %');
+    const labelText = barStock.querySelector('.element-ui-stock-label span');
+    const stockOutput = barStock.querySelector('[data-stock-source]');
+    const unit = barStock.querySelector('.element-ui-unit');
+    const trend = barStock.querySelector('.element-ui-stock-trend');
     input.addEventListener('input', () => {
-      const percentage = `${input.value} %`;
-      control.querySelector('output').value = percentage;
-      input.setAttribute('aria-valuetext', percentage);
+      input.setAttribute('aria-valuetext', `${input.value} %`);
+      barStock.style.setProperty('--balance-top-ratio', String(input.valueAsNumber / 100));
       applyStockPercentages();
     });
-    barStock.append(control);
-    percentageControls.set(id, { barStock, control, input });
+    barStock.querySelector('.element-ui-balance-bar').append(input);
+    percentageControls.set(id, { barStock, input, labelText, stockOutput, unit, trend });
   }
   shell.querySelector('.time-playback-panel').after(stockPrototypes);
   const waterSlider = shell.querySelector('[data-chapter="photosynthesis"][data-window-id="voda"] .element-ui-balance-slider');
@@ -702,9 +706,16 @@ export function createTreeAnnotations({ shell, model, createSeasonControl, setEl
     if (stockPrototypes.hidden === !enabled) return;
     stockPrototypes.hidden = !enabled;
     waterSlider.hidden = enabled;
-    for (const { barStock, control } of percentageControls.values()) {
+    for (const [id, { barStock, input, labelText, stockOutput, unit, trend }] of percentageControls) {
       barStock.classList.toggle('is-percentage', enabled);
-      control.hidden = !enabled;
+      input.hidden = !enabled;
+      labelText.textContent = enabled ? (id === 'cukry' ? 'produkce' : 'dostupnost') : 'zásoba';
+      unit.textContent = enabled ? '%' : (id === 'cukry' ? 'kg' : 'l');
+      if (enabled) {
+        trend.hidden = true;
+        stockOutput.value = input.value;
+        barStock.style.setProperty('--balance-top-ratio', String(input.valueAsNumber / 100));
+      }
     }
     applyStockPercentages();
   }
@@ -800,13 +811,18 @@ export function createTreeAnnotations({ shell, model, createSeasonControl, setEl
       const { reserve, budburstRate, autumnRate } = sugarBalance.update(previousSeason, model.seasonPosition, advanced,
         sugarProductionFactor(model));
       for (const output of shell.querySelectorAll('[data-stock-source]')) {
+        const stock = output.closest('.element-ui-stock');
+        if (stock.classList.contains('is-percentage')) {
+          const input = stock.querySelector('.photosynthesis-stock-percentage');
+          output.value = input.value;
+          continue;
+        }
         const isSugar = output.dataset.stockSource === 'cukry';
         const value = isSugar ? reserve / 1000 : model[output.dataset.stockValue];
         const maximum = isSugar ? prototypeCapacity / 1000 : model[output.dataset.stockMaximum];
         const available = Number.isFinite(value) && Number.isFinite(maximum) && maximum > 0;
         const displayed = available ? stockNumber.format(value) : '—';
         if (output.value !== displayed) output.value = displayed;
-        const stock = output.closest('.element-ui-stock');
         const trend = stock.querySelector('.element-ui-stock-trend');
         const previous = previousStocks.get(output);
         if (!available || previous === undefined) {

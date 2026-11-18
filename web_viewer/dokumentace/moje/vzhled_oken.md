@@ -46,7 +46,7 @@ history:
 - Ve Fotosyntéze tvoří tlačítko původní štětcový kroužek z Affinity, široký 19 až 25 px, se symbolem +/− v průhledném středu. Otvor kroužku míří od detailu. Klikací plocha je 28 až 35 px a kroužek se při najetí na okno zesvětlí.
 - Konkrétní texty, hodnoty, ovládání a výchozí otevření detailů určuje [Obsah oken](okna.md).
 
-- Doplňkové kruhové ukazatele cukrů a vody jsou ve Fotosyntéze vedle sebe pod ovládáním času. Výška hladké růžové či modré výplně odpovídá podílu na kapacitě. Kruhy mají stálou polohu a žádný obrys. Černá šipka uprostřed míří nahoru při růstu a dolů při poklesu. Množství s jednotkou je vedle kruhu ve výšce jeho středu. Text je na světlém pozadí černý. Při zapnutí režimu se v místě vodorovných pruhů zobrazí procentuální posuvníky. Přepnutí popisují [Ovládací prvky](prvky.md).
+- Doplňkové kruhové ukazatele cukrů a vody jsou ve Fotosyntéze vedle sebe pod ovládáním času. Výška hladké růžové či modré výplně odpovídá podílu na kapacitě. Kruhy mají stálou polohu a žádný obrys. Černá šipka uprostřed míří nahoru při růstu a dolů při poklesu. Množství s jednotkou je vedle kruhu ve výšce jeho středu. Text je na světlém pozadí černý. V režimu kruhů se vodorovné pruhy zásob ovládají jako procentuální posuvníky při zachování jejich vzhledu. Přepnutí popisují [Ovládací prvky](prvky.md).
 
 ### Rozložení
 
