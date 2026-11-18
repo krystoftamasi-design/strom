@@ -67,7 +67,7 @@ function dailySugarFlows(tree) {
   });
 }
 
-function applyDay(start, leafStart, day, flow, capacity, fraction = 1, production = flow.production, growth = flow.growth * fraction, paidGrowth = 0) {
+function applyDay(start, leafStart, day, flow, capacity, fraction = 1, production = flow.production, growth = flow.growth * fraction, paidGrowth = 0, fromFraction = 0) {
   const net = production - flow.respiration * fraction;
   const dormant = day < BEECH_CALENDAR.fullLeaf || day >= BEECH_CALENDAR.leafFallStart;
   const balance = net >= 0 ? surplusToStorage * net : net * (dormant ? dormantDrawShare : 1);
@@ -75,7 +75,7 @@ function applyDay(start, leafStart, day, flow, capacity, fraction = 1, productio
   const toLeaves = day < BEECH_CALENDAR.leafFallStart
     ? Math.min(leafShare * Math.max(0, balance - budburstUse), leafShare * capacity - leafStart)
     : 0;
-  const autumnReturn = leafStart * flow.fallShare * fraction;
+  const autumnReturn = leafStart * flow.fallShare * fraction / (1 - flow.fallShare * fromFraction);
   const storageLimit = day < BEECH_CALENDAR.leafFallStart ? capacity * (1 - leafShare)
     : capacity - leafStart;
   const beforeReturn = Math.min(storageLimit, Math.max(0, start + balance - budburstUse - toLeaves));
@@ -127,28 +127,56 @@ export function sugarProductionFactor(tree) {
 
 export function createSeasonalSugarBalance(curve, capacity) {
   let cursor;
+  let fromFraction;
   let start;
   let leafStart;
   let production;
   let appliedGrowth;
   let budburstRate = 0;
+  let seekOffset;
+
+  function referenceAt(date) {
+    const day = dayOfYear(Math.floor(date));
+    const { start, leafStart, flow, budburstUse } = curve[day];
+    const fraction = dayFraction(date);
+    const growth = budburstUse * fraction;
+    return applyDay(start, leafStart, day, flow, capacity, fraction, flow.production * fraction, growth, growth);
+  }
+
+  function currentAt(day, fraction) {
+    return applyDay(start, leafStart, day, curve[day].flow, capacity,
+      fraction - fromFraction, production, appliedGrowth, appliedGrowth, fromFraction);
+  }
 
   return {
     update(from, to, automatic, factor, growthRequested = 0) {
       const previous = calendarDate(from);
       const date = calendarDate(to);
-      if (cursor === undefined || cursor !== previous || (!automatic && date !== previous) || date < previous) {
-        const reference = curve[dayOfYear(Math.floor(date))];
+      const movedManually = cursor !== undefined && cursor !== date
+        && (!automatic || cursor !== previous || date < previous);
+      if (cursor === undefined || movedManually) {
+        if (movedManually && !seekOffset) {
+          const actual = currentAt(dayOfYear(Math.floor(cursor)), dayFraction(cursor));
+          const reference = referenceAt(cursor);
+          // Keep the playback deviation across successive drag positions, including at the limits.
+          seekOffset = { reserve: actual.reserve - reference.reserve, inLeaves: actual.inLeaves - reference.inLeaves };
+        }
+        const day = dayOfYear(Math.floor(date));
+        const reference = referenceAt(date);
+        const leafLimit = day < BEECH_CALENDAR.leafFallStart ? leafShare * capacity
+          : leafShare * capacity * (1 - beechLeafFallProgress(to));
+        leafStart = Math.max(0, Math.min(leafLimit, reference.inLeaves + (seekOffset?.inLeaves ?? 0)));
+        const storageLimit = day < BEECH_CALENDAR.leafFallStart ? capacity * (1 - leafShare) : capacity - leafStart;
+        start = Math.max(0, Math.min(storageLimit, reference.reserve + (seekOffset?.reserve ?? 0)));
         cursor = date;
-        start = reference.start;
-        leafStart = reference.leafStart;
-        production = reference.flow.production * dayFraction(date);
-        appliedGrowth = reference.budburstUse * dayFraction(date);
-        budburstRate = reference.budburstUse / minutesPerCalendarDay(dayOfYear(Math.floor(date)));
+        fromFraction = dayFraction(date);
+        production = 0;
+        appliedGrowth = 0;
+        budburstRate = curve[day].budburstUse / minutesPerCalendarDay(day);
       }
 
-      // Seeking uses the reference curve. Only elapsed playback adds a new growth charge.
       const elapsedDays = date - cursor;
+      if (elapsedDays > 0) seekOffset = undefined;
       const elapsedMinutes = elapsedDays > 0 ? (monthClockForSeason(to) - monthClockForSeason(from)) * minutesPerDay : 0;
       let growthUsed = 0;
       while (cursor < date) {
@@ -158,12 +186,14 @@ export function createSeasonalSugarBalance(curve, capacity) {
         const end = Math.min(dayStart + 1, date);
         production += flow.production * factor * (end - cursor);
         const growth = appliedGrowth + budburstBudget * growthRequested * (end - cursor) / elapsedDays;
-        const current = applyDay(start, leafStart, day, flow, capacity, end - dayStart, production, growth, appliedGrowth);
+        const current = applyDay(start, leafStart, day, flow, capacity,
+          end - dayStart - fromFraction, production, growth, appliedGrowth, fromFraction);
         growthUsed += current.budburstUse - appliedGrowth;
         appliedGrowth = current.budburstUse;
         if (end === dayStart + 1) {
           start = current.reserve;
           leafStart = current.inLeaves;
+          fromFraction = 0;
           production = 0;
           appliedGrowth = 0;
         }
@@ -173,12 +203,12 @@ export function createSeasonalSugarBalance(curve, capacity) {
 
       const day = dayOfYear(Math.floor(date));
       const { flow } = curve[day];
-      const current = applyDay(start, leafStart, day, flow, capacity, dayFraction(date), production, appliedGrowth, appliedGrowth);
+      const current = currentAt(day, dayFraction(date));
       return {
         reserve: current.reserve,
         budburstRate,
         growthGranted: elapsedDays > 0 ? growthUsed / budburstBudget : undefined,
-        autumnRate: leafStart * flow.fallShare / minutesPerCalendarDay(day),
+        autumnRate: leafStart * flow.fallShare / ((1 - flow.fallShare * fromFraction) * minutesPerCalendarDay(day)),
       };
     },
   };
