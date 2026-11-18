@@ -1379,7 +1379,8 @@ body[data-chapter="photosynthesis"] .season-date-card .time-playback-panel {
   position: absolute;
   top: calc(clamp(18px, 1.6vw, 30px) * 1.2 + 8px);
   left: 0;
-  width: max-content;
+  width: clamp(200px, 16.25vw, 300px);
+  justify-content: space-between;
 }
 
 body[data-chapter="photosynthesis"] .season-date-card .time-playback-buttons button {
