@@ -22,16 +22,16 @@ const position = seasonForMonthClock(clock);
 animated.update(position, position, false, 1);
 withoutGrowth.update(position, position, false, 1);
 let charged = 0;
-for (const [nextClock, visibleGrowth, growing] of [
+for (const [nextClock, growthRequested, growing] of [
   [3.9, 0, false],
   [4.05, 0, false],
   [4.20, 0.4, true],
-  [4.35, 1, true],
+  [4.35, 0.6, true],
   [4.40, undefined, false],
 ]) {
   const from = seasonForMonthClock(clock);
   const to = seasonForMonthClock(nextClock);
-  const live = animated.update(from, to, true, 1, visibleGrowth);
+  const live = animated.update(from, to, true, 1, growthRequested);
   const control = withoutGrowth.update(from, to, true, 1);
   assert.equal(live.budburstRate > 0, growing);
   charged += live.budburstRate * (nextClock - clock) * 1440;
@@ -40,4 +40,23 @@ for (const [nextClock, visibleGrowth, growing] of [
   clock = nextClock;
 }
 assert.ok(Math.abs(charged - 350) < 1e-6);
-console.log('PASS: seasonal sugar follows visible spring growth and gradual autumn leaf fall.');
+
+const depletedCurve = curve.map(day => ({
+  ...day,
+  start: 140,
+  leafStart: 0,
+  budburstUse: 0,
+  flow: { ...day.flow, production: 0, respiration: 0 },
+}));
+const depleted = createSeasonalSugarBalance(depletedCurve, capacity);
+const budburst = seasonForMonthClock(4);
+const firstGrowth = seasonForMonthClock(4.01);
+const laterGrowth = seasonForMonthClock(4.02);
+depleted.update(budburst, budburst, false, 1);
+const partial = depleted.update(budburst, firstGrowth, true, 1, 0.5);
+assert.equal(partial.growthGranted, 0.4, 'Only 140 g of the 350 g spring budget can be spent');
+assert.equal(partial.reserve, 0);
+const exhausted = depleted.update(firstGrowth, laterGrowth, true, 1, 0.5);
+assert.equal(exhausted.growthGranted, 0, 'Further growth stops when the available reserve is empty');
+assert.equal(exhausted.budburstRate, 0, 'Previously funded growth is not charged again');
+console.log('PASS: spring growth is limited by sugar reserves and autumn leaf fall returns sugar gradually.');

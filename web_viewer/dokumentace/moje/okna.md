@@ -92,6 +92,7 @@ history:
 - Detailní text: „Při rašení se do spotřeby počítá růst listů. Na podzim se k produkci přičítají cukry přesunuté z listů do zásoby.“
 - Produkce a spotřeba se zobrazují v `g/min` na jedno desetinné místo. Sezónní přírůstky vycházejí ze [společné bilance cukrů](#kapitola-prototyp).
 - Zásoba: aktuální výukový odhad v kilogramech podle [společné bilance cukrů](#kapitola-prototyp). Značka Z ukazuje podíl na nastavené kapacitě.
+- Při automatickém běhu roku určuje dostupná zásoba, kolik jarního růstu může strom pokrýt. Když cukry nestačí, doroste menší listová plocha, která sníží tvorbu cukrů. Zmenšená plocha přetrvá do dalšího rašení. Jde o výukové znázornění oslabení.
 - Vstupy výpočtu: zapnuté.
 - Výsledná hodnota: zapnutá.
 - Výchozí stav detailu: zavřený.

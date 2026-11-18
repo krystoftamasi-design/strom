@@ -1,6 +1,6 @@
 import { zobrazitHodnotu, vyhladitHodnotu } from '../okna/element_ui_okna_veliciny.js?v=affinity-windows-layout-2';
 import { SEASONS } from '../ekologie/tree_ecology.js?v=stock-percentage-1';
-import { createTreeAnnotations } from '../okna/tree_annotations.js?v=sugar-phenology-1';
+import { createTreeAnnotations } from '../okna/tree_annotations.js?v=sugar-limited-growth-1';
 
 const chapters = [
   ['seasons', 'Období'], ['photosynthesis', 'Fotosyntéza'], ['transpiration', 'Transpirace'],
@@ -307,12 +307,13 @@ export function createChapters({ model, applySeason, setSun, setAzimuth, setVisu
     advanceSeason(playbackDelta) {
       return ready && treeAnnotations.advanceSeason(chapter, playbackDelta);
     },
-    updateScene(previousSeason = model.seasonPosition, advanced = false, springGrowth) {
+    updateScene(previousSeason = model.seasonPosition, advanced = false, growthRequested, canopyFraction) {
       if (!ready) return;
-      treeAnnotations.update(chapter, previousSeason, advanced, springGrowth);
+      const growthGranted = treeAnnotations.update(chapter, previousSeason, advanced, growthRequested, canopyFraction);
       // Refresh the current model after evaluation, even while its clock is paused.
       const now = performance.now();
       if (now - lastUI >= 50) { render(); lastUI = now; }
+      return growthGranted;
     },
     modelReady() {
       if (ready) { setVisualChapter(chapter); return render(); }

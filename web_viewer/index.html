@@ -1174,7 +1174,7 @@
     import { createSunClouds } from './vykreslovani/sun_clouds.js?v=2';
     import { createWaterBrushMaterial, addWaterBrushAttributes } from './vykreslovani/water_brush.js?v=highlight-width-3';
     import { TreeEcology, SEASONS, MODEL_MINUTES_PER_SECOND } from './ekologie/tree_ecology.js?v=calendar-water-1';
-    import { createChapters } from './kapitoly/chapters.js?v=sugar-phenology-1';
+    import { createChapters } from './kapitoly/chapters.js?v=sugar-limited-growth-1';
     import { createSeedChapter } from './kapitoly/seed_chapter.js';
     import { createTreeBird } from './vykreslovani/tree_bird.js?v=perch-grid-1';
     import { createSeasonRing } from './obdobi/season_ring.js?v=season-boundary-1';
@@ -3023,6 +3023,8 @@
     let previousSeasonPosition = null;
     let springGrowthDue = false;
     let seasonalGrowthTarget = 0;
+    let seasonalGrowthProgress = 0;
+    let seasonalCanopyLimit = 1;
 
     function isLeafGrowthSeason() {
       const day = seasonDayForPosition(ecology.seasonPosition);
@@ -3034,6 +3036,8 @@
       droughtLeafProgress = 0;
       springGrowthDue = false;
       seasonalGrowthTarget = 0;
+      seasonalGrowthProgress = 0;
+      seasonalCanopyLimit = 0;
       seasonalNewLeaves = true;
       seasonalRegrowthActive = true;
       leafRegrowthActive = true;
@@ -3118,7 +3122,7 @@
         }
         if (droppedFromDrought || droughtDryProgress > 0.85) {
           leafRegrowthActive = true;
-          setLeafRegrowthProgress(0.05);
+          setLeafRegrowthProgress(Math.min(0.05, seasonalCanopyLimit));
         } else {
           leafWasDry = false;
         }
@@ -3128,15 +3132,15 @@
           const day = seasonDayForPosition(ecology.seasonPosition);
           const calendarTarget = day < BEECH_CALENDAR.budburst ? 1 : beechLeafGrowthProgress(ecology.seasonPosition);
           seasonalGrowthTarget = Math.max(seasonalGrowthTarget, calendarTarget);
-        }
-        setLeafRegrowthProgress(seasonalRegrowthActive
-          ? advanceVisibleGrowth(leafRegrowthProgress, seasonalGrowthTarget, realDelta, timePlaybackSpeed, getLeafRegrowthSpeed())
-          : leafRegrowthProgress + delta * 0.45 * getLeafRegrowthSpeed());
-        if (leafRegrowthProgress >= 0.999) {
-          if (seasonalRegrowthActive) setLeafRegrowthProgress(1);
-          leafRegrowthActive = false;
-          seasonalRegrowthActive = false;
-          leafWasDry = false;
+          seasonalGrowthProgress = advanceVisibleGrowth(
+            seasonalGrowthProgress, seasonalGrowthTarget, realDelta, timePlaybackSpeed, getLeafRegrowthSpeed());
+          if (seasonalGrowthProgress >= 0.999) seasonalGrowthProgress = 1;
+        } else {
+          setLeafRegrowthProgress(Math.min(seasonalCanopyLimit, leafRegrowthProgress + delta * 0.45 * getLeafRegrowthSpeed()));
+          if (leafRegrowthProgress >= seasonalCanopyLimit) {
+            leafRegrowthActive = false;
+            leafWasDry = false;
+          }
         }
       }
       updateEffectiveSeason();
@@ -3942,7 +3946,7 @@
       valSeason.textContent = `${season.label} · ${Math.round(colour * 100)} %`;
       seasonBtns.forEach(button => button.classList.toggle('active', button.dataset.season === key));
       applySeasonShift(colour);
-      if (!seasonalRegrowthActive && !seasonalRegrowthPending) setLeafRegrowthProgress(1);
+      if (!seasonalRegrowthActive && !seasonalRegrowthPending) setLeafRegrowthProgress(seasonalCanopyLimit);
       syncSeasonFoliage();
     }
 
@@ -4114,6 +4118,8 @@
           previousSeasonPosition = null;
           springGrowthDue = false;
           seasonalGrowthTarget = 0;
+          seasonalGrowthProgress = 0;
+          seasonalCanopyLimit = 1;
           seasonalNewLeaves = false;
           seasonalRegrowthActive = false;
           seasonalRegrowthPending = false;
@@ -4299,7 +4305,7 @@
       }
       updateWaterAndDrought(modelMinutes, daytimeLight);
       updateSapRetraction(delta);
-      const springWasGrowing = seasonalRegrowthActive;
+      const previousGrowthProgress = seasonalGrowthProgress;
       if (playbackDelta > 0) updateSeasonalLeaves(playbackDelta, delta);
       if (typeof sapUniforms !== 'undefined') sapUniforms.uTime.value = simulationTime * 0.5;
       updateDayNightScene(now);
@@ -4342,8 +4348,25 @@
       camera.updateMatrixWorld();
       const cloudAmount = sunClouds.update(ecology, delta);
       studioColor.copy(baseSceneBackground).lerp(overcastBackground, cloudAmount * 0.55);
-      const springGrowth = seasonalRegrowthActive || springWasGrowing ? leafRegrowthProgress : undefined;
-      chapterApp.updateScene(previousSeason, advanced, springGrowth);
+      const growthRequested = seasonalRegrowthActive ? Math.max(0, seasonalGrowthProgress - previousGrowthProgress) : 0;
+      // Growth scales leaf width and height, so the productive area scales quadratically.
+      const canopyFraction = previousGrowthProgress > 0 ? (seasonalCanopyLimit / previousGrowthProgress) ** 2 : seasonalCanopyLimit;
+      const growthGranted = chapterApp.updateScene(previousSeason, advanced, growthRequested, canopyFraction);
+      if (growthRequested > 0) {
+        const fundedGrowth = chapterApp.introduction ? growthRequested : growthGranted;
+        if (fundedGrowth === undefined) {
+          seasonalGrowthProgress = previousGrowthProgress;
+        } else {
+          seasonalCanopyLimit = Math.min(seasonalGrowthProgress, seasonalCanopyLimit + fundedGrowth);
+          setLeafRegrowthProgress(seasonalCanopyLimit);
+          if (seasonalGrowthProgress === 1) {
+            seasonalRegrowthActive = false;
+            leafRegrowthActive = false;
+            leafWasDry = false;
+            invalidateShadows();
+          }
+        }
+      }
       updateHighlights(delta);
       seedChapter.update(chapterApp.chapter === 'seeds', ecology.seasonPosition, trunkMesh, seedHighlight, playbackDelta);
       treeBird.update(

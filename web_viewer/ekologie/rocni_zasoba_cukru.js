@@ -67,11 +67,11 @@ function dailySugarFlows(tree) {
   });
 }
 
-function applyDay(start, leafStart, day, flow, capacity, fraction = 1, production = flow.production, growth = flow.growth * fraction) {
+function applyDay(start, leafStart, day, flow, capacity, fraction = 1, production = flow.production, growth = flow.growth * fraction, paidGrowth = 0) {
   const net = production - flow.respiration * fraction;
   const dormant = day < BEECH_CALENDAR.fullLeaf || day >= BEECH_CALENDAR.leafFallStart;
   const balance = net >= 0 ? surplusToStorage * net : net * (dormant ? dormantDrawShare : 1);
-  const budburstUse = Math.min(growth, Math.max(0, start + balance));
+  const budburstUse = Math.max(paidGrowth, Math.min(growth, start + balance));
   const toLeaves = day < BEECH_CALENDAR.leafFallStart
     ? Math.min(leafShare * Math.max(0, balance - budburstUse), leafShare * capacity - leafStart)
     : 0;
@@ -130,13 +130,11 @@ export function createSeasonalSugarBalance(curve, capacity) {
   let start;
   let leafStart;
   let production;
-  let growth;
   let appliedGrowth;
-  let accountedProgress;
   let budburstRate = 0;
 
   return {
-    update(from, to, automatic, factor, visibleGrowth) {
+    update(from, to, automatic, factor, growthRequested = 0) {
       const previous = calendarDate(from);
       const date = calendarDate(to);
       if (cursor === undefined || cursor !== previous || (!automatic && date !== previous) || date < previous) {
@@ -145,19 +143,13 @@ export function createSeasonalSugarBalance(curve, capacity) {
         start = reference.start;
         leafStart = reference.leafStart;
         production = reference.flow.production * dayFraction(date);
-        growth = reference.flow.growth * dayFraction(date);
         appliedGrowth = reference.budburstUse * dayFraction(date);
-        accountedProgress = beechLeafGrowthProgress(to);
         budburstRate = reference.budburstUse / minutesPerCalendarDay(dayOfYear(Math.floor(date)));
       }
 
       // Seeking uses the reference curve. Only elapsed playback adds a new growth charge.
       const elapsedDays = date - cursor;
       const elapsedMinutes = elapsedDays > 0 ? (monthClockForSeason(to) - monthClockForSeason(from)) * minutesPerDay : 0;
-      if (elapsedDays > 0 && Math.floor((cursor - BEECH_CALENDAR.budburst) / daysPerYear)
-        !== Math.floor((date - BEECH_CALENDAR.budburst) / daysPerYear)) accountedProgress = 0;
-      const growthChange = Number.isFinite(visibleGrowth) ? Math.max(0, visibleGrowth - accountedProgress) : 0;
-      if (growthChange > 0 && elapsedDays > 0) accountedProgress = visibleGrowth;
       let growthUsed = 0;
       while (cursor < date) {
         const dayStart = Math.floor(cursor);
@@ -165,15 +157,14 @@ export function createSeasonalSugarBalance(curve, capacity) {
         const { flow } = curve[day];
         const end = Math.min(dayStart + 1, date);
         production += flow.production * factor * (end - cursor);
-        growth += budburstBudget * growthChange * (end - cursor) / elapsedDays;
-        const current = applyDay(start, leafStart, day, flow, capacity, end - dayStart, production, growth);
-        growthUsed += Math.max(0, current.budburstUse - appliedGrowth);
+        const growth = appliedGrowth + budburstBudget * growthRequested * (end - cursor) / elapsedDays;
+        const current = applyDay(start, leafStart, day, flow, capacity, end - dayStart, production, growth, appliedGrowth);
+        growthUsed += current.budburstUse - appliedGrowth;
         appliedGrowth = current.budburstUse;
         if (end === dayStart + 1) {
           start = current.reserve;
           leafStart = current.inLeaves;
           production = 0;
-          growth = 0;
           appliedGrowth = 0;
         }
         cursor = end;
@@ -182,10 +173,11 @@ export function createSeasonalSugarBalance(curve, capacity) {
 
       const day = dayOfYear(Math.floor(date));
       const { flow } = curve[day];
-      const current = applyDay(start, leafStart, day, flow, capacity, dayFraction(date), production, growth);
+      const current = applyDay(start, leafStart, day, flow, capacity, dayFraction(date), production, appliedGrowth, appliedGrowth);
       return {
         reserve: current.reserve,
         budburstRate,
+        growthGranted: elapsedDays > 0 ? growthUsed / budburstBudget : undefined,
         autumnRate: leafStart * flow.fallShare / minutesPerCalendarDay(day),
       };
     },

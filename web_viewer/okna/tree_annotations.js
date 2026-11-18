@@ -1,7 +1,7 @@
 import { oknaPodleKapitol, kontextoveTexty, pruvodceTranspiraci } from './element_ui_okna_obsah.js?v=sugar-phenology-1';
 import { veliciny, vstupyVzorce, ohlasitChybuOken, vyhladitHodnotu } from './element_ui_okna_veliciny.js?v=affinity-windows-layout-2';
 import { zkontrolovatOkna } from './element_ui_okna_kontrola.js?v=seeds-1';
-import { createAnnualSugarCurve, createSeasonalSugarBalance, sugarProductionFactor } from '../ekologie/rocni_zasoba_cukru.js?v=sugar-phenology-1';
+import { createAnnualSugarCurve, createSeasonalSugarBalance, sugarProductionFactor } from '../ekologie/rocni_zasoba_cukru.js?v=sugar-limited-growth-1';
 
 // Original embedded assets from ui_new.svg, at their exported stroke widths.
 const strokes = {
@@ -735,7 +735,7 @@ export function createTreeAnnotations({ shell, model, createSeasonControl, setEl
     advanceSeason(chapter, playbackDelta) {
       return seasonControl.update(chapter, playbackDelta);
     },
-    update(chapter, previousSeason, advanced, springGrowth) {
+    update(chapter, previousSeason, advanced, growthRequested, canopyFraction = 1) {
       const now = performance.now();
       const dt = (now - lastSmoothTime) / 1000;
       lastSmoothTime = now;
@@ -744,6 +744,7 @@ export function createTreeAnnotations({ shell, model, createSeasonControl, setEl
       if (chapterChanged) syncWindowHover();
       let reserve;
       let budburstRate = 0;
+      let growthGranted;
       autumnRate = 0;
       if (chapter !== 'intro' && model.ready) {
         if (!sugarBalance || curveCrownArea !== model.crownArea) {
@@ -751,8 +752,8 @@ export function createTreeAnnotations({ shell, model, createSeasonControl, setEl
           sugarBalance = createSeasonalSugarBalance(annualCurve, prototypeCapacity);
           curveCrownArea = model.crownArea;
         }
-        ({ reserve, budburstRate, autumnRate } = sugarBalance.update(previousSeason, model.seasonPosition, advanced,
-          sugarProductionFactor(model), springGrowth));
+        ({ reserve, budburstRate, autumnRate, growthGranted } = sugarBalance.update(previousSeason, model.seasonPosition, advanced,
+          sugarProductionFactor(model) * canopyFraction, growthRequested));
       }
       const sugarProduction = this.sugarProduction;
       const sugarConsumption = model.respirationSugar + budburstRate;
@@ -848,12 +849,13 @@ export function createTreeAnnotations({ shell, model, createSeasonControl, setEl
         stock.classList.toggle('is-unavailable', !available);
         stock.style.setProperty('--balance-top-ratio', String(available ? clamp01(value / maximum) : 0));
       }
-      if (chapter !== 'prototype') return;
+      if (chapter !== 'prototype') return growthGranted;
       const text = `${stockKg.format(reserve / 1000)} kg`;
       if (sugarStockOutput.value !== text) sugarStockOutput.value = text;
       for (const prototype of prototypes) {
         prototype.update(sugarProduction, sugarConsumption, prototypeCapacity, reserve);
       }
+      return growthGranted;
     }
   };
 }
