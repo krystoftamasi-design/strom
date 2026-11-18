@@ -8,6 +8,9 @@ const daysPerYear = 365;
 const minutesPerDay = 1440;
 const budburstBudget = 650;
 const leafShare = 0.05;
+// Teaching calibration for the mobilisable store. Live photosynthesis and respiration stay unchanged.
+const surplusToStorage = 0.12;
+const dormantDrawShare = 0.53;
 const monthStarts = [0, 31, 59, 90, 120, 151, 181, 212, 243, 273, 304, 334, 365];
 const quarterDays = [0, 1, 2, 3].map(seasonDayForPosition);
 quarterDays.push(quarterDays[0] + daysPerYear);
@@ -57,13 +60,18 @@ function dailySugarFlows(tree) {
 }
 
 function applyDay(start, leafStart, day, flow, capacity, fraction = 1, production = flow.production) {
-  const balance = production - flow.respiration * fraction;
+  const net = production - flow.respiration * fraction;
+  const dormant = day < BEECH_CALENDAR.fullLeaf || day >= BEECH_CALENDAR.leafFallStart;
+  const balance = net >= 0 ? surplusToStorage * net : net * (dormant ? dormantDrawShare : 1);
   const budburstUse = Math.min(flow.growth * fraction, Math.max(0, start + balance));
   const toLeaves = day < BEECH_CALENDAR.colourStart
     ? Math.min(leafShare * Math.max(0, balance - budburstUse), leafShare * capacity - leafStart)
     : 0;
   const autumnReturn = day === BEECH_CALENDAR.colourStart ? leafStart * fraction : 0;
-  const reserve = Math.min(capacity, Math.max(0, start + balance - budburstUse - toLeaves + autumnReturn));
+  const storageLimit = day < BEECH_CALENDAR.colourStart ? capacity * (1 - leafShare)
+    : day === BEECH_CALENDAR.colourStart ? capacity - leafStart : capacity;
+  const beforeReturn = Math.min(storageLimit, Math.max(0, start + balance - budburstUse - toLeaves));
+  const reserve = beforeReturn + autumnReturn;
   return { reserve, inLeaves: leafStart + toLeaves - autumnReturn, budburstUse, autumnReturn };
 }
 
@@ -141,9 +149,10 @@ export function createSeasonalSugarBalance(curve, capacity) {
       production += flow.production * factor * (date - cursor);
       cursor = date;
       const current = applyDay(start, leafStart, day, flow, capacity, dayFraction(date), production);
+      const todayGrowth = applyDay(start, leafStart, day, flow, capacity, 1, flow.production * factor).budburstUse;
       return {
         reserve: current.reserve,
-        budburstRate: Math.min(flow.growth, Math.max(0, current.reserve + flow.production * factor - flow.respiration)) / minutesPerDay,
+        budburstRate: todayGrowth / minutesPerDay,
         autumnRate: day === BEECH_CALENDAR.colourStart ? leafStart / minutesPerDay : 0,
       };
     },
