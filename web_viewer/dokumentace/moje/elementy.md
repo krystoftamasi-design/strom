@@ -37,8 +37,8 @@ Definice spojení
 - Modrá linka vede z kořenů přes kmen k listům.
 - Při fotosyntéze proudí nahoru.
 - Při červenání prvního listu se stahuje od kořenů k listům.
-- Při vstupu do kapitoly zachovává aktuální stav podle [Společného stahování linek](#společné-stahování-linek).
-- Rychlost nočního stahování určuje [Společné stahování linek](#společné-stahování-linek).
+- Při vstupu do kapitoly zachovává aktuální stav podle [Stahování linek](#stahování-linek).
+- Rychlost nočního stahování určuje [Stahování linek](#stahování-linek).
 
 
 ### Glukóza linka
@@ -59,13 +59,13 @@ Definice spojení
 - Končí dřív uvnitř kořenů.
 - Na jaře proudí ze zásob v kořenech a kmeni k novým listům.
 - V létě proudí z listů do kmene a kořenů.
+- V noci zůstává rozvinutá. Pokud byla stažená už před setměním, postupně se rozvine.
 - Stahování se řídí vlastní délkou trasy.
-- Rychlost nočního stahování určuje [Společné stahování linek](#společné-stahování-linek).
 
-#### Společné stahování linek
+#### Stahování linek
 
 - Přepnutí kapitoly neresetuje stažení ani stav červenání listů; skryté linky se při návratu krátce neobnovují na plnou délku.
-- Při zastavení fotosyntézy se sluncem na obzoru nebo pod ním se obě linky plně stáhnou za přibližně 1,2 sekundy animace.
+- Se sluncem na obzoru nebo pod ním se vodní linka plně stáhne za přibližně 1,2 sekundy animace.
 - Ranní rozvinutí a ostatní stahování trvá přibližně 3,6 sekundy animace.
 
 #### Společná rychlost linek
@@ -103,7 +103,7 @@ Definice spojení
 
 **Chování elementu**
 
-- Světle modré částice odlétají od listů; jejich běžná velikost odpovídá H₂O.
+- Světle modré částice při fotosyntéze odlétají od listů. V noci přicházejí ke koruně a znázorňují spotřebu kyslíku při dýchání. Jejich běžná velikost odpovídá H₂O.
 
 ### CO₂
 
@@ -115,7 +115,7 @@ Definice spojení
 
 **Chování elementu**
 
-- Červenooranžové částice přicházejí ke koruně; jejich běžná velikost odpovídá H₂O.
+- Červenooranžové částice při fotosyntéze přicházejí ke koruně. V noci od koruny odlétají a znázorňují výdej CO₂ při dýchání. Jejich běžná velikost odpovídá H₂O.
 
 ### Fotony
 

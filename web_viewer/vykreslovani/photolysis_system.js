@@ -60,6 +60,9 @@ export class PhotolysisSystem {
     this.getCamera = options.getCamera || (() => null);
     this.getViewportHeight = options.getViewportHeight || (() => 0);
     this.photonsPerSecond = options.photonsPerSecond || 8.0;
+    this.showNightRespiration = options.showNightRespiration ?? false;
+    this.nightRespiration = false;
+    this.respirationTimer = 0;
 
     // Pool sizes
     this.maxPhotons = options.maxPhotons || 40;
@@ -358,7 +361,7 @@ export class PhotolysisSystem {
     }
   }
 
-  _spawnCarbonDioxide() {
+  _spawnCarbonDioxide(outward = false) {
     let b = this.carbonPool.find(p => !p.active);
     if (!b) b = this.carbonPool.reduce((oldest, p) => p.age > oldest.age ? p : oldest);
     const rx = this.getReactionPoint();
@@ -369,8 +372,9 @@ export class PhotolysisSystem {
     const stopDistance = this._getBubbleSpawnDistance(this._vDir, rx) + 1.5;
     const travel = 5.0 + Math.random() * 1.0;
     b.maxLifetime = travel / (this.bubbleSpeed * (0.85 + Math.random() * 0.30));
-    b.target.copy(rx).addScaledVector(this._vDir, stopDistance);
-    b.origin.copy(rx).addScaledVector(this._vDir, stopDistance + travel);
+    b.target.copy(rx).addScaledVector(this._vDir, outward ? stopDistance + travel : stopDistance);
+    b.origin.copy(rx).addScaledVector(this._vDir, outward ? stopDistance : stopDistance + travel);
+    b.outward = outward;
     b.age = 0;
     b.baseScale = 0.62 + Math.random() * 0.28;
     b.active = true;
@@ -378,7 +382,7 @@ export class PhotolysisSystem {
     this._updateGasScale(b);
     b.material.opacity = 1;
     b.mesh.visible = true;
-    this.totalCarbonDioxideEmitted++;
+    if (!outward) this.totalCarbonDioxideEmitted++;
   }
   // Spawns a single photon from the Sun direction
   _spawnPhoton() {
@@ -438,7 +442,7 @@ export class PhotolysisSystem {
   }
 
   // Spawns a cleaved O₂ bubble 200 screen pixels along its trajectory
-  _spawnOxygenBubble() {
+  _spawnOxygenBubble(inward = false) {
     let b = null;
     for (let i = 0; i < this.bubblePool.length; i++) {
       if (!this.bubblePool[i].active) {
@@ -481,10 +485,15 @@ export class PhotolysisSystem {
     const spawnDirection = this._vTarget.copy(b.velocity).normalize();
     const spawnDistance = this._getBubbleSpawnDistance(spawnDirection, rx);
     b.position.copy(rx).addScaledVector(spawnDirection, spawnDistance);
-    b.mesh.position.copy(b.position);
 
     b.age = 0.0;
     b.maxLifetime = 3.2 + Math.random() * 0.8; // 3.2 - 4.0 seconds
+    b.inward = inward;
+    if (inward) {
+      b.position.addScaledVector(b.velocity, b.maxLifetime);
+      b.velocity.negate();
+    }
+    b.mesh.position.copy(b.position);
     b.baseScale = 0.62 + Math.random() * 0.28; // Natural size variation
 
     b.material.opacity = 1;
@@ -493,7 +502,7 @@ export class PhotolysisSystem {
     b.mesh.visible = true;
     b.active = true;
 
-    this.totalOxygenProduced++;
+    if (!inward) this.totalOxygenProduced++;
     return b;
   }
 
@@ -522,6 +531,26 @@ export class PhotolysisSystem {
   update(delta = 0.016, camera = null) {
     const dt = Math.min(delta, 0.1);
     this._updateWaterVapour(dt);
+
+    const nightRespiration = this.showNightRespiration && this.sunElevationDeg <= 0;
+    if (nightRespiration !== this.nightRespiration) {
+      this.nightRespiration = nightRespiration;
+      this.respirationTimer = 0;
+      for (const pool of [this.bubblePool, this.carbonPool]) {
+        for (const gas of pool) {
+          gas.active = false;
+          gas.mesh.visible = false;
+        }
+      }
+    }
+    if (nightRespiration) {
+      this.respirationTimer -= dt;
+      if (this.respirationTimer <= 0) {
+        this._spawnOxygenBubble(true);
+        this._spawnCarbonDioxide(true);
+        this.respirationTimer += 1;
+      }
+    }
 
     // 1. Emission logic (only emit when conditions are met)
     const incomingLight = this.isPhotolysisActive()
@@ -571,7 +600,7 @@ export class PhotolysisSystem {
         b.active = false;
         b.mesh.visible = false;
       } else {
-        b.velocity.y += upwardBuoyancy * dt;
+        if (!b.inward) b.velocity.y += upwardBuoyancy * dt;
         b.position.addScaledVector(b.velocity, dt);
         b.mesh.position.copy(b.position);
 
@@ -589,7 +618,7 @@ export class PhotolysisSystem {
       if (progress >= 1) {
         b.active = false;
         b.mesh.visible = false;
-        this.totalCarbonDioxideAbsorbed++;
+        if (!b.outward) this.totalCarbonDioxideAbsorbed++;
       }
     }
     // 4. Update reaction center node pulse
