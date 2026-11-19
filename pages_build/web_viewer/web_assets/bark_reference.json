@@ -1,0 +1,65 @@
+{
+  "source": "BLENDER/Untitled.blend",
+  "material": "Bark_GraphML_Tree",
+  "ramp": [
+    {
+      "position": 0.16000011563301086,
+      "color": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    },
+    {
+      "position": 1.0,
+      "color": [
+        0.09780768305063248,
+        0.025219105184078217,
+        0.00882635172456503,
+        1.0
+      ]
+    }
+  ],
+  "darken": 0.746666669845581,
+  "invert": 0.8400000333786011,
+  "format": "RGB uint16 normalized, in GLB vertex order",
+  "meshes": [
+    {
+      "model": "strom_web",
+      "kind": "trunk",
+      "vertices": 251801,
+      "file": "strom_web_bark_trunk.bin"
+    },
+    {
+      "model": "strom_web",
+      "kind": "roots",
+      "vertices": 105688,
+      "file": "strom_web_bark_roots.bin"
+    },
+    {
+      "model": "strom_full",
+      "kind": "roots",
+      "vertices": 388729,
+      "file": "strom_full_bark_roots.bin"
+    },
+    {
+      "model": "strom_full",
+      "kind": "trunk",
+      "vertices": 2066908,
+      "file": "strom_full_bark_trunk.bin"
+    },
+    {
+      "model": "strom_web_fast",
+      "kind": "trunk",
+      "vertices": 44427,
+      "file": "strom_web_fast_bark_trunk.bin"
+    },
+    {
+      "model": "strom_web_fast",
+      "kind": "roots",
+      "vertices": 17363,
+      "file": "strom_web_fast_bark_roots.bin"
+    }
+  ]
+}

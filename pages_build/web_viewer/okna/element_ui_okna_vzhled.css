@@ -1,0 +1,1654 @@
+/* Fixed screen-space windows, based on ui_from_af/Untitled.svg. */
+.tree-overlay {
+  --ui-detail-text-size: clamp(16px, 1.05vw, 20px);
+  --ui-ink: #181818;
+  --ui-water: #2f49d6;
+  --ui-oxygen: #4fa2da;
+  --ui-co2: #e5241c;
+  --ui-light: #ffcc00;
+  --ui-leaves: #51b700;
+  --ui-roots: #311619;
+  --ui-sugar: #ff9700;
+  --ui-temperature: #ff1f4c;
+  --ui-font-text: 'Satoshi', sans-serif;
+  --ui-font-display: 'Nohemi', sans-serif;
+  --ui-heading-size: clamp(27px, 2.63vw, 53px);
+  --ui-main-heading-size: clamp(40px, 4.57vw, 92px);
+  --ui-value-size: clamp(20px, 1.15vw, 26px);
+  --ui-main-value-size: clamp(38px, 4vw, 80px);
+  --ui-column-gap: 15px;
+  --ui-toggle-size: 28px;
+  --ui-toggle-gap: 8px;
+  --ui-text-size: clamp(11px, .83vw, 16px);
+  --ui-text-style: 300 var(--ui-text-size)/1.35 var(--ui-font-text);
+  --ui-formula-size: clamp(8px, .6vw, 12px);
+  --flow-window-width: clamp(168px, 15.2vw, 286px);
+  --flow-gap: clamp(16px, 2vw, 30px);
+}
+
+body.scene-night .tree-overlay {
+  --ui-ink: #f0f2e9;
+}
+
+/* All chapter panels remain in interface coordinates, with reserved detail space. */
+.tree-overlay .tree-annotation {
+  left: 6%;
+  top: 28%;
+  width: 28%;
+  height: 50%;
+  transform: none;
+  will-change: auto;
+  transition: none;
+  animation: none;
+}
+
+.tree-overlay .tree-annotation[data-side="right"] {
+  left: 70%;
+  width: 27%;
+}
+
+.tree-overlay .tree-annotation>header {
+  position: relative;
+}
+
+.tree-overlay .tree-annotation .annotation-reveal,
+.tree-overlay .tree-annotation.collapsed .annotation-reveal {
+  display: block;
+  position: absolute;
+  top: 50px;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  opacity: 1;
+  transition: none;
+}
+
+.tree-overlay .tree-annotation.collapsed .annotation-reveal {
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.tree-overlay .tree-annotation .annotation-reveal-inner {
+  height: 100%;
+  overflow: auto;
+}
+
+.tree-overlay .tree-annotation .annotation-body {
+  max-height: 100%;
+  overflow: auto;
+}
+
+.tree-overlay .element-ui-okno {
+  --ui-topic: var(--ui-ink);
+  box-sizing: border-box;
+  width: 29%;
+  height: 17%;
+  min-height: 85px;
+  display: grid;
+  grid-template-columns: max-content minmax(0, 1fr);
+  grid-template-rows: minmax(0, 1fr);
+  column-gap: var(--ui-column-gap);
+  align-content: start;
+  padding: 0 0 0 20px;
+  color: var(--ui-ink);
+  background: none;
+  border: 0;
+  border-radius: 0;
+  font: var(--ui-text-style);
+  text-align: left;
+  box-shadow: none;
+  backdrop-filter: none;
+}
+
+.tree-overlay .element-ui-okno[data-topic="temperature"] {
+  --ui-topic: var(--ui-temperature);
+}
+
+.tree-overlay .element-ui-okno[data-topic="water"] {
+  --ui-topic: var(--ui-water);
+}
+
+.tree-overlay .element-ui-okno[data-topic="oxygen"] {
+  --ui-topic: var(--ui-oxygen);
+}
+
+.tree-overlay .element-ui-okno[data-topic="co2"] {
+  --ui-topic: var(--ui-co2);
+}
+
+.tree-overlay .element-ui-okno[data-topic="sugar"] {
+  --ui-topic: var(--ui-sugar);
+}
+
+.tree-overlay .element-ui-okno[data-topic="light"] {
+  --ui-topic: var(--ui-light);
+}
+
+.tree-overlay .element-ui-okno:is([data-window-id="kyslik"], [data-window-id="co2"], [data-window-id="cukry"], [data-window-id="voda"], [data-window-id="prijem-vody"], [data-window-id="chlazeni"], [data-window-id="teplota"]) {
+  grid-template-columns: calc(16.5 * var(--ui-formula-size)) minmax(0, 1fr);
+}
+
+.tree-overlay .element-ui-okno[data-main-window="true"] {
+  left: 6%;
+  top: 65%;
+  width: 55%;
+  height: 21%;
+  min-height: 140px;
+  grid-template-columns: max-content minmax(0, 1fr);
+}
+
+.tree-overlay .element-ui-okno:is([data-window-id="kyslik"], [data-window-id="prijem-vody"]) {
+  top: 25%;
+}
+
+.tree-overlay .element-ui-okno:is([data-window-id="co2"], [data-window-id="chlazeni"]) {
+  top: 42%;
+}
+
+.tree-overlay .element-ui-okno:is([data-window-id="cukry"], [data-window-id="teplota"]) {
+  top: 59%;
+}
+
+.tree-overlay .element-ui-okno[data-window-id="voda"] {
+  top: 76%;
+  height: 18%;
+}
+
+.tree-overlay .element-ui-okno .element-ui-readout>header {
+  min-height: 0;
+  padding: 0;
+  justify-content: flex-start;
+  border: 0;
+}
+
+.tree-overlay .element-ui-okno h2,
+.tree-overlay .element-ui-okno h3 {
+  margin: 0;
+  color: var(--ui-ink);
+  font: 400 var(--ui-heading-size)/1.05 var(--ui-font-display);
+  letter-spacing: -.035em;
+  white-space: nowrap;
+  transition: none;
+}
+
+.tree-overlay .element-ui-okno[data-main-window="true"] h2 {
+  font-size: var(--ui-main-heading-size);
+  font-weight: 500;
+}
+
+.tree-overlay .element-ui-okno .ui-heading-subscript {
+  font: inherit;
+  font-size: 60%;
+  line-height: 0;
+  position: relative;
+  bottom: -.2em;
+  vertical-align: baseline;
+  letter-spacing: 0;
+}
+
+.tree-overlay .element-ui-trigger {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  margin: 0;
+  padding: 0;
+  color: transparent;
+  background: transparent;
+  border: 0;
+  border-radius: 0;
+  cursor: pointer;
+  font-size: 0;
+}
+
+.tree-overlay .element-ui-trigger:hover {
+  background: none;
+}
+
+.tree-overlay .element-ui-trigger:focus-visible {
+  outline: 2px solid var(--ui-topic);
+  outline-offset: 4px;
+}
+
+.tree-overlay.ui-test-black-window-titles .element-ui-okno .element-ui-readout>header> :is(h2, h3) {
+  color: var(--ui-ink);
+}
+
+.tree-overlay .element-ui-okno .annotation-reveal,
+.tree-overlay .element-ui-okno.collapsed .annotation-reveal {
+  position: relative;
+  left: auto;
+  right: auto;
+  top: auto;
+  bottom: auto;
+  grid-column: 2;
+  grid-row: 1;
+  height: 100%;
+  margin: 0;
+  align-self: stretch;
+  min-width: 0;
+  min-height: 0;
+  overflow: auto;
+}
+
+.tree-overlay .element-ui-okno[data-main-window="true"] .annotation-reveal {
+  left: auto;
+  top: auto;
+}
+
+.tree-overlay .element-ui-okno .annotation-reveal-inner {
+  height: 100%;
+  overflow: auto;
+}
+
+.tree-overlay .element-ui-okno .annotation-body {
+  padding: 0;
+  max-height: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+}
+
+.tree-overlay .element-ui-okno .annotation-body p,
+.tree-overlay .element-ui-okno .chapter-link {
+  margin: 0 0 8px;
+  color: var(--ui-ink);
+  font: var(--ui-text-style);
+}
+
+.tree-overlay .element-ui-okno .annotation-body p {
+  font-weight: 500;
+  font-size: var(--ui-detail-text-size);
+  line-height: 1.4;
+}
+
+.tree-overlay .element-ui-okno .annotation-body> :last-child {
+  margin-bottom: 0;
+}
+
+.tree-overlay .element-ui-values {
+  padding: 0;
+}
+
+.tree-overlay .element-ui-values:empty {
+  display: none;
+}
+
+.tree-overlay .element-ui-values {
+  position: relative;
+}
+
+.tree-overlay .element-ui-values .chapter-metric {
+  display: flex;
+  flex-direction: row;
+  align-items: baseline;
+  gap: 5px;
+  padding: 0;
+  margin: 0;
+  border: 0;
+  background: none;
+  white-space: nowrap;
+}
+
+.tree-overlay .element-ui-values .chapter-metric>span {
+  color: var(--ui-ink);
+  font: var(--ui-text-style);
+}
+
+.tree-overlay .element-ui-values strong,
+.tree-overlay .element-ui-values output {
+  color: var(--ui-topic);
+  font: 600 var(--ui-value-size)/1.1 var(--ui-font-display);
+  font-variant-numeric: tabular-nums;
+}
+
+.tree-overlay .element-ui-values strong {
+  display: inline-flex;
+  align-items: baseline;
+}
+
+.tree-overlay .element-ui-values .element-ui-unit {
+  margin-left: 4px;
+  color: var(--ui-ink);
+  font: var(--ui-text-style);
+}
+
+.tree-overlay .element-ui-okno[data-main-window="true"] .element-ui-values {
+  padding-top: 12px;
+}
+
+.tree-overlay .element-ui-okno[data-main-window="true"] :is(strong, output) {
+  font-size: var(--ui-main-value-size);
+}
+
+.tree-overlay .element-ui-okno[data-main-window="true"] .element-ui-unit {
+  margin-left: 0;
+  color: inherit;
+  font: inherit;
+}
+
+.tree-overlay .element-ui-okno .element-ui-readout>.ui-window-formula {
+  margin: 3px 0 0;
+  font: 500 var(--ui-formula-size)/1.25 var(--ui-font-text);
+  color: var(--ui-ink);
+  white-space: nowrap;
+}
+
+.tree-overlay .element-ui-okno .ui-word {
+  font: inherit;
+  color: #000 !important;
+}
+
+body.scene-night .tree-overlay .element-ui-okno .ui-word {
+  color: #f0f2e9 !important;
+}
+
+.tree-overlay .element-ui-okno .annotation-frame {
+  display: none;
+}
+
+.tree-overlay .element-ui-okno .element-ui-edge {
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 8px;
+  height: 65%;
+  pointer-events: none;
+  background: var(--ui-topic);
+  mask: var(--ui-edge-variant) center / 100% 100% no-repeat;
+}
+
+.tree-overlay .element-ui-okno[data-main-window="true"] .element-ui-edge {
+  height: 100%;
+  width: 12px;
+}
+
+.tree-overlay .element-ui-flow-window .element-ui-edge {
+  display: none;
+}
+
+.tree-overlay .element-ui-flow-window .element-ui-readout {
+  gap: 2px;
+}
+
+.tree-overlay .element-ui-flow-window .element-ui-values {
+  display: grid;
+  gap: 0;
+}
+
+.tree-overlay .element-ui-flow-window .element-ui-values:has(> .element-ui-stock) {
+  --flow-stock-width: clamp(62px, 6.4vw, 94px);
+  --flow-stock-gap: clamp(14px, 1.5vw, 24px);
+  grid-template-columns: var(--flow-window-width) var(--flow-stock-width);
+  column-gap: var(--flow-stock-gap);
+  grid-template-rows: repeat(3, auto);
+}
+
+.tree-overlay .element-ui-stock {
+  display: grid;
+  grid-column: 2;
+  grid-row: 1 / 4;
+  grid-template-rows: subgrid;
+  justify-items: center;
+  align-items: center;
+  text-align: center;
+}
+
+.tree-overlay .element-ui-stock .chapter-metric {
+  justify-self: center;
+  justify-content: center;
+  flex-wrap: nowrap;
+}
+
+.tree-overlay .element-ui-stock-dial {
+  --stock-dial-size: clamp(40px, 5.6vh, 54px);
+  position: relative;
+  width: var(--stock-dial-size);
+  height: var(--stock-dial-size);
+  align-self: center;
+}
+
+.tree-overlay .element-ui-stock-dial-clip {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  border-radius: 50%;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.tree-overlay .element-ui-stock-dial-fill {
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 106%;
+  background: var(--balance-production, var(--ui-topic));
+  mask: url('../web_assets/okna/affinity-zasoba-vypln.png?v=5') right center / 100% 100% no-repeat;
+  transform: translateX(calc(-100% * (1 - var(--balance-top-ratio, 0))));
+}
+
+.tree-overlay .element-ui-stock.is-unavailable .element-ui-stock-dial-fill {
+  visibility: hidden;
+}
+
+.tree-overlay .element-ui-stock-dial-ring {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background: #151d3a;
+  mask: url('../web_assets/okna/affinity-zasoba-kruh.png') center / 100% 100% no-repeat;
+  pointer-events: none;
+}
+
+.tree-overlay .element-ui-stock-trend {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  margin: auto;
+  width: 34%;
+  height: 31%;
+  background: var(--flow-heading-ink, #151d3a);
+  mask: url('../web_assets/okna/affinity-zasoba-sipka.png') center / contain no-repeat;
+  pointer-events: none;
+  filter: drop-shadow(0 0 1.5px rgba(255, 255, 255, .65));
+}
+
+.tree-overlay .element-ui-stock-trend[data-direction="down"] {
+  transform: scaleX(-1);
+}
+
+.tree-overlay .element-ui-stock-trend[hidden] {
+  display: none;
+}
+
+body.scene-night .tree-overlay .element-ui-stock-dial-ring {
+  background: #a3adc6;
+}
+
+body.scene-night .tree-overlay .element-ui-stock-trend {
+  background: var(--ui-ink);
+  filter: drop-shadow(0 0 1.5px rgba(0, 0, 0, .75));
+}
+
+.tree-overlay .element-ui-flow-window .chapter-metric {
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 6px;
+}
+
+.tree-overlay .element-ui-flow-window .element-ui-unavailable>span:last-child {
+  font-size: 12px;
+}
+
+.tree-overlay .element-ui-flow-window .element-ui-availability {
+  font: 600 var(--ui-value-size)/1.1 var(--ui-font-display);
+}
+
+.tree-overlay .element-ui-flow-window .element-ui-values :is(strong, output) {
+  color: var(--ui-ink);
+}
+
+.tree-overlay .element-ui-flow-window .element-ui-values .element-ui-unit {
+  margin-left: 3px;
+  font-size: clamp(9px, min(.7vw, 1.35vh), 12px);
+}
+
+.tree-overlay .element-ui-balance-bar {
+  --balance-lane-height: clamp(19px, 2.65vh, 26px);
+  --balance-lane-gap: clamp(2px, .32vh, 3.5px);
+  --balance-rail-cap: calc(var(--balance-lane-height) * 0.46);
+  --balance-marker-width: calc(var(--balance-lane-height) * 0.82);
+  --balance-limit-width: calc(var(--balance-lane-height) * 0.5);
+  --balance-track-color: #151d3a;
+  --balance-production: var(--ui-topic);
+  --balance-consumption: color-mix(in srgb, var(--ui-topic) 55%, #fff);
+  --balance-limit-color: #ff1700;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: var(--balance-lane-gap);
+  height: calc(2 * var(--balance-lane-height) + var(--balance-lane-gap));
+}
+
+.tree-overlay .element-ui-flow-window[data-topic="co2"] .element-ui-balance-bar {
+  --balance-production: #e5241c;
+  --balance-consumption: #f48682;
+}
+
+.tree-overlay .element-ui-flow-window[data-topic="sugar"] .element-ui-balance-bar {
+  --balance-production: #ff9700;
+  --balance-consumption: #ffc572;
+}
+
+body.scene-night .tree-overlay .element-ui-balance-bar {
+  --balance-track-color: #a3adc6;
+}
+
+.tree-overlay .element-ui-balance-lane {
+  position: relative;
+  height: var(--balance-lane-height);
+}
+
+.tree-overlay .element-ui-balance-rail {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.tree-overlay :is(.element-ui-balance-rail-start, .element-ui-balance-rail-mid, .element-ui-balance-rail-end) {
+  position: absolute;
+  inset-block: 0;
+  background: var(--balance-track-color);
+}
+
+.tree-overlay .element-ui-balance-rail-start {
+  left: 0;
+  width: var(--balance-rail-cap);
+}
+
+.tree-overlay .element-ui-balance-rail-mid {
+  left: calc(var(--balance-rail-cap) - 1px);
+  right: calc(var(--balance-rail-cap) - 1px);
+}
+
+.tree-overlay .element-ui-balance-bar.has-limit .element-ui-balance-rail-top .element-ui-balance-rail-mid {
+  right: 0;
+}
+
+.tree-overlay .element-ui-balance-rail-end {
+  right: 0;
+  width: var(--balance-rail-cap);
+  transform: scaleX(-1);
+}
+
+.tree-overlay .element-ui-balance-rail-top :is(.element-ui-balance-rail-start, .element-ui-balance-rail-end) {
+  mask: url('../web_assets/okna/affinity-kolej-horni-konec.png') left center / 100% 100% no-repeat;
+}
+
+.tree-overlay .element-ui-balance-rail-top .element-ui-balance-rail-mid {
+  mask: url('../web_assets/okna/affinity-kolej-horni-stred.png?v=4') left center / auto 100% repeat-x;
+  clip-path: inset(0 0 0 calc((100% - var(--balance-marker-width)) * var(--balance-top-ratio, 0) + var(--balance-marker-width) * 0.45));
+}
+
+.tree-overlay .element-ui-balance-bar.is-top-zero .element-ui-balance-rail-top .element-ui-balance-rail-mid {
+  clip-path: none;
+}
+
+.tree-overlay .element-ui-balance-rail-bottom :is(.element-ui-balance-rail-start, .element-ui-balance-rail-end) {
+  mask: url('../web_assets/okna/affinity-kolej-dolni-konec.png') left center / 100% 100% no-repeat;
+}
+
+.tree-overlay .element-ui-balance-rail-bottom .element-ui-balance-rail-mid {
+  mask: url('../web_assets/okna/affinity-kolej-dolni-stred.png?v=4') left center / auto 100% repeat-x;
+  clip-path: inset(0 0 0 calc((100% - var(--balance-marker-width)) * var(--balance-bottom-ratio, 0) + var(--balance-marker-width) * 0.45));
+}
+
+.tree-overlay .element-ui-balance-bar.is-bottom-zero .element-ui-balance-rail-bottom .element-ui-balance-rail-mid {
+  clip-path: none;
+}
+
+.tree-overlay .element-ui-balance-markers {
+  position: absolute;
+  inset: 0 var(--balance-rail-cap);
+  pointer-events: none;
+}
+
+.tree-overlay .element-ui-balance-bar.has-limit .element-ui-balance-lane-top .element-ui-balance-markers {
+  right: var(--balance-limit-width);
+}
+
+.tree-overlay .element-ui-balance-marker {
+  --balance-ink: var(--balance-production);
+  position: absolute;
+  inset-block: 0;
+  left: 0;
+  right: calc((100% - var(--balance-marker-width)) * (1 - var(--balance-ratio, 0)));
+  z-index: 1;
+}
+
+.tree-overlay .element-ui-balance-marker-top {
+  --balance-ratio: var(--balance-top-ratio, 0);
+  --balance-fill-mask: url('../web_assets/okna/affinity-pruh-horni-stred.png?v=4');
+  --balance-end-mask: url('../web_assets/okna/affinity-pruh-horni-konec.png');
+}
+
+.tree-overlay .element-ui-balance-marker-bottom {
+  --balance-ink: var(--balance-consumption);
+  --balance-ratio: var(--balance-bottom-ratio, 0);
+  --balance-fill-mask: url('../web_assets/okna/affinity-pruh-dolni-stred.png?v=4');
+  --balance-end-mask: url('../web_assets/okna/affinity-pruh-dolni-konec.png');
+}
+
+.tree-overlay .element-ui-balance-marker-fill {
+  position: absolute;
+  inset-block: 0;
+  left: 0;
+  right: calc(var(--balance-marker-width) - 2px);
+  background: var(--balance-ink);
+  mask: var(--balance-fill-mask) right center / auto 100% repeat-x;
+}
+
+.tree-overlay .element-ui-balance-bar.is-top-zero .element-ui-balance-marker-top .element-ui-balance-marker-fill,
+.tree-overlay .element-ui-balance-bar.is-bottom-zero .element-ui-balance-marker-bottom .element-ui-balance-marker-fill {
+  opacity: 0;
+}
+
+.tree-overlay .element-ui-balance-marker-end {
+  position: absolute;
+  inset: 0 0 0 auto;
+  width: var(--balance-marker-width);
+  background: var(--balance-ink);
+  mask: var(--balance-end-mask) right center / 100% 100% no-repeat;
+}
+
+.tree-overlay .element-ui-balance-marker-cap {
+  position: absolute;
+  right: 0;
+  z-index: 1;
+  width: calc(var(--balance-marker-width) * 0.68);
+  display: grid;
+  place-items: center;
+  color: #fff;
+  font: 400 clamp(8px, 1.05vh, 11px)/1 var(--ui-font-display);
+}
+
+.tree-overlay .element-ui-balance-marker-top .element-ui-balance-marker-cap {
+  top: 0;
+  bottom: 40%;
+}
+
+.tree-overlay .element-ui-balance-marker-bottom .element-ui-balance-marker-cap {
+  top: 40%;
+  bottom: 2%;
+}
+
+.tree-overlay .element-ui-balance-adjustable .element-ui-balance-marker-cap::before {
+  content: '';
+  width: 3px;
+  height: clamp(6px, .8vh, 8px);
+  border-inline: 1px solid rgba(255, 255, 255, .92);
+  border-radius: .5px;
+  opacity: .9;
+}
+
+.tree-overlay .element-ui-balance-lane-top:has(.element-ui-flow-slider:is(:hover, :focus-visible, :active)) .element-ui-balance-adjustable .element-ui-balance-marker-cap::before {
+  opacity: 1;
+  transform: scaleY(1.15);
+}
+
+.tree-overlay .element-ui-balance-limit {
+  position: absolute;
+  top: -24%;
+  bottom: 38%;
+  left: calc(var(--balance-rail-cap) + var(--balance-marker-width) + (100% - var(--balance-rail-cap) - var(--balance-marker-width) - var(--balance-limit-width)) * var(--balance-limit-ratio, 1));
+  width: var(--balance-limit-width);
+  z-index: 3;
+  pointer-events: none;
+  transition: transform 120ms ease;
+}
+
+.tree-overlay .element-ui-balance-limit::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--balance-limit-color);
+  mask: url('../web_assets/okna/affinity-pohyblivy-konec.png') center / 100% 100% no-repeat;
+}
+
+.tree-overlay .element-ui-balance-limit-cap {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  color: #fff;
+  font: 600 clamp(8px, 1.05vh, 11px)/1 var(--ui-font-display);
+}
+
+.tree-overlay .element-ui-balance-lane-top:has(.element-ui-limit-slider:is(:hover, :focus-visible, :active)) .element-ui-balance-limit {
+  transform: scale(1.12);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tree-overlay .element-ui-balance-limit {
+    transition: none;
+  }
+}
+
+.tree-overlay .element-ui-balance-slider {
+  appearance: none;
+  position: absolute;
+  z-index: 4;
+  inset: -4px var(--balance-rail-cap);
+  width: calc(100% - 2 * var(--balance-rail-cap));
+  height: calc(100% + 8px);
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  cursor: ew-resize;
+  pointer-events: auto;
+  touch-action: none;
+}
+
+.tree-overlay .element-ui-limit-slider {
+  inset: -7px 0 -4px calc(var(--balance-rail-cap) + var(--balance-marker-width));
+  width: calc(100% - var(--balance-rail-cap) - var(--balance-marker-width));
+  height: calc(100% + 11px);
+}
+
+.tree-overlay .element-ui-balance-slider::-webkit-slider-runnable-track {
+  width: 100%;
+  background: transparent;
+}
+
+.tree-overlay .element-ui-balance-slider::-webkit-slider-thumb {
+  appearance: none;
+  width: var(--balance-marker-width);
+  height: 24px;
+  background: transparent;
+  border: 0;
+  box-shadow: none;
+  cursor: inherit;
+}
+
+.tree-overlay .element-ui-limit-slider::-webkit-slider-thumb {
+  width: var(--balance-limit-width);
+}
+
+.tree-overlay .element-ui-balance-slider::-moz-range-track {
+  background: transparent;
+  border: 0;
+}
+
+.tree-overlay .element-ui-balance-slider::-moz-range-thumb {
+  width: var(--balance-marker-width);
+  height: 24px;
+  background: transparent;
+  border: 0;
+  cursor: inherit;
+}
+
+.tree-overlay .element-ui-limit-slider::-moz-range-thumb {
+  width: var(--balance-limit-width);
+}
+
+.tree-overlay .element-ui-balance-slider:focus-visible {
+  outline: 2px solid var(--ui-topic);
+  outline-offset: 2px;
+}
+
+.tree-overlay .element-ui-limit-slider:focus-visible {
+  outline-color: #ff1700;
+}
+
+.tree-overlay .element-ui-okno .ui-word-light {
+  color: var(--ui-light);
+}
+
+.tree-overlay .element-ui-okno .ui-word-water {
+  color: var(--ui-water);
+}
+
+.tree-overlay .element-ui-okno .ui-word-temperature {
+  color: var(--ui-temperature);
+}
+
+.tree-overlay .element-ui-okno .ui-word-co2 {
+  color: var(--ui-co2);
+}
+
+.tree-overlay .element-ui-okno .ui-word-leaves {
+  color: var(--ui-leaves);
+}
+
+.tree-overlay .element-ui-okno .ui-word-sugar {
+  color: var(--ui-sugar);
+}
+
+.tree-overlay .element-ui-okno .ui-word-oxygen {
+  color: var(--ui-oxygen);
+}
+
+.tree-overlay .element-ui-okno .ui-word-roots {
+  color: var(--ui-roots);
+}
+
+.tree-overlay .element-ui-okno .shared-water {
+  display: flex;
+  flex-direction: column-reverse;
+  margin: 8px 0 0;
+  padding: 0;
+}
+
+.tree-overlay .element-ui-okno .shared-water input[type="range"] {
+  width: 100%;
+  accent-color: var(--ui-water);
+}
+
+.tree-overlay .element-ui-okno .shared-water :is(label, .slider-val) {
+  color: var(--ui-water);
+  font: var(--ui-text-style);
+}
+
+/* Narrow screens keep the same fixed columns, with details below the readout. */
+@media (max-width: 700px) {
+  .tree-overlay {
+    --ui-text-size: 11px;
+    --ui-formula-size: 9px;
+    --ui-heading-size: clamp(22px, 5vw, 32px);
+    --ui-main-heading-size: clamp(18px, 4.5vw, 31px);
+    --ui-main-value-size: 35px;
+  }
+
+  .tree-overlay {
+    --ui-detail-text-size: 14px;
+  }
+
+  .tree-overlay .tree-annotation {
+    left: 4%;
+    top: 23%;
+    width: 44%;
+    height: 55%;
+  }
+
+  .tree-overlay .tree-annotation[data-side="right"] {
+    left: 52%;
+    width: 44%;
+  }
+
+  .tree-overlay .element-ui-okno {
+    display: block;
+    padding-left: 12px;
+    width: 44%;
+    height: 17%;
+    min-height: 0;
+  }
+
+  .tree-overlay .element-ui-okno[data-main-window="true"] {
+    left: 4%;
+    top: 65%;
+    width: 44%;
+    height: 24%;
+    min-height: 0;
+  }
+
+  .tree-overlay .element-ui-okno:is([data-window-id="kyslik"], [data-window-id="prijem-vody"]) {
+    top: 22%;
+  }
+
+  .tree-overlay .element-ui-okno:is([data-window-id="co2"], [data-window-id="chlazeni"]) {
+    top: 40%;
+  }
+
+  .tree-overlay .element-ui-okno:is([data-window-id="cukry"], [data-window-id="teplota"]) {
+    top: 58%;
+  }
+
+  .tree-overlay .element-ui-okno[data-window-id="voda"] {
+    top: 76%;
+    height: 20%;
+  }
+
+  .tree-overlay .element-ui-okno h3 {
+    font-size: var(--ui-heading-size);
+  }
+
+  .tree-overlay .element-ui-okno[data-main-window="true"] h2 {
+    font-size: var(--ui-main-heading-size);
+  }
+
+  .tree-overlay .element-ui-okno .annotation-reveal,
+  .tree-overlay .element-ui-okno[data-main-window="true"] .annotation-reveal {
+    left: 12px;
+    top: 65px;
+  }
+
+  .tree-overlay .element-ui-okno .element-ui-readout>.ui-window-formula {
+    display: none;
+  }
+
+  .tree-overlay .element-ui-okno[data-main-window="true"] .element-ui-values {
+    padding-top: 6px;
+  }
+
+  .tree-overlay .element-ui-okno[data-main-window="true"] :is(strong, output) {
+    font-size: var(--ui-main-value-size);
+  }
+
+  .tree-overlay .element-ui-values .chapter-metric {
+    flex-wrap: wrap;
+    gap: 2px;
+  }
+
+  .tree-overlay .element-ui-okno .element-ui-edge {
+    width: 5px;
+  }
+
+  .tree-overlay .element-ui-okno[data-main-window="true"] .element-ui-edge {
+    width: 6px;
+  }
+}
+
+/* The chapter guide sits outside the shared window layout. */
+.chapter-context-guide,
+.transpiration-prompt {
+  position: absolute;
+  color: var(--ui-ink);
+  font: var(--ui-text-style);
+}
+
+.chapter-context-guide {
+  left: 6%;
+  top: 23%;
+  width: 29%;
+  max-width: 420px;
+}
+
+.chapter-context-guide h2 {
+  margin: 10px 0;
+  font: 500 clamp(22px, 2vw, 36px)/1.12 var(--ui-font-display);
+  letter-spacing: -.025em;
+}
+
+.chapter-context-guide p {
+  margin: 0 0 12px;
+}
+
+.chapter-context-guide .transpiration-eyebrow {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: .12em;
+}
+
+.transpiration-steps {
+  display: flex;
+  flex-direction: column-reverse;
+  list-style: none;
+  padding: 0 0 0 17px;
+  margin: 18px 0;
+  border-left: 3px solid var(--ui-water);
+}
+
+.transpiration-steps li {
+  padding: 3px 0;
+}
+
+.transpiration-steps li+li::before {
+  content: '↑ ';
+  color: var(--ui-water);
+}
+
+.chapter-context-guide .transpiration-legend {
+  color: var(--ui-water);
+  font-weight: 600;
+}
+
+.transpiration-prompt {
+  left: 68%;
+  top: 12%;
+  width: 29%;
+}
+
+.transpiration-prompt h2 {
+  font: 600 12px/1.3 var(--ui-font-text);
+  text-transform: uppercase;
+  letter-spacing: .08em;
+  margin: 0 0 6px;
+}
+
+.transpiration-prompt p {
+  margin: 0;
+  max-width: 330px;
+}
+
+@media (max-width: 700px) {
+  .chapter-context-guide {
+    left: 4%;
+    top: 17%;
+    width: 44%;
+  }
+
+  .chapter-context-guide h2 {
+    font-size: 19px;
+  }
+
+  .chapter-context-guide .transpiration-eyebrow {
+    font-size: 9px;
+  }
+
+  .chapter-context-guide p {
+    font-size: 11px;
+    margin-bottom: 8px;
+  }
+
+  .transpiration-steps {
+    margin: 8px 0;
+  }
+
+  .transpiration-prompt {
+    left: 52%;
+    top: 13%;
+    width: 44%;
+  }
+
+  .transpiration-prompt h2 {
+    font-size: 10px;
+  }
+
+  .transpiration-prompt p {
+    font-size: 10px;
+  }
+}
+
+/* Headers stay on one line; mathematical relations may wrap. */
+.tree-overlay .element-ui-okno[data-toggle-visible="true"] .element-ui-readout>.ui-window-formula {
+  white-space: normal;
+}
+
+@media (max-width: 700px) {
+  .tree-overlay .element-ui-okno[data-toggle-visible="true"] .element-ui-readout>.ui-window-formula {
+    display: block;
+  }
+}
+
+body.scene-night .chapter-context-guide .transpiration-legend {
+  color: #a9baff;
+}
+
+/* Explicit detail toggle, using the existing accessible button and state. */
+.tree-overlay .element-ui-okno[data-toggle-visible="true"] .element-ui-readout>header {
+  display: grid;
+  grid-template-columns: max-content var(--ui-toggle-size);
+  align-items: start;
+  gap: var(--ui-toggle-gap);
+  width: 100%;
+  min-width: 0;
+}
+
+.tree-overlay .element-ui-okno[data-toggle-visible="true"] .element-ui-readout>header> :is(h2, h3) {
+  min-width: 0;
+  white-space: nowrap;
+  overflow-wrap: normal;
+}
+
+.tree-overlay .element-ui-okno[data-toggle-visible="true"] .element-ui-trigger {
+  position: static;
+  flex: 0 0 var(--ui-toggle-size);
+  width: var(--ui-toggle-size);
+  height: var(--ui-toggle-size);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--ui-ink);
+  border: 1px solid currentColor;
+  border-radius: 50%;
+  position: relative;
+  top: -1px;
+  font: 400 24px/1 var(--ui-font-text);
+}
+
+.tree-overlay .element-ui-okno[data-toggle-visible="true"] .element-ui-trigger:hover {
+  color: var(--ui-topic);
+}
+
+@media (hover: hover) {
+  .tree-overlay .element-ui-okno[data-toggle-visible="true"]:not([data-main-window="true"]):is(:hover, .is-pointer-over) .element-ui-trigger {
+    color: var(--ui-topic);
+  }
+}
+
+/* Reserve vertical breathing room between fixed topic windows. */
+.tree-overlay .element-ui-okno[data-chapter="transpiration"][data-window-id="teplota"] {
+  top: 28%;
+}
+
+.tree-overlay .element-ui-okno[data-chapter="transpiration"][data-window-id="chlazeni"] {
+  top: 48%;
+}
+
+.tree-overlay .element-ui-okno[data-chapter="transpiration"][data-window-id="prijem-vody"] {
+  top: 68%;
+}
+
+@media (max-width: 700px) {
+  .tree-overlay .element-ui-okno[data-chapter="transpiration"][data-window-id="teplota"] {
+    top: 26%;
+  }
+
+  .tree-overlay .element-ui-okno[data-chapter="transpiration"][data-window-id="chlazeni"] {
+    top: 46%;
+  }
+
+  .tree-overlay .element-ui-okno[data-chapter="transpiration"][data-window-id="prijem-vody"] {
+    top: 70%;
+  }
+}
+
+.tree-overlay .element-ui-okno[data-toggle-visible="true"][data-side="right"] {
+  grid-template-columns: max-content minmax(0, 1fr);
+}
+
+@media (max-width: 700px) {
+  .tree-overlay .element-ui-okno[data-toggle-visible="true"] .element-ui-readout>header {
+    max-width: 100%;
+    overflow-x: auto;
+  }
+}
+
+/* Collapsing only changes the detail, never the readout. */
+.tree-overlay .element-ui-okno.collapsed .annotation-reveal {
+  display: none;
+}
+
+.tree-overlay .element-ui-readout {
+  grid-column: 1;
+  grid-row: 1;
+  display: flex;
+  flex-direction: column;
+  align-self: start;
+  min-width: 0;
+  max-height: 100%;
+  overflow: auto;
+}
+
+.tree-overlay .element-ui-flow-window .element-ui-readout {
+  max-height: none;
+  overflow: visible;
+}
+
+@media (max-width: 700px) {
+  .tree-overlay .element-ui-okno {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .tree-overlay .element-ui-readout {
+    flex: 0 0 auto;
+    max-width: 100%;
+  }
+
+  .tree-overlay .element-ui-okno .annotation-reveal,
+  .tree-overlay .element-ui-okno[data-main-window="true"] .annotation-reveal {
+    left: auto;
+    top: auto;
+    flex: 1 1 auto;
+    height: auto;
+    margin-top: 8px;
+  }
+}
+
+/* Main-window details open below the fixed window without resizing it. */
+.tree-overlay .element-ui-okno[data-main-window="true"] .annotation-reveal {
+  position: absolute;
+  grid-column: 1 / -1;
+  grid-row: 1;
+  left: 0;
+  right: auto;
+  top: calc(100% + 14px);
+  bottom: auto;
+  width: min(44ch, 100%);
+  height: auto;
+  max-height: 10vh;
+  margin: 0;
+  overflow: auto;
+}
+
+.tree-overlay .element-ui-okno[data-main-window="true"] .annotation-reveal-inner,
+.tree-overlay .element-ui-okno[data-main-window="true"] .annotation-body {
+  height: auto;
+}
+
+@media (max-width: 700px) {
+  .tree-overlay .element-ui-okno[data-main-window="true"] .annotation-reveal {
+    left: 12px;
+    width: calc(100% - 12px);
+    top: calc(100% + 8px);
+    max-height: 8vh;
+  }
+}
+
+/* Keep the complete toggle border inside its reserved box. */
+.tree-overlay .element-ui-okno[data-toggle-visible="true"] .element-ui-trigger {
+  position: static;
+  top: auto;
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+  min-width: var(--ui-toggle-size);
+  min-height: var(--ui-toggle-size);
+}
+
+/* Scale toward the header gap; keep the top and right edges fixed. */
+.tree-overlay .element-ui-okno[data-toggle-visible="true"] .element-ui-trigger {
+  transform-origin: 100% 0;
+  transition: transform 160ms ease;
+}
+
+@keyframes window-toggle-pulse {
+
+  0%,
+  12%,
+  100% {
+    transform: scale(1);
+  }
+
+  6% {
+    transform: scale(1.08);
+  }
+}
+
+.tree-overlay.window-toggle-hint .element-ui-okno[data-toggle-visible="true"] .element-ui-trigger {
+  animation: window-toggle-pulse 8s ease-in-out infinite;
+}
+
+@media (hover: hover) {
+  .tree-overlay .element-ui-okno[data-toggle-visible="true"] .element-ui-trigger:hover {
+    animation: none;
+    transform: scale(1.08);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tree-overlay .element-ui-okno[data-toggle-visible="true"] .element-ui-trigger {
+    animation: none !important;
+    transition: none;
+    transform: none !important;
+  }
+}
+
+/* Photosynthesis starts level with the first topic window; context follows directly below. */
+.tree-overlay :is([data-chapter="photosynthesis"], [data-chapter="seasons"]) {
+  --photosynthesis-top: 25%;
+}
+
+.tree-overlay :is(.photosynthesis-title, .scene-chapter-title) {
+  position: absolute;
+  left: 6%;
+  top: var(--photosynthesis-top);
+  margin: 0;
+  color: var(--ui-ink);
+  font: 500 var(--ui-main-heading-size)/1.05 var(--ui-font-display);
+  letter-spacing: -.035em;
+}
+
+.tree-overlay article[data-chapter="photosynthesis"] {
+  position: absolute;
+  inset: 0;
+}
+
+.tree-overlay .photosynthesis-windows {
+  --flow-detail-width: min(clamp(145px, 15vw, 280px), calc(var(--flow-window-width) + 3vw));
+  --flow-toggle-angle: 0deg;
+  position: absolute;
+  inset: 0;
+  box-sizing: border-box;
+  display: grid;
+  grid-template-columns: var(--flow-window-width);
+  grid-auto-rows: max-content;
+  align-content: space-between;
+  row-gap: 8px;
+  padding: 7vh 2% 6vh max(4%, calc(98% - 1.72 * var(--flow-window-width) - var(--flow-gap)));
+  overflow-y: auto;
+}
+
+.tree-overlay .element-ui-okno[data-chapter="photosynthesis"][data-side="right"] {
+  position: relative;
+  inset: auto;
+  display: grid;
+  grid-template-columns: var(--flow-window-width) var(--flow-detail-width);
+  grid-template-rows: auto;
+  column-gap: var(--flow-gap);
+  width: 100%;
+  height: auto;
+  min-height: 0;
+  padding: 0;
+  text-align: left;
+}
+
+.tree-overlay .element-ui-okno[data-chapter="photosynthesis"][data-side="right"] .element-ui-readout {
+  grid-column: 1;
+  pointer-events: auto;
+  cursor: pointer;
+}
+
+.tree-overlay .element-ui-okno[data-chapter="photosynthesis"][data-side="right"] .element-ui-readout>header {
+  grid-template-columns: max-content var(--ui-toggle-size);
+  column-gap: 4px;
+  align-items: center;
+}
+
+.tree-overlay .element-ui-okno[data-chapter="photosynthesis"][data-side="right"] .element-ui-trigger {
+  grid-column: 2;
+  grid-row: 1;
+}
+
+.tree-overlay .element-ui-okno.element-ui-flow-window[data-toggle-visible="true"] .element-ui-readout .element-ui-trigger {
+  position: relative;
+  isolation: isolate;
+  border: 0;
+  color: var(--flow-heading-ink);
+  font-size: clamp(14px, 1.8vh, 16px);
+  font-weight: 600;
+}
+
+.tree-overlay .element-ui-okno.element-ui-flow-window .element-ui-trigger::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  margin: auto;
+  z-index: -1;
+  width: clamp(24px, 3.3vh, 32px);
+  aspect-ratio: 1;
+  background: var(--flow-toggle-fill, var(--flow-accent, var(--ui-topic)));
+  mask: url('../web_assets/okna/affinity-prepinac.png') center / contain no-repeat;
+  transform: rotate(var(--flow-toggle-angle, 90deg));
+}
+
+.tree-overlay .element-ui-okno.element-ui-flow-window {
+  --flow-heading-ink: #151d3a;
+  --ui-heading-size: clamp(22px, min(2.35vw, 4vh), 40px);
+  --ui-value-size: clamp(15px, min(1.35vw, 2.45vh), 22px);
+  --ui-text-size: clamp(13.5px, min(1.12vw, 2.15vh), 19px);
+  --ui-text-style: 400 var(--ui-text-size)/1.35 var(--ui-font-text);
+  --ui-toggle-size: clamp(32px, 4.6vh, 42px);
+}
+
+.tree-overlay .element-ui-flow-window[data-topic="co2"] {
+  --flow-accent: #e5241c;
+}
+
+.tree-overlay .element-ui-flow-window[data-topic="sugar"] {
+  --flow-accent: #ff9700;
+}
+
+.tree-overlay .element-ui-flow-window .element-ui-readout h3 {
+  color: var(--flow-heading-ink);
+}
+
+body.scene-night .tree-overlay .element-ui-flow-window {
+  --flow-heading-ink: var(--ui-ink);
+}
+
+@media (hover: hover) {
+  .tree-overlay .element-ui-okno.element-ui-flow-window:is(:hover, .is-pointer-over) {
+    --flow-toggle-fill: color-mix(in srgb, var(--flow-accent, var(--ui-topic)) 75%, white);
+  }
+}
+
+.tree-overlay .element-ui-okno[data-chapter="photosynthesis"][data-side="right"] .element-ui-readout h3 {
+  grid-column: 1;
+  grid-row: 1;
+}
+
+.tree-overlay .element-ui-okno[data-chapter="photosynthesis"][data-side="right"] .chapter-metric strong {
+  display: inline-flex;
+  align-items: baseline;
+  justify-content: flex-start;
+  min-width: 0;
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+
+.tree-overlay article[data-chapter="prototype"] .element-ui-flow-window:has(.element-ui-stock) {
+  width: calc(var(--flow-window-width) + var(--flow-stock-width, 72px) + var(--flow-stock-gap, 18px));
+}
+
+.tree-overlay .photosynthesis-windows .element-ui-okno:not(.collapsed) .element-ui-stock {
+  translate: calc(var(--flow-detail-width) + var(--flow-gap)) 0;
+}
+
+.tree-overlay .element-ui-okno[data-chapter="photosynthesis"][data-side="right"] .annotation-reveal {
+  align-self: start;
+  margin-top: 6px;
+  text-align: left;
+}
+
+.tree-overlay .element-ui-okno[data-chapter="photosynthesis"] :is(.annotation-reveal, .annotation-reveal-inner, .annotation-body, .annotation-body p) {
+  height: auto;
+  max-height: none;
+  overflow: visible;
+  overflow-wrap: anywhere;
+}
+
+.tree-overlay .element-ui-flow-window .annotation-body>.ui-window-formula {
+  min-block-size: calc(max(var(--ui-heading-size) * 1.05, var(--ui-toggle-size)) - 13px);
+  font-size: clamp(12px, .9vw, 15px);
+}
+
+.tree-overlay .element-ui-flow-window .annotation-body>p:not(.ui-window-formula) {
+  max-inline-size: 88%;
+  margin-inline-start: 0;
+  margin-inline-end: 6%;
+  font-size: calc(var(--ui-detail-text-size) - 1pt);
+  text-align: left;
+}
+
+.tree-overlay :is([data-chapter="photosynthesis"], [data-chapter="seasons"]) .chapter-context-guide {
+  top: calc(var(--photosynthesis-top) + var(--ui-main-heading-size) + 16px);
+  max-height: max(0px, calc(83% - var(--photosynthesis-top) - var(--ui-main-heading-size) - 16px));
+  overflow-y: auto;
+  pointer-events: auto;
+}
+
+.tree-overlay :is([data-chapter="photosynthesis"], [data-chapter="seasons"]) .chapter-context-guide h2 {
+  margin-top: 0;
+}
+
+.chapter-context-guide h2 {
+  opacity: 1;
+  transition: opacity 3s ease;
+}
+
+.chapter-context-guide h2.context-fading {
+  opacity: 0;
+}
+
+@media (max-width: 700px) {
+  .tree-overlay :is(.photosynthesis-title, .scene-chapter-title) {
+    left: 4%;
+  }
+
+  .tree-overlay .photosynthesis-windows {
+    --flow-window-width: min(144px, 42vw);
+    bottom: 12vh;
+    padding-block: 0;
+    overflow-y: auto;
+  }
+
+  .tree-overlay article[data-chapter="photosynthesis"] {
+    --flow-text-halo: #e6e8df;
+  }
+
+  body.scene-night .tree-overlay article[data-chapter="photosynthesis"] {
+    --flow-text-halo: #162031;
+  }
+
+  .tree-overlay article[data-chapter="photosynthesis"] :is(.element-ui-flow-window, .photosynthesis-title, .chapter-context-guide h2) {
+    text-shadow: -1px 0 var(--flow-text-halo), 1px 0 var(--flow-text-halo),
+      0 -1px var(--flow-text-halo), 0 1px var(--flow-text-halo), 0 0 4px var(--flow-text-halo);
+  }
+
+  .tree-overlay article[data-chapter="photosynthesis"] :is(.element-ui-trigger, .element-ui-balance-marker-cap, .element-ui-balance-limit-cap) {
+    text-shadow: none;
+  }
+
+  .tree-overlay article:is([data-chapter="photosynthesis"], [data-chapter="seasons"]) .chapter-context-guide {
+    max-height: max(0px, calc(39vh - var(--photosynthesis-top) - var(--ui-main-heading-size) - 24px));
+  }
+
+  .tree-overlay :is([data-chapter="photosynthesis"], [data-chapter="seasons"]) {
+    --photosynthesis-top: 22%;
+  }
+}
+
+body[data-chapter="photosynthesis"] .tree-overlay {
+  --photosynthesis-controls-top: 55%;
+}
+
+body[data-chapter="photosynthesis"] .tree-overlay .season-date-card {
+  top: var(--photosynthesis-controls-top);
+  bottom: 6vh;
+  align-items: end;
+  width: max-content;
+  font-size: clamp(13px, 1vw, 20px);
+}
+
+body[data-chapter="photosynthesis"] .season-date-card .time-playback-panel {
+  position: absolute;
+  top: calc(clamp(18px, 1.6vw, 30px) * 1.2 + 8px);
+  left: 0;
+  width: max-content;
+  justify-content: space-between;
+}
+
+body[data-chapter="photosynthesis"] .season-date-card .time-playback-buttons button {
+  width: clamp(62px, 5.1vw, 80px);
+  height: clamp(62px, 5.1vw, 80px);
+}
+
+body[data-chapter="photosynthesis"] .season-date-card .time-playback-buttons svg {
+  width: clamp(40px, 3.2vw, 50px);
+  height: clamp(40px, 3.2vw, 50px);
+}
+
+.tree-overlay article[data-chapter="photosynthesis"] .chapter-context-guide {
+  max-height: max(0px, calc(var(--photosynthesis-controls-top) - var(--photosynthesis-top) - var(--ui-main-heading-size) - 32px));
+}
+
+@media (max-width: 700px) {
+  body[data-chapter="photosynthesis"] .tree-overlay {
+    --photosynthesis-controls-top: 40%;
+  }
+
+  body[data-chapter="photosynthesis"] .tree-overlay .season-date-card {
+    bottom: 4%;
+  }
+
+  .tree-overlay .photosynthesis-windows {
+    top: calc(var(--photosynthesis-controls-top) + 96px);
+  }
+}
+
+/* Chapter layout variants: the guide sits between the main window and time. */
+.tree-overlay [data-chapter="transpiration"] .chapter-context-guide {
+  top: 32%;
+  max-height: 27%;
+  overflow-y: auto;
+  pointer-events: auto;
+}
+
+/* Semenace uses the shared window layout. */
+.tree-overlay .element-ui-okno[data-chapter="seeds"][data-main-window="true"] {
+  top: 25%;
+}
+
+.tree-overlay .element-ui-okno[data-chapter="seeds"][data-window-id="kvety"] {
+  top: 22%;
+}
+
+.tree-overlay .element-ui-okno[data-chapter="seeds"][data-window-id="bukvice"] {
+  top: 45%;
+}
+
+.tree-overlay .element-ui-okno[data-chapter="seeds"][data-window-id="semena"] {
+  top: 68%;
+}
+
+.tree-overlay .element-ui-okno[data-topic="seeds"] {
+  --ui-topic: #865126;
+}
+
+.tree-overlay [data-chapter="seeds"] .chapter-context-guide {
+  top: 66%;
+  max-height: none;
+  overflow: visible;
+  pointer-events: auto;
+}
+
+@media (max-width: 700px) {
+  .tree-overlay .element-ui-okno[data-chapter="seeds"][data-main-window="true"] {
+    top: 22%;
+  }
+
+  .tree-overlay .element-ui-okno[data-chapter="seeds"][data-window-id="kvety"] {
+    top: 22%;
+  }
+
+  .tree-overlay .element-ui-okno[data-chapter="seeds"][data-window-id="bukvice"] {
+    top: 44%;
+  }
+
+  .tree-overlay .element-ui-okno[data-chapter="seeds"][data-window-id="semena"] {
+    top: 66%;
+  }
+}
+
+.tree-overlay .element-ui-okno[data-chapter="seeds"][data-main-window="true"] :is(strong, output) {
+  font-size: clamp(18px, 2vw, 32px);
+  white-space: normal;
+}
+
+.tree-overlay [data-chapter="seeds"] .chapter-context-guide h2 {
+  font: 500 clamp(14px, 1.15vw, 20px)/1.3 var(--ui-font-text);
+  letter-spacing: normal;
+}
+
+.tree-overlay .element-ui-okno[data-chapter="seeds"] h3 {
+  font-size: clamp(19px, 1.8vw, 36px);
+}
+
+/* Short seed texts remain readable without scrollbars or clipping. */
+.tree-overlay .element-ui-okno[data-chapter="seeds"] :is(.element-ui-readout, .annotation-reveal, .annotation-reveal-inner, .annotation-body) {
+  overflow: visible;
+  max-height: none;
+}
+
+.tree-overlay .element-ui-okno[data-chapter="seeds"][data-side="right"] .annotation-reveal {
+  position: absolute;
+  top: 5em;
+  left: 20px;
+  right: auto;
+  width: calc(100% - 20px);
+  height: auto;
+}
+
+.tree-overlay .element-ui-okno[data-chapter="seeds"] .annotation-reveal-inner,
+.tree-overlay .element-ui-okno[data-chapter="seeds"] .annotation-body {
+  height: auto;
+}
+
+.tree-overlay .element-ui-okno[data-chapter="seeds"] .element-ui-readout>header {
+  overflow: visible;
+}
+
+@media (max-width: 700px) {
+  .tree-overlay .element-ui-okno[data-chapter="seeds"][data-side="right"] .annotation-reveal {
+    left: 12px;
+    width: calc(100% - 12px);
+    margin: 0;
+  }
+
+  .tree-overlay .element-ui-okno[data-chapter="seeds"] h3 {
+    white-space: normal;
+  }
+
+  .tree-overlay .element-ui-okno[data-chapter="seeds"][data-toggle-visible="true"] .element-ui-readout>header {
+    grid-template-columns: minmax(0, 1fr) var(--ui-toggle-size);
+  }
+
+  .tree-overlay .element-ui-okno[data-chapter="seeds"][data-toggle-visible="true"] .element-ui-readout>header>h3 {
+    white-space: normal;
+  }
+}
+
+/* Transparent window space does not intercept camera dragging. */
+.tree-overlay .element-ui-okno {
+  pointer-events: none;
+}
+
+.tree-overlay .element-ui-okno .element-ui-readout>header> :is(h2, h3, button),
+.tree-overlay .element-ui-okno:not(.collapsed) .annotation-reveal {
+  pointer-events: auto;
+}

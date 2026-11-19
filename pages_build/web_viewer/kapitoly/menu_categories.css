@@ -1,0 +1,69 @@
+.settings-categories {
+  position: absolute;
+  top: 96px;
+  right: 20px;
+  z-index: 11;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 10px;
+  border: 1px solid var(--bg-panel-border);
+  border-radius: 16px;
+  background: var(--bg-panel);
+  backdrop-filter: blur(20px);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.2);
+}
+
+.settings-category {
+  min-width: 148px;
+  padding: 14px 18px;
+  border: 1px solid transparent;
+  border-radius: 10px;
+  background: var(--bg-card);
+  color: var(--text-muted);
+  font: 600 13px var(--font-sans);
+  text-align: left;
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.settings-category:hover {
+  background: var(--bg-card-hover);
+  color: var(--text-main);
+}
+
+.settings-category[aria-pressed="true"] {
+  border-color: var(--accent);
+  background: var(--accent);
+  color: #072714;
+}
+
+.settings-category:focus-visible {
+  outline: 2px solid var(--text-main);
+  outline-offset: 3px;
+}
+
+.panel-content > [data-settings-category][hidden] {
+  display: none;
+}
+
+@media (max-width: 620px) {
+  .settings-categories { right: 8px; padding: 5px; gap: 6px; }
+  .settings-category { min-width: 0; padding: 12px 8px; font-size: 11px; }
+  #controlsPanel { left: 8px; width: calc(100vw - 132px); max-width: 340px; }
+  .panel-header { padding: 12px 10px; }
+  .panel-header h2 { font-size: 11px; }
+  .panel-content { padding: 10px; gap: 12px; }
+}
+
+/* Each category has separate User and Sett destinations. */
+.settings-category-title { padding: 4px 5px 8px; font-size: 12px; font-weight: 600; color: var(--text-main, #fff); }
+.settings-category-pair { display: grid; grid-template-columns: 1fr 1fr; gap: 5px; }
+.settings-category-pair:has(> :only-child) { grid-template-columns: 1fr; }
+.settings-category-pair .settings-category { min-width: 68px; padding: 11px 12px; text-align: center; }
+.settings-save-status { padding: 9px 16px; font-size: 11px; line-height: 1.45; color: var(--text-muted); border-bottom: 1px solid var(--bg-panel-border); }
+.panel-content [data-audience][hidden], .panel-content .section-title[hidden], .settings-save-status[hidden] { display: none !important; }
+@media (max-width: 620px) {
+  .settings-category-pair .settings-category { min-width: 42px; padding: 10px 5px; }
+  .settings-category-title { font-size: 11px; }
+}

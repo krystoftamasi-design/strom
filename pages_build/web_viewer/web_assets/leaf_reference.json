@@ -1,0 +1,31 @@
+{
+  "source": "BLENDER/Untitled.blend",
+  "materials": [
+    {
+      "name": "Material.003",
+      "leaves": 4988,
+      "random": [
+        0.48778674006462097,
+        0.631487250328064,
+        0.1233329325914383
+      ],
+      "alpha_source": "obrazky/list2.png",
+      "alpha_texture": "leaf_alpha_1.png"
+    },
+    {
+      "name": "Material.005",
+      "leaves": 4944,
+      "random": [
+        0.48778674006462097,
+        0.631487250328064,
+        0.1233329325914383
+      ],
+      "alpha_source": "obrazky/list.png",
+      "alpha_texture": "leaf_alpha_2.png"
+    }
+  ],
+  "atlas": {
+    "size": 4096,
+    "tile": 56
+  }
+}

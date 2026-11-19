@@ -1,0 +1,57 @@
+{
+  "source": "BLENDER/Untitled.blend",
+  "atlas": {
+    "size": 1024,
+    "tile": 256,
+    "padding": 8,
+    "grid": 4
+  },
+  "materials": [
+    {
+      "name": "Material.003",
+      "variants": 16,
+      "polygons": [
+        298,
+        937,
+        1557,
+        2198,
+        2838,
+        3440,
+        4072,
+        4670,
+        5289,
+        5869,
+        6468,
+        7119,
+        7750,
+        8384,
+        8980,
+        9608
+      ],
+      "texture": "leaf_detail_0.png"
+    },
+    {
+      "name": "Material.005",
+      "variants": 16,
+      "polygons": [
+        317,
+        921,
+        1544,
+        2136,
+        2739,
+        3394,
+        3990,
+        4639,
+        5259,
+        5916,
+        6555,
+        7159,
+        7769,
+        8368,
+        9017,
+        9633
+      ],
+      "texture": "leaf_detail_1.png"
+    }
+  ]
+}
