@@ -22,7 +22,6 @@ history:
 
 Hlavní stránka `index.html` zůstává přímo ve `web_viewer`.
 Stránka `strom_web_viewer.html` je další existující vstup.
-Stránka `fotosynteza.html` zobrazuje samostatné schéma fotosyntézy.
 Stránka `semeno.html` slouží k ladění 3D modelu semene.
 Soubor `spustit_web_viewer.bat` spouští projekt.
 
