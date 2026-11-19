@@ -4,7 +4,7 @@ const QUARTER_DAYS = [59, 151, 243, 334, 424];
 const MONTH_DAYS = [0, 31, 59, 90, 120, 151, 181, 212, 243, 273, 304, 334, 365];
 export const BEECH_CALENDAR = Object.freeze({
   budburst: 114,       // April 25
-  fullLeaf: 134,       // May 15
+  fullLeaf: 132,       // May 13
   colourStart: 267,    // September 25
   leafFallStart: 297,  // October 25
   leafFallEnd: 323     // November 20
