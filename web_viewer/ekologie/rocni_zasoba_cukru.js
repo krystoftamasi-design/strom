@@ -134,7 +134,7 @@ export function createSeasonalSugarBalance(curve, capacity) {
   let leafStart;
   let production;
   let appliedGrowth;
-  let budburstRate = 0;
+  let budburstDisplay;
   let seekAnchor;
 
   function referenceAt(date) {
@@ -203,12 +203,11 @@ export function createSeasonalSugarBalance(curve, capacity) {
         fromFraction = dayFraction(date);
         production = 0;
         appliedGrowth = 0;
-        budburstRate = 0;
+        budburstDisplay = undefined;
       }
 
       const elapsedDays = date - cursor;
       if (elapsedDays > 0) seekAnchor = undefined;
-      const elapsedMinutes = elapsedDays > 0 ? (monthClockForSeason(to) - monthClockForSeason(from)) * minutesPerDay : 0;
       let growthUsed = 0;
       while (cursor < date) {
         const dayStart = Math.floor(cursor);
@@ -230,14 +229,21 @@ export function createSeasonalSugarBalance(curve, capacity) {
         }
         cursor = end;
       }
-      if (elapsedMinutes > 0) budburstRate = growthUsed / elapsedMinutes;
+      const clock = monthClockForSeason(to);
+      if (growthUsed > 0) {
+        const duration = minutesPerCalendarDay(dayOfYear(Math.floor(date)));
+        budburstDisplay = {
+          rate: growthUsed / duration,
+          until: clock + duration / minutesPerDay,
+        };
+      }
 
       const day = dayOfYear(Math.floor(date));
       const { flow } = curve[day];
       const current = currentAt(day, dayFraction(date));
       return {
         reserve: current.reserve,
-        budburstRate,
+        budburstRate: budburstDisplay && clock < budburstDisplay.until ? budburstDisplay.rate : 0,
         growthGranted: elapsedDays > 0 ? growthUsed / budburstBudget : undefined,
         autumnRate: leafStart * flow.fallShare / ((1 - flow.fallShare * fromFraction) * minutesPerCalendarDay(day)),
       };

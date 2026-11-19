@@ -34,7 +34,7 @@ for (const [nextClock, growthRequested, growing] of [
   const live = animated.update(from, to, true, 1, growthRequested);
   const control = withoutGrowth.update(from, to, true, 1);
   assert.equal(live.budburstRate > 0, growing);
-  charged += live.budburstRate * (nextClock - clock) * 1440;
+  charged += live.growthGranted * 350;
   if (charged > 0) assert.ok(live.reserve < control.reserve);
   else assert.equal(live.reserve, control.reserve);
   clock = nextClock;
@@ -58,7 +58,18 @@ assert.equal(partial.growthGranted, 0.4, 'Only 140 g of the 350 g spring budget 
 assert.equal(partial.reserve, 0);
 const exhausted = depleted.update(firstGrowth, laterGrowth, true, 1, 0.5);
 assert.equal(exhausted.growthGranted, 0, 'Further growth stops when the available reserve is empty');
-assert.equal(exhausted.budburstRate, 0, 'Previously funded growth is not charged again');
+assert.equal(exhausted.budburstRate, partial.budburstRate, 'The daily display continues after the debit');
+
+function springDisplay(fps) {
+  const balance = createSeasonalSugarBalance(depletedCurve, capacity);
+  const nextFrame = seasonForMonthClock(4 + 1 / (fps * 48));
+  balance.update(budburst, budburst, false, 1);
+  const debit = balance.update(budburst, nextFrame, true, 1);
+  const nextDay = balance.update(nextFrame, seasonForMonthClock(4.04), true, 1);
+  assert.equal(nextDay.budburstRate, 0);
+  return debit.budburstRate;
+}
+assert.equal(springDisplay(60), springDisplay(144));
 
 const skippedSpring = createSeasonalSugarBalance(depletedCurve, capacity);
 const beforeBudburst = seasonForMonthClock(3.7);
