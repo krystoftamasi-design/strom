@@ -1190,7 +1190,7 @@
     import {
       BEECH_CALENDAR, seasonDayForPosition, beechLeafFallProgress,
       monthClockForSeason, solarHoursForMonthClock
-    } from './obdobi/beech_phenology.js?v=month-clock-1';
+    } from './obdobi/beech_phenology.js?v=month-clock-2';
 
     const ecology = new TreeEcology();
 
@@ -3715,7 +3715,7 @@
     let displayedSunHour = timeOfDayHours;
     let wasIntroChapter = true;
     let timePaused = false;
-    const baseTimeRate = 0.5;
+    const baseTimeRate = 0.45;
     let timePlaybackSpeed = 1;
     const btnTimePause = document.getElementById('btnTimePause');
     const timeSpeedButtons = [
@@ -4249,7 +4249,8 @@
       const frameSeconds = (now - lastTime) / 1000;
       const delta = Math.min(0.1, frameSeconds);
       lastTime = now;
-      const playbackDelta = timePaused || preparingTree ? 0 : delta * baseTimeRate * timePlaybackSpeed;
+      const chapterTimeRate = chapterApp.introduction ? 0.5 : baseTimeRate;
+      const playbackDelta = timePaused || preparingTree ? 0 : delta * chapterTimeRate * timePlaybackSpeed;
       simulationTime += playbackDelta;
       const simulationNow = simulationTime * 1000;
 
