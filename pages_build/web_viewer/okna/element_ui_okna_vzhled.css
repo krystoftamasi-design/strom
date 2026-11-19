@@ -1648,3 +1648,15 @@ body[data-chapter="photosynthesis"] .season-date-card .time-playback-buttons svg
 .tree-overlay .element-ui-okno:not(.collapsed) .annotation-reveal {
   pointer-events: auto;
 }
+/* Keep the readout, expanded detail and stock inside tablet viewports. */
+@media (min-width: 701px) and (max-width: 1400px) and (pointer: coarse) {
+  .tree-overlay .photosynthesis-windows {
+    --flow-stock-width: clamp(62px, 6.4vw, 94px);
+    --flow-stock-gap: clamp(14px, 1.5vw, 24px);
+    padding-inline-start: calc(98% - var(--flow-window-width) - var(--flow-gap) - var(--flow-detail-width) - var(--flow-stock-gap) - var(--flow-stock-width));
+  }
+
+  body:has(.tree-overlay) {
+    height: 100dvh;
+  }
+}
