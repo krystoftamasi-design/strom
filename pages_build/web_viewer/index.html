@@ -3,7 +3,7 @@
 
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <title>Život buku — interaktivní strom</title>
 
   <link rel="preload" href="./web_assets/fonts/Nohemi-VF.ttf" as="font" type="font/ttf" crossorigin>
@@ -44,12 +44,19 @@
       user-select: none;
     }
 
+    html,
+    body {
+      overscroll-behavior: none;
+      -webkit-tap-highlight-color: transparent;
+    }
+
     body {
       font-family: var(--font-sans);
       background-color: var(--bg-studio);
       color: var(--text-main);
       width: 100vw;
       height: 100vh;
+      height: 100dvh;
       overflow: hidden;
       position: relative;
     }
@@ -681,9 +688,9 @@
       font-weight: 400;
     }
   </style>
-  <link rel="stylesheet" href="./kapitoly/chapters.css?v=soon-title-3">
-  <link rel="stylesheet" href="./okna/tree_annotations.css?v=affinity-double-rail-6">
-  <link rel="stylesheet" href="./okna/element_ui_okna_vzhled.css?v=adjustable-value-1">
+  <link rel="stylesheet" href="./kapitoly/chapters.css?v=ipad-smooth-1">
+  <link rel="stylesheet" href="./okna/tree_annotations.css?v=ipad-smooth-1">
+  <link rel="stylesheet" href="./okna/element_ui_okna_vzhled.css?v=ipad-smooth-1">
 </head>
 
 <body>
@@ -1168,12 +1175,12 @@
   <script type="module">
     import * as THREE from 'three';
     import { OrbitControls } from 'three/addons/controls/OrbitControls.js?v=zoom-pixel-ratio-1';
-    import { setupLeafBreeze } from './listy/leaf_breeze.js?v=perf-opt-1';
+    import { setupLeafBreeze } from './listy/leaf_breeze.js?v=ipad-smooth-1';
     import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
     import { PhotolysisSystem } from './vykreslovani/photolysis_system.js?v=winter-particles-2';
     import { loadBarkReference, loadBarkAttributes, attachBarkAttributes, createBarkMaterial } from './vykreslovani/bark_material.js?v=opt-lut-1';
-    import { loadLeafReference, loadLeafAttributes, attachLeafAttributes, createLeafMaterial, createLeafDepthMaterial, setLeafEdgeTransition } from './vykreslovani/leaf_material.js?v=perf-opt-1';
-    import { LeafControls } from './listy/leaf_controls.js?v=perf-opt-1';
+    import { loadLeafReference, loadLeafAttributes, attachLeafAttributes, createLeafMaterial, createLeafDepthMaterial, setLeafEdgeTransition } from './vykreslovani/leaf_material.js?v=airborne-contour-1';
+    import { LeafControls } from './listy/leaf_controls.js?v=ipad-smooth-1';
     import { crossedSpring } from './listy/leaf_growth_timing.js?v=1';
     import { advanceDroughtLeaves, droughtLeafFall } from './listy/drought_leaf_animation.js?v=1';
     import { loadBranchDryingReference, branchDryingFrontWidth } from './listy/leaf_branch_drying.js?v=3';
@@ -1181,10 +1188,10 @@
     import { createSunClouds } from './vykreslovani/sun_clouds.js?v=2';
     import { createWaterBrushMaterial, addWaterBrushAttributes } from './vykreslovani/water_brush.js?v=highlight-width-3';
     import { TreeEcology, SEASONS, MODEL_MINUTES_PER_SECOND } from './ekologie/tree_ecology.js?v=light-consumption-1';
-    import { createChapters } from './kapitoly/chapters.js?v=adjustable-value-1';
+    import { createChapters } from './kapitoly/chapters.js?v=ipad-smooth-1';
     import { createSeedChapter } from './kapitoly/seed_chapter.js';
     import { createTreeBird } from './vykreslovani/tree_bird.js?v=perch-grid-1';
-    import { createSeasonRing } from './obdobi/season_ring.js?v=season-boundary-1';
+    import { createSeasonRing } from './obdobi/season_ring.js?v=ipad-smooth-1';
     import { createIntroForest } from './obdobi/intro_forest.js?v=perf-opt-1';
     import { seasonColorForPosition } from './obdobi/season_timeline.js?v=beech-calendar-1';
     import {
@@ -1218,22 +1225,41 @@
     const studioColor = new THREE.Color(0xdcded0); // Exact Blender background
     scene.background = studioColor;
 
+    const isTouchDevice = window.matchMedia('(pointer: coarse)').matches
+      || (navigator.maxTouchPoints > 1 && /Mac|iPad|iPhone|iPod/i.test(navigator.userAgent));
+
     // Keep the page canvas opaque. MSAA resolves leaf coverage against the
     // scene background; a second browser alpha composite would add pale halos.
     const rendererOptions = {
       alpha: false,
       depth: true,
-      stencil: true,
+      stencil: false,
       antialias: true,
       powerPreference: 'high-performance',
       preserveDrawingBuffer: false
     };
     const renderContext = canvas.getContext('webgl2', rendererOptions) || canvas.getContext('webgl', rendererOptions);
     const renderer = new THREE.WebGLRenderer({ canvas, context: renderContext, ...rendererOptions });
-    let maxRenderPixelRatio = Math.min(window.devicePixelRatio || 1, 1.5);
+    const getViewportSize = () => ({
+      width: canvas.clientWidth || window.innerWidth,
+      height: canvas.clientHeight || window.innerHeight
+    });
+    const getMaxRenderPixelRatio = () => Math.min(window.devicePixelRatio || 1, isTouchDevice ? 1.25 : 1.5);
+    const getMinRenderPixelRatio = () => {
+      const { width, height } = getViewportSize();
+      return isTouchDevice || width * height > 2600000 ? 0.8 : 1.0;
+    };
+    let maxRenderPixelRatio = getMaxRenderPixelRatio();
+    let minRenderPixelRatio = getMinRenderPixelRatio();
     let activeRenderPixelRatio = maxRenderPixelRatio;
-    renderer.setPixelRatio(activeRenderPixelRatio);
-    renderer.setSize(window.innerWidth, window.innerHeight);
+    let isBlurredChapter = false;
+    function applyRenderPixelRatio() {
+      const { width, height } = getViewportSize();
+      const targetRatio = isBlurredChapter ? Math.min(activeRenderPixelRatio, 0.5) : activeRenderPixelRatio;
+      renderer.setPixelRatio(targetRatio);
+      renderer.setSize(width, height, false);
+    }
+    applyRenderPixelRatio();
     renderer.toneMapping = THREE.NoToneMapping;
     renderer.toneMappingExposure = 1.08;
     renderer.shadowMap.enabled = true;
@@ -1251,11 +1277,15 @@
 
     // 2. CAMERA SETUP (EXACT BLENDER CAMERA PARAMETERS)
     // Blender: loc = [37.91, -28.07, 18.18], Blender Z-up -> glTF Y-up: [37.91, 18.18, 28.07]
-    const camera = new THREE.PerspectiveCamera(43, window.innerWidth / window.innerHeight, 0.5, 300);
+    const baseCameraFov = 43;
+    const initialViewport = getViewportSize();
+    const camera = new THREE.PerspectiveCamera(baseCameraFov, initialViewport.width / Math.max(1, initialViewport.height), 0.5, 300);
     const treeHorizontalShift = 0;
     function updateCameraProjection() {
-      const width = window.innerWidth;
-      const height = window.innerHeight;
+      const { width, height } = getViewportSize();
+      const aspect = width / Math.max(1, height);
+      camera.aspect = aspect;
+      camera.fov = aspect < 1.15 ? Math.min(58, baseCameraFov / Math.pow(aspect / 1.15, 0.42)) : baseCameraFov;
       camera.setViewOffset(width, height, -Math.round(width * treeHorizontalShift), 0, width, height);
     }
     updateCameraProjection();
@@ -1325,7 +1355,8 @@
     sun1.position.set(86.1 * Math.cos(initialPitch) * Math.cos(sunAzimuths[0]),
       86.1 * Math.sin(initialPitch), 86.1 * Math.cos(initialPitch) * Math.sin(sunAzimuths[0])).add(sun1.target.position);
     sun1.castShadow = true;
-    sun1.shadow.mapSize.set(1024, 1024);
+    const shadowMapSize = isTouchDevice ? 512 : 1024;
+    sun1.shadow.mapSize.set(shadowMapSize, shadowMapSize);
     Object.assign(sun1.shadow.camera, { near: 35, far: 135, left: -17, right: 17, top: 22, bottom: -16 });
     sun1.shadow.bias = -0.0003;
     sun1.shadow.normalBias = 0.015;
@@ -1526,11 +1557,16 @@
     let trunkMesh = null;
     let rootsMesh = null;
     const gltfLoader = new GLTFLoader();
+    const leafCountInputEl = document.getElementById('sliderLeafCount');
+    if (isTouchDevice && leafCountInputEl) {
+      leafCountInputEl.value = '25000';
+      leafCountInputEl.defaultValue = '25000';
+    }
     const leafControls = new LeafControls({
       branchDryingReference,
       growthUniform: shaderUniforms.uLeafGrowth,
       sizeInput: document.getElementById('sliderLeafSize'),
-      countInput: document.getElementById('sliderLeafCount'),
+      countInput: leafCountInputEl,
       sizeLabel: document.getElementById('valLeafSize'),
       countLabel: document.getElementById('valLeafCount'),
       canopyLabel: document.getElementById('canopyLeafCountLabel'),
@@ -1551,15 +1587,9 @@
       loader.classList.remove('hidden');
       progressBar.style.width = '10%';
       loadProgressText.textContent = 'Stahuji 3D model stromu...';
-      let referenceAttributes, barkAttributes;
-      try {
-        [referenceAttributes, barkAttributes] = await Promise.all([loadLeafAttributes(modelUrl), loadBarkAttributes(modelUrl)]);
-      } catch (error) {
-        loadProgressText.textContent = 'Chyba načtení Blender materiálu: ' + error.message;
-        console.error(error);
-        return;
-      }
-
+      // Fetch binary leaf/bark reference attributes in parallel with the GLB file.
+      const attributesPromise = Promise.all([loadLeafAttributes(modelUrl), loadBarkAttributes(modelUrl)])
+        .then(data => ({ data }), error => ({ error }));
 
       if (currentModel) {
         scene.remove(currentModel);
@@ -1572,6 +1602,13 @@
       gltfLoader.load(
         modelUrl,
         async (gltf) => {
+          const loadedAttributes = await attributesPromise;
+          if (loadedAttributes.error) {
+            loadProgressText.textContent = 'Chyba načtení Blender materiálu: ' + loadedAttributes.error.message;
+            console.error(loadedAttributes.error);
+            return;
+          }
+          const [referenceAttributes, barkAttributes] = loadedAttributes.data;
           progressBar.style.width = '85%';
           loadProgressText.textContent = 'Aplikuji Blender Toon / Cel-Shader...';
 
@@ -2398,6 +2435,7 @@
         greenGroup.userData.flowMaxDistance = glucoseMaxDistance;
         greenGroup.userData.flowCutoff = glucoseCutoff;
         greenGroup.userData.flowRevealBottom = glucoseRevealBottom;
+        greenGroup.userData.lastDirection = null;
         photosynthesisGroup.add(greenRootFlowMesh);
       }
       updatePhotosynthesisLabelsPosition();
@@ -3197,11 +3235,14 @@
       if (greenRootFlowMesh) {
         greenRootFlowMesh.visible = !winter;
         const glucoseDirection = ecology.season === 'spring' ? 1.0 : -1.0;
-        greenRootFlowMesh.traverse(node => {
-          if (node.material?.uniforms?.uFlowDirection) {
-            node.material.uniforms.uFlowDirection.value = glucoseDirection;
-          }
-        });
+        if (greenRootFlowMesh.userData.lastDirection !== glucoseDirection) {
+          greenRootFlowMesh.userData.lastDirection = glucoseDirection;
+          greenRootFlowMesh.traverse(node => {
+            if (node.material?.uniforms?.uFlowDirection) {
+              node.material.uniforms.uFlowDirection.value = glucoseDirection;
+            }
+          });
+        }
       }
       if (glucoseFlow?.flowCutoff && glucoseFlow.flowMinDistance < glucoseFlow.flowMaxDistance) {
         const sugarActive = !winter && !sapLeafRedRetractionActive
@@ -3908,7 +3949,7 @@
       shaderUniforms.uMoonIntensity.value = 0.75 * moonAmount;
       shaderUniforms.uSceneIllumination.value = 0.07 * moonAmount
         + 3.15 * Math.min(1, shaderUniforms.uSunIntensity.value);
-      if (ecology.dayCycleEnabled && sunElevationDeg > 0 && now - lastPeriodicShadowUpdate >= 1000) {
+      if (!timePaused && ecology.dayCycleEnabled && sunElevationDeg > 0 && now - lastPeriodicShadowUpdate >= 1000) {
         invalidateShadows();
       }
     }
@@ -4142,6 +4183,11 @@
       },
       setVisualChapter: chapter => {
         lastDaylightFrame = -Infinity;
+        const nextBlurred = ['transpiration', 'seeds', 'roots'].includes(chapter);
+        if (nextBlurred !== isBlurredChapter) {
+          isBlurredChapter = nextBlurred;
+          applyRenderPixelRatio();
+        }
 
         // Preserve retraction across chapters, including night and red leaves.
         // Refresh cutoffs before making the flow groups visible.
@@ -4269,17 +4315,17 @@
         fpsTimer = 0;
       }
 
-      if (!adaptiveLocked && maxRenderPixelRatio > 1.05 && ecology.ready && frameSeconds > 0 && frameSeconds <= 0.45 && now - adaptiveStartTime > 2000) {
+      if (!adaptiveLocked && !isBlurredChapter && maxRenderPixelRatio > minRenderPixelRatio + 0.05 && ecology.ready && frameSeconds > 0 && frameSeconds <= 0.45 && now - adaptiveStartTime > 2000) {
         adaptiveFrames++;
         adaptiveTime += frameSeconds;
         if (adaptiveTime >= 0.8) {
           const sampleFps = adaptiveFrames / adaptiveTime;
           adaptiveTime = 0;
           adaptiveFrames = 0;
-          if (sampleFps < 34 && activeRenderPixelRatio > 1.0) {
+          if (sampleFps < 34 && activeRenderPixelRatio > minRenderPixelRatio + 0.01) {
             adaptiveSlowStreak++;
             adaptiveFastStreak = 0;
-          } else if (sampleFps >= 59 && activeRenderPixelRatio < maxRenderPixelRatio) {
+          } else if (sampleFps >= 57 && activeRenderPixelRatio < maxRenderPixelRatio) {
             adaptiveFastStreak++;
             adaptiveSlowStreak = 0;
           } else {
@@ -4289,9 +4335,11 @@
           const sinceChange = now - lastPixelRatioChange;
           let nextRatio = activeRenderPixelRatio;
           if (adaptiveSlowStreak >= 2 && sinceChange >= 2000) {
-            nextRatio = activeRenderPixelRatio > 1.2 && sampleFps >= 26 ? 1.15 : 1.0;
+            nextRatio = activeRenderPixelRatio > 1.05 && sampleFps >= 26
+              ? Math.max(minRenderPixelRatio, 1.0)
+              : minRenderPixelRatio;
             adaptiveDowngrades++;
-            if (adaptiveDowngrades >= 2 && nextRatio === 1.0) adaptiveLocked = true;
+            if (adaptiveDowngrades >= 2 && nextRatio <= minRenderPixelRatio + 0.01) adaptiveLocked = true;
           } else if (adaptiveDowngrades < 2 && adaptiveFastStreak >= 10 && sinceChange >= 12000) {
             nextRatio = maxRenderPixelRatio;
           }
@@ -4299,8 +4347,7 @@
             activeRenderPixelRatio = nextRatio;
             adaptiveSlowStreak = 0;
             adaptiveFastStreak = 0;
-            renderer.setPixelRatio(activeRenderPixelRatio);
-            renderer.setSize(window.innerWidth, window.innerHeight, false);
+            applyRenderPixelRatio();
             lastPixelRatioChange = now;
           }
         }
@@ -4312,6 +4359,7 @@
       }
 
       if (playbackDelta > 0) chapterApp.tick(playbackDelta);
+      controls.dampingFactor = 1 - Math.pow(1 - 0.15, delta * 60);
       controls.update();
       leafBreeze.update(simulationTime);
       if (sunHelpersGroup.visible) {
@@ -4432,14 +4480,26 @@
     requestAnimationFrame(animate);
 
     // 10. RESIZE LISTENER
-    window.addEventListener('resize', () => {
+    let lastViewportW = initialViewport.width;
+    let lastViewportH = initialViewport.height;
+    let lastViewportDpr = window.devicePixelRatio || 1;
+    function handleResize() {
+      const { width: w, height: h } = getViewportSize();
+      const dpr = window.devicePixelRatio || 1;
+      if (w === lastViewportW && h === lastViewportH && dpr === lastViewportDpr) return;
+      lastViewportW = w;
+      lastViewportH = h;
+      lastViewportDpr = dpr;
       updateCameraProjection();
-      maxRenderPixelRatio = Math.min(window.devicePixelRatio || 1, 1.5);
-      activeRenderPixelRatio = Math.min(activeRenderPixelRatio, maxRenderPixelRatio);
-      renderer.setPixelRatio(activeRenderPixelRatio);
-      renderer.setSize(window.innerWidth, window.innerHeight);
+      maxRenderPixelRatio = getMaxRenderPixelRatio();
+      minRenderPixelRatio = getMinRenderPixelRatio();
+      activeRenderPixelRatio = THREE.MathUtils.clamp(activeRenderPixelRatio, minRenderPixelRatio, maxRenderPixelRatio);
+      applyRenderPixelRatio();
       introForest.resize();
-    });
+    }
+    window.addEventListener('resize', handleResize);
+    window.visualViewport?.addEventListener('resize', handleResize);
+    window.addEventListener('orientationchange', () => setTimeout(handleResize, 120));
 
     window.treeControlsReady = true;
     window.dispatchEvent(new Event('tree-controls-ready'));

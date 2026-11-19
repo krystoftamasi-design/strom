@@ -135,7 +135,7 @@ body .tree-overlay [data-chapter] .chapter-context-guide h2 { font-weight: 400; 
 
 .tree-overlay .season-center-tick {
   position: absolute;
-  inset: auto auto 0 50%;
+  inset: auto auto env(safe-area-inset-bottom, 0px) 50%;
   width: 10px;
   height: clamp(18px, 3.5vh, 36px);
   border-radius: 3px;

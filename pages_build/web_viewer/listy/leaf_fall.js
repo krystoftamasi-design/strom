@@ -9,6 +9,7 @@ export const leafFallDeclarations = `
   attribute vec3 leafFallLanding;
   attribute vec3 leafCameraDrift;
   varying float vLeafFallProgress;
+  varying float vLeafAirborne;
 
   mat3 leafAxisRotation(vec3 axis, float angle) {
     float s = sin(angle), c = cos(angle), k = 1.0 - c;
@@ -65,8 +66,10 @@ export const leafFallDeclarations = `
   }
   vec3 leafFallPositionWithAge(vec3 position, mat3 rotation, float age) {
     vLeafFallProgress = 0.0;
+    vLeafAirborne = 0.0;
     if (age <= 0.0) return position;
     float flight = leafFlightTime();
+    vLeafAirborne = age < flight ? 1.0 : 0.0;
     if (age >= flight + 7.0) {
       // Collapse completely faded leaves into a degenerate point to skip rasterization.
       vLeafFallProgress = 1.0;

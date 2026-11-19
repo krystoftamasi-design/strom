@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { leafFallDeclarations } from '../listy/leaf_fall.js?v=opt-age-2';
+import { leafFallDeclarations } from '../listy/leaf_fall.js?v=airborne-contour-1';
 
 function createStableBrushAlpha(image, type, edgeTransition = 0) {
   // Bake stochastic coverage in leaf UV space once, then filter it with mipmaps.
@@ -30,9 +30,12 @@ function createStableBrushAlpha(image, type, edgeTransition = 0) {
   let seed = 0x59e247c1;
   for (let i = 0; i < size * size; i++) {
     seed ^= seed << 13; seed ^= seed >>> 17; seed ^= seed << 5;
-    const coverage = rgba[i * 4 + 3] / 255;
-    const covered = coverage >= (seed >>> 0) / 4294967296 ? 255 : 0;
-    pixels.set([255, 255, 255, covered], i * 4);
+    const p = i * 4;
+    const coverage = rgba[p + 3] / 255;
+    pixels[p] = 255;
+    pixels[p + 1] = 255;
+    pixels[p + 2] = 255;
+    pixels[p + 3] = coverage >= (seed >>> 0) / 4294967296 ? 255 : 0;
   }
   const texture = new THREE.DataTexture(pixels, size, size, THREE.RGBAFormat);
   texture.generateMipmaps = true;
@@ -224,11 +227,12 @@ const alphaDeclarations = `
   uniform float uLeafDepth;
   varying vec2 vLeafUv;
   varying float vLeafFallProgress;
+  varying float vLeafAirborne;
 `;
 const alphaFragment = `
   if (vLeafFallProgress >= 0.999) discard;
   float leafFade = 1.0 - vLeafFallProgress;
-  if (uLeafDepth < 0.5 && uAlphaMode > 1.5) {
+  if (uLeafDepth < 0.5 && uAlphaMode > 1.5 && vLeafAirborne < 0.5) {
     // The brush keeps its stochastic coverage, fixed to the leaf rather than
     // rehashed from the current pixel footprint. Mipmaps integrate fine pores.
     // Below 0.125, 4x MSAA alpha-to-coverage turns on 0/4 samples (invisible),
@@ -241,7 +245,9 @@ const alphaFragment = `
     // Only Material.005 has an alpha ramp. Material.003 uses image alpha directly.
     if (uLeafType > 0.5) leafCoverage = clamp((leafCoverage - 0.6145453453) / (1.0 - 0.6145453453), 0.0, 1.0);
     leafCoverage = clamp(leafCoverage * uLeafAlphaStrength * leafFade, 0.0, 1.0);
-    if (uLeafDepth > 0.5 || uAlphaMode <= 0.5) {
+    // A moving, edge-on leaf can lose all samples with alpha-to-coverage.
+    // Use the opaque silhouette during flight, including on mobile GPUs.
+    if (uLeafDepth > 0.5 || uAlphaMode <= 0.5 || vLeafAirborne > 0.5) {
       // Shadow maps are not multisampled: use a stable contour, never dithering.
       if (leafCoverage < 0.5) discard;
       diffuseColor.a = 1.0;

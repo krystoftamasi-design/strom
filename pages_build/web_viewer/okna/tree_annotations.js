@@ -93,17 +93,29 @@ const sliderIsActive = ':active, [data-touch-drag]';
 
 function enableTouchDrag(slider, handle) {
   let pointerId = null;
+  let trackLeft = 0;
+  let trackSpan = 1;
+  let thumbHalf = 0;
   const update = event => {
-    const track = slider.getBoundingClientRect();
-    const thumb = handle.offsetWidth;
-    const fraction = (event.clientX - track.left - thumb / 2) / Math.max(1, track.width - thumb);
+    const fraction = (event.clientX - trackLeft - thumbHalf) / trackSpan;
     const previousValue = slider.value;
     slider.valueAsNumber = Math.min(1, Math.max(0, fraction)) * Number(slider.max);
     if (slider.value !== previousValue) slider.dispatchEvent(new Event('input', { bubbles: true }));
   };
+  const endDrag = event => {
+    if (event.pointerId !== pointerId) return;
+    if (slider.hasPointerCapture?.(pointerId)) slider.releasePointerCapture(pointerId);
+    pointerId = null;
+    delete slider.dataset.touchDrag;
+  };
   slider.addEventListener('pointerdown', event => {
-    if (event.pointerType !== 'touch' || pointerId !== null || slider.disabled) return;
+    if (event.pointerType === 'mouse' || pointerId !== null || slider.disabled) return;
     event.preventDefault();
+    const track = slider.getBoundingClientRect();
+    const thumb = handle.offsetWidth;
+    trackLeft = track.left;
+    thumbHalf = thumb / 2;
+    trackSpan = Math.max(1, track.width - thumb);
     pointerId = event.pointerId;
     slider.dataset.touchDrag = '';
     slider.setPointerCapture(pointerId);
@@ -112,11 +124,9 @@ function enableTouchDrag(slider, handle) {
   slider.addEventListener('pointermove', event => {
     if (event.pointerId === pointerId) update(event);
   });
-  slider.addEventListener('lostpointercapture', event => {
-    if (event.pointerId !== pointerId) return;
-    pointerId = null;
-    delete slider.dataset.touchDrag;
-  });
+  slider.addEventListener('pointerup', endDrag);
+  slider.addEventListener('pointercancel', endDrag);
+  slider.addEventListener('lostpointercapture', endDrag);
 }
 
 function createElementUiOkno({ panel, body, reveal, toggle, model, definition }) {
@@ -359,14 +369,24 @@ export function createTreeAnnotations({ shell, model, createSeasonControl, setEl
     }
     if (changed) syncHighlights();
   }
+  let hoverFrame = 0;
   window.addEventListener('pointermove', event => {
     if (event.pointerType === 'touch') return;
     pointerPosition = { x: event.clientX, y: event.clientY };
-    syncWindowHover();
+    if (!hoverFrame) {
+      hoverFrame = requestAnimationFrame(() => {
+        hoverFrame = 0;
+        syncWindowHover();
+      });
+    }
   }, { passive: true });
   window.addEventListener('pointerout', event => {
     if (event.relatedTarget) return;
     pointerPosition = null;
+    if (hoverFrame) {
+      cancelAnimationFrame(hoverFrame);
+      hoverFrame = 0;
+    }
     syncWindowHover();
   });
   const content = shell.querySelector('.chapter-content');

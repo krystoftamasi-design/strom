@@ -1,6 +1,6 @@
 import { zobrazitHodnotu, vyhladitHodnotu } from '../okna/element_ui_okna_veliciny.js?v=light-consumption-1';
 import { SEASONS } from '../ekologie/tree_ecology.js?v=affinity-cap-1';
-import { createTreeAnnotations } from '../okna/tree_annotations.js?v=adjustable-value-1';
+import { createTreeAnnotations } from '../okna/tree_annotations.js?v=ipad-smooth-1';
 
 const chapters = [
   ['seasons', 'Období'], ['photosynthesis', 'Fotosyntéza'], ['transpiration', 'Transpirace'],
@@ -226,7 +226,15 @@ export function createChapters({ model, applySeason, setSun, setAzimuth, setVisu
   drawer.addEventListener('input', saveSettings);
   drawer.addEventListener('change', saveSettings);
   drawer.addEventListener('click', event => { if (event.target.closest('button')) saveSettings(); });
-  const fmt = (n, digits = 1) => n.toLocaleString('cs-CZ', { maximumFractionDigits: digits });
+  const numberFormats = new Map();
+  const fmt = (n, digits = 1) => {
+    let formatter = numberFormats.get(digits);
+    if (!formatter) {
+      formatter = new Intl.NumberFormat('cs-CZ', { maximumFractionDigits: digits });
+      numberFormats.set(digits, formatter);
+    }
+    return formatter.format(n);
+  };
   const hourly = ratePerMinute => fmt(ratePerMinute * 60, 2);
   const smoothedValues = new Map();
   let lastSmoothTime = performance.now();
@@ -258,49 +266,57 @@ export function createChapters({ model, applySeason, setSun, setAzimuth, setVisu
     const now = performance.now();
     const dt = (now - lastSmoothTime) / 1000;
     lastSmoothTime = now;
-    const season = SEASONS[model.season];
-    out('ecoSeasonLabel', season.label);
-    out('ecoTemperature', fmt(model.ambientTemperature, 1));
-    out('ecoTemperatureNearTree', fmt(model.temperatureNearCanopy, 1));
-    const temperatureDifference = Math.round((model.temperatureNearCanopy - model.ambientTemperature) * 10) / 10;
-    const differenceText = `${temperatureDifference < 0 ? '−' : temperatureDifference > 0 ? '+' : ''}${fmt(Math.abs(temperatureDifference), 1)} °C`;
-    out('ecoTemperatureDifference', differenceText);
-    const lightPhase = model.sunElevation > 6 ? 'Den' : model.sunElevation < -6 ? 'Noc' : model.sunAzimuth < 180 ? 'Svítání' : 'Soumrak';
-    out('ecoDaylight', model.dayCycleEnabled
-      ? `${lightPhase} · denní cyklus`
-      : 'Ruční nastavení slunce');
-    out('ecoReserve', `${fmt(model.reserve)} / ${fmt(model.capacity)} l`);
-    out('ecoWaterLimit', `${hourly(model.seasonalWaterLimit)} l/h`);
-    const nextMeter = model.reserve / model.capacity || 0;
-    if (reserveMeterEl && nextMeter !== prevMeterValue) {
-      prevMeterValue = nextMeter;
-      reserveMeterEl.value = nextMeter;
+    const sharedVisible = !sharedConditions.hidden && !sharedConditions.classList.contains('manager-hidden');
+    const rootsVisible = chapter === 'roots';
+    if (sharedVisible) {
+      const season = SEASONS[model.season];
+      out('ecoSeasonLabel', season.label);
+      out('ecoTemperature', fmt(model.ambientTemperature, 1));
+      out('ecoTemperatureNearTree', fmt(model.temperatureNearCanopy, 1));
+      const temperatureDifference = Math.round((model.temperatureNearCanopy - model.ambientTemperature) * 10) / 10;
+      const differenceText = `${temperatureDifference < 0 ? '−' : temperatureDifference > 0 ? '+' : ''}${fmt(Math.abs(temperatureDifference), 1)} °C`;
+      out('ecoTemperatureDifference', differenceText);
+      const lightPhase = model.sunElevation > 6 ? 'Den' : model.sunElevation < -6 ? 'Noc' : model.sunAzimuth < 180 ? 'Svítání' : 'Soumrak';
+      out('ecoDaylight', model.dayCycleEnabled
+        ? `${lightPhase} · denní cyklus`
+        : 'Ruční nastavení slunce');
+      out('ecoReserve', `${fmt(model.reserve)} / ${fmt(model.capacity)} l`);
+      out('ecoWaterLimit', `${hourly(model.seasonalWaterLimit)} l/h`);
+      const nextMeter = model.reserve / model.capacity || 0;
+      if (reserveMeterEl && nextMeter !== prevMeterValue) {
+        prevMeterValue = nextMeter;
+        reserveMeterEl.value = nextMeter;
+      }
+      out('ecoReserveTrend', model.reserve >= model.capacity - 0.001
+        ? 'Zásoba je plná.'
+        : model.inflow > model.consumption + 0.0001
+          ? 'Zásoba se doplňuje.'
+          : model.inflow < model.consumption - 0.0001
+            ? 'Zásoba ubývá.'
+            : 'Příjem a spotřeba jsou vyrovnané.');
+      out('ecoConsumption', `${hourly(model.consumption)} l/h`);
+      out('ecoLeafState', model.activeFoliage <= 0.001 ? 'Bez aktivních listů · nízká potřeba vody.' : model.hydration < 0.95 ? `Nedostatek vody · stres ${fmt((1 - model.hydration) * 100, 0)} %. Listy postupně schnou.` : model.dryness > 0.05 ? 'Voda je dostupná · listy se postupně zotavují.' : 'Voda je dostupná · listy jsou zavodněné.');
     }
-    out('ecoReserveTrend', model.reserve >= model.capacity - 0.001
-      ? 'Zásoba je plná.'
-      : model.inflow > model.consumption + 0.0001
-        ? 'Zásoba se doplňuje.'
-        : model.inflow < model.consumption - 0.0001
-          ? 'Zásoba ubývá.'
-          : 'Příjem a spotřeba jsou vyrovnané.');
-    out('ecoConsumption', `${hourly(model.consumption)} l/h`);
-    out('ecoLeafState', model.activeFoliage <= 0.001 ? 'Bez aktivních listů · nízká potřeba vody.' : model.hydration < 0.95 ? `Nedostatek vody · stres ${fmt((1 - model.hydration) * 100, 0)} %. Listy postupně schnou.` : model.dryness > 0.05 ? 'Voda je dostupná · listy se postupně zotavují.' : 'Voda je dostupná · listy jsou zavodněné.');
-    out('ecoWaterlogging', fmt(model.waterlogging * 100, 0));
-    const rootState = model.rootRot >= 0.05
-      ? model.waterlogging > 0.5
-        ? `Kořeny zahnívají (${fmt(model.rootRot * 100, 0)} %) · skutečný příjem vody klesá.`
-        : `Kořeny se zotavují (${fmt(model.rootRot * 100, 0)} % poškození) · příjem vody je ještě omezený.`
-      : model.waterlogging > 0.5
-        ? 'Půda je silně zamokřená. Pokud voda neodteče, kořeny se začnou poškozovat.'
-        : model.waterlogging > 0.05
-          ? 'V půdě se drží přebytečná voda a postupně odtéká.'
-          : 'Kořeny přijímají vodu bez zamokření.';
-    out('ecoRootState', rootState);
-    out('ecoRootCondition', rootState);
-    const rotting = model.rootRot >= 0.05;
-    if (rootDiagramEl && rotting !== prevRotting) {
-      prevRotting = rotting;
-      rootDiagramEl.classList.toggle('rotting', rotting);
+    if (sharedVisible || rootsVisible) {
+      const rootState = model.rootRot >= 0.05
+        ? model.waterlogging > 0.5
+          ? `Kořeny zahnívají (${fmt(model.rootRot * 100, 0)} %) · skutečný příjem vody klesá.`
+          : `Kořeny se zotavují (${fmt(model.rootRot * 100, 0)} % poškození) · příjem vody je ještě omezený.`
+        : model.waterlogging > 0.5
+          ? 'Půda je silně zamokřená. Pokud voda neodteče, kořeny se začnou poškozovat.'
+          : model.waterlogging > 0.05
+            ? 'V půdě se drží přebytečná voda a postupně odtéká.'
+            : 'Kořeny přijímají vodu bez zamokření.';
+      if (sharedVisible) out('ecoRootState', rootState);
+      if (rootsVisible) {
+        out('ecoWaterlogging', fmt(model.waterlogging * 100, 0));
+        out('ecoRootCondition', rootState);
+        const rotting = model.rootRot >= 0.05;
+        if (rootDiagramEl && rotting !== prevRotting) {
+          prevRotting = rotting;
+          rootDiagramEl.classList.toggle('rotting', rotting);
+        }
+      }
     }
     for (const { output, key, chapter: outputChapter } of zivaOutputs) {
       if (outputChapter && outputChapter !== chapter) continue;
@@ -308,10 +324,12 @@ export function createChapters({ model, applySeason, setSun, setAzimuth, setVisu
       const smoothed = vyhladitHodnotu(smoothedValues, output.id, value, dt);
       setText(output, zobrazitHodnotu(key, { [key]: smoothed }));
     }
-    setText(capturedLabel, `${hourly(model.waterInput)} l/h`);
-    if (document.activeElement !== waterInput) {
-      const nextWaterValue = String(model.waterInput * 60);
-      if (waterInput.value !== nextWaterValue) waterInput.value = nextWaterValue;
+    if (!waterRow.hidden) {
+      setText(capturedLabel, `${hourly(model.waterInput)} l/h`);
+      if (document.activeElement !== waterInput) {
+        const nextWaterValue = String(model.waterInput * 60);
+        if (waterInput.value !== nextWaterValue) waterInput.value = nextWaterValue;
+      }
     }
   }
   select('intro');

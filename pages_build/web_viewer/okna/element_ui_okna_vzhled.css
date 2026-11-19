@@ -358,6 +358,7 @@ body.scene-night .tree-overlay .element-ui-okno .ui-word {
   height: 65%;
   pointer-events: none;
   background: var(--ui-topic);
+  -webkit-mask: var(--ui-edge-variant) center / 100% 100% no-repeat;
   mask: var(--ui-edge-variant) center / 100% 100% no-repeat;
 }
 
@@ -425,6 +426,7 @@ body.scene-night .tree-overlay .element-ui-okno .ui-word {
   inset: 0 auto 0 0;
   width: 106%;
   background: var(--balance-production, var(--ui-topic));
+  -webkit-mask: url('../web_assets/okna/affinity-zasoba-vypln.png?v=5') right center / 100% 100% no-repeat;
   mask: url('../web_assets/okna/affinity-zasoba-vypln.png?v=5') right center / 100% 100% no-repeat;
   transform: translateX(calc(-100% * (1 - var(--balance-top-ratio, 0))));
 }
@@ -438,6 +440,7 @@ body.scene-night .tree-overlay .element-ui-okno .ui-word {
   inset: 0;
   z-index: 1;
   background: #151d3a;
+  -webkit-mask: url('../web_assets/okna/affinity-zasoba-kruh.png') center / 100% 100% no-repeat;
   mask: url('../web_assets/okna/affinity-zasoba-kruh.png') center / 100% 100% no-repeat;
   pointer-events: none;
 }
@@ -450,6 +453,7 @@ body.scene-night .tree-overlay .element-ui-okno .ui-word {
   width: 34%;
   height: 31%;
   background: var(--flow-heading-ink, #151d3a);
+  -webkit-mask: url('../web_assets/okna/affinity-zasoba-sipka.png') center / contain no-repeat;
   mask: url('../web_assets/okna/affinity-zasoba-sipka.png') center / contain no-repeat;
   pointer-events: none;
   filter: drop-shadow(0 0 1.5px rgba(255, 255, 255, .65));
@@ -564,10 +568,12 @@ body.scene-night .tree-overlay .element-ui-balance-bar {
 }
 
 .tree-overlay .element-ui-balance-rail-top :is(.element-ui-balance-rail-start, .element-ui-balance-rail-end) {
+  -webkit-mask: url('../web_assets/okna/affinity-kolej-horni-konec.png') left center / 100% 100% no-repeat;
   mask: url('../web_assets/okna/affinity-kolej-horni-konec.png') left center / 100% 100% no-repeat;
 }
 
 .tree-overlay .element-ui-balance-rail-top .element-ui-balance-rail-mid {
+  -webkit-mask: url('../web_assets/okna/affinity-kolej-horni-stred.png?v=4') left center / auto 100% repeat-x;
   mask: url('../web_assets/okna/affinity-kolej-horni-stred.png?v=4') left center / auto 100% repeat-x;
   clip-path: inset(0 0 0 calc((100% - var(--balance-marker-width)) * var(--balance-top-ratio, 0) + var(--balance-marker-width) * 0.45));
 }
@@ -577,10 +583,12 @@ body.scene-night .tree-overlay .element-ui-balance-bar {
 }
 
 .tree-overlay .element-ui-balance-rail-bottom :is(.element-ui-balance-rail-start, .element-ui-balance-rail-end) {
+  -webkit-mask: url('../web_assets/okna/affinity-kolej-dolni-konec.png') left center / 100% 100% no-repeat;
   mask: url('../web_assets/okna/affinity-kolej-dolni-konec.png') left center / 100% 100% no-repeat;
 }
 
 .tree-overlay .element-ui-balance-rail-bottom .element-ui-balance-rail-mid {
+  -webkit-mask: url('../web_assets/okna/affinity-kolej-dolni-stred.png?v=4') left center / auto 100% repeat-x;
   mask: url('../web_assets/okna/affinity-kolej-dolni-stred.png?v=4') left center / auto 100% repeat-x;
   clip-path: inset(0 0 0 calc((100% - var(--balance-marker-width)) * var(--balance-bottom-ratio, 0) + var(--balance-marker-width) * 0.45));
 }
@@ -627,6 +635,7 @@ body.scene-night .tree-overlay .element-ui-balance-bar {
   left: 0;
   right: calc(var(--balance-marker-width) - 2px);
   background: var(--balance-ink);
+  -webkit-mask: var(--balance-fill-mask) right center / auto 100% repeat-x;
   mask: var(--balance-fill-mask) right center / auto 100% repeat-x;
 }
 
@@ -640,6 +649,7 @@ body.scene-night .tree-overlay .element-ui-balance-bar {
   inset: 0 0 0 auto;
   width: var(--balance-marker-width);
   background: var(--balance-ink);
+  -webkit-mask: var(--balance-end-mask) right center / 100% 100% no-repeat;
   mask: var(--balance-end-mask) right center / 100% 100% no-repeat;
 }
 
@@ -680,6 +690,7 @@ body.scene-night .tree-overlay .element-ui-balance-bar {
   position: absolute;
   inset: 0;
   background: var(--balance-limit-color);
+  -webkit-mask: url('../web_assets/okna/affinity-pohyblivy-konec.png') center / 100% 100% no-repeat;
   mask: url('../web_assets/okna/affinity-pohyblivy-konec.png') center / 100% 100% no-repeat;
 }
 
@@ -1278,6 +1289,8 @@ body.scene-night .chapter-context-guide .transpiration-legend {
   padding-block: 7vh 6vh;
   overflow-x: hidden;
   overflow-y: auto;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
 }
 
 .tree-overlay .element-ui-okno[data-chapter="photosynthesis"][data-side="right"] {
@@ -1332,6 +1345,7 @@ body.scene-night .chapter-context-guide .transpiration-legend {
   width: clamp(24px, 3.3vh, 32px);
   aspect-ratio: 1;
   background: var(--flow-toggle-fill, var(--flow-accent, var(--ui-topic)));
+  -webkit-mask: url('../web_assets/okna/affinity-prepinac.png') center / contain no-repeat;
   mask: url('../web_assets/okna/affinity-prepinac.png') center / contain no-repeat;
   transform: rotate(var(--flow-toggle-angle, 90deg));
 }
@@ -1678,8 +1692,23 @@ body[data-chapter="photosynthesis"] .season-date-card .time-playback-buttons svg
 .tree-overlay .element-ui-okno:not(.collapsed) .annotation-reveal {
   pointer-events: auto;
 }
-@media (min-width: 701px) and (max-width: 1400px) and (pointer: coarse) {
+@media (pointer: coarse) {
   body:has(.tree-overlay) {
     height: 100dvh;
+  }
+
+  .tree-overlay .element-ui-balance-slider {
+    inset-block: -10px;
+    height: calc(100% + 20px);
+  }
+
+  .tree-overlay .element-ui-editable-value {
+    inset-block: -12px -10px;
+    height: calc(100% + 22px);
+  }
+
+  .tree-overlay :is(.chapter-context-guide, .annotation-reveal, .annotation-body) {
+    overscroll-behavior: contain;
+    -webkit-overflow-scrolling: touch;
   }
 }

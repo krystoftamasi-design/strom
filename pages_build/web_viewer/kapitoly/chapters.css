@@ -234,6 +234,12 @@ body:is([data-chapter="transpiration"], [data-chapter="seeds"])::after {
   pointer-events: none;
 }
 
+@media (pointer: coarse) {
+  body.has-chapters .chapter-nav button {
+    padding-block: 8px;
+  }
+}
+
 body:is([data-chapter="transpiration"], [data-chapter="seeds"]) .chapter-nav {
   z-index: 12;
 }

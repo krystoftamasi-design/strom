@@ -177,6 +177,8 @@ function prepareMesh(mesh, atlas, materialIndex, alphaBounds = null) {
   // their source leaves. Copies retain that type's UVs, alpha and season data.
   const expanded = new THREE.BufferGeometry();
   for (const [name, attribute] of Object.entries(geometry.attributes)) {
+    // Leaf shaders compute colour from diffuse/procedural textures, never vertex COLOR_0.
+    if (name === 'color') continue;
     const values = new Float32Array(attribute.count * attribute.itemSize * LEAF_MULTIPLIER);
     const getters = ['getX', 'getY', 'getZ', 'getW'];
     for (let i = 0; i < attribute.count; i++) {
