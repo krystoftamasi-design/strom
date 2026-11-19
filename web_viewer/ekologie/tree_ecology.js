@@ -288,7 +288,7 @@ export class TreeEcology {
       meanRespiration = this.leafArea * konstanty.glucoseConversion * meanRespFrac;
     }
     const net = (meanGlucose + this.autumnReturnRate) - (meanRespiration + this.budburstRate);
-    const storageShare = SURPLUS_TO_STORAGE + 0.15 * (1 - clamp(this.canopyLimit, 0, 1));
+    const storageShare = SURPLUS_TO_STORAGE + 0.15 * clamp((0.75 - this.canopyLimit) / 0.75, 0, 1);
     return net >= 0 ? net * storageShare : net;
   }
 
