@@ -288,7 +288,8 @@ export class TreeEcology {
       meanRespiration = this.leafArea * konstanty.glucoseConversion * meanRespFrac;
     }
     const net = (meanGlucose + this.autumnReturnRate) - (meanRespiration + this.budburstRate);
-    return net >= 0 ? net * SURPLUS_TO_STORAGE : net;
+    const storageShare = SURPLUS_TO_STORAGE + 0.15 * (1 - clamp(this.canopyLimit, 0, 1));
+    return net >= 0 ? net * storageShare : net;
   }
 
   advanceSugarOnSeek(fromPosition, toPosition, daytimeLight = null, crossedBudburst = false) {
