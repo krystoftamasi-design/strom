@@ -4322,7 +4322,8 @@
       // Keep the same clock and paths so airborne leaves continue their flight.
       const fallSeasonPhase = ((ecology.seasonPosition % 4) + 4) % 4;
       const winterFallSpeed = 1 + 7 * THREE.MathUtils.smoothstep(fallSeasonPhase, 2.5, 3);
-      leafFallAnimationTime += playbackDelta * winterFallSpeed;
+      // Keep the flight visible even if fast playback and a slow frame coincide.
+      leafFallAnimationTime += Math.min(playbackDelta * winterFallSpeed, 0.05);
       shaderUniforms.uLeafFallTime.value = leafFallAnimationTime;
       // Hold the sun while the ring is moving across dates.
       const beforeAdvance = ecology.seasonPosition;

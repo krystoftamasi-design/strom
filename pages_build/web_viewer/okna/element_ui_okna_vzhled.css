@@ -1418,7 +1418,7 @@ body.scene-night .tree-overlay .element-ui-flow-window {
   inline-size: calc(100% - var(--flow-window-width) - var(--flow-gap) - var(--flow-detail-reserve, 0px));
   height: auto;
   margin: 0;
-  padding-block-end: var(--flow-metric-below-bar, 0px);
+  padding-block-end: calc(var(--flow-metric-below-bar, 0px) + 12px);
   overflow: visible;
   overflow-wrap: anywhere;
   text-align: left;
