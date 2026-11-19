@@ -184,10 +184,14 @@ export class TreeEcology {
 
   evaluate(minutes) {
     const season = this.seasonState;
+    const weatherDay = this.elapsedMinutes / 1440;
+    const rainWave = 0.55 * Math.sin(2 * Math.PI * weatherDay / 14)
+      + 0.35 * Math.sin(2 * Math.PI * weatherDay / 6.5);
+    const rainFactor = clamp(1 + 0.7 * rainWave, 0.25, 1.75);
     this.seasonalWaterLimit = this.baseTranspiration * season.waterSupply;
     this.waterInput = this.manualWaterInput && this.automaticWaterFraction === null
       ? this.manualWaterInputValue
-      : this.seasonalWaterLimit * AUTOMATIC_WATER_SUPPLY_FRACTION * (this.automaticWaterFraction ?? 1);
+      : this.seasonalWaterLimit * AUTOMATIC_WATER_SUPPLY_FRACTION * rainFactor * (this.automaticWaterFraction ?? 1);
     this.excessWater = Math.max(0, this.waterInput - this.seasonalWaterLimit);
     // Surplus stays outside the tree and drains gradually; sustained
     // waterlogging damages roots and reduces uptake.
@@ -198,7 +202,6 @@ export class TreeEcology {
     const dayOfYear = seasonDayForPosition(this.seasonPosition) % 365;
     const mean = monthlyValue(CZECH_MONTHLY_MEAN, dayOfYear);
     const halfRange = monthlyValue(DAILY_HALF_RANGE, dayOfYear);
-    const weatherDay = this.elapsedMinutes / 1440;
     const weatherPattern = 0.75 * Math.sin(2 * Math.PI * weatherDay / 12 + 0.8)
       + 0.25 * Math.sin(2 * Math.PI * weatherDay / 5 + 1.7);
     this.weatherTemperatureOffset = monthlyValue(WEATHER_HALF_RANGE, dayOfYear) * weatherPattern;

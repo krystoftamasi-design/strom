@@ -76,6 +76,12 @@ history:
 
 
 
+### Vizuální déšť
+
+- Návrh: doplnit k automatickému kolísání dostupnosti vody krátké vizuální přeháňky (např. 2–3 sekundy v rámci jednoho vizuálního dne, který představuje měsíc), kdy přes slunce přejede mrak s jemným deštěm a voda v půdě se doplní.
+- Cíl: propojit kolísání dostupnosti vody v UI s viditelným počasím ve 3D scéně, aniž by pršelo nepřirozeně celý „den“.
+- Stav: Nápad; v modelu je zatím jen plynulé kolísání automatické dostupnosti vody bez 3D efektu deště.
+
 ## Pravidla struktury
 
 - Kapitoly mají úroveň `##`, jednotlivé nápady `###`.
