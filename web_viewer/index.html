@@ -682,8 +682,8 @@
     }
   </style>
   <link rel="stylesheet" href="./kapitoly/chapters.css?v=time-controls-1">
-  <link rel="stylesheet" href="./okna/tree_annotations.css?v=stock-percentage-bar-1">
-  <link rel="stylesheet" href="./okna/element_ui_okna_vzhled.css?v=photosynthesis-playback-4">
+  <link rel="stylesheet" href="./okna/tree_annotations.css?v=affinity-double-rail-4">
+  <link rel="stylesheet" href="./okna/element_ui_okna_vzhled.css?v=affinity-double-rail-4">
 </head>
 
 <body>
@@ -1179,8 +1179,8 @@
     import { CanopyOcclusion } from './vykreslovani/canopy_occlusion.js?v=opt-buf-1';
     import { createSunClouds } from './vykreslovani/sun_clouds.js?v=2';
     import { createWaterBrushMaterial, addWaterBrushAttributes } from './vykreslovani/water_brush.js?v=highlight-width-3';
-    import { TreeEcology, SEASONS, MODEL_MINUTES_PER_SECOND } from './ekologie/tree_ecology.js?v=calendar-water-1';
-    import { createChapters } from './kapitoly/chapters.js?v=perf-opt-1';
+    import { TreeEcology, SEASONS, MODEL_MINUTES_PER_SECOND } from './ekologie/tree_ecology.js?v=affinity-cap-1';
+    import { createChapters } from './kapitoly/chapters.js?v=affinity-double-rail-3';
     import { createSeedChapter } from './kapitoly/seed_chapter.js';
     import { createTreeBird } from './vykreslovani/tree_bird.js?v=perch-grid-1';
     import { createSeasonRing } from './obdobi/season_ring.js?v=season-boundary-1';
@@ -2378,8 +2378,8 @@
           material.uniforms.uWidthScale = { value: 1.0 };
           material.uniforms.uFlowCutoff = glucoseCutoff;
           material.uniforms.uFlowRevealBottom = glucoseRevealBottom;
-          material.uniforms.uColor = { value: new THREE.Color(0xd42fd5) };
-          material.uniforms.uHighlightColor = { value: new THREE.Color(0xf4a7ff) };
+          material.uniforms.uColor = { value: new THREE.Color(0xff9700) };
+          material.uniforms.uHighlightColor = { value: new THREE.Color(0xffc966) };
           const mesh = new THREE.Mesh(geometry, material);
           mesh.name = `PhotosynthesisPurpleFlow${name}`;
           mesh.renderOrder = 9;
@@ -3081,8 +3081,10 @@
       // Při suchu (droughtDryProgress > 0) listy plynule přecházejí do podzimních a uschlých jantarových odstínů
       // 1.08 odpovídá uschlým hnědo-jantarovým listům (v shaderu uSeasonOffset cca +0.255)
       const dryTargetShift = 1.08;
+      const day = seasonDayForPosition(ecology.seasonPosition) % 365;
+      const seasonalShift = day < BEECH_CALENDAR.budburst ? 1.0 : userSeasonShift;
       const dryAppearance = Math.max(droughtDryProgress, droughtLeafProgress);
-      const effectiveShift = userSeasonShift * (1.0 - dryAppearance) + dryTargetShift * dryAppearance;
+      const effectiveShift = seasonalShift * (1.0 - dryAppearance) + dryTargetShift * dryAppearance;
       shaderUniforms.uSeasonOffset.value = (effectiveShift - 0.5) * 0.44;
     }
 
@@ -3704,8 +3706,7 @@
     const valSunElevation = document.getElementById('valSunElevation');
     let timeOfDayHours = 12;
     let displayedSunHour = timeOfDayHours;
-    let wasSeekingSeason = false;
-    let sunSeekTransition = null;
+    let wasIntroChapter = true;
     let timePaused = false;
     const baseTimeRate = 0.5;
     let timePlaybackSpeed = 1;
@@ -3767,6 +3768,9 @@
         setEcologySeason('summer');
         ecology.reserve = ecology.capacity * SEASONS.summer.startingReserve;
         treeWaterLiters = ecology.reserve;
+        timeOfDayHours = 12;
+        displayedSunHour = 12;
+        updateSunFromDayClock(12);
         timePaused = false;
         timePlaybackSpeed = 1;
         syncTimePlaybackControls();
@@ -4151,9 +4155,15 @@
         groundPlane.visible = !roots && document.getElementById('chkGround').checked;
         dripZoneGroup.visible = roots && document.getElementById('chkDripLine').checked;
         if (chapter !== 'intro') {
+          if (wasIntroChapter) {
+            timeOfDayHours = 12;
+            displayedSunHour = 12;
+            updateSunFromDayClock(12);
+          }
           syncVisualLeafGrowth();
           syncSeasonFoliage();
         }
+        wasIntroChapter = chapter === 'intro';
         invalidateShadows();
       },
       introFrame: (position, reset = false) => {
@@ -4175,8 +4185,6 @@
           // Start the intro just before sunrise.
           timeOfDayHours = 2;
           displayedSunHour = timeOfDayHours;
-          wasSeekingSeason = false;
-          sunSeekTransition = null;
           sliderSunElevation.value = 0;
           sliderLightRot.value = 90;
           ecology.dayCycleEnabled = true;
@@ -4319,39 +4327,19 @@
         const night = timeOfDayHours >= 18 || timeOfDayHours < 6;
         modelMinutes = playbackDelta * MODEL_MINUTES_PER_SECOND * (night ? 14 : 5);
         nextHour = (timeOfDayHours + modelMinutes / 60) % 24;
-      } else if (!seekingSeason) {
-        const solarHour = solarHoursForMonthClock(monthClockForSeason(ecology.seasonPosition));
-        nextHour = ((solarHour % 24) + 24) % 24;
-        if (advanced) {
-          const calendarDate = position => seasonDayForPosition(position) + 365 * Math.floor(position / 4);
-          modelMinutes = Math.max(0, (calendarDate(ecology.seasonPosition) - calendarDate(beforeAdvance)) * 1440);
-        }
+      } else if (!seekingSeason && advanced) {
+        const deltaHours = solarHoursForMonthClock(monthClockForSeason(ecology.seasonPosition))
+          - solarHoursForMonthClock(monthClockForSeason(beforeAdvance));
+        nextHour = ((timeOfDayHours + deltaHours) % 24 + 24) % 24;
+        const calendarDate = position => seasonDayForPosition(position) + 365 * Math.floor(position / 4);
+        modelMinutes = Math.max(0, (calendarDate(ecology.seasonPosition) - calendarDate(beforeAdvance)) * 1440);
       }
-      if (seekingSeason) sunSeekTransition = null;
-      else if (wasSeekingSeason && !reducedElementMotion.matches) {
-        sunSeekTransition = { from: displayedSunHour, start: now };
-      }
-      wasSeekingSeason = seekingSeason;
       timeOfDayHours = nextHour;
-      let sunHour = seekingSeason ? displayedSunHour : nextHour;
-      const animatingSun = sunSeekTransition !== null;
-      if (sunSeekTransition) {
-        const progress = Math.min(1, (now - sunSeekTransition.start) / 220);
-        const distance = ((nextHour - sunSeekTransition.from + 36) % 24) - 12;
-        const eased = 1 - (1 - progress) ** 3;
-        sunHour = progress === 1 ? nextHour : (sunSeekTransition.from + distance * eased + 24) % 24;
-        if (progress === 1) sunSeekTransition = null;
-      }
-      if (sunHour !== displayedSunHour) {
-        displayedSunHour = sunHour;
+      if (nextHour !== displayedSunHour) {
+        displayedSunHour = nextHour;
         if (ecology.dayCycleEnabled) {
-          updateSunFromDayClock(sunHour);
-          if (!chapterApp.introduction) {
-            if (!animatingSun && !advanced) invalidateShadows();
-            else if (animatingSun && (sunSeekTransition === null || now - lastPeriodicShadowUpdate >= 80)) {
-              invalidateShadows();
-            }
-          }
+          updateSunFromDayClock(nextHour);
+          if (!chapterApp.introduction && !advanced) invalidateShadows();
         }
       }
       let daytimeLight = null;
