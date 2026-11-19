@@ -1131,6 +1131,12 @@
           <path d="M2 5v14l10-7zM12 5v14l10-7z" />
         </svg>
       </button>
+      <button type="button" id="btnTimeReset" aria-label="Resetovat strom na léto"
+        title="Resetovat strom na výchozí léto">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M12 5V2L7 6.5 12 11V8a5 5 0 1 1-4.58 7H5.26A7 7 0 1 0 12 5z" />
+        </svg>
+      </button>
     </div>
     <div class="stat-pill manager-controlled manager-hidden">
       <span>Výška: <strong id="valTreeHeight">—</strong></span>
@@ -3730,6 +3736,42 @@
           : !timePaused && (timePlaybackSpeed === speed || (speed === 2 && timePlaybackSpeed === 4)) ? 1 : speed;
         timePaused = false;
         syncTimePlaybackControls();
+      });
+    }
+    const btnTimeReset = document.getElementById('btnTimeReset');
+    if (btnTimeReset) {
+      btnTimeReset.addEventListener('click', () => {
+        ecology.canopyLimit = 1;
+        ecology.sugarReserve = ecology.sugarCapacity * 0.5;
+        ecology.sugarProductionFraction = 1;
+        ecology.automaticWaterFraction = null;
+        ecology.manualWaterInput = false;
+        ecology.manualLightAvailability = null;
+        ecology.droughtFall = 0;
+        ecology.leafGrowth = 1;
+        ecology.waterlogging = 0;
+        ecology.rootRot = 0;
+        ecology.dryness = 0;
+        ecology.dayCycleEnabled = true;
+        const dayNightToggle = document.getElementById('chkDayNight');
+        if (dayNightToggle) dayNightToggle.checked = true;
+        droughtDryProgress = 0;
+        droughtLeafProgress = 0;
+        leafRegrowthProgress = 1;
+        leafRegrowthActive = false;
+        leafWasDry = false;
+        setSeasonalCanopyLimit(1);
+        appliedVisualGrowth = 1;
+        leafControls.setGrowthProgress(1);
+        leafControls.resetLeafFall();
+        setEcologySeason('summer');
+        ecology.reserve = ecology.capacity * SEASONS.summer.startingReserve;
+        treeWaterLiters = ecology.reserve;
+        timePaused = false;
+        timePlaybackSpeed = 1;
+        syncTimePlaybackControls();
+        if (ecology.ready) ecology.evaluate(0);
+        invalidateShadows();
       });
     }
     function updateSunElevation(deg) {

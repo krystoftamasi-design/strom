@@ -45,7 +45,7 @@ history:
 
 #### Ovládání času
 
-- Před datem vlevo dole jsou zleva tlačítka zpomalení 0,5×, pauzy a zrychlení. Opakovaným kliknutím na zrychlení se postupně nastaví rychlost 2×, 4× a běžná rychlost. Mají 48 × 48 px, ikony 28 × 28 px a v aktivním stavu kruhový obrys. Panel je bez výplně a barva ovládání se přizpůsobuje dni a noci.
+- Před datem vlevo dole jsou zleva tlačítka zpomalení 0,5×, pauzy, zrychlení a resetu. Opakovaným kliknutím na zrychlení se postupně nastaví rychlost 2×, 4× a běžná rychlost. Tlačítko resetu obnoví výchozí zdravý stav stromu (plnou korunu, zásoby, automatické přísuny a rychlost 1×) a přepne na léto. Mají 48 × 48 px, ikony 28 × 28 px a v aktivním stavu kruhový obrys. Panel je bez výplně a barva ovládání se přizpůsobuje dni a noci.
 - Při výchozí rychlosti 1× trvá automatický modelový rok 9 minut a 36 sekund. Pauza zastaví běh času a dalším stiskem jej obnoví. Volba jiné rychlosti obnoví běh zvolenou rychlostí. Opětovný stisk zpomalení vrátí 1×.
 - V Úvodu jsou tlačítka běhu času skrytá a animace běží automaticky.
 - V ostatních kapitolách jsou tlačítka viditelná a přístupná klávesnicí; fokus má viditelný obrys.
