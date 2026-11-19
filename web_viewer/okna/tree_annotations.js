@@ -1,7 +1,6 @@
 import { oknaPodleKapitol, kontextoveTexty, pruvodceTranspiraci } from './element_ui_okna_obsah.js?v=sugar-phenology-1';
 import { veliciny, vstupyVzorce, ohlasitChybuOken, vyhladitHodnotu } from './element_ui_okna_veliciny.js?v=affinity-windows-layout-2';
 import { zkontrolovatOkna } from './element_ui_okna_kontrola.js?v=seeds-1';
-import { createAnnualSugarCurve, createSeasonalSugarBalance, sugarProductionFactor } from '../ekologie/rocni_zasoba_cukru.js?v=spring-cover-1';
 
 // Original embedded assets from ui_new.svg, at their exported stroke widths.
 const strokes = {
@@ -316,39 +315,55 @@ export function createTreeAnnotations({ shell, model, createSeasonControl, setEl
   let activeChapter = null;
   const prototypes = [createSugarStock(), createOxygenBalance('lines'), createOxygenBalance('rectangle')];
   const capacityInput = shell.querySelector('[data-prototype-capacity]');
-  let prototypeCapacity = capacityInput.valueAsNumber;
-  let sugarBalance;
-  let curveCrownArea;
+  model.setSugarCapacity(capacityInput.valueAsNumber);
   const sugarStockOutput = shell.querySelector('[data-prototype-sugar-stock]');
   const stockKg = new Intl.NumberFormat('cs-CZ', { maximumFractionDigits: 2 });
   const previousStocks = new WeakMap();
   capacityInput.addEventListener('change', () => {
     if (capacityInput.validity.valid && Number.isSafeInteger(capacityInput.valueAsNumber)) {
-      prototypeCapacity = capacityInput.valueAsNumber;
-      sugarBalance = undefined;
+      model.setSugarCapacity(capacityInput.valueAsNumber);
     }
-    capacityInput.value = String(prototypeCapacity);
+    capacityInput.value = String(model.sugarCapacity);
   });
+  const previousHighlights = new Map();
   function syncHighlights() {
-    const states = [...linkedWindows.values()];
-    for (const tag of new Set(states.map(state => state.tag))) {
-      setElementHighlight(tag, states.some(state => state.tag === tag && state.chapter === activeChapter && (state.open || state.hovered)));
+    const activeTags = new Set();
+    const allTags = new Set();
+    for (const state of linkedWindows.values()) {
+      allTags.add(state.tag);
+      if (state.chapter === activeChapter && (state.open || state.hovered)) activeTags.add(state.tag);
+    }
+    for (const tag of allTags) {
+      const active = activeTags.has(tag);
+      if (previousHighlights.get(tag) === active) continue;
+      previousHighlights.set(tag, active);
+      setElementHighlight(tag, active);
     }
   }
   let pointerPosition = null;
   function syncWindowHover() {
     let changed = false;
     for (const [panel, state] of linkedWindows) {
+      if (state.chapter !== activeChapter) {
+        if (state.hovered) {
+          panel.classList.remove('is-pointer-over');
+          state.hovered = false;
+          changed = true;
+        }
+        continue;
+      }
       const inRect = element => {
         const rect = element.getBoundingClientRect();
         return pointerPosition && pointerPosition.x >= rect.left && pointerPosition.x <= rect.right
           && pointerPosition.y >= rect.top && pointerPosition.y <= rect.bottom;
       };
       const reveal = panel.querySelector('.annotation-reveal');
-      const hovered = Boolean(state.chapter === activeChapter && pointerPosition
-        && (inRect(panel) || (state.open && reveal && inRect(reveal))));
-      panel.classList.toggle('is-pointer-over', hovered);
-      if (state.hovered !== hovered) { state.hovered = hovered; changed = true; }
+      const hovered = Boolean(pointerPosition && (inRect(panel) || (state.open && reveal && inRect(reveal))));
+      if (state.hovered !== hovered) {
+        panel.classList.toggle('is-pointer-over', hovered);
+        state.hovered = hovered;
+        changed = true;
+      }
     }
     if (changed) syncHighlights();
   }
@@ -535,7 +550,7 @@ export function createTreeAnnotations({ shell, model, createSeasonControl, setEl
       metric.className = `chapter-metric ${value.druh || 'value'}-metric`;
       if (value.popisHodnoty) {
         const label = document.createElement('span');
-        label.textContent = definition.id === 'svetlo' ? 'spotřeba' : value.popisHodnoty;
+        label.textContent = value.popisHodnoty;
         metric.append(label);
       }
       const strong = document.createElement('strong');
@@ -721,11 +736,70 @@ export function createTreeAnnotations({ shell, model, createSeasonControl, setEl
   }
 
   const smoothedValues = new Map();
-  let lastSmoothTime = performance.now();
-  let autumnRate = 0;
+  let lastDomUpdate = -Infinity;
+  let prevSeasonRowHidden = null;
+  let prevProtoSugarText = '';
+  const barsByChapter = new Map();
+  for (const bar of shell.querySelectorAll('.element-ui-values > .element-ui-balance-bar')) {
+    const panel = bar.closest('.element-ui-okno');
+    const panelChapter = panel?.dataset.chapter;
+    if (!panelChapter) continue;
+    let list = barsByChapter.get(panelChapter);
+    if (!list) { list = []; barsByChapter.set(panelChapter, list); }
+    list.push({
+      bar,
+      slider: bar.querySelector('input'),
+      availabilityOutput: panel.querySelector('.element-ui-availability output'),
+      windowId: panel.dataset.windowId,
+      balanceKey: `${panelChapter}:${panel.dataset.windowId}`,
+      isWater: panel.dataset.windowId === 'voda',
+      isLight: panel.dataset.windowId === 'svetlo',
+      prevTop: '', prevBottom: '', prevTopZero: null, prevBottomZero: null, prevTopShorter: null,
+      prevAvail: '', prevDisabled: null, prevSliderVal: '', prevAria: ''
+    });
+  }
+  const respByChapter = new Map();
+  for (const output of shell.querySelectorAll('[data-respiration]')) {
+    const panel = output.closest('.element-ui-okno');
+    const panelChapter = panel?.dataset.chapter;
+    if (!panelChapter) continue;
+    let list = respByChapter.get(panelChapter);
+    if (!list) { list = []; respByChapter.set(panelChapter, list); }
+    list.push({
+      output,
+      key: output.dataset.respiration,
+      cacheKey: `resp:${panelChapter}:${output.dataset.respiration}`,
+      prevText: ''
+    });
+  }
+  const seedOutputs = [];
+  for (const definition of oknaPodleKapitol.seeds) {
+    const output = shell.querySelector(`output[data-stav-obdobi="${definition.id}"]`);
+    if (output) seedOutputs.push({ output, stavObdobi: definition.stavObdobi, prevText: '' });
+  }
+  const stockByChapter = new Map();
+  for (const output of shell.querySelectorAll('[data-stock-source]')) {
+    const stock = output.closest('.element-ui-stock');
+    const panel = output.closest('.element-ui-okno');
+    const panelChapter = panel?.dataset.chapter || (output.closest('.photosynthesis-stock-prototypes') ? 'stock-prototypes' : null);
+    if (!stock || !panelChapter) continue;
+    let list = stockByChapter.get(panelChapter);
+    if (!list) { list = []; stockByChapter.set(panelChapter, list); }
+    list.push({
+      output,
+      stock,
+      trend: stock.querySelector('.element-ui-stock-trend'),
+      percInput: stock.querySelector('.photosynthesis-stock-percentage'),
+      isSugar: output.dataset.stockSource === 'cukry',
+      valueKey: output.dataset.stockValue,
+      maxKey: output.dataset.stockMaximum,
+      prevDisplayed: '', prevTrend: null, prevTrendText: '', prevTrendTitle: '',
+      prevUnavailable: null, prevRatio: ''
+    });
+  }
 
   return {
-    get sugarProduction() { return model.glucoseGramsPerMinute + autumnRate; },
+    get sugarProduction() { return model.totalSugarProduction; },
     toggleStockPrototypes() {
       setStockPrototypeMode(stockPrototypes.hidden);
     },
@@ -735,29 +809,21 @@ export function createTreeAnnotations({ shell, model, createSeasonControl, setEl
     advanceSeason(chapter, playbackDelta) {
       return seasonControl.update(chapter, playbackDelta);
     },
-    update(chapter, previousSeason, advanced, growthRequested, canopyFraction = 1) {
+    update(chapter) {
       const now = performance.now();
-      const dt = (now - lastSmoothTime) / 1000;
-      lastSmoothTime = now;
       const chapterChanged = chapter !== activeChapter;
       activeChapter = chapter;
-      if (chapterChanged) syncWindowHover();
-      let reserve;
-      let budburstRate = 0;
-      let growthGranted;
-      autumnRate = 0;
-      if (chapter !== 'intro' && model.ready) {
-        if (!sugarBalance || curveCrownArea !== model.crownArea) {
-          const annualCurve = createAnnualSugarCurve(model, prototypeCapacity);
-          sugarBalance = createSeasonalSugarBalance(annualCurve, prototypeCapacity);
-          curveCrownArea = model.crownArea;
-        }
-        const productionFactor = sugarProductionFactor(model);
-        ({ reserve, budburstRate, autumnRate, growthGranted } = sugarBalance.update(previousSeason, model.seasonPosition, advanced,
-          productionFactor * canopyFraction, growthRequested, productionFactor));
+      if (chapterChanged) {
+        syncWindowHover();
+        syncHighlights();
       }
-      const sugarProduction = this.sugarProduction;
-      const sugarConsumption = model.respirationSugar + budburstRate;
+      const activeBars = barsByChapter.get(chapter);
+      const draggingSlider = activeBars?.some(entry => entry.slider?.matches(':active')) || false;
+      if (!chapterChanged && !draggingSlider && now - lastDomUpdate < 50) return;
+      const dt = lastDomUpdate > 0 ? (now - lastDomUpdate) / 1000 : 0.05;
+      lastDomUpdate = now;
+      const sugarProduction = model.totalSugarProduction;
+      const sugarConsumption = model.totalSugarConsumption;
       const clamp01 = value => (Number.isFinite(value) ? Math.max(0, Math.min(1, value)) : 0);
       const balanceValues = windowId => {
         const clean = value => (Number.isFinite(value) && value > 0 ? value : 0);
@@ -768,95 +834,200 @@ export function createTreeAnnotations({ shell, model, createSeasonControl, setEl
         if (windowId === 'cukry') return [clean(sugarProduction), clean(sugarConsumption)];
         return [0, 0];
       };
-      for (const bar of shell.querySelectorAll('.element-ui-values > .element-ui-balance-bar')) {
-        const panel = bar.closest('.element-ui-okno');
-        const slider = bar.querySelector('input');
-        const maxWater = Number(slider?.dataset.scaleMax) || waterAvailabilityMax(model);
-        const [rawTop, rawBottom] = balanceValues(panel.dataset.windowId);
-        const balanceKey = `${panel.dataset.chapter}:${panel.dataset.windowId}`;
-        const topValue = slider?.matches(':active')
-          ? (smoothedValues.set(`${balanceKey}:top`, rawTop), rawTop)
-          : vyhladitHodnotu(smoothedValues, `${balanceKey}:top`, rawTop, dt);
-        const bottomValue = vyhladitHodnotu(smoothedValues, `${balanceKey}:bottom`, rawBottom, dt);
-        const isWaterBalance = panel.dataset.windowId === 'voda';
-        const isLightBalance = panel.dataset.windowId === 'svetlo';
-        const scaleMax = isWaterBalance ? maxWater * 60 : isLightBalance ? 100 : 7;
-        // Match the precision of the readouts: whole percentages, otherwise one decimal.
-        const minimumVisible = isLightBalance ? 0.5 : 0.05;
-        const topRatio = topValue >= minimumVisible ? clamp01(topValue / scaleMax) : 0;
-        const bottomRatio = bottomValue >= minimumVisible ? clamp01(bottomValue / scaleMax) : 0;
-        bar.style.setProperty('--balance-top-ratio', String(topRatio));
-        bar.style.setProperty('--balance-bottom-ratio', String(bottomRatio));
-        bar.classList.toggle('is-top-zero', topRatio === 0);
-        bar.classList.toggle('is-bottom-zero', bottomRatio === 0);
-        bar.classList.toggle('is-top-shorter', topRatio <= bottomRatio);
+      if (activeBars) {
+        for (const entry of activeBars) {
+          const { bar, slider, availabilityOutput, windowId, balanceKey, isWater, isLight } = entry;
+          const maxWater = Number(slider?.dataset.scaleMax) || waterAvailabilityMax(model);
+          const [rawTop, rawBottom] = balanceValues(windowId);
+          const topValue = slider?.matches(':active')
+            ? (smoothedValues.set(`${balanceKey}:top`, rawTop), rawTop)
+            : vyhladitHodnotu(smoothedValues, `${balanceKey}:top`, rawTop, dt);
+          const bottomValue = vyhladitHodnotu(smoothedValues, `${balanceKey}:bottom`, rawBottom, dt);
+          const scaleMax = isWater
+            ? Math.max(maxWater, model.baseTranspiration * 1.015) * 60
+            : isLight ? 100
+            : windowId === 'kyslik' ? model.maxOxygenGramsPerMinute
+            : windowId === 'co2' ? model.maxCo2GramsPerMinute
+            : model.maxGlucoseGramsPerMinute;
+          // Match the precision of the readouts: whole percentages, otherwise one decimal.
+          const minimumVisible = isLight ? 0.5 : 0.05;
+          const topRatio = topValue >= minimumVisible ? clamp01(topValue / scaleMax) : 0;
+          const bottomRatio = bottomValue >= minimumVisible ? clamp01(bottomValue / scaleMax) : 0;
+          const topRatioStr = String(topRatio);
+          const bottomRatioStr = String(bottomRatio);
+          if (entry.prevTop !== topRatioStr) {
+            entry.prevTop = topRatioStr;
+            bar.style.setProperty('--balance-top-ratio', topRatioStr);
+          }
+          if (entry.prevBottom !== bottomRatioStr) {
+            entry.prevBottom = bottomRatioStr;
+            bar.style.setProperty('--balance-bottom-ratio', bottomRatioStr);
+          }
+          const topZero = topRatio === 0;
+          if (entry.prevTopZero !== topZero) {
+            entry.prevTopZero = topZero;
+            bar.classList.toggle('is-top-zero', topZero);
+          }
+          const bottomZero = bottomRatio === 0;
+          if (entry.prevBottomZero !== bottomZero) {
+            entry.prevBottomZero = bottomZero;
+            bar.classList.toggle('is-bottom-zero', bottomZero);
+          }
+          const topShorter = topRatio <= bottomRatio;
+          if (entry.prevTopShorter !== topShorter) {
+            entry.prevTopShorter = topShorter;
+            bar.classList.toggle('is-top-shorter', topShorter);
+          }
 
-        if (isLightBalance && slider) {
-          const lightLevel = clamp01(model.light);
-          const percent = Math.round(lightLevel * 100);
-          panel.querySelector('.element-ui-availability output').textContent = String(percent);
-          slider.disabled = !model.ready || model.sunElevation <= 0;
-          if (slider.disabled || !slider.matches(':active')) slider.value = String(Math.round(lightLevel * 1000));
-          slider.setAttribute('aria-valuetext', `${percent} procent`);
-          continue;
+          if (isLight && slider) {
+            const lightLevel = clamp01(model.light);
+            const percent = Math.round(lightLevel * 100);
+            const percentText = String(percent);
+            if (availabilityOutput && entry.prevAvail !== percentText) {
+              entry.prevAvail = percentText;
+              availabilityOutput.textContent = percentText;
+            }
+            const disabled = !model.ready || model.sunElevation <= 0;
+            if (entry.prevDisabled !== disabled) {
+              entry.prevDisabled = disabled;
+              slider.disabled = disabled;
+            }
+            if (disabled || !slider.matches(':active')) {
+              const sliderVal = String(Math.round(lightLevel * 1000));
+              if (entry.prevSliderVal !== sliderVal) {
+                entry.prevSliderVal = sliderVal;
+                slider.value = sliderVal;
+              }
+            }
+            const ariaText = `${percent} procent`;
+            if (entry.prevAria !== ariaText) {
+              entry.prevAria = ariaText;
+              slider.setAttribute('aria-valuetext', ariaText);
+            }
+            continue;
+          }
+          if (slider) {
+            const waterLevel = clamp01(model.waterInput / maxWater);
+            if (!slider.matches(':active')) {
+              const sliderVal = String(Math.round(waterLevel * 1000));
+              if (entry.prevSliderVal !== sliderVal) {
+                entry.prevSliderVal = sliderVal;
+                slider.value = sliderVal;
+              }
+            }
+            const displayed = Number.isFinite(model.waterInput) ? (model.waterInput * 60).toLocaleString('cs-CZ', { maximumFractionDigits: 1, minimumFractionDigits: 1 }) : '—';
+            if (availabilityOutput && entry.prevAvail !== displayed) {
+              entry.prevAvail = displayed;
+              availabilityOutput.textContent = displayed;
+            }
+            const ariaText = `${displayed} litrů za hodinu`;
+            if (entry.prevAria !== ariaText) {
+              entry.prevAria = ariaText;
+              slider.setAttribute('aria-valuetext', ariaText);
+            }
+            const disabled = !model.ready;
+            if (entry.prevDisabled !== disabled) {
+              entry.prevDisabled = disabled;
+              slider.disabled = disabled;
+            }
+          }
         }
-        if (slider) {
-          const waterLevel = clamp01(model.waterInput / maxWater);
-          if (!slider.matches(':active')) slider.value = String(Math.round(waterLevel * 1000));
-          const displayed = Number.isFinite(model.waterInput) ? (model.waterInput * 60).toLocaleString('cs-CZ', { maximumFractionDigits: 1, minimumFractionDigits: 1 }) : '—';
-          panel.querySelector('.element-ui-availability output').textContent = displayed;
-          slider.setAttribute('aria-valuetext', `${displayed} litrů za hodinu`);
-          slider.disabled = !model.ready;
+      }
+      const activeResp = respByChapter.get(chapter);
+      if (activeResp) {
+        for (const entry of activeResp) {
+          const raw = entry.key === 'respirationSugar' ? sugarConsumption : model[entry.key];
+          const value = vyhladitHodnotu(smoothedValues, entry.cacheKey, raw, dt);
+          const text = model.ready && Number.isFinite(value) ? value.toLocaleString('cs-CZ', { minimumFractionDigits: 1, maximumFractionDigits: 1 }) : '—';
+          if (entry.prevText !== text) {
+            entry.prevText = text;
+            entry.output.textContent = text;
+          }
         }
       }
-      for (const output of shell.querySelectorAll('[data-respiration]')) {
-        const key = output.dataset.respiration;
-        const raw = key === 'respirationSugar' ? sugarConsumption : model[key];
-        const value = vyhladitHodnotu(smoothedValues, `resp:${output.closest(".element-ui-okno").dataset.chapter}:${key}`, raw, dt);
-        output.textContent = model.ready && Number.isFinite(value) ? value.toLocaleString('cs-CZ', { minimumFractionDigits: 1, maximumFractionDigits: 1 }) : '—';
+      if (chapter === 'seeds') {
+        for (const entry of seedOutputs) {
+          const text = entry.stavObdobi[model.season] || '—';
+          if (entry.prevText !== text) {
+            entry.prevText = text;
+            entry.output.textContent = text;
+          }
+        }
       }
-      for (const definition of oknaPodleKapitol.seeds) {
-        const output = shell.querySelector(`output[data-stav-obdobi="${definition.id}"]`);
-        if (output) output.textContent = definition.stavObdobi[model.season] || '—';
+      const seasonHidden = chapter === 'intro';
+      if (prevSeasonRowHidden !== seasonHidden) {
+        prevSeasonRowHidden = seasonHidden;
+        seasonRow.hidden = seasonHidden;
       }
-      syncHighlights();
-      seasonRow.hidden = chapter === 'intro';
       if (chapter === 'intro' || !model.ready) return;
-      for (const output of shell.querySelectorAll('[data-stock-source]')) {
-        const stock = output.closest('.element-ui-stock');
-        if (stock.classList.contains('is-percentage')) {
-          const input = stock.querySelector('.photosynthesis-stock-percentage');
-          output.value = input.value;
-          continue;
+      const stockGroups = [stockByChapter.get(chapter)];
+      if (!stockPrototypes.hidden) stockGroups.push(stockByChapter.get('stock-prototypes'));
+      for (const activeStocks of stockGroups) {
+        if (!activeStocks) continue;
+        for (const entry of activeStocks) {
+          const { output, stock, trend, percInput, isSugar, valueKey, maxKey } = entry;
+          if (stock.classList.contains('is-percentage')) {
+            const val = percInput.value;
+            if (entry.prevDisplayed !== val) {
+              entry.prevDisplayed = val;
+              output.value = val;
+            }
+            continue;
+          }
+          const value = isSugar ? model.sugarReserve / 1000 : model[valueKey];
+          const maximum = isSugar ? model.sugarCapacity / 1000 : model[maxKey];
+          const available = Number.isFinite(value) && Number.isFinite(maximum) && maximum > 0;
+          const displayed = available ? stockNumber.format(value) : '—';
+          if (entry.prevDisplayed !== displayed && output.value !== displayed) {
+            entry.prevDisplayed = displayed;
+            output.value = displayed;
+          }
+          const previous = previousStocks.get(output);
+          if (!available || previous === undefined) {
+            if (entry.prevTrend !== true) {
+              entry.prevTrend = true;
+              trend.hidden = true;
+            }
+          } else if (value !== previous) {
+            const growing = value > previous;
+            const trendText = growing ? '→' : '←';
+            const trendTitle = growing ? 'Zásoba roste' : 'Zásoba klesá';
+            if (entry.prevTrendText !== trendText) {
+              entry.prevTrendText = trendText;
+              trend.textContent = trendText;
+            }
+            if (entry.prevTrendTitle !== trendTitle) {
+              entry.prevTrendTitle = trendTitle;
+              trend.title = trendTitle;
+              trend.setAttribute('aria-label', trendTitle);
+            }
+            if (entry.prevTrend !== false) {
+              entry.prevTrend = false;
+              trend.hidden = false;
+            }
+          }
+          previousStocks.set(output, available ? value : undefined);
+          const unavailable = !available;
+          if (entry.prevUnavailable !== unavailable) {
+            entry.prevUnavailable = unavailable;
+            stock.classList.toggle('is-unavailable', unavailable);
+          }
+          const ratioStr = String(available ? clamp01(value / maximum) : 0);
+          if (entry.prevRatio !== ratioStr) {
+            entry.prevRatio = ratioStr;
+            stock.style.setProperty('--balance-top-ratio', ratioStr);
+          }
         }
-        const isSugar = output.dataset.stockSource === 'cukry';
-        const value = isSugar ? reserve / 1000 : model[output.dataset.stockValue];
-        const maximum = isSugar ? prototypeCapacity / 1000 : model[output.dataset.stockMaximum];
-        const available = Number.isFinite(value) && Number.isFinite(maximum) && maximum > 0;
-        const displayed = available ? stockNumber.format(value) : '—';
-        if (output.value !== displayed) output.value = displayed;
-        const trend = stock.querySelector('.element-ui-stock-trend');
-        const previous = previousStocks.get(output);
-        if (!available || previous === undefined) {
-          trend.hidden = true;
-        } else if (value !== previous) {
-          const growing = value > previous;
-          trend.textContent = growing ? '→' : '←';
-          trend.title = growing ? 'Zásoba roste' : 'Zásoba klesá';
-          trend.setAttribute('aria-label', trend.title);
-          trend.hidden = false;
-        }
-        previousStocks.set(output, available ? value : undefined);
-        stock.classList.toggle('is-unavailable', !available);
-        stock.style.setProperty('--balance-top-ratio', String(available ? clamp01(value / maximum) : 0));
       }
-      if (chapter !== 'prototype') return growthGranted;
-      const text = `${stockKg.format(reserve / 1000)} kg`;
-      if (sugarStockOutput.value !== text) sugarStockOutput.value = text;
+      if (chapter !== 'prototype') return;
+      const text = `${stockKg.format(model.sugarReserve / 1000)} kg`;
+      if (prevProtoSugarText !== text && sugarStockOutput.value !== text) {
+        prevProtoSugarText = text;
+        sugarStockOutput.value = text;
+      }
       for (const prototype of prototypes) {
-        prototype.update(sugarProduction, sugarConsumption, prototypeCapacity, reserve);
+        prototype.update(sugarProduction, sugarConsumption, model.sugarCapacity, model.sugarReserve);
       }
-      return growthGranted;
     }
   };
 }

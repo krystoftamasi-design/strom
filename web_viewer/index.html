@@ -1161,12 +1161,12 @@
   <script type="module">
     import * as THREE from 'three';
     import { OrbitControls } from 'three/addons/controls/OrbitControls.js?v=zoom-pixel-ratio-1';
-    import { setupLeafBreeze } from './listy/leaf_breeze.js?v=5';
+    import { setupLeafBreeze } from './listy/leaf_breeze.js?v=perf-opt-1';
     import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
-    import { PhotolysisSystem } from './vykreslovani/photolysis_system.js?v=gas-reverse-1';
+    import { PhotolysisSystem } from './vykreslovani/photolysis_system.js?v=winter-particles-2';
     import { loadBarkReference, loadBarkAttributes, attachBarkAttributes, createBarkMaterial } from './vykreslovani/bark_material.js?v=opt-lut-1';
-    import { loadLeafReference, loadLeafAttributes, attachLeafAttributes, createLeafMaterial, createLeafDepthMaterial, setLeafEdgeTransition } from './vykreslovani/leaf_material.js?v=spring-cover-1';
-    import { LeafControls } from './listy/leaf_controls.js?v=spring-cover-1';
+    import { loadLeafReference, loadLeafAttributes, attachLeafAttributes, createLeafMaterial, createLeafDepthMaterial, setLeafEdgeTransition } from './vykreslovani/leaf_material.js?v=perf-opt-1';
+    import { LeafControls } from './listy/leaf_controls.js?v=perf-opt-1';
     import { crossedSpring } from './listy/leaf_growth_timing.js?v=1';
     import { advanceDroughtLeaves, droughtLeafFall } from './listy/drought_leaf_animation.js?v=1';
     import { loadBranchDryingReference, branchDryingFrontWidth } from './listy/leaf_branch_drying.js?v=3';
@@ -1174,11 +1174,11 @@
     import { createSunClouds } from './vykreslovani/sun_clouds.js?v=2';
     import { createWaterBrushMaterial, addWaterBrushAttributes } from './vykreslovani/water_brush.js?v=highlight-width-3';
     import { TreeEcology, SEASONS, MODEL_MINUTES_PER_SECOND } from './ekologie/tree_ecology.js?v=calendar-water-1';
-    import { createChapters } from './kapitoly/chapters.js?v=spring-cover-1';
+    import { createChapters } from './kapitoly/chapters.js?v=perf-opt-1';
     import { createSeedChapter } from './kapitoly/seed_chapter.js';
     import { createTreeBird } from './vykreslovani/tree_bird.js?v=perch-grid-1';
     import { createSeasonRing } from './obdobi/season_ring.js?v=season-boundary-1';
-    import { createIntroForest } from './obdobi/intro_forest.js?v=intro-closer-camera-2';
+    import { createIntroForest } from './obdobi/intro_forest.js?v=perf-opt-1';
     import { seasonColorForPosition } from './obdobi/season_timeline.js?v=beech-calendar-1';
     import {
       BEECH_CALENDAR, seasonDayForPosition, beechLeafFallProgress,
@@ -1194,6 +1194,11 @@
     const loadProgressText = document.getElementById('loadProgressText');
     const valFps = document.getElementById('valFps');
     const toast = document.getElementById('toast');
+    const sliderSunEl = document.getElementById('sliderSun');
+    const sliderLeafFallAmountEl = document.getElementById('sliderLeafFallAmount');
+    const sliderSapSpeedEl = document.getElementById('sliderSapSpeed');
+    const sliderSapGlowEl = document.getElementById('sliderSapGlow');
+    const chkSapWaterLabelEl = document.getElementById('chkSapWaterLabel');
 
     function showToast(msg) {
       toast.textContent = msg;
@@ -1229,8 +1234,10 @@
     // Camera motion does not change the tree's light-space depth. Reuse all
     // shadow map until a caster, its alpha mask, or the sun changes.
     renderer.shadowMap.autoUpdate = false;
+    let lastPeriodicShadowUpdate = -Infinity;
     function invalidateShadows() {
       renderer.shadowMap.needsUpdate = true;
+      lastPeriodicShadowUpdate = performance.now();
     }
     invalidateShadows();
 
@@ -2533,13 +2540,11 @@
 
     function updatePhotosynthesisLabelsPosition() {
       const rx = getPhotosynthesisReactionPoint();
-      if (photolysisSystem) {
+      if (photonLabel && photolysisSystem) {
         const pOrigin = photolysisSystem.getPhotonOrigin();
-        if (photonLabel) {
-          const pMid = rx.clone().lerp(pOrigin, 0.52);
-          photonLabel.position.set(pMid.x - 0.75, pMid.y + 0.35, pMid.z + 0.15);
-          photonLabel.rotation.set(0, 0, 0);
-        }
+        const pMid = rx.clone().lerp(pOrigin, 0.52);
+        photonLabel.position.set(pMid.x - 0.75, pMid.y + 0.35, pMid.z + 0.15);
+        photonLabel.rotation.set(0, 0, 0);
       }
       if (oxygenLabel) {
         oxygenLabel.position.set(rx.x + 1.25, rx.y + 1.15, rx.z - 0.35);
@@ -2550,6 +2555,10 @@
     function initPhotosynthesisLabels() {
       updatePhotosynthesisLabelsPosition();
     }
+
+    const _photolysisFrontDir = new THREE.Vector3();
+    const _photolysisSunWorld = new THREE.Vector3();
+    const _photolysisSunDir = new THREE.Vector3();
 
     // Inicializace fotolýzního částicového systému a popisků
     isPhotosynthesisReady = true;
@@ -2562,20 +2571,19 @@
         waterGroup: waterVapourGroup,
         getFrontDirection: () => {
           const rx = getPhotosynthesisReactionPoint();
-          return new THREE.Vector3(camera.position.x - rx.x, 0, camera.position.z - rx.z).normalize();
+          return _photolysisFrontDir.set(camera.position.x - rx.x, 0, camera.position.z - rx.z).normalize();
         },
         reactionOrb: reactionOrb,
         getReactionPoint: getPhotosynthesisReactionPoint,
         getSunPosition: target => sunMesh1.getWorldPosition(target),
         getSunDirection: () => {
-          const sunWorld = new THREE.Vector3();
           if (typeof sunMesh1 !== 'undefined' && sunMesh1) {
-            sunMesh1.getWorldPosition(sunWorld);
+            sunMesh1.getWorldPosition(_photolysisSunWorld);
           } else {
-            sunWorld.set(55.63, 61.78, 22.47);
+            _photolysisSunWorld.set(55.63, 61.78, 22.47);
           }
           const rx = getPhotosynthesisReactionPoint();
-          return sunWorld.sub(rx).normalize();
+          return _photolysisSunDir.subVectors(_photolysisSunWorld, rx).normalize();
         },
         treeWaterLiters: treeWaterLiters,
         sunElevationDeg: sunElevationDeg,
@@ -2602,7 +2610,6 @@
     function updatePhotonFlow(delta = 0.016, now = performance.now()) {
       if (!photosynthesisGroup || !sapGroup.visible) return;
 
-      const speed = (typeof sapUniforms !== 'undefined' && sapUniforms.uSpeed) ? sapUniforms.uSpeed.value : 1.0;
       const opacity = (typeof sapUniforms !== 'undefined' && sapUniforms.uOpacity) ? sapUniforms.uOpacity.value : 1.0;
 
       if (photolysisSystem) {
@@ -2611,7 +2618,10 @@
         photolysisSystem.setLightAvailability(ecology.light);
         photolysisSystem.setTranspiration(sapFlowRetraction < 0.01 ? ecology.transpiration : 0);
         photolysisSystem.setSunElevation(sunElevationDeg);
-        photolysisSystem.update(delta, camera);
+        photolysisSystem.update(delta, camera, {
+          photolysis: photosynthesisGroup.visible,
+          water: waterVapourGroup.visible
+        });
 
         updatePhotosynthesisLabelsPosition();
       }
@@ -2624,7 +2634,7 @@
 
     function updateSapWaterLabel(delta, now) {
       if (!sapWaterLabel) return;
-      const labelsEnabled = document.getElementById('chkSapWaterLabel')?.checked !== false;
+      const labelsEnabled = chkSapWaterLabelEl?.checked !== false;
       sapWaterLabel.visible = labelsEnabled && ecology.transpiration > 0.0001 && sapGroup.visible;
     }
 
@@ -3017,13 +3027,9 @@
     let leafRegrowthProgress = 1.0;
     let leafRegrowthActive = false;
     let leafWasDry = false;
-    let seasonalNewLeaves = false;
-    let seasonalRegrowthActive = false;
-    let seasonalRegrowthPending = false;
-    let previousSeasonPhase = null;
-    let previousSeasonPosition = null;
-    let springGrowthDue = false;
     let seasonalCanopyLimit = 1;
+    let appliedVisualGrowth = 1;
+    let lastSeasonPosition = null;
 
     function setSeasonalCanopyLimit(coverage) {
       if (coverage === seasonalCanopyLimit) return;
@@ -3032,29 +3038,32 @@
       leafControls.setCanopyCoverage(coverage, shaderUniforms.uDryingSharpness.value);
     }
 
+    function seasonalLeafGrowth(position) {
+      const day = seasonDayForPosition(position) % 365;
+      if (day < BEECH_CALENDAR.budburst || day >= BEECH_CALENDAR.leafFallEnd) return 0;
+      if (day >= BEECH_CALENDAR.fullLeaf) return 1;
+      return THREE.MathUtils.smoothstep(day, BEECH_CALENDAR.budburst, BEECH_CALENDAR.fullLeaf);
+    }
+
     function isLeafGrowthSeason() {
-      const day = seasonDayForPosition(ecology.seasonPosition);
+      const day = seasonDayForPosition(ecology.seasonPosition) % 365;
       return day >= BEECH_CALENDAR.budburst && day < 243;
     }
 
-    function startSeasonalRegrowth() {
-      seasonalRegrowthPending = false;
-      droughtLeafProgress = 0;
-      springGrowthDue = false;
-      setSeasonalCanopyLimit(0);
-      seasonalNewLeaves = true;
-      seasonalRegrowthActive = true;
-      leafRegrowthActive = true;
-      leafWasDry = false;
-      setLeafRegrowthProgress(1);
-      leafControls.resetLeafFall();
-    }
-
-    function setLeafRegrowthProgress(progress) {
-      leafRegrowthProgress = THREE.MathUtils.clamp(progress, 0, 1.0);
-      if (typeof leafControls !== 'undefined' && leafControls?.setGrowthProgress) {
-        leafControls.setGrowthProgress(leafRegrowthProgress);
+    function syncVisualLeafGrowth() {
+      const day = seasonDayForPosition(ecology.seasonPosition) % 365;
+      const inBudburst = day >= BEECH_CALENDAR.budburst && day < BEECH_CALENDAR.fullLeaf;
+      const target = inBudburst
+        ? Math.max(0.05, Math.min(seasonalLeafGrowth(ecology.seasonPosition), leafRegrowthProgress))
+        : (leafRegrowthActive ? Math.max(0.05, leafRegrowthProgress) : 1);
+      if (Math.abs(target - appliedVisualGrowth) > 0.002 || (target === 1 && appliedVisualGrowth !== 1)) {
+        appliedVisualGrowth = target;
+        if (typeof leafControls !== 'undefined' && leafControls?.setGrowthProgress) {
+          leafControls.setGrowthProgress(target);
+        }
+        return true;
       }
+      return false;
     }
 
     function getLeafRegrowthSpeed() {
@@ -3066,10 +3075,8 @@
       // Při suchu (droughtDryProgress > 0) listy plynule přecházejí do podzimních a uschlých jantarových odstínů
       // 1.08 odpovídá uschlým hnědo-jantarovým listům (v shaderu uSeasonOffset cca +0.255)
       const dryTargetShift = 1.08;
-      // Spring regrowth uses the current spring colours.
-      const seasonalShift = seasonalNewLeaves && ecology.season === 'latefall' ? 0 : userSeasonShift;
       const dryAppearance = Math.max(droughtDryProgress, droughtLeafProgress);
-      const effectiveShift = seasonalShift * (1.0 - dryAppearance) + dryTargetShift * dryAppearance;
+      const effectiveShift = userSeasonShift * (1.0 - dryAppearance) + dryTargetShift * dryAppearance;
       shaderUniforms.uSeasonOffset.value = (effectiveShift - 0.5) * 0.44;
     }
 
@@ -3083,7 +3090,9 @@
       ecology.hourOfDay = timeOfDayHours;
       ecology.sunElevation = sunElevationDeg;
       ecology.sunAzimuth = sunAzimuthDeg;
-      ecology.sunIntensity = Number(document.getElementById('sliderSun').value) / 100;
+      ecology.sunIntensity = Number(sliderSunEl.value) / 100;
+      ecology.droughtFall = droughtLeafFall(droughtLeafProgress);
+      ecology.leafGrowth = Math.min(seasonalLeafGrowth(ecology.seasonPosition), leafRegrowthProgress);
       ecology.activeFoliage = leafControls.getActiveFoliage(leafFallAnimationTime);
       ecology.photosyntheticFoliage = leafControls.getPhotosyntheticFoliage(
         leafFallAnimationTime,
@@ -3101,24 +3110,11 @@
     // The presentation and interactive ring both drive this same leaf lifecycle.
     function updateSeasonalLeaves(delta) {
       if (!ecology.ready) return;
-      const seasonPhase = ((ecology.seasonPosition % 4) + 4) % 4;
-      const reachedSpring = previousSeasonPhase !== null && previousSeasonPhase >= 2 && seasonPhase < 1;
-      const crossedBudburst = crossedSpring(previousSeasonPosition, ecology.seasonPosition);
-      if (crossedBudburst) springGrowthDue = true;
-      if (seasonPhase >= 1 && seasonPhase < 3.5) seasonalNewLeaves = false;
-      if (((seasonPhase >= 3.5 || reachedSpring) && !seasonalNewLeaves || crossedBudburst) && !seasonalRegrowthPending) {
-        // Finish the old leaves' fall now, then wait until late April to regrow.
-        seasonalRegrowthPending = true;
-        leafRegrowthActive = false;
-      }
-      previousSeasonPhase = seasonPhase;
-      previousSeasonPosition = ecology.seasonPosition;
-      // Preserve the established visual recovery, driven by the shared water state.
       if (!chapterApp.introduction) {
         droughtLeafProgress = advanceDroughtLeaves(droughtLeafProgress, ecology.hydration, delta);
         if (droughtDryProgress > 0.85 || droughtLeafProgress > 0) leafWasDry = true;
       }
-      if (!chapterApp.introduction && !seasonalRegrowthPending && isLeafGrowthSeason() && leafWasDry && ecology.hydration > 0.95 && !leafRegrowthActive) {
+      if (!chapterApp.introduction && isLeafGrowthSeason() && leafWasDry && ecology.hydration > 0.95 && !leafRegrowthActive) {
         const droppedFromDrought = droughtLeafFall(droughtLeafProgress) > 0;
         if (droughtLeafProgress > 0) {
           droughtLeafProgress = 0;
@@ -3126,13 +3122,13 @@
         }
         if (droppedFromDrought || droughtDryProgress > 0.85) {
           leafRegrowthActive = true;
-          setLeafRegrowthProgress(0.05);
+          leafRegrowthProgress = 0.05;
         } else {
           leafWasDry = false;
         }
       }
-      if (leafRegrowthActive && !seasonalRegrowthActive) {
-        setLeafRegrowthProgress(leafRegrowthProgress + delta * 0.45 * getLeafRegrowthSpeed());
+      if (leafRegrowthActive) {
+        leafRegrowthProgress = Math.min(1, leafRegrowthProgress + delta * 0.45 * getLeafRegrowthSpeed());
         if (leafRegrowthProgress >= 1) {
           leafRegrowthActive = false;
           leafWasDry = false;
@@ -3144,15 +3140,13 @@
     function updateSapFlowDynamics() {
       if (typeof sapUniforms === 'undefined') return;
       const normWater = ecology.ready ? ecology.hydration : 1;
-      const speedInput = document.getElementById('sliderSapSpeed');
-      const userSpeed = parseFloat(speedInput ? speedInput.value : 100) / 100.0;
+      const userSpeed = parseFloat(sliderSapSpeedEl ? sliderSapSpeedEl.value : 100) / 100.0;
       // Při 0 L se proudění zastaví, při nízké vodě teče pomaleji
       const waterFlowMult = ecology.ready ? Math.min(1.4, ecology.transpiration / Math.max(0.001, ecology.baseTranspiration)) : 0;
-      const photosynthesisRunning = ecology.ready && ecology.activity > 0.0001;
-      sapUniforms.uSpeed.value = photosynthesisRunning ? userSpeed * waterFlowMult : 0;
+      const waterRunning = ecology.ready && ecology.transpiration > 0.0001;
+      sapUniforms.uSpeed.value = waterRunning ? userSpeed * waterFlowMult : 0;
 
-      const glowInput = document.getElementById('sliderSapGlow');
-      const userGlow = parseFloat(glowInput ? glowInput.value : 100) / 100.0;
+      const userGlow = parseFloat(sliderSapGlowEl ? sliderSapGlowEl.value : 100) / 100.0;
       const waterGlowMult = normWater <= 0.001 ? 0.30 : Math.min(1.2, 0.45 + 0.55 * normWater);
       sapUniforms.uGlow.value = userGlow * waterGlowMult;
     }
@@ -3170,12 +3164,13 @@
       if (!leavesStartedTurningRed) sapLeafRedRetractionActive = false;
       sapLeafRedWasStarted = leavesStartedTurningRed;
       // The first leaf's red color transition starts the root-to-crown retraction.
-      const target = ecology.activity > 0.0001 && !sapLeafRedRetractionActive ? 0 : 1;
+      const waterTarget = ecology.transpiration > 0.0001 && !sapLeafRedRetractionActive ? 0 : 1;
+      const photoTarget = ecology.activity > 0.0001 && !sapLeafRedRetractionActive ? 0 : 1;
       const night = sunElevationDeg <= 0;
-      const nightRetraction = target === 1 && night;
-      const step = delta / (nightRetraction || target === 0 ? 1.2 : 3.6);
-      sapFlowRetraction += THREE.MathUtils.clamp(target - sapFlowRetraction, -step, step);
-      const revealingFromBottom = target === 0;
+      const nightRetraction = waterTarget === 1 && night;
+      const step = delta / (nightRetraction || waterTarget === 0 ? 1.2 : 3.6);
+      sapFlowRetraction += THREE.MathUtils.clamp(waterTarget - sapFlowRetraction, -step, step);
+      const revealingFromBottom = waterTarget === 0;
       sapUniforms.uFlowRevealBottom.value = revealingFromBottom ? 1 : 0;
       // Shutdown removes the roots first; restart reveals roots first.
       const flowProgress = revealingFromBottom ? 1 - sapFlowRetraction : sapFlowRetraction;
@@ -3183,6 +3178,7 @@
         sapFlowMinDistance - 0.4, sapFlowMaxDistance + 0.4, flowProgress);
       const glucoseFlow = greenRootFlowMesh?.userData;
       const winter = ecology.season === 'latefall';
+      if (photolysisSystem) photolysisSystem.setWinter(winter || photoTarget === 1);
       if (greenRootFlowMesh) {
         greenRootFlowMesh.visible = !winter;
         const glucoseDirection = ecology.season === 'spring' ? 1.0 : -1.0;
@@ -3193,7 +3189,9 @@
         });
       }
       if (glucoseFlow?.flowCutoff && glucoseFlow.flowMinDistance < glucoseFlow.flowMaxDistance) {
-        const sugarTarget = winter ? 1 : target;
+        const sugarActive = !winter && !sapLeafRedRetractionActive
+          && (photoTarget === 0 || (night && ecology.activeLeafArea > 0.001 && ecology.hydration > 0.001));
+        const sugarTarget = sugarActive ? 0 : 1;
         const sugarStep = delta / 3.6;
         sugarFlowRetraction = winter ? 1
           : sugarFlowRetraction + THREE.MathUtils.clamp(sugarTarget - sugarFlowRetraction, -sugarStep, sugarStep);
@@ -3716,8 +3714,11 @@
       btnTimePause.title = pauseLabel;
       btnTimePause.setAttribute('aria-pressed', String(timePaused));
       for (const [button, speed] of timeSpeedButtons) {
-        button.setAttribute('aria-pressed', String(!timePaused && timePlaybackSpeed === speed));
+        button.setAttribute('aria-pressed', String(!timePaused && (timePlaybackSpeed === speed || (speed === 2 && timePlaybackSpeed === 4))));
       }
+      const fasterLabel = timePlaybackSpeed === 4 && !timePaused ? 'Zrychlení 4×' : 'Zrychlení 2×';
+      timeSpeedButtons[1][0].setAttribute('aria-label', fasterLabel);
+      timeSpeedButtons[1][0].title = fasterLabel;
     }
     btnTimePause.addEventListener('click', () => {
       timePaused = !timePaused;
@@ -3725,7 +3726,8 @@
     });
     for (const [button, speed] of timeSpeedButtons) {
       button.addEventListener('click', () => {
-        timePlaybackSpeed = !timePaused && timePlaybackSpeed === speed ? 1 : speed;
+        timePlaybackSpeed = !timePaused && speed === 2 && timePlaybackSpeed === 2 ? 4
+          : !timePaused && (timePlaybackSpeed === speed || (speed === 2 && timePlaybackSpeed === 4)) ? 1 : speed;
         timePaused = false;
         syncTimePlaybackControls();
       });
@@ -3820,7 +3822,6 @@
     const twilightBackground = new THREE.Color(0x9f8c8a);
     const nightBackground = new THREE.Color(0x121b2b);
     let lastDaylightFrame = -Infinity;
-    let lastDaylightShadow = -Infinity;
     function updateDayNightScene(now) {
       if (!ecology.ready || document.hidden || now - lastDaylightFrame < 50) return;
       lastDaylightFrame = now;
@@ -3852,9 +3853,8 @@
       shaderUniforms.uMoonIntensity.value = 0.75 * moonAmount;
       shaderUniforms.uSceneIllumination.value = 0.07 * moonAmount
         + 3.15 * Math.min(1, shaderUniforms.uSunIntensity.value);
-      if (ecology.dayCycleEnabled && sunElevationDeg > 0 && now - lastDaylightShadow >= 750) {
+      if (ecology.dayCycleEnabled && sunElevationDeg > 0 && now - lastPeriodicShadowUpdate >= 1000) {
         invalidateShadows();
-        lastDaylightShadow = now;
       }
     }
 
@@ -3932,9 +3932,21 @@
       invalidateShadows();
     }
 
+    const SEASON_BUTTON_POSITIONS = {
+      spring: (120 - 59) / (151 - 59), // 1. května — v období rašení, listy drží na stromě
+      summer: 1.5,
+      fall: 2.5,
+      latefall: 3.5,
+    };
+
     function setEcologySeason(key) {
       if (!SEASONS[key]) return;
-      ecology.setSeasonPosition(Object.keys(SEASONS).indexOf(key) + 0.5, true);
+      ecology.setSeasonPosition(SEASON_BUTTON_POSITIONS[key], true);
+      lastSeasonPosition = ecology.seasonPosition;
+      if (key !== 'latefall' && beechLeafFallProgress(ecology.seasonPosition) < 1) {
+        leafControls.resetLeafFall();
+      }
+      syncVisualLeafGrowth();
       syncSeasonWaterControl();
       const season = SEASONS[key];
       const colour = seasonColorForPosition(ecology.seasonPosition);
@@ -4097,7 +4109,7 @@
         groundPlane.visible = !roots && document.getElementById('chkGround').checked;
         dripZoneGroup.visible = roots && document.getElementById('chkDripLine').checked;
         if (chapter !== 'intro') {
-          setLeafRegrowthProgress(leafRegrowthProgress);
+          syncVisualLeafGrowth();
           syncSeasonFoliage();
         }
         invalidateShadows();
@@ -4109,16 +4121,13 @@
           // the same falling and regrowth lifecycle as the season ring.
           droughtDryProgress = 0;
           droughtLeafProgress = 0;
-          previousSeasonPhase = null;
-          previousSeasonPosition = null;
-          springGrowthDue = false;
           setSeasonalCanopyLimit(1);
-          seasonalNewLeaves = false;
-          seasonalRegrowthActive = false;
-          seasonalRegrowthPending = false;
           leafRegrowthActive = false;
           leafWasDry = false;
-          setLeafRegrowthProgress(1);
+          leafRegrowthProgress = 1;
+          appliedVisualGrowth = 1;
+          lastSeasonPosition = ecology.seasonPosition;
+          leafControls.setGrowthProgress(1);
           leafControls.resetLeafFall();
           syncSeasonFoliage();
           // Start the intro just before sunrise.
@@ -4165,14 +4174,20 @@
     let adaptiveFrames = 0;
     let adaptiveSlowStreak = 0;
     let adaptiveFastStreak = 0;
+    let adaptiveDowngrades = 0;
+    let adaptiveLocked = false;
     let lastPixelRatioChange = lastTime;
     const adaptiveStartTime = lastTime;
-    let lastBreezeShadowUpdate = -Infinity;
-    let lastRegrowthShadowUpdate = -Infinity;
+    let wasLeavesAnimating = false;
+    let wasLeafRegrowthActive = false;
     function animate(now) {
       requestAnimationFrame(animate);
 
-      const frameSeconds = document.hidden ? 0 : (now - lastTime) / 1000;
+      if (document.hidden) {
+        lastTime = now;
+        return;
+      }
+      const frameSeconds = (now - lastTime) / 1000;
       const delta = Math.min(0.1, frameSeconds);
       lastTime = now;
       const playbackDelta = timePaused ? 0 : delta * baseTimeRate * timePlaybackSpeed;
@@ -4194,17 +4209,17 @@
         fpsTimer = 0;
       }
 
-      if (maxRenderPixelRatio > 1.05 && ecology.ready && !document.hidden && frameSeconds > 0 && frameSeconds <= 0.45 && now - adaptiveStartTime > 2000) {
+      if (!adaptiveLocked && maxRenderPixelRatio > 1.05 && ecology.ready && frameSeconds > 0 && frameSeconds <= 0.45 && now - adaptiveStartTime > 2000) {
         adaptiveFrames++;
         adaptiveTime += frameSeconds;
         if (adaptiveTime >= 0.8) {
           const sampleFps = adaptiveFrames / adaptiveTime;
           adaptiveTime = 0;
           adaptiveFrames = 0;
-          if (sampleFps < 30 && activeRenderPixelRatio > 1.0) {
+          if (sampleFps < 34 && activeRenderPixelRatio > 1.0) {
             adaptiveSlowStreak++;
             adaptiveFastStreak = 0;
-          } else if (sampleFps > 58 && activeRenderPixelRatio < maxRenderPixelRatio) {
+          } else if (sampleFps >= 59 && activeRenderPixelRatio < maxRenderPixelRatio) {
             adaptiveFastStreak++;
             adaptiveSlowStreak = 0;
           } else {
@@ -4214,8 +4229,10 @@
           const sinceChange = now - lastPixelRatioChange;
           let nextRatio = activeRenderPixelRatio;
           if (adaptiveSlowStreak >= 2 && sinceChange >= 2000) {
-            nextRatio = 1.0;
-          } else if (adaptiveFastStreak >= 4 && sinceChange >= 5000) {
+            nextRatio = activeRenderPixelRatio > 1.2 && sampleFps >= 26 ? 1.15 : 1.0;
+            adaptiveDowngrades++;
+            if (adaptiveDowngrades >= 2 && nextRatio === 1.0) adaptiveLocked = true;
+          } else if (adaptiveDowngrades < 2 && adaptiveFastStreak >= 10 && sinceChange >= 12000) {
             nextRatio = maxRenderPixelRatio;
           }
           if (nextRatio !== activeRenderPixelRatio) {
@@ -4245,14 +4262,14 @@
       // Accelerate during late autumn and winter, before spring growth is due.
       // Keep the same clock and paths so airborne leaves continue their flight.
       const fallSeasonPhase = ((ecology.seasonPosition % 4) + 4) % 4;
-      const winterFallSpeed = !seasonalNewLeaves
-        ? 1 + 7 * THREE.MathUtils.smoothstep(fallSeasonPhase, 2.5, 3)
-        : 1;
-      leafFallAnimationTime += playbackDelta * (seasonalRegrowthPending ? 12 : winterFallSpeed);
+      const winterFallSpeed = 1 + 7 * THREE.MathUtils.smoothstep(fallSeasonPhase, 2.5, 3);
+      leafFallAnimationTime += playbackDelta * winterFallSpeed;
       shaderUniforms.uLeafFallTime.value = leafFallAnimationTime;
       // Hold the sun while the ring is moving across dates.
-      const previousSeason = ecology.seasonPosition;
+      const beforeAdvance = ecology.seasonPosition;
+      const previousSeason = lastSeasonPosition ?? beforeAdvance;
       const advanced = chapterApp.advanceSeason(playbackDelta);
+      const crossedBudburst = crossedSpring(previousSeason, ecology.seasonPosition);
       const seekingSeason = !chapterApp.introduction && Boolean(seasonRingControl?.isSeeking);
       let nextHour = timeOfDayHours;
       let modelMinutes = 0;
@@ -4265,7 +4282,7 @@
         nextHour = ((solarHour % 24) + 24) % 24;
         if (advanced) {
           const calendarDate = position => seasonDayForPosition(position) + 365 * Math.floor(position / 4);
-          modelMinutes = Math.max(0, (calendarDate(ecology.seasonPosition) - calendarDate(previousSeason)) * 1440);
+          modelMinutes = Math.max(0, (calendarDate(ecology.seasonPosition) - calendarDate(beforeAdvance)) * 1440);
         }
       }
       if (seekingSeason) sunSeekTransition = null;
@@ -4287,18 +4304,42 @@
         displayedSunHour = sunHour;
         if (ecology.dayCycleEnabled) {
           updateSunFromDayClock(sunHour);
-          if ((animatingSun || !advanced) && !chapterApp.introduction) invalidateShadows();
+          if (!chapterApp.introduction) {
+            if (!animatingSun && !advanced) invalidateShadows();
+            else if (animatingSun && (sunSeekTransition === null || now - lastPeriodicShadowUpdate >= 80)) {
+              invalidateShadows();
+            }
+          }
         }
       }
       let daytimeLight = null;
       if (!chapterApp.introduction && ecology.dayCycleEnabled) {
-        const sunIntensity = Number(document.getElementById('sliderSun').value) / 100;
+        const sunIntensity = Number(sliderSunEl.value) / 100;
         daytimeLight = ecology.manualLightAvailability ?? daytimeSunSamples.reduce(
           (sum, light) => sum + THREE.MathUtils.clamp(light * sunIntensity, 0, 1), 0) / daytimeSunSamples.length;
       }
+      const manualForwardSeek = !chapterApp.introduction && !advanced && ecology.seasonPosition > previousSeason;
+      if (manualForwardSeek) {
+        ecology.advanceSugarOnSeek(previousSeason, ecology.seasonPosition, daytimeLight, crossedBudburst);
+        setSeasonalCanopyLimit(ecology.canopyLimit);
+      }
+      if (crossedBudburst) {
+        if (!chapterApp.introduction && !manualForwardSeek) {
+          ecology.startSpringBudburst();
+        }
+        setSeasonalCanopyLimit(chapterApp.introduction ? 1 : ecology.canopyLimit);
+        droughtLeafProgress = 0;
+        leafWasDry = false;
+        leafRegrowthActive = false;
+        leafRegrowthProgress = 1;
+        leafControls.resetLeafFall();
+        invalidateShadows();
+      }
+      lastSeasonPosition = ecology.seasonPosition;
       updateWaterAndDrought(modelMinutes, daytimeLight);
-      updateSapRetraction(delta);
+      updateSapRetraction(playbackDelta);
       if (playbackDelta > 0) updateSeasonalLeaves(playbackDelta);
+      const visualGrowthChanged = syncVisualLeafGrowth();
       if (typeof sapUniforms !== 'undefined') sapUniforms.uTime.value = simulationTime * 0.5;
       updateDayNightScene(now);
       if (playbackDelta > 0 && typeof leafControls !== 'undefined' && typeof shaderUniforms !== 'undefined') {
@@ -4310,50 +4351,33 @@
             dryingSharpness: shaderUniforms.uDryingSharpness.value,
             dryingFrontWidth: shaderUniforms.uDryingFrontWidth.value,
             fallSpeed: shaderUniforms.uLeafFallSpeed.value,
-            maxAirborne: Number(document.getElementById('sliderLeafFallAmount').value),
-            calendarFallProgress: Math.max(droughtLeafFall(droughtLeafProgress),
-              seasonalRegrowthPending ? 1 : (seasonalNewLeaves ? 0 : beechLeafFallProgress(ecology.seasonPosition))),
+            maxAirborne: Number(sliderLeafFallAmountEl.value),
+            calendarFallProgress: Math.max(droughtLeafFall(droughtLeafProgress), beechLeafFallProgress(ecology.seasonPosition)),
             enabled: shaderUniforms.uLeafFallEnabled.value > 0.5
           }
         );
-        if (seasonalRegrowthPending && springGrowthDue
-          && (droughtLeafProgress === 0 || ecology.hydration > 0.95)
-          && !leafControls.hasUnfinishedLeafFall(leafFallAnimationTime)) {
-          startSeasonalRegrowth();
-          invalidateShadows();
-        }
-        // Falling leaves update shadows every frame; slower spring regrowth and
-        // gentle breeze throttle shadow updates so high leaf counts stay smooth.
+        // Throttle shadow map rebuilds across fall, regrowth, and strong breeze
+        // using a single shared cooldown so shadow passes never stack up.
         if (leavesAnimating) {
+          if (!wasLeavesAnimating || now - lastPeriodicShadowUpdate >= 200) invalidateShadows();
+        } else if (wasLeavesAnimating) {
           invalidateShadows();
-          lastBreezeShadowUpdate = lastRegrowthShadowUpdate = now;
-        } else if (leafRegrowthActive && now - lastRegrowthShadowUpdate >= 100) {
+        } else if (visualGrowthChanged) {
+          if (!wasLeafRegrowthActive || now - lastPeriodicShadowUpdate >= 200) invalidateShadows();
+        } else if (wasLeafRegrowthActive) {
           invalidateShadows();
-          lastBreezeShadowUpdate = lastRegrowthShadowUpdate = now;
-        } else if (leafBreeze.active && now - lastBreezeShadowUpdate >= 400) {
+        } else if (leafBreeze.active && leafBreeze.strength > 0.5 && now - lastPeriodicShadowUpdate >= 1200) {
           invalidateShadows();
-          lastBreezeShadowUpdate = now;
         }
+        wasLeavesAnimating = leavesAnimating;
+        wasLeafRegrowthActive = visualGrowthChanged;
       }
       if (playbackDelta > 0 && typeof updatePhotonFlow === 'function') updatePhotonFlow(playbackDelta, simulationNow);
       if (typeof updateSapWaterLabel === 'function') updateSapWaterLabel(playbackDelta, simulationNow);
       camera.updateMatrixWorld();
-      const cloudAmount = sunClouds.update(ecology, delta);
+      const cloudAmount = sunClouds.update(ecology, playbackDelta);
       studioColor.copy(baseSceneBackground).lerp(overcastBackground, cloudAmount * 0.55);
-      const growthRequested = seasonalRegrowthActive && playbackDelta > 0 ? 1 : 0;
-      const growthGranted = chapterApp.updateScene(previousSeason, advanced, growthRequested, seasonalCanopyLimit);
-      if (growthRequested > 0) {
-        const fundedGrowth = chapterApp.introduction ? growthRequested : growthGranted;
-        if (fundedGrowth !== undefined) {
-          setSeasonalCanopyLimit(fundedGrowth);
-          seasonalRegrowthActive = false;
-          // The funded batch grows together. Its leaf count stays fixed during the animation.
-          leafRegrowthActive = fundedGrowth > 0;
-          if (leafRegrowthActive) setLeafRegrowthProgress(0.05);
-          leafWasDry = false;
-          invalidateShadows();
-        }
-      }
+      chapterApp.updateScene();
       updateHighlights(delta);
       seedChapter.update(chapterApp.chapter === 'seeds', ecology.seasonPosition, trunkMesh, seedHighlight, playbackDelta);
       treeBird.update(

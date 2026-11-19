@@ -4,22 +4,22 @@ export const vzorce = {
     vstupy: ['waterConsumption'],
   },
   photosynthesisEfficiency: {
-    vstupy: ['light', 'hydration', 'co2Response', 'photosynthesisTemperatureFactor'],
+    vstupy: ['lightResponse', 'hydration', 'co2Response', 'photosynthesisTemperatureFactor'],
     rozsah: [0, 1],
   },
   activity: {
-    vstupy: ['light', 'hydration', 'activeLeafArea', 'co2Response', 'photosynthesisTemperatureFactor'],
+    vstupy: ['lightResponse', 'hydration', 'activeLeafArea', 'leafGrowth', 'co2Response', 'photosynthesisTemperatureFactor'],
     normalizace: { activeLeafArea: 'leafArea' },
     rozsah: [0, 1],
   },
   glucoseGramsPerMinute: {
-    vstupy: ['activeLeafArea', 'photosynthesisEfficiency', 'glucoseConversion'],
+    vstupy: ['activeLeafArea', 'leafGrowth', 'photosynthesisEfficiency', 'glucoseConversion'],
   },
   oxygenGramsPerMinute: {
     vstupy: ['glucoseGramsPerMinute', 'oxygenPerGlucose'],
   },
   co2GramsPerMinute: {
-    vstupy: ['activeLeafArea', 'photosynthesisEfficiency', 'co2Conversion'],
+    vstupy: ['activeLeafArea', 'leafGrowth', 'photosynthesisEfficiency', 'co2Conversion'],
   },
 };
 

@@ -1,5 +1,5 @@
 import { zobrazitHodnotu, vyhladitHodnotu } from '../okna/element_ui_okna_veliciny.js?v=affinity-windows-layout-2';
-import { SEASONS } from '../ekologie/tree_ecology.js?v=stock-percentage-1';
+import { SEASONS } from '../ekologie/tree_ecology.js?v=calendar-water-1';
 import { createTreeAnnotations } from '../okna/tree_annotations.js?v=spring-cover-1';
 
 const chapters = [
@@ -217,6 +217,7 @@ export function createChapters({ model, applySeason, setSun, setAzimuth, setVisu
     document.getElementById('btnTogglePanel').classList.remove('active');
     shell.querySelector('.chapter-content').scrollTop = 0;
     setVisualChapter(id);
+    lastUI = -Infinity;
     document.body.dataset.chapter = id;
   }
   nav.addEventListener('click', event => {
@@ -246,14 +247,34 @@ export function createChapters({ model, applySeason, setSun, setAzimuth, setVisu
   const hourly = ratePerMinute => fmt(ratePerMinute * 60, 2);
   const smoothedValues = new Map();
   let lastSmoothTime = performance.now();
+  const outputEls = new Map();
+  const prevText = new WeakMap();
+  const setText = (el, text) => {
+    if (!el || prevText.get(el) === text) return;
+    prevText.set(el, text);
+    el.textContent = text;
+  };
+  const out = (id, text) => {
+    let output = outputEls.get(id);
+    if (output === undefined) {
+      output = document.getElementById(id) || null;
+      outputEls.set(id, output);
+    }
+    setText(output, text);
+  };
+  const reserveMeterEl = document.getElementById('ecoReserveMeter');
+  const rootDiagramEl = document.querySelector('.root-diagram');
+  const zivaOutputs = [...shell.querySelectorAll('output[data-ziva-velicina]')].map(output => ({
+    output,
+    key: output.dataset.zivaVelicina,
+    chapter: output.closest('[data-chapter]')?.dataset.chapter || null
+  }));
+  let prevMeterValue = NaN;
+  let prevRotting = null;
   function render() {
     const now = performance.now();
     const dt = (now - lastSmoothTime) / 1000;
     lastSmoothTime = now;
-    const out = (id, text) => {
-      const output = document.getElementById(id);
-      if (output) output.textContent = text;
-    };
     const season = SEASONS[model.season];
     out('ecoSeasonLabel', season.label);
     out('ecoTemperature', fmt(model.ambientTemperature, 1));
@@ -267,7 +288,11 @@ export function createChapters({ model, applySeason, setSun, setAzimuth, setVisu
       : 'Ruční nastavení slunce');
     out('ecoReserve', `${fmt(model.reserve)} / ${fmt(model.capacity)} l`);
     out('ecoWaterLimit', `${hourly(model.seasonalWaterLimit)} l/h`);
-    document.getElementById('ecoReserveMeter').value = model.reserve / model.capacity || 0;
+    const nextMeter = model.reserve / model.capacity || 0;
+    if (reserveMeterEl && nextMeter !== prevMeterValue) {
+      prevMeterValue = nextMeter;
+      reserveMeterEl.value = nextMeter;
+    }
     out('ecoReserveTrend', model.reserve >= model.capacity - 0.001
       ? 'Zásoba je plná.'
       : model.inflow > model.consumption + 0.0001
@@ -289,15 +314,22 @@ export function createChapters({ model, applySeason, setSun, setAzimuth, setVisu
           : 'Kořeny přijímají vodu bez zamokření.';
     out('ecoRootState', rootState);
     out('ecoRootCondition', rootState);
-    document.querySelector('.root-diagram').classList.toggle('rotting', model.rootRot >= 0.05);
-    for (const output of shell.querySelectorAll('output[data-ziva-velicina]')) {
-      const key = output.dataset.zivaVelicina;
-      const value = key === 'glucoseGramsPerMinute' ? treeAnnotations.sugarProduction : model?.[key];
-      const smoothed = vyhladitHodnotu(smoothedValues, output.id, value, dt);
-      output.textContent = zobrazitHodnotu(key, { [key]: smoothed });
+    const rotting = model.rootRot >= 0.05;
+    if (rootDiagramEl && rotting !== prevRotting) {
+      prevRotting = rotting;
+      rootDiagramEl.classList.toggle('rotting', rotting);
     }
-    capturedLabel.textContent = `${hourly(model.waterInput)} l/h`;
-    if (document.activeElement !== waterInput) waterInput.value = model.waterInput * 60;
+    for (const { output, key, chapter: outputChapter } of zivaOutputs) {
+      if (outputChapter && outputChapter !== chapter) continue;
+      const value = key === 'glucoseGramsPerMinute' ? model.totalSugarProduction : model?.[key];
+      const smoothed = vyhladitHodnotu(smoothedValues, output.id, value, dt);
+      setText(output, zobrazitHodnotu(key, { [key]: smoothed }));
+    }
+    setText(capturedLabel, `${hourly(model.waterInput)} l/h`);
+    if (document.activeElement !== waterInput) {
+      const nextWaterValue = String(model.waterInput * 60);
+      if (waterInput.value !== nextWaterValue) waterInput.value = nextWaterValue;
+    }
   }
   select('intro');
   return {
@@ -307,13 +339,12 @@ export function createChapters({ model, applySeason, setSun, setAzimuth, setVisu
     advanceSeason(playbackDelta) {
       return ready && treeAnnotations.advanceSeason(chapter, playbackDelta);
     },
-    updateScene(previousSeason = model.seasonPosition, advanced = false, growthRequested, canopyFraction) {
+    updateScene() {
       if (!ready) return;
-      const growthGranted = treeAnnotations.update(chapter, previousSeason, advanced, growthRequested, canopyFraction);
+      treeAnnotations.update(chapter);
       // Refresh the current model after evaluation, even while its clock is paused.
       const now = performance.now();
       if (now - lastUI >= 50) { render(); lastUI = now; }
-      return growthGranted;
     },
     modelReady() {
       if (ready) { setVisualChapter(chapter); return render(); }

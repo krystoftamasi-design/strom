@@ -35,7 +35,7 @@ Definice spojení
 **Chování elementu**
 
 - Modrá linka vede z kořenů přes kmen k listům.
-- Při fotosyntéze proudí nahoru.
+- Při aktivní transpiraci proudí nahoru; při mrazu pod 0 °C se odpar i proudění zastaví.
 - Při červenání prvního listu se stahuje od kořenů k listům.
 - Při vstupu do kapitoly zachovává aktuální stav podle [Stahování linek](#stahování-linek).
 - Rychlost nočního stahování určuje [Stahování linek](#stahování-linek).
@@ -59,7 +59,7 @@ Definice spojení
 - Končí dřív uvnitř kořenů.
 - Na jaře proudí ze zásob v kořenech a kmeni k novým listům.
 - V létě proudí z listů do kmene a kořenů.
-- V zimě se linka i částice ihned skryjí. V ostatních obdobích se linka ve dne i v noci rozvíjí při aktivní fotosyntéze před začátkem červenání listů. Jinak se postupně stáhne.
+- V zimě se linka i částice ihned skryjí. V ostatních obdobích se linka rozvíjí při aktivní fotosyntéze před začátkem červenání listů a v noci u olistěného zavodněného stromu zůstává vytažená. Jinak se postupně stáhne.
 - Stahování se řídí vlastní délkou trasy.
 
 #### Stahování linek
@@ -103,9 +103,8 @@ Definice spojení
 
 **Chování elementu**
 
-- Světle modré částice při fotosyntéze odlétají od listů. V noci přicházejí ke koruně a znázorňují spotřebu kyslíku při dýchání. Jejich běžná velikost odpovídá H₂O.
-- Při přechodu dne a noci už viditelné částice O₂ a CO₂ obrátí směr na své aktuální pozici. Nové částice přibývají běžným tempem.
-- Noční animace vysílá dvojici O₂ a CO₂ každou půlsekundu času animace.
+- Světle modré částice při fotosyntéze odlétají od listů. Jejich běžná velikost odpovídá H₂O.
+- Částice O₂, CO₂ a fotony se řídí stejnými podmínkami jako [linka glukózy](#glukóza-linka). Při ukončení fotosyntézy nebo začátku červenání se skryjí a nové nevznikají.
 
 ### CO₂
 
@@ -117,7 +116,7 @@ Definice spojení
 
 **Chování elementu**
 
-- Červenooranžové částice při fotosyntéze přicházejí ke koruně. V noci od koruny odlétají a znázorňují výdej CO₂ při dýchání. Jejich běžná velikost odpovídá H₂O.
+- Červenooranžové částice při fotosyntéze přicházejí ke koruně. Jejich běžná velikost odpovídá H₂O.
 
 ### Fotony
 
