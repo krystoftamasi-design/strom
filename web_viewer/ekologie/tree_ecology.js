@@ -138,7 +138,9 @@ export class TreeEcology {
   }
 
   startSpringBudburst() {
-    this.canopyLimit = clamp(this.sugarReserve / SUGAR_BUDBURST_COST, 0, 1);
+    const sugarShare = clamp(this.sugarReserve / SUGAR_BUDBURST_COST, 0, 1);
+    const waterShare = clamp(this.hydration, 0, 1);
+    this.canopyLimit = Math.min(sugarShare, waterShare);
     return this.canopyLimit;
   }
 
