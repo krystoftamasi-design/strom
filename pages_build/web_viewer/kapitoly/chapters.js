@@ -221,7 +221,8 @@ export function createChapters({ model, applySeason, setSun, setAzimuth, setVisu
       return `${a}:${b.getAttribute(a)}`;
     });
     const leafCountDefault = document.getElementById('sliderLeafCount').defaultValue;
-    try { localStorage.setItem(storageKey, JSON.stringify({ inputs, choices, leafCountDefault })); } catch { /* Storage is optional. */ }
+    const leafSizeDefault = document.getElementById('sliderLeafSize').defaultValue;
+    try { localStorage.setItem(storageKey, JSON.stringify({ inputs, choices, leafCountDefault, leafSizeDefault })); } catch { /* Storage is optional. */ }
   }
   drawer.addEventListener('input', saveSettings);
   drawer.addEventListener('change', saveSettings);
@@ -355,8 +356,9 @@ export function createChapters({ model, applySeason, setSun, setAzimuth, setVisu
         const state = JSON.parse(localStorage.getItem(storageKey) || 'null');
         for (const input of settingInputs()) {
           // Apply a changed default once, then keep saving subsequent manual edits.
-          const value = input.id === 'sliderLeafCount' && state?.leafCountDefault !== input.defaultValue
-            ? input.defaultValue : state?.inputs?.[input.id];
+          const resetDefault = (input.id === 'sliderLeafCount' && state?.leafCountDefault !== input.defaultValue)
+            || (input.id === 'sliderLeafSize' && state?.leafSizeDefault !== input.defaultValue);
+          const value = resetDefault ? input.defaultValue : state?.inputs?.[input.id];
           if (input.type === 'checkbox' && typeof value === 'boolean') {
             input.checked = value;
             input.dispatchEvent(new Event('change', { bubbles: true }));

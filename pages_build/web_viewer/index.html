@@ -784,16 +784,16 @@
         <div class="slider-group" style="margin-top: 12px;">
           <div class="slider-label">
             <label for="sliderLeafSize">Velikost listů</label>
-            <span class="slider-val" id="valLeafSize">100 %</span>
+            <span class="slider-val" id="valLeafSize">25 %</span>
           </div>
-          <input type="range" id="sliderLeafSize" min="25" max="250" step="5" value="100">
+          <input type="range" id="sliderLeafSize" min="25" max="250" step="5" value="25">
         </div>
         <div class="slider-group">
           <div class="slider-label">
             <label for="sliderLeafCount">Počet listů</label>
-            <span class="slider-val" id="valLeafCount">50 000</span>
+            <span class="slider-val" id="valLeafCount">90 000</span>
           </div>
-          <input type="range" id="sliderLeafCount" min="0" max="90000" step="1" value="50000">
+          <input type="range" id="sliderLeafCount" min="0" max="90000" step="1" value="90000">
         </div>
       </div>
 
@@ -1179,8 +1179,8 @@
     import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
     import { PhotolysisSystem } from './vykreslovani/photolysis_system.js?v=winter-particles-2';
     import { loadBarkReference, loadBarkAttributes, attachBarkAttributes, createBarkMaterial } from './vykreslovani/bark_material.js?v=opt-lut-1';
-    import { loadLeafReference, loadLeafAttributes, attachLeafAttributes, createLeafMaterial, createLeafDepthMaterial, setLeafEdgeTransition } from './vykreslovani/leaf_material.js?v=airborne-contour-1';
-    import { LeafControls } from './listy/leaf_controls.js?v=ipad-smooth-1';
+    import { loadLeafReference, loadLeafAttributes, attachLeafAttributes, createLeafMaterial, createLeafDepthMaterial, setLeafEdgeTransition } from './vykreslovani/leaf_material.js?v=ipad-smooth-2';
+    import { LeafControls } from './listy/leaf_controls.js?v=ipad-smooth-2';
     import { crossedSpring } from './listy/leaf_growth_timing.js?v=1';
     import { advanceDroughtLeaves, droughtLeafFall } from './listy/drought_leaf_animation.js?v=1';
     import { loadBranchDryingReference, branchDryingFrontWidth } from './listy/leaf_branch_drying.js?v=3';
@@ -1188,7 +1188,7 @@
     import { createSunClouds } from './vykreslovani/sun_clouds.js?v=2';
     import { createWaterBrushMaterial, addWaterBrushAttributes } from './vykreslovani/water_brush.js?v=highlight-width-3';
     import { TreeEcology, SEASONS, MODEL_MINUTES_PER_SECOND } from './ekologie/tree_ecology.js?v=light-consumption-1';
-    import { createChapters } from './kapitoly/chapters.js?v=ipad-smooth-1';
+    import { createChapters } from './kapitoly/chapters.js?v=ipad-smooth-2';
     import { createSeedChapter } from './kapitoly/seed_chapter.js';
     import { createTreeBird } from './vykreslovani/tree_bird.js?v=perch-grid-1';
     import { createSeasonRing } from './obdobi/season_ring.js?v=ipad-smooth-1';
@@ -1559,8 +1559,8 @@
     const gltfLoader = new GLTFLoader();
     const leafCountInputEl = document.getElementById('sliderLeafCount');
     if (isTouchDevice && leafCountInputEl) {
-      leafCountInputEl.value = '25000';
-      leafCountInputEl.defaultValue = '25000';
+      leafCountInputEl.value = '40000';
+      leafCountInputEl.defaultValue = '40000';
     }
     const leafControls = new LeafControls({
       branchDryingReference,

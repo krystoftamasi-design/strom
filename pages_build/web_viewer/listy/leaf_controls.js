@@ -473,9 +473,13 @@ export class LeafControls {
       mesh.geometry.setAttribute('leafGrowthRank', new THREE.BufferAttribute(new Float32Array(vertCount), 1));
       mesh.geometry.setAttribute('leafFallCenter', new THREE.BufferAttribute(fallCenters, 3));
       mesh.geometry.setAttribute('leafFallLanding', new THREE.BufferAttribute(fallLandings, 3));
-      mesh.geometry.setAttribute('leafCameraDrift', new THREE.BufferAttribute(new Float32Array(fallCenters.length), 3));
+      const cameraDriftAttr = new THREE.BufferAttribute(new Float32Array(fallCenters.length), 3);
+      cameraDriftAttr.setUsage(THREE.DynamicDrawUsage);
+      mesh.geometry.setAttribute('leafCameraDrift', cameraDriftAttr);
       mesh.frustumCulled = true; // Disabled dynamically while falling/drifted leaves are active.
-      mesh.geometry.setAttribute('leafFallStartTime', new THREE.BufferAttribute(fallStartTimes, 1));
+      const fallStartAttr = new THREE.BufferAttribute(fallStartTimes, 1);
+      fallStartAttr.setUsage(THREE.DynamicDrawUsage);
+      mesh.geometry.setAttribute('leafFallStartTime', fallStartAttr);
     });
     this.fallSeasonProgress = 0.0;
     this.fallEmissionTokens = 0;
@@ -816,19 +820,13 @@ export class LeafControls {
       airborne.length = airborneWrite;
 
       if (changed) {
-        if (maxStartVert >= minStartVert && startTimes.clearUpdateRanges) {
-          startTimes.clearUpdateRanges();
-          startTimes.addUpdateRange(minStartVert, maxStartVert - minStartVert + 1);
-        }
+        if (startTimes.clearUpdateRanges) startTimes.clearUpdateRanges();
         startTimes.needsUpdate = true;
         this.foliageCache = null;
         this.photosyntheticFoliageCache = null;
       }
       if (driftChanged) {
-        if (maxDriftVert >= minDriftVert && cameraDrift.clearUpdateRanges) {
-          cameraDrift.clearUpdateRanges();
-          cameraDrift.addUpdateRange(minDriftVert * 3, (maxDriftVert - minDriftVert + 1) * 3);
-        }
+        if (cameraDrift.clearUpdateRanges) cameraDrift.clearUpdateRanges();
         cameraDrift.needsUpdate = true;
       }
       if (changed) animating = true;
@@ -1013,10 +1011,7 @@ export class LeafControls {
       model.calendarCursor = 0;
       model.triggerCursor = 0;
       if (changed) {
-        if (maxStartVert >= minStartVert && startTimes.clearUpdateRanges) {
-          startTimes.clearUpdateRanges();
-          startTimes.addUpdateRange(minStartVert, maxStartVert - minStartVert + 1);
-        }
+        if (startTimes.clearUpdateRanges) startTimes.clearUpdateRanges();
         startTimes.needsUpdate = true;
       }
     }
@@ -1109,10 +1104,7 @@ export class LeafControls {
           reset = true;
         }
         if (reset) {
-          if (maxResetVert >= minResetVert && times.clearUpdateRanges) {
-            times.clearUpdateRanges();
-            times.addUpdateRange(minResetVert, maxResetVert - minResetVert + 1);
-          }
+          if (times.clearUpdateRanges) times.clearUpdateRanges();
           times.needsUpdate = true;
           model.calendarCursor = 0;
           model.triggerCursor = 0;

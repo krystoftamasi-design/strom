@@ -232,14 +232,21 @@ const alphaDeclarations = `
 const alphaFragment = `
   if (vLeafFallProgress >= 0.999) discard;
   float leafFade = 1.0 - vLeafFallProgress;
-  if (uLeafDepth < 0.5 && uAlphaMode > 1.5 && vLeafAirborne < 0.5) {
+  if (uLeafDepth < 0.5 && uAlphaMode > 1.5) {
     // The brush keeps its stochastic coverage, fixed to the leaf rather than
     // rehashed from the current pixel footprint. Mipmaps integrate fine pores.
     // Below 0.125, 4x MSAA alpha-to-coverage turns on 0/4 samples (invisible),
     // so discard immediately before sampling diffuse/procedural/3D LUT textures.
     float stableCoverage = clamp(texture2D(uStableLeafAlpha, vLeafUv).a * uLeafAlphaStrength * leafFade, 0.0, 1.0);
-    if (stableCoverage < 0.12) discard;
-    diffuseColor.a = stableCoverage >= 0.88 ? 1.0 : stableCoverage;
+    if (vLeafAirborne > 0.5) {
+      // A moving, edge-on leaf can lose all samples with alpha-to-coverage;
+      // keep using the verified 512x512 POT brush mask with opaque alpha.
+      if (stableCoverage < 0.5) discard;
+      diffuseColor.a = 1.0;
+    } else {
+      if (stableCoverage < 0.12) discard;
+      diffuseColor.a = stableCoverage >= 0.88 ? 1.0 : stableCoverage;
+    }
   } else {
     float leafCoverage = texture2D(uLeafAlpha, vLeafUv).a;
     // Only Material.005 has an alpha ramp. Material.003 uses image alpha directly.
