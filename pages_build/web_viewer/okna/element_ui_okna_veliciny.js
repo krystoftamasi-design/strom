@@ -24,6 +24,11 @@ export const veliciny = {
     jednotka: '%', nasobek: 100, desetinnaMista: 0,
     vystupId: 'ecoActivity', popisHodnoty: 'aktivita', druh: 'activity',
   },
+  lightConsumption: {
+    nazev: 'Spotřeba světla', tema: 'light',
+    jednotka: '%', nasobek: 100, desetinnaMista: 0,
+    vystupId: 'ecoLightConsumption', popisHodnoty: 'spotřeba',
+  },
   glucoseGramsPerMinute: {
     nazev: 'Tvorba cukrů', tema: 'sugar',
     jednotka: 'g/min', nasobek: 1, desetinnaMista: 1,

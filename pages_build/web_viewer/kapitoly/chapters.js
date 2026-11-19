@@ -1,10 +1,10 @@
-import { zobrazitHodnotu, vyhladitHodnotu } from '../okna/element_ui_okna_veliciny.js?v=affinity-windows-layout-2';
+import { zobrazitHodnotu, vyhladitHodnotu } from '../okna/element_ui_okna_veliciny.js?v=light-consumption-1';
 import { SEASONS } from '../ekologie/tree_ecology.js?v=affinity-cap-1';
-import { createTreeAnnotations } from '../okna/tree_annotations.js?v=affinity-double-rail-6';
+import { createTreeAnnotations } from '../okna/tree_annotations.js?v=adjustable-value-1';
 
 const chapters = [
   ['seasons', 'Období'], ['photosynthesis', 'Fotosyntéza'], ['transpiration', 'Transpirace'],
-  ['seeds', 'Semenace'], ['roots', 'Kořeny']
+  ['seeds', 'Semenace']
 ];
 const metric = (label, id, unit = '') => `<div class="chapter-metric"><span>${label}</span><strong><output id="${id}">—</output>${unit}</strong></div>`;
 const rootDiagram = `<svg class="root-diagram" viewBox="0 0 300 210" role="img" aria-label="Schéma rostoucí kořenové špičky: prodlužovací, přechodová a dělivá oblast a ochranná čepička. Kořen uhýbá před překážkou.">

@@ -222,5 +222,18 @@ body:is([data-chapter="transpiration"], [data-chapter="seeds"], [data-chapter="r
 }
 
 body:is([data-chapter="transpiration"], [data-chapter="seeds"], [data-chapter="roots"]) :is(#canvas3d, .chapter-panel, .hud-bottom, #controlsPanel) {
-  filter: blur(8px);
+  filter: blur(16px);
+}
+
+body:is([data-chapter="transpiration"], [data-chapter="seeds"])::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: 10;
+  background: rgba(0, 0, 0, 0.24);
+  pointer-events: none;
+}
+
+body:is([data-chapter="transpiration"], [data-chapter="seeds"]) .chapter-nav {
+  z-index: 12;
 }

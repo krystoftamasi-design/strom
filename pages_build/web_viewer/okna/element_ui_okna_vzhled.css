@@ -380,9 +380,9 @@ body.scene-night .tree-overlay .element-ui-okno .ui-word {
 }
 
 .tree-overlay .element-ui-flow-window .element-ui-values:has(> .element-ui-stock) {
-  --flow-stock-width: clamp(62px, 6.4vw, 94px);
-  --flow-stock-gap: clamp(14px, 1.5vw, 24px);
-  grid-template-columns: var(--flow-window-width) var(--flow-stock-width);
+  --flow-stock-width: var(--photosynthesis-stock-width, min(18cqi, clamp(62px, 6.4vw, 94px)));
+  --flow-stock-gap: var(--photosynthesis-stock-gap, min(3cqi, clamp(14px, 1.5vw, 24px)));
+  grid-template-columns: 100% var(--flow-stock-width);
   column-gap: var(--flow-stock-gap);
   grid-template-rows: repeat(3, auto);
 }
@@ -553,7 +553,7 @@ body.scene-night .tree-overlay .element-ui-balance-bar {
   right: calc(var(--balance-rail-cap) - 1px);
 }
 
-.tree-overlay .element-ui-balance-bar.has-limit .element-ui-balance-rail-top .element-ui-balance-rail-mid {
+.tree-overlay .element-ui-balance-bar.has-editable-value .element-ui-balance-rail-top .element-ui-balance-rail-mid {
   right: 0;
 }
 
@@ -595,7 +595,7 @@ body.scene-night .tree-overlay .element-ui-balance-bar {
   pointer-events: none;
 }
 
-.tree-overlay .element-ui-balance-bar.has-limit .element-ui-balance-lane-top .element-ui-balance-markers {
+.tree-overlay .element-ui-balance-bar.has-editable-value .element-ui-balance-lane-top .element-ui-balance-markers {
   right: var(--balance-limit-width);
 }
 
@@ -664,20 +664,6 @@ body.scene-night .tree-overlay .element-ui-balance-bar {
   bottom: 2%;
 }
 
-.tree-overlay .element-ui-balance-adjustable .element-ui-balance-marker-cap::before {
-  content: '';
-  width: 3px;
-  height: clamp(6px, .8vh, 8px);
-  border-inline: 1px solid rgba(255, 255, 255, .92);
-  border-radius: .5px;
-  opacity: .9;
-}
-
-.tree-overlay .element-ui-balance-lane-top:has(.element-ui-flow-slider:is(:hover, :focus-visible, :active)) .element-ui-balance-adjustable .element-ui-balance-marker-cap::before {
-  opacity: 1;
-  transform: scaleY(1.15);
-}
-
 .tree-overlay .element-ui-balance-limit {
   position: absolute;
   top: -24%;
@@ -706,7 +692,7 @@ body.scene-night .tree-overlay .element-ui-balance-bar {
   font: 600 clamp(8px, 1.05vh, 11px)/1 var(--ui-font-display);
 }
 
-.tree-overlay .element-ui-balance-lane-top:has(.element-ui-limit-slider:is(:hover, :focus-visible, :active)) .element-ui-balance-limit {
+.tree-overlay .element-ui-balance-lane-top:has(.element-ui-editable-value:is(:hover, :focus-visible, :active)) .element-ui-balance-limit {
   transform: scale(1.12);
 }
 
@@ -732,7 +718,7 @@ body.scene-night .tree-overlay .element-ui-balance-bar {
   touch-action: none;
 }
 
-.tree-overlay .element-ui-limit-slider {
+.tree-overlay .element-ui-editable-value {
   inset: -7px 0 -4px calc(var(--balance-rail-cap) + var(--balance-marker-width));
   width: calc(100% - var(--balance-rail-cap) - var(--balance-marker-width));
   height: calc(100% + 11px);
@@ -753,7 +739,7 @@ body.scene-night .tree-overlay .element-ui-balance-bar {
   cursor: inherit;
 }
 
-.tree-overlay .element-ui-limit-slider::-webkit-slider-thumb {
+.tree-overlay .element-ui-editable-value::-webkit-slider-thumb {
   width: var(--balance-limit-width);
 }
 
@@ -770,7 +756,7 @@ body.scene-night .tree-overlay .element-ui-balance-bar {
   cursor: inherit;
 }
 
-.tree-overlay .element-ui-limit-slider::-moz-range-thumb {
+.tree-overlay .element-ui-editable-value::-moz-range-thumb {
   width: var(--balance-limit-width);
 }
 
@@ -779,7 +765,7 @@ body.scene-night .tree-overlay .element-ui-balance-bar {
   outline-offset: 2px;
 }
 
-.tree-overlay .element-ui-limit-slider:focus-visible {
+.tree-overlay .element-ui-editable-value:focus-visible {
   outline-color: #ff1700;
 }
 
@@ -1279,25 +1265,29 @@ body.scene-night .chapter-context-guide .transpiration-legend {
 }
 
 .tree-overlay .photosynthesis-windows {
-  --flow-detail-width: min(clamp(145px, 15vw, 280px), calc(var(--flow-window-width) + 3vw));
   --flow-toggle-angle: 0deg;
   position: absolute;
-  inset: 0;
+  inset: 0 2% 0 69%;
+  container: photosynthesis-windows / inline-size;
   box-sizing: border-box;
   display: grid;
-  grid-template-columns: var(--flow-window-width);
+  grid-template-columns: minmax(0, 1fr);
   grid-auto-rows: max-content;
   align-content: space-between;
   row-gap: 8px;
-  padding: 7vh 2% 6vh max(4%, calc(98% - 1.72 * var(--flow-window-width) - var(--flow-gap)));
+  padding-block: 7vh 6vh;
+  overflow-x: hidden;
   overflow-y: auto;
 }
 
 .tree-overlay .element-ui-okno[data-chapter="photosynthesis"][data-side="right"] {
+  --photosynthesis-stock-width: min(18cqi, clamp(62px, 6.4vw, 94px));
+  --photosynthesis-stock-gap: min(3cqi, clamp(14px, 1.5vw, 24px));
+  --flow-window-width: calc(100cqi - var(--photosynthesis-stock-width) - var(--photosynthesis-stock-gap) - min(2cqi, 12px));
   position: relative;
   inset: auto;
   display: grid;
-  grid-template-columns: var(--flow-window-width) var(--flow-detail-width);
+  grid-template-columns: var(--flow-window-width) minmax(0, 1fr);
   grid-template-rows: auto;
   column-gap: var(--flow-gap);
   width: 100%;
@@ -1391,34 +1381,75 @@ body.scene-night .tree-overlay .element-ui-flow-window {
   font-variant-numeric: tabular-nums;
 }
 
-.tree-overlay .photosynthesis-windows .element-ui-okno:not(.collapsed) .element-ui-stock {
-  translate: calc(var(--flow-detail-width) + var(--flow-gap)) 0;
+.tree-overlay .element-ui-okno[data-chapter="photosynthesis"][data-side="right"]:not(.collapsed) {
+  --flow-gap: min(4cqi, 30px);
+  --flow-window-width: min(clamp(168px, 15.2vw, 286px), 37.5cqi);
 }
 
-.tree-overlay .element-ui-okno[data-chapter="photosynthesis"][data-side="right"] .annotation-reveal {
-  align-self: start;
-  margin-top: 6px;
-  text-align: left;
+.tree-overlay .element-ui-okno[data-chapter="photosynthesis"][data-side="right"]:has(.element-ui-stock) {
+  --flow-detail-reserve: calc(var(--photosynthesis-stock-gap) + var(--photosynthesis-stock-width));
 }
 
-.tree-overlay .element-ui-okno[data-chapter="photosynthesis"] :is(.annotation-reveal, .annotation-reveal-inner, .annotation-body, .annotation-body p) {
+.tree-overlay .element-ui-okno[data-chapter="photosynthesis"][data-side="right"]:not(.collapsed) .element-ui-readout {
+  align-self: stretch;
+  justify-content: space-between;
+}
+
+.tree-overlay .photosynthesis-windows .element-ui-okno[data-toggle-visible="true"] .element-ui-readout>header>h3 {
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+
+.tree-overlay .element-ui-okno[data-chapter="photosynthesis"] :is(.annotation-reveal-inner, .annotation-body, .annotation-body p) {
   height: auto;
   max-height: none;
   overflow: visible;
   overflow-wrap: anywhere;
 }
 
-.tree-overlay .element-ui-flow-window .annotation-body>.ui-window-formula {
-  min-block-size: calc(max(var(--ui-heading-size) * 1.05, var(--ui-toggle-size)) - 13px);
+.tree-overlay .element-ui-okno[data-chapter="photosynthesis"][data-side="right"] .annotation-reveal {
+  position: relative;
+  inset: auto;
+  grid-column: 1 / -1;
+  grid-row: 1;
+  justify-self: end;
+  align-self: start;
+  box-sizing: border-box;
+  inline-size: calc(100% - var(--flow-window-width) - var(--flow-gap) - var(--flow-detail-reserve, 0px));
+  height: auto;
+  margin: 0;
+  padding-block-end: var(--flow-metric-below-bar, 0px);
+  overflow: visible;
+  overflow-wrap: anywhere;
+  text-align: left;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .tree-overlay .element-ui-okno[data-chapter="photosynthesis"][data-side="right"] {
+    transition: grid-template-columns 200ms ease-in-out;
+  }
+
+  .tree-overlay .element-ui-okno[data-chapter="photosynthesis"][data-side="right"]:not(.collapsed) .annotation-reveal {
+    animation: photosynthesis-detail-in 120ms ease-out 200ms both;
+  }
+}
+
+@keyframes photosynthesis-detail-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.tree-overlay .element-ui-okno[data-chapter="photosynthesis"] .annotation-body>p {
+  margin: 0 0 4px;
+  line-height: 1.2;
+}
+
+.tree-overlay .element-ui-okno[data-chapter="photosynthesis"] .annotation-body>.ui-window-formula {
   font-size: clamp(12px, .9vw, 15px);
 }
 
-.tree-overlay .element-ui-flow-window .annotation-body>p:not(.ui-window-formula) {
-  max-inline-size: 88%;
-  margin-inline-start: 0;
-  margin-inline-end: 6%;
-  font-size: calc(var(--ui-detail-text-size) - 1pt);
-  text-align: left;
+.tree-overlay .element-ui-okno[data-chapter="photosynthesis"] .annotation-body>p:not(.ui-window-formula) {
+  font-size: clamp(12px, 1vw, 16px);
 }
 
 .tree-overlay :is([data-chapter="photosynthesis"], [data-chapter="seasons"]) .chapter-context-guide {
@@ -1447,7 +1478,6 @@ body.scene-night .tree-overlay .element-ui-flow-window {
   }
 
   .tree-overlay .photosynthesis-windows {
-    --flow-window-width: min(144px, 42vw);
     bottom: 12vh;
     padding-block: 0;
     overflow-y: auto;
@@ -1648,14 +1678,7 @@ body[data-chapter="photosynthesis"] .season-date-card .time-playback-buttons svg
 .tree-overlay .element-ui-okno:not(.collapsed) .annotation-reveal {
   pointer-events: auto;
 }
-/* Keep the readout, expanded detail and stock inside tablet viewports. */
 @media (min-width: 701px) and (max-width: 1400px) and (pointer: coarse) {
-  .tree-overlay .photosynthesis-windows {
-    --flow-stock-width: clamp(62px, 6.4vw, 94px);
-    --flow-stock-gap: clamp(14px, 1.5vw, 24px);
-    padding-inline-start: calc(98% - var(--flow-window-width) - var(--flow-gap) - var(--flow-detail-width) - var(--flow-stock-gap) - var(--flow-stock-width));
-  }
-
   body:has(.tree-overlay) {
     height: 100dvh;
   }

@@ -681,16 +681,16 @@
       font-weight: 400;
     }
   </style>
-  <link rel="stylesheet" href="./kapitoly/chapters.css?v=soon-title-2">
+  <link rel="stylesheet" href="./kapitoly/chapters.css?v=soon-title-3">
   <link rel="stylesheet" href="./okna/tree_annotations.css?v=affinity-double-rail-6">
-  <link rel="stylesheet" href="./okna/element_ui_okna_vzhled.css?v=tablet-layout-1">
+  <link rel="stylesheet" href="./okna/element_ui_okna_vzhled.css?v=adjustable-value-1">
 </head>
 
 <body>
 
   <!-- 3D Canvas -->
   <canvas id="canvas3d"></canvas>
-  <p class="chapter-sun-title" lang="en">soon</p>
+  <p class="chapter-sun-title" lang="en">soon ....</p>
 
   <!-- Top Bar -->
   <div class="top-bar">
@@ -777,16 +777,16 @@
         <div class="slider-group" style="margin-top: 12px;">
           <div class="slider-label">
             <label for="sliderLeafSize">Velikost listů</label>
-            <span class="slider-val" id="valLeafSize">35 %</span>
+            <span class="slider-val" id="valLeafSize">100 %</span>
           </div>
-          <input type="range" id="sliderLeafSize" min="25" max="250" step="5" value="35">
+          <input type="range" id="sliderLeafSize" min="25" max="250" step="5" value="100">
         </div>
         <div class="slider-group">
           <div class="slider-label">
             <label for="sliderLeafCount">Počet listů</label>
-            <span class="slider-val" id="valLeafCount">90 000</span>
+            <span class="slider-val" id="valLeafCount">20 000</span>
           </div>
-          <input type="range" id="sliderLeafCount" min="0" max="90000" step="1" value="90000">
+          <input type="range" id="sliderLeafCount" min="0" max="90000" step="1" value="20000">
         </div>
       </div>
 
@@ -843,7 +843,7 @@
       <div class="control-box">
         <div class="section-title">🧩 Části stromu</div>
         <div class="toggle-row">
-          <span id="canopyLeafCountLabel">🍃 Koruna a listy (90 000 listů)</span>
+          <span id="canopyLeafCountLabel">🍃 Koruna a listy (20 000 listů)</span>
           <label class="switch">
             <input type="checkbox" id="chkLeaves" checked>
             <span class="slider-switch"></span>
@@ -1177,11 +1177,11 @@
     import { crossedSpring } from './listy/leaf_growth_timing.js?v=1';
     import { advanceDroughtLeaves, droughtLeafFall } from './listy/drought_leaf_animation.js?v=1';
     import { loadBranchDryingReference, branchDryingFrontWidth } from './listy/leaf_branch_drying.js?v=3';
-    import { CanopyOcclusion } from './vykreslovani/canopy_occlusion.js?v=initial-ready-1';
+    import { CanopyOcclusion } from './vykreslovani/canopy_occlusion.js?v=sky-opt-1';
     import { createSunClouds } from './vykreslovani/sun_clouds.js?v=2';
     import { createWaterBrushMaterial, addWaterBrushAttributes } from './vykreslovani/water_brush.js?v=highlight-width-3';
-    import { TreeEcology, SEASONS, MODEL_MINUTES_PER_SECOND } from './ekologie/tree_ecology.js?v=affinity-cap-1';
-    import { createChapters } from './kapitoly/chapters.js?v=affinity-double-rail-6';
+    import { TreeEcology, SEASONS, MODEL_MINUTES_PER_SECOND } from './ekologie/tree_ecology.js?v=light-consumption-1';
+    import { createChapters } from './kapitoly/chapters.js?v=adjustable-value-1';
     import { createSeedChapter } from './kapitoly/seed_chapter.js';
     import { createTreeBird } from './vykreslovani/tree_bird.js?v=perch-grid-1';
     import { createSeasonRing } from './obdobi/season_ring.js?v=season-boundary-1';

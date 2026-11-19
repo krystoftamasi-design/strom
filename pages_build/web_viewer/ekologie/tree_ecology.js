@@ -81,6 +81,7 @@ export class TreeEcology {
     this.ambientTemperature = 0;
     this.weatherTemperatureOffset = 0;
     this.activity = 0;
+    this.lightConsumption = 0;
     this.light = 0;
     this.leafArea = 0;
     this.co2Response = 1;
@@ -260,6 +261,7 @@ export class TreeEcology {
     const capScale = naturalGlucose > capGlucose && naturalGlucose > 0 ? capGlucose / naturalGlucose : 1;
     this.photosynthesisEfficiency = baseEfficiency * capScale;
     this.activity = baseActivity * capScale;
+    this.lightConsumption = vypocitatVzorec('lightConsumption', this);
     // 8 µmol CO₂/m²/s, six CO₂ per glucose; show glucose equivalent, not storage.
     this.glucoseGramsPerMinute = vypocitatVzorec('glucoseGramsPerMinute', this);
     this.oxygenGramsPerMinute = vypocitatVzorec('oxygenGramsPerMinute', this);
@@ -267,9 +269,7 @@ export class TreeEcology {
     // Illustrative whole-tree maintenance respiration: bare dormant trees use 20% of full-canopy rate.
     this.respirationFraction = 0.15 * Math.pow(2, (clamp(this.ambientTemperature, -10, 40) - 20) / 10)
       * (0.2 + 0.8 * effectiveFoliage);
-    this.respirationSugar = this.leafArea * konstanty.glucoseConversion * this.respirationFraction;
-    this.respirationOxygen = this.respirationSugar * konstanty.oxygenPerGlucose;
-    this.respirationCO2 = this.leafArea * konstanty.co2Conversion * this.respirationFraction;
+    const demandedRespiration = this.leafArea * konstanty.glucoseConversion * this.respirationFraction;
     this.budburstRate = dayOfYear >= BEECH_CALENDAR.budburst && dayOfYear < BEECH_CALENDAR.fullLeaf
       ? this.canopyLimit * SUGAR_BUDBURST_COST / BUDBURST_MINUTES
       : 0;
@@ -277,6 +277,11 @@ export class TreeEcology {
       ? this.canopyLimit * (1 - clamp(this.droughtFall, 0, 1)) * SUGAR_AUTUMN_RETURN / AUTUMN_RETURN_MINUTES
       : 0;
     this.totalSugarProduction = this.glucoseGramsPerMinute + this.autumnReturnRate;
+    this.respirationSugar = this.sugarReserve > 0
+      ? demandedRespiration
+      : Math.min(demandedRespiration, this.totalSugarProduction);
+    this.respirationOxygen = this.respirationSugar * konstanty.oxygenPerGlucose;
+    this.respirationCO2 = this.respirationSugar * (konstanty.co2Conversion / konstanty.glucoseConversion);
     this.totalSugarConsumption = this.respirationSugar + this.budburstRate;
     return this;
   }

@@ -1,5 +1,5 @@
-import { oknaPodleKapitol, kontextoveTexty, pruvodceTranspiraci } from './element_ui_okna_obsah.js?v=sugar-phenology-1';
-import { veliciny, vstupyVzorce, ohlasitChybuOken, vyhladitHodnotu } from './element_ui_okna_veliciny.js?v=affinity-windows-layout-2';
+import { oknaPodleKapitol, kontextoveTexty, pruvodceTranspiraci } from './element_ui_okna_obsah.js?v=adjustable-value-1';
+import { veliciny, vstupyVzorce, ohlasitChybuOken, vyhladitHodnotu } from './element_ui_okna_veliciny.js?v=light-consumption-1';
 import { zkontrolovatOkna } from './element_ui_okna_kontrola.js?v=seeds-1';
 
 // Original embedded assets from ui_new.svg, at their exported stroke widths.
@@ -32,11 +32,11 @@ function pickUiWindowStroke(direction) {
   return { ...stroke, url: new URL(`../web_assets/${stroke.file}`, import.meta.url).href };
 }
 
-function createBalanceBar({ top, bottom, adjustable = false, hasLimit = false }) {
+function createBalanceBar({ top, bottom, editable = false }) {
   const bar = document.createElement('div');
   bar.className = 'element-ui-balance-bar';
-  if (hasLimit) {
-    bar.classList.add('has-limit');
+  if (editable) {
+    bar.classList.add('has-editable-value');
     bar.style.setProperty('--balance-limit-ratio', '1');
   }
   const makeLane = (side, letter, openEnd) => {
@@ -61,7 +61,6 @@ function createBalanceBar({ top, bottom, adjustable = false, hasLimit = false })
     if (letter !== undefined) {
       const marker = document.createElement('span');
       marker.className = `element-ui-balance-marker element-ui-balance-marker-${side}`;
-      marker.classList.toggle('element-ui-balance-adjustable', adjustable && side === 'top');
       const fill = document.createElement('span');
       fill.className = 'element-ui-balance-marker-fill';
       const end = document.createElement('span');
@@ -85,7 +84,7 @@ function createBalanceBar({ top, bottom, adjustable = false, hasLimit = false })
     }
     return lane;
   };
-  bar.append(makeLane('top', top, hasLimit), makeLane('bottom', bottom, false));
+  bar.append(makeLane('top', top, editable), makeLane('bottom', bottom, false));
   return bar;
 }
 
@@ -170,27 +169,30 @@ function createElementUiOkno({ panel, body, reveal, toggle, model, definition })
       const bar = createBalanceBar({
         top: isAvailabilityWindow ? '' : 'p',
         bottom: 's',
-        adjustable: isLight,
-        hasLimit: hasStock,
+        editable: Boolean(definition.upravitelnaHodnota),
       });
       const topLane = bar.querySelector('.element-ui-balance-lane-top');
 
-      if (isLight) {
+      if (definition.upravitelnaHodnota === 'dostupnost') {
         const slider = document.createElement('input');
         slider.type = 'range';
         slider.min = '0'; slider.max = '1000'; slider.step = '1';
-        slider.className = 'element-ui-flow-slider element-ui-balance-slider';
+        slider.className = 'element-ui-flow-slider element-ui-balance-slider element-ui-editable-value';
         slider.setAttribute('aria-label', 'Dostupnost světla');
         slider.addEventListener('click', event => event.stopPropagation());
-        slider.addEventListener('input', () => model.setLightAvailability(Number(slider.value) / 1000));
+        slider.addEventListener('input', () => {
+          const fraction = slider.valueAsNumber / 1000;
+          bar.style.setProperty('--balance-limit-ratio', String(fraction));
+          model.setLightAvailability(fraction);
+        });
         topLane.append(slider);
       }
 
-      if (hasStock) {
+      if (definition.upravitelnaHodnota === 'strop') {
         const limitSlider = document.createElement('input');
         limitSlider.type = 'range';
         limitSlider.min = '0'; limitSlider.max = '100'; limitSlider.step = '1'; limitSlider.value = '100';
-        limitSlider.className = 'element-ui-balance-slider element-ui-limit-slider';
+        limitSlider.className = 'element-ui-balance-slider element-ui-limit-slider element-ui-editable-value';
         limitSlider.dataset.limitTarget = definition.id;
         const limitLabel = definition.id === 'cukry' ? 'Omezení produkce' : 'Omezení dostupnosti';
         limitSlider.setAttribute('aria-label', `${limitLabel} – ${definition.nadpis}`);
@@ -431,6 +433,16 @@ export function createTreeAnnotations({ shell, model, createSeasonControl, setEl
     body.append(...nodes.filter(Boolean));
     panel.append(header, reveal);
     if (definition) createElementUiOkno({ panel, body, reveal, toggle, model, definition });
+    const flowBar = article.dataset.chapter === 'photosynthesis'
+      && panel.querySelector('.element-ui-balance-bar');
+    if (flowBar) {
+      const bottomMetric = flowBar.nextElementSibling;
+      // Reserve the label below the bar so the explanation ends above it.
+      const resizeDetail = new ResizeObserver(([entry]) => {
+        reveal.style.setProperty('--flow-metric-below-bar', `${entry.borderBoxSize[0].blockSize}px`);
+      });
+      resizeDetail.observe(bottomMetric, { box: 'border-box' });
+    }
     let expanded = false;
     function expand(open) {
       expanded = open;
@@ -702,7 +714,7 @@ export function createTreeAnnotations({ shell, model, createSeasonControl, setEl
       const clamp01 = value => (Number.isFinite(value) ? Math.max(0, Math.min(1, value)) : 0);
       const balanceValues = windowId => {
         const clean = value => (Number.isFinite(value) && value > 0 ? value : 0);
-        if (windowId === 'svetlo') return [clean(model.light) * 100, clean(model.activity) * 100];
+        if (windowId === 'svetlo') return [clean(model.light) * 100, clean(model.lightConsumption) * 100];
         if (windowId === 'voda') return [clean(model.waterInput) * 60, clean(model.waterConsumption) * 60];
         if (windowId === 'kyslik') return [clean(model.oxygenGramsPerMinute), clean(model.respirationOxygen)];
         if (windowId === 'co2') return [clean(model.respirationCO2), clean(model.co2GramsPerMinute)];
@@ -728,7 +740,8 @@ export function createTreeAnnotations({ shell, model, createSeasonControl, setEl
           // Match the precision of the readouts: whole percentages, otherwise one decimal.
           const minimumVisible = isLight ? 0.5 : 0.05;
           const topRatio = topValue >= minimumVisible ? clamp01(topValue / scaleMax) : 0;
-          const bottomRatio = bottomValue >= minimumVisible ? clamp01(bottomValue / scaleMax) : 0;
+          const visibleBottom = isLight ? Math.min(bottomValue, topValue) : bottomValue;
+          const bottomRatio = visibleBottom >= minimumVisible ? clamp01(visibleBottom / scaleMax) : 0;
           const topRatioStr = String(topRatio);
           const bottomRatioStr = String(bottomRatio);
           if (entry.prevTop !== topRatioStr) {
@@ -795,6 +808,7 @@ export function createTreeAnnotations({ shell, model, createSeasonControl, setEl
               slider.disabled = disabled;
             }
             if (disabled || !slider.matches(':active')) {
+              bar.style.setProperty('--balance-limit-ratio', String(lightLevel));
               const sliderVal = String(Math.round(lightLevel * 1000));
               if (entry.prevSliderVal !== sliderVal) {
                 entry.prevSliderVal = sliderVal;

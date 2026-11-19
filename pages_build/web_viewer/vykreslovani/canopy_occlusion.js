@@ -10,7 +10,7 @@ export class CanopyOcclusion {
     this.appliedRevision = 0;
     this.computations = 0;
     this.initialWaiters = [];
-    this.worker = new Worker(new URL('./canopy_occlusion_worker.js?v=sky-1', import.meta.url), { type: 'module' });
+    this.worker = new Worker(new URL('./canopy_occlusion_worker.js?v=sky-opt-1', import.meta.url), { type: 'module' });
     this.worker.onmessage = ({ data }) => {
       this.busy = false;
       if (data.error) {

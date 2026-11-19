@@ -4,7 +4,7 @@ import { createSeasonTimeline } from './season_timeline.js?v=photosynthesis-summ
 const SEASONS = ['spring', 'summer', 'autumn', 'latefall'];
 const LABELS = ['JARO', 'LÉTO', 'PODZIM', 'ZIMA'];
 const QUARTER = Math.PI / 2;
-const RING_MARKER_X = 0.48;
+const RING_MARKER_X = 0.5;
 const angleDifference = value => Math.atan2(Math.sin(value), Math.cos(value));
 
 export function createSeasonRing({ scene, camera, controls, canvas, model }) {
@@ -18,7 +18,9 @@ export function createSeasonRing({ scene, camera, controls, canvas, model }) {
   const timeline = createSeasonTimeline(model);
   const centerTick = document.createElement('span');
   centerTick.className = 'season-center-tick';
-  centerTick.style.left = `${RING_MARKER_X * 100}%`;
+  const markerPosition = `${RING_MARKER_X * 100}%`;
+  centerTick.style.left = markerPosition;
+  document.documentElement.style.setProperty('--season-ring-marker-x', markerPosition);
   centerTick.hidden = true;
   centerTick.setAttribute('aria-hidden', 'true');
   document.querySelector('.chapter-panel').append(centerTick);
