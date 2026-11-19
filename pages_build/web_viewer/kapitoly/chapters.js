@@ -4,7 +4,7 @@ import { createTreeAnnotations } from '../okna/tree_annotations.js?v=affinity-do
 
 const chapters = [
   ['seasons', 'Období'], ['photosynthesis', 'Fotosyntéza'], ['transpiration', 'Transpirace'],
-  ['seeds', 'Semenace'], ['roots', 'Kořeny'], ['prototype', 'Prototyp']
+  ['seeds', 'Semenace'], ['roots', 'Kořeny']
 ];
 const metric = (label, id, unit = '') => `<div class="chapter-metric"><span>${label}</span><strong><output id="${id}">—</output>${unit}</strong></div>`;
 const rootDiagram = `<svg class="root-diagram" viewBox="0 0 300 210" role="img" aria-label="Schéma rostoucí kořenové špičky: prodlužovací, přechodová a dělivá oblast a ochranná čepička. Kořen uhýbá před překážkou.">
@@ -50,14 +50,6 @@ export function createChapters({ model, applySeason, setSun, setAzimuth, setVisu
         <details><summary>Jak reakce vzniká</summary><p>Čepička chrání konec kořene a podílí se na vnímání gravitace. Změna rozložení auxinu ovlivňuje prodlužování buněk a zakřivení kořene. Dotyk s překážkou může změnit jeho růst.</p><p>Reakce na vlhkost se nazývá hydrotropismus. Pokusy na huseníčku ukázaly také účast buněk kůry prodlužovací oblasti. Přesný průběh u buku zde nesimulujeme.</p><p>„Mozek kořene“ je historická, diskutovaná metafora. Rostliny nemají mozek ani neurony. Pulz ve schématu znázorňuje signalizaci a pohyb je zrychlený.</p><a href="https://www.nature.com/articles/nplants201757" target="_blank" rel="noopener">Výzkum hydrotropismu ↗</a></details>
       </article>
       <article data-chapter="seeds" hidden></article>
-      <article data-chapter="prototype" hidden tabindex="0">
-        <h2>Prototyp</h2>
-        <div class="oxygen-balance-settings">
-          <label>Max. zásoba cukrů (g) <input data-prototype-capacity type="number" min="1" step="1" value="40000" required></label>
-          <span>Zásoba cukrů <output data-prototype-sugar-stock aria-live="off">—</output></span>
-        </div>
-        <div class="prototype-list"></div>
-      </article>
     </div>
     <section class="chapter-shared manager-controlled manager-hidden" id="chapterShared" aria-label="Společné podmínky stromu" hidden>
       <div class="shared-heading"><h3>Podmínky stromu</h3><output id="ecoSeasonLabel">—</output><button type="button" class="shared-toggle" aria-expanded="true" aria-label="Skrýt podmínky stromu">−</button></div>

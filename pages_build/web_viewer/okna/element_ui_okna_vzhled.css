@@ -1391,10 +1391,6 @@ body.scene-night .tree-overlay .element-ui-flow-window {
   font-variant-numeric: tabular-nums;
 }
 
-.tree-overlay article[data-chapter="prototype"] .element-ui-flow-window:has(.element-ui-stock) {
-  width: calc(var(--flow-window-width) + var(--flow-stock-width, 72px) + var(--flow-stock-gap, 18px));
-}
-
 .tree-overlay .photosynthesis-windows .element-ui-okno:not(.collapsed) .element-ui-stock {
   translate: calc(var(--flow-detail-width) + var(--flow-gap)) 0;
 }

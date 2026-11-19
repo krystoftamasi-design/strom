@@ -681,7 +681,7 @@
       font-weight: 400;
     }
   </style>
-  <link rel="stylesheet" href="./kapitoly/chapters.css?v=time-controls-1">
+  <link rel="stylesheet" href="./kapitoly/chapters.css?v=soon-title-2">
   <link rel="stylesheet" href="./okna/tree_annotations.css?v=affinity-double-rail-6">
   <link rel="stylesheet" href="./okna/element_ui_okna_vzhled.css?v=affinity-double-rail-6">
 </head>
@@ -690,6 +690,7 @@
 
   <!-- 3D Canvas -->
   <canvas id="canvas3d"></canvas>
+  <p class="chapter-sun-title" lang="en">soon</p>
 
   <!-- Top Bar -->
   <div class="top-bar">
@@ -1176,7 +1177,7 @@
     import { crossedSpring } from './listy/leaf_growth_timing.js?v=1';
     import { advanceDroughtLeaves, droughtLeafFall } from './listy/drought_leaf_animation.js?v=1';
     import { loadBranchDryingReference, branchDryingFrontWidth } from './listy/leaf_branch_drying.js?v=3';
-    import { CanopyOcclusion } from './vykreslovani/canopy_occlusion.js?v=opt-buf-1';
+    import { CanopyOcclusion } from './vykreslovani/canopy_occlusion.js?v=initial-ready-1';
     import { createSunClouds } from './vykreslovani/sun_clouds.js?v=2';
     import { createWaterBrushMaterial, addWaterBrushAttributes } from './vykreslovani/water_brush.js?v=highlight-width-3';
     import { TreeEcology, SEASONS, MODEL_MINUTES_PER_SECOND } from './ekologie/tree_ecology.js?v=affinity-cap-1';
@@ -1517,6 +1518,7 @@
     const leafBreeze = setupLeafBreeze([leafToonMat1, leafToonMat2, leafDepthMat1, leafDepthMat2], { leafCenters: true });
     const barkToonMat = createBarkMaterial(barkReference, leafReference, shaderUniforms);
     const canopyOcclusion = new CanopyOcclusion(leafReference, shaderUniforms);
+    let preparingTree = true;
 
     // 6. GLTF TREE LOADER
     let currentModel = null;
@@ -1537,7 +1539,7 @@
 
 
     function updateCanopyOcclusion() {
-      if (currentModel) canopyOcclusion.request(currentModel, leafControls);
+      if (currentModel && !preparingTree) canopyOcclusion.request(currentModel, leafControls);
     }
     let canopyEditTimer;
     function queueCanopyOcclusion() {
@@ -1569,7 +1571,7 @@
 
       gltfLoader.load(
         modelUrl,
-        (gltf) => {
+        async (gltf) => {
           progressBar.style.width = '85%';
           loadProgressText.textContent = 'Aplikuji Blender Toon / Cel-Shader...';
 
@@ -1623,23 +1625,28 @@
 
           configureTreeEcology();
           leafControls.setMeshes(leavesMeshes, leafReference.metadata.atlas, leafReference.alphaBounds);
-          updateCanopyOcclusion();
 
           // Automatické trasování cévního systému podél nejtlustšího kmene a kořenů
           if (typeof autoCalculateThickestPaths === 'function') {
             autoCalculateThickestPaths();
           }
 
-          // Adaptivní aktualizace okapové linie podle skutečné geometrie koruny
-          if (typeof initDripZone === 'function') {
-            initDripZone();
-          }
-
           invalidateShadows();
+          // Restore leaf settings and set the opening light before computing visibility.
+          chapterApp.modelReady();
+          chapterApp.tick(0);
+          clearTimeout(canopyEditTimer);
+          clearTimeout(leafControls.timer);
+          initDripZone();
+          canopyOcclusion.request(currentModel, leafControls);
+          loadProgressText.textContent = 'Připravuji zastínění koruny...';
+          await canopyOcclusion.waitForInitial();
           progressBar.style.width = '100%';
           loadProgressText.textContent = 'Hotovo!';
-          setTimeout(() => loader.classList.add('hidden'), 350);
-          chapterApp.modelReady();
+          setTimeout(() => {
+            loader.classList.add('hidden');
+            preparingTree = false;
+          }, 350);
           showToast('Blender Toon / Cel-Shader úspěšně aplikován!');
         },
         (xhr) => {
@@ -4184,8 +4191,8 @@
           leafControls.setGrowthProgress(1);
           leafControls.resetLeafFall();
           syncSeasonFoliage();
-          // Start the intro just before sunrise.
-          timeOfDayHours = 2;
+          // Start the intro at noon.
+          timeOfDayHours = 12;
           displayedSunHour = timeOfDayHours;
           sliderSunElevation.value = 0;
           sliderLightRot.value = 90;
@@ -4242,7 +4249,7 @@
       const frameSeconds = (now - lastTime) / 1000;
       const delta = Math.min(0.1, frameSeconds);
       lastTime = now;
-      const playbackDelta = timePaused ? 0 : delta * baseTimeRate * timePlaybackSpeed;
+      const playbackDelta = timePaused || preparingTree ? 0 : delta * baseTimeRate * timePlaybackSpeed;
       simulationTime += playbackDelta;
       const simulationNow = simulationTime * 1000;
 

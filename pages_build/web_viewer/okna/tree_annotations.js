@@ -113,7 +113,7 @@ function createElementUiOkno({ panel, body, reveal, toggle, model, definition })
   const header = panel.querySelector(':scope > header');
   const formula = body.querySelector('.ui-window-formula');
   readout.append(header, footer);
-  const isFlowChapter = ['photosynthesis', 'prototype'].includes(panel.dataset.chapter);
+  const isFlowChapter = panel.dataset.chapter === 'photosynthesis';
   if (formula && !isFlowChapter) readout.append(formula);
   panel.insertBefore(readout, reveal);
   const edge = panel.querySelector('.annotation-frame-left');
@@ -271,105 +271,6 @@ function createElementUiOkno({ panel, body, reveal, toggle, model, definition })
 }
 
 
-function enablePrototypeRotation(circle) {
-  circle.classList.add('rotatable');
-  circle.tabIndex = 0;
-  circle.setAttribute('role', 'group');
-  circle.setAttribute('aria-label', 'Otočný ukazatel. Pro otočení táhněte nebo použijte šipky vlevo a vpravo.');
-
-  let rotation = 0;
-  let drag = null;
-  const pointerAngle = event => {
-    const { left, top, width, height } = circle.getBoundingClientRect();
-    return Math.atan2(event.clientY - top - height / 2, event.clientX - left - width / 2) * 180 / Math.PI;
-  };
-  const rotate = angle => {
-    rotation = angle;
-    circle.style.rotate = `${angle}deg`;
-  };
-  circle.addEventListener('pointerdown', event => {
-    if (event.button !== 0 || drag) return;
-    drag = { id: event.pointerId, offset: rotation - pointerAngle(event) };
-    circle.setPointerCapture(event.pointerId);
-  });
-  circle.addEventListener('pointermove', event => {
-    if (drag?.id === event.pointerId) rotate(drag.offset + pointerAngle(event));
-  });
-  circle.addEventListener('lostpointercapture', event => {
-    if (drag?.id === event.pointerId) drag = null;
-  });
-  circle.addEventListener('keydown', event => {
-    if (event.key !== 'ArrowLeft' && event.key !== 'ArrowRight') return;
-    event.preventDefault();
-    rotate(rotation + (event.key === 'ArrowLeft' ? -10 : 10));
-  });
-}
-
-function createSugarStock() {
-  const panel = document.createElement('section');
-  panel.className = 'oxygen-balance-panel';
-  panel.innerHTML = `
-    <h3>Zásoba cukrů</h3>
-    <div class="oxygen-balance sugar-stock" aria-hidden="true">
-      <div class="sugar-stock-liquid"></div>
-      <svg class="sugar-stock-wave" viewBox="0 0 240 16" preserveAspectRatio="none">
-        <defs>
-          <g id="prototype-sugar-wave">
-            <path fill="currentColor" d="M0 8 C16 3 25 2 39 7 S59 13 73 8 S94 2 105 7 Q112 11 120 8 V16 H0 Z"/>
-            <path fill="none" stroke="#ffadf3" stroke-width="0.75" stroke-linecap="round"
-              d="M4 10 Q20 4 32 8 M40 10 Q55 15 70 11 M76 10 Q93 4 102 9"/>
-          </g>
-        </defs>
-        <use href="#prototype-sugar-wave"/>
-        <use href="#prototype-sugar-wave" x="120"/>
-      </svg>
-    </div>`;
-  const circle = panel.querySelector('.sugar-stock');
-  return {
-    panel,
-    update(_production, _consumption, capacity, reserve) {
-      circle.style.setProperty('--oxygen-level', `${100 * reserve / capacity}%`);
-    }
-  };
-}
-
-function createOxygenBalance(variant) {
-  const rectangle = variant === 'rectangle';
-  const panel = document.createElement('section');
-  panel.className = 'oxygen-balance-panel';
-  panel.setAttribute('aria-label', 'Zkušební bilance cukrů');
-  panel.innerHTML = `
-    <h3>${rectangle ? 'Obdélník' : 'Dělicí čáry'}</h3>
-    <div class="oxygen-balance oxygen-balance-lines${rectangle ? ' oxygen-balance-rectangle' : ''}">
-      <div class="oxygen-balance-reserve"><abbr title="Zásoba">Z</abbr></div>
-      <div class="oxygen-balance-production"><abbr title="Produkce">P</abbr></div>
-      <div><abbr title="Spotřeba">S</abbr></div>
-    </div>
-  `;
-  const circle = panel.querySelector('.oxygen-balance');
-  if (!rectangle) enablePrototypeRotation(circle);
-  const [, productionSection, consumptionSection] = circle.children;
-  return {
-    panel,
-    update(production, consumption, capacity, reserve) {
-      circle.style.setProperty('--oxygen-level', `${100 * reserve / capacity}%`);
-      productionSection.setAttribute('aria-hidden', String(production <= 0));
-      consumptionSection.setAttribute('aria-hidden', String(consumption <= 0));
-      productionSection.classList.toggle('stronger-flow', production > consumption);
-      consumptionSection.classList.toggle('stronger-flow', consumption > production);
-      const smaller = Math.min(production, consumption);
-      const larger = Math.max(production, consumption);
-      const lineScale = Math.max(capacity, 60 * (production + consumption));
-      circle.style.setProperty('--oxygen-smaller-flow', String(60 * smaller / lineScale));
-      circle.style.setProperty('--oxygen-larger-flow', String(60 * larger / lineScale));
-      circle.classList.toggle('similar-flows', smaller > 0 && smaller >= 0.9 * larger);
-      circle.classList.toggle('production-at-bottom', production > consumption);
-    }
-  };
-}
-
-// Static screen-space UI. Camera and tree geometry never participate in layout.
-// Original content and controls are moved, so live outputs and handlers survive.
 export function createTreeAnnotations({ shell, model, createSeasonControl, setElementHighlight = () => { } }) {
   // This hint lives only until reload; defaults opening programmatically do not dismiss it.
   const hintTimer = setTimeout(() => shell.classList.add('window-toggle-hint'),
@@ -382,18 +283,7 @@ export function createTreeAnnotations({ shell, model, createSeasonControl, setEl
   const contextSelections = new Map();
   const contextGuides = new Map();
   let activeChapter = null;
-  const prototypes = [createSugarStock(), createOxygenBalance('lines'), createOxygenBalance('rectangle')];
-  const capacityInput = shell.querySelector('[data-prototype-capacity]');
-  model.setSugarCapacity(capacityInput.valueAsNumber);
-  const sugarStockOutput = shell.querySelector('[data-prototype-sugar-stock]');
-  const stockKg = new Intl.NumberFormat('cs-CZ', { maximumFractionDigits: 2 });
   const previousStocks = new WeakMap();
-  capacityInput.addEventListener('change', () => {
-    if (capacityInput.validity.valid && Number.isSafeInteger(capacityInput.valueAsNumber)) {
-      model.setSugarCapacity(capacityInput.valueAsNumber);
-    }
-    capacityInput.value = String(model.sugarCapacity);
-  });
   const previousHighlights = new Map();
   function syncHighlights() {
     const activeTags = new Set();
@@ -625,7 +515,7 @@ export function createTreeAnnotations({ shell, model, createSeasonControl, setEl
       const strong = document.createElement('strong');
       const output = document.createElement('output');
       const outputId = value.vystupId || `value-${definition.id}`;
-      output.id = article.dataset.chapter === 'prototype' ? `prototype-${outputId}` : outputId;
+      output.id = outputId;
       output.dataset.zivaVelicina = definition.vypocet;
       output.textContent = '—';
       strong.append(output);
@@ -665,13 +555,6 @@ export function createTreeAnnotations({ shell, model, createSeasonControl, setEl
   }
 
   for (const article of content.querySelectorAll('article[data-chapter]')) {
-    if (article.dataset.chapter === 'prototype') {
-      const list = article.querySelector('.prototype-list');
-      list.append(...prototypes.map(prototype => prototype.panel));
-      const sugars = oknaPodleKapitol.photosynthesis.find(definition => definition.id === 'cukry');
-      if (sugars && !kontrola.neplatnaOkna.has(sugars)) configuredCard(article, sugars);
-      continue;
-    }
     if (article.dataset.chapter === 'photosynthesis') {
       const title = document.createElement('h2');
       title.className = 'photosynthesis-title';
@@ -735,7 +618,6 @@ export function createTreeAnnotations({ shell, model, createSeasonControl, setEl
   const smoothedValues = new Map();
   let lastDomUpdate = -Infinity;
   let prevSeasonRowHidden = null;
-  let prevProtoSugarText = '';
   const barsByChapter = new Map();
   for (const bar of shell.querySelectorAll('.element-ui-values > .element-ui-balance-bar')) {
     const panel = bar.closest('.element-ui-okno');
@@ -1017,15 +899,6 @@ export function createTreeAnnotations({ shell, model, createSeasonControl, setEl
             stock.style.setProperty('--balance-top-ratio', ratioStr);
           }
         }
-      }
-      if (chapter !== 'prototype') return;
-      const text = `${stockKg.format(model.sugarReserve / 1000)} kg`;
-      if (prevProtoSugarText !== text && sugarStockOutput.value !== text) {
-        prevProtoSugarText = text;
-        sugarStockOutput.value = text;
-      }
-      for (const prototype of prototypes) {
-        prototype.update(sugarProduction, sugarConsumption, model.sugarCapacity, model.sugarReserve);
       }
     }
   };

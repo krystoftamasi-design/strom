@@ -9,10 +9,14 @@ export class CanopyOcclusion {
     this.revision = 0;
     this.appliedRevision = 0;
     this.computations = 0;
+    this.initialWaiters = [];
     this.worker = new Worker(new URL('./canopy_occlusion_worker.js?v=sky-1', import.meta.url), { type: 'module' });
     this.worker.onmessage = ({ data }) => {
       this.busy = false;
-      if (data.error) console.warn('Zastínění koruny:', data.error);
+      if (data.error) {
+        console.warn('Zastínění koruny:', data.error);
+        if (data.id === this.revision) this.finishInitial();
+      }
       else if (data.id === this.revision) {
         const buffers = new Map();
         for (let i = 0; i < this.targets.length; i++) {
@@ -25,10 +29,24 @@ export class CanopyOcclusion {
         this.appliedRevision = data.id;
         this.durationMs = data.durationMs;
         this.computations++;
+        this.finishInitial();
       }
       this.startPending();
     };
-    this.worker.onerror = event => { this.busy = false; console.warn('Zastínění koruny:', event.message); };
+    this.worker.onerror = event => {
+      this.busy = false;
+      console.warn('Zastínění koruny:', event.message);
+      this.finishInitial();
+    };
+  }
+
+  waitForInitial() {
+    if (this.appliedRevision === this.revision && !this.busy && !this.pending) return Promise.resolve();
+    return new Promise(resolve => this.initialWaiters.push(resolve));
+  }
+
+  finishInitial() {
+    for (const resolve of this.initialWaiters.splice(0)) resolve();
   }
 
   request(model, controls) {
