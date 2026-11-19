@@ -1413,7 +1413,7 @@ body.scene-night .tree-overlay .element-ui-flow-window {
   grid-column: 1 / -1;
   grid-row: 1;
   justify-self: end;
-  align-self: start;
+  align-self: end;
   box-sizing: border-box;
   inline-size: calc(100% - var(--flow-window-width) - var(--flow-gap) - var(--flow-detail-reserve, 0px));
   height: auto;

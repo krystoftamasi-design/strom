@@ -89,6 +89,35 @@ function createBalanceBar({ top, bottom, editable = false }) {
 }
 
 const stockNumber = new Intl.NumberFormat('cs-CZ', { maximumFractionDigits: 0 });
+const sliderIsActive = ':active, [data-touch-drag]';
+
+function enableTouchDrag(slider, handle) {
+  let pointerId = null;
+  const update = event => {
+    const track = slider.getBoundingClientRect();
+    const thumb = handle.offsetWidth;
+    const fraction = (event.clientX - track.left - thumb / 2) / Math.max(1, track.width - thumb);
+    const previousValue = slider.value;
+    slider.valueAsNumber = Math.min(1, Math.max(0, fraction)) * Number(slider.max);
+    if (slider.value !== previousValue) slider.dispatchEvent(new Event('input', { bubbles: true }));
+  };
+  slider.addEventListener('pointerdown', event => {
+    if (event.pointerType !== 'touch' || pointerId !== null || slider.disabled) return;
+    event.preventDefault();
+    pointerId = event.pointerId;
+    slider.dataset.touchDrag = '';
+    slider.setPointerCapture(pointerId);
+    update(event);
+  });
+  slider.addEventListener('pointermove', event => {
+    if (event.pointerId === pointerId) update(event);
+  });
+  slider.addEventListener('lostpointercapture', event => {
+    if (event.pointerId !== pointerId) return;
+    pointerId = null;
+    delete slider.dataset.touchDrag;
+  });
+}
 
 function createElementUiOkno({ panel, body, reveal, toggle, model, definition }) {
   panel.classList.add('element-ui-okno');
@@ -176,7 +205,7 @@ function createElementUiOkno({ panel, body, reveal, toggle, model, definition })
       if (definition.upravitelnaHodnota === 'dostupnost') {
         const slider = document.createElement('input');
         slider.type = 'range';
-        slider.min = '0'; slider.max = '1000'; slider.step = '1';
+        slider.min = '0'; slider.max = '1000'; slider.step = '1'; slider.value = slider.max;
         slider.className = 'element-ui-flow-slider element-ui-balance-slider element-ui-editable-value';
         slider.setAttribute('aria-label', 'Dostupnost světla');
         slider.addEventListener('click', event => event.stopPropagation());
@@ -186,6 +215,7 @@ function createElementUiOkno({ panel, body, reveal, toggle, model, definition })
           model.setLightAvailability(fraction);
         });
         topLane.append(slider);
+        enableTouchDrag(slider, topLane.querySelector('.element-ui-balance-limit'));
       }
 
       if (definition.upravitelnaHodnota === 'strop') {
@@ -218,6 +248,7 @@ function createElementUiOkno({ panel, body, reveal, toggle, model, definition })
           if (model.ready) model.evaluate(0);
         });
         topLane.append(limitSlider);
+        enableTouchDrag(limitSlider, topLane.querySelector('.element-ui-balance-limit'));
       }
 
       footer.replaceChildren(topMetric, bar, bottomMetric);
@@ -705,7 +736,7 @@ export function createTreeAnnotations({ shell, model, createSeasonControl, setEl
       }
       const activeBars = barsByChapter.get(chapter);
       const draggingSlider = activeBars?.some(entry =>
-        entry.slider?.matches(':active') || entry.limitSlider?.matches(':active')) || false;
+        entry.slider?.matches(sliderIsActive) || entry.limitSlider?.matches(sliderIsActive)) || false;
       if (!chapterChanged && !draggingSlider && now - lastDomUpdate < 50) return;
       const dt = lastDomUpdate > 0 ? (now - lastDomUpdate) / 1000 : 0.05;
       lastDomUpdate = now;
@@ -726,7 +757,7 @@ export function createTreeAnnotations({ shell, model, createSeasonControl, setEl
           const { bar, slider, limitSlider, availabilityOutput, windowId, balanceKey, isWater, isLight } = entry;
           const maxWater = waterAvailabilityMax(model);
           const [rawTop, rawBottom] = balanceValues(windowId);
-          const activelyAdjusted = Boolean(slider?.matches(':active') || limitSlider?.matches(':active'));
+          const activelyAdjusted = Boolean(slider?.matches(sliderIsActive) || limitSlider?.matches(sliderIsActive));
           const topValue = activelyAdjusted
             ? (smoothedValues.set(`${balanceKey}:top`, rawTop), rawTop)
             : vyhladitHodnotu(smoothedValues, `${balanceKey}:top`, rawTop, dt);
@@ -769,7 +800,7 @@ export function createTreeAnnotations({ shell, model, createSeasonControl, setEl
               entry.prevLimitDisabled = disabled;
               limitSlider.disabled = disabled;
             }
-            if (!limitSlider.matches(':active')) {
+            if (!limitSlider.matches(sliderIsActive)) {
               const fraction = windowId === 'cukry'
                 ? clamp01(model.sugarProductionCap)
                 : clamp01(model.waterAvailabilityCap);
@@ -807,15 +838,16 @@ export function createTreeAnnotations({ shell, model, createSeasonControl, setEl
               entry.prevDisabled = disabled;
               slider.disabled = disabled;
             }
-            if (disabled || !slider.matches(':active')) {
-              bar.style.setProperty('--balance-limit-ratio', String(lightLevel));
-              const sliderVal = String(Math.round(lightLevel * 1000));
+            const lightSetting = clamp01(model.manualLightAvailability ?? 1);
+            if (!slider.matches(sliderIsActive)) {
+              bar.style.setProperty('--balance-limit-ratio', String(lightSetting));
+              const sliderVal = String(Math.round(lightSetting * 1000));
               if (entry.prevSliderVal !== sliderVal) {
                 entry.prevSliderVal = sliderVal;
                 slider.value = sliderVal;
               }
             }
-            const ariaText = `${percent} procent`;
+            const ariaText = `${Math.round(lightSetting * 100)} procent`;
             if (entry.prevAria !== ariaText) {
               entry.prevAria = ariaText;
               slider.setAttribute('aria-valuetext', ariaText);
