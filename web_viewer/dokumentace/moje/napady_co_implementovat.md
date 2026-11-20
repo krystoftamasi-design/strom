@@ -15,6 +15,16 @@ history:
 
 ## Obecné
 
+### Výzvy k ovládání stromu
+
+- Návrh: po vstupu do kapitoly nabídnout jednu krátkou výzvu. Uživatel ji splní přímo ovládáním modelu. Po akci se ukáže, co se změnilo, a zpřístupní se další výzva. Volba „Přeskočit“ umožní volné zkoumání.
+- **Najdi první listy.** Otoč kruhem na jaro a zastav, jakmile se začnou objevovat listy. Splnění ověří datum v období rašení.
+- **Zhasni stromu.** Otevři Světlo a stáhni dostupnost na nulu. Zpětná vazba porovná produkci a spotřebu cukrů před změnou a po ní.
+- **Vrať stromu vodu.** V připravené situaci s omezeným přísunem vody nastav zarážku zase doprava. Splnění ověří obnovení přísunu a zvýrazní ukazatel vody.
+- **Připrav strom na jaro.** Posuň se od zimy k rašení a sleduj kruh zásoby cukrů. Po dosažení rašení výzva ukáže, jak se zásoba změnila a proč.
+- Cíl: přimět uživatele něco předpovědět, změnit a pak si výsledek přečíst přímo v grafu nebo na stromě.
+- Stav: Nápad. Jako první vyzkoušet výzvu se světlem a ověřit, zda uživatel najde správný posuvník a všimne si změny u cukrů.
+
 ### Sound design
 
 - Návrh: promyslet zvukový design webu.
