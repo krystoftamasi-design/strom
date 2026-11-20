@@ -1,4 +1,4 @@
-import { oknaPodleKapitol, kontextoveTexty, pruvodceTranspiraci } from './element_ui_okna_obsah.js?v=sugar-focus-1';
+import { oknaPodleKapitol, kontextoveTexty, pruvodceTranspiraci } from './element_ui_okna_obsah.js?v=sugar-focus-6';
 import { veliciny, vstupyVzorce, ohlasitChybuOken, vyhladitHodnotu } from './element_ui_okna_veliciny.js?v=light-consumption-1';
 import { zkontrolovatOkna } from './element_ui_okna_kontrola.js?v=seeds-1';
 import { createSugarStockHistory } from './sugar_stock_history.js?v=stock-season-labels-1';
@@ -294,11 +294,11 @@ function createElementUiOkno({ panel, body, reveal, toggle, model, definition })
         metric.append(value);
         stock.append(label, dial);
         dial.append(metric);
-        if (zdroj === 'cukry') {
-          const capacity = document.createElement('span');
-          capacity.className = 'element-ui-stock-capacity';
-          capacity.textContent = 'Kapacita —';
-          stock.append(capacity);
+        if (definition.strana === 'left') {
+          const flows = document.createElement('div');
+          flows.className = 'element-ui-flow-metrics';
+          flows.append(topMetric, bar, bottomMetric);
+          footer.append(flows);
         }
         footer.append(stock);
       }
@@ -659,8 +659,10 @@ export function createTreeAnnotations({ shell, model, createSeasonControl, setEl
     if (article.dataset.chapter === 'photosynthesis') {
       const windows = document.createElement('div');
       windows.className = 'photosynthesis-windows';
-      const guide = contextGuides.get(article.dataset.chapter);
-      guide.append(...article.querySelectorAll(':scope > .element-ui-okno[data-side="left"]'));
+      const leftColumn = document.createElement('div');
+      leftColumn.className = 'photosynthesis-left-column';
+      leftColumn.append(...article.querySelectorAll(':scope > .element-ui-okno[data-side="left"]'));
+      article.append(leftColumn);
       windows.append(...article.querySelectorAll(':scope > .element-ui-okno[data-side="right"]'));
       article.append(windows);
     }
@@ -677,7 +679,7 @@ export function createTreeAnnotations({ shell, model, createSeasonControl, setEl
   let lastDomUpdate = -Infinity;
   let prevSeasonRowHidden = null;
   const barsByChapter = new Map();
-  for (const bar of shell.querySelectorAll('.element-ui-values > .element-ui-balance-bar')) {
+  for (const bar of shell.querySelectorAll('.element-ui-values .element-ui-balance-bar')) {
     const panel = bar.closest('.element-ui-okno');
     const panelChapter = panel?.dataset.chapter;
     if (!panelChapter) continue;
@@ -753,7 +755,6 @@ export function createTreeAnnotations({ shell, model, createSeasonControl, setEl
     const referenceName = isSugar ? 'sugar' : 'water';
     const valueKey = isSugar ? 'sugarReserve' : output.dataset.stockValue;
     const maxKey = isSugar ? 'sugarCapacity' : output.dataset.stockMaximum;
-    const capacityLabel = stock.querySelector('.element-ui-stock-capacity');
     let lastPosition;
     let lastValue;
     let lastCapacity;
@@ -766,11 +767,6 @@ export function createTreeAnnotations({ shell, model, createSeasonControl, setEl
       if (!force && lastPosition === position && lastValue === value && lastCapacity === capacity && lastReference === guide) return;
       lastPosition = position;
       lastValue = value;
-      if (capacityLabel && lastCapacity !== capacity) {
-        capacityLabel.textContent = Number.isFinite(capacity) && capacity > 0
-          ? `Kapacita ${stockNumber.format(capacity / 1000)} kg`
-          : 'Kapacita —';
-      }
       lastCapacity = capacity;
       lastReference = guide;
       const available = Number.isFinite(value) && Number.isFinite(capacity) && capacity > 0;

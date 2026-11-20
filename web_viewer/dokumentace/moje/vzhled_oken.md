@@ -49,8 +49,8 @@ history:
 
 - V Transpiraci a Semenaci je uprostřed obrazovky velký nápis „soon ....“ písmem Nohemi Light. Obsah za ním je silně rozostřený a mírně ztmavený, menu zůstává ostré.
 
-- Fotosyntéza má vlevo samostatný nadpis kapitoly a pod ním posuvnou plochu s kontextovým průvodcem a oknem Cukry. Při změně věty se 15 sekund čeká, pak text 3 sekundy mizí a nový se 3 sekundy objevuje. Ovládání času je pod touto plochou a datum u levého spodního okraje.
-- Období přebírá samostatný nadpis a průvodce vlevo z Fotosyntézy. Kruh ročních období a ovládání času zůstávají u stromu.
+- Fotosyntéza má vlevo samostatný nadpis kapitoly a pod ním samostatné posuvné okno Cukry. Pruhy a kruhový graf mají vlastní výšku. Ovládání času je pod touto plochou a datum u levého spodního okraje.
+- V Období jsou vlevo samostatný nadpis a průvodce. Kruh ročních období a ovládání času zůstávají u stromu.
 - Kruh období má krátké štětcové rysky mezi úseky. Pevná ryska dole je výrazná plná zelená čára ve středu obrazovky (50 %) v ose stromu; ve Fotosyntéze je široká 16 px. Začátek každého úseku míjí pevnou rysku v den začátku období. V tu chvíli se úsek i jeho popisek zbarví světle zeleně.
 
 - Aktuální vzor oken: Transpirace; původní grafický podklad: [podklad rozhraní](../../web_assets/ui_from_af/Untitled.svg), přibližně 2020 × 1143 px; procenta se vztahují k ploše rozhraní.
@@ -68,7 +68,7 @@ history:
 - Pravý sloupec začíná na 52 % a má šířku 44 %; okna Transpirace mají horní okraje 26 / 46 / 70 % a výšku 17 %.
 - Hlavní okno: levý okraj 4 %, horní 65 %, šířka 44 %, výška 24 %; minimální výška oken se ruší. Odsazení obsahu je 12 px, tematický tah má šířku 5 px a hlavní 6 px. Tematický detail má nad sebou mezeru 8 px.
 - Používá se společná typografická škála pro úzkou obrazovku, bez výjimek podle délky nadpisu.
-- Vzorce i přehledy vstupů se mohou zalomit. Ve Fotosyntéze začíná pravý sloupec v úrovni průvodce a detail se otevírá pod pruhy. Kruh zásoby cukrů je pod pruhy. Jemný obrys písma pomáhá oddělit text od kresby stromu.
+- Vzorce i přehledy vstupů se mohou zalomit. Ve Fotosyntéze začíná pravý sloupec v úrovni okna Cukry a detail se otevírá pod pruhy. Kruh zásoby cukrů je pod pruhy. Jemný obrys písma pomáhá oddělit text od kresby stromu.
 
 ### Písmo
 

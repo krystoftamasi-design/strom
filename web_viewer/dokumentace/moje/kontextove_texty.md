@@ -7,7 +7,6 @@
 ## Zobrazení
 
 - Věta má být ve stálé oblasti průvodce; v Transpiraci na místě současného „Odpar v listech táhne vodu vzhůru.“.
-- Ve Fotosyntéze použít stejnou roli průvodce a návaznost na hlavní proces.
 - Zobrazovat vždy jednu krátkou myšlenku; neopakovat celý detail okna.
 - Výchozí text vysvětluje hlavní smysl kapitoly. Otevření souvisejícího okna zaměří větu na dané téma.
 - Popisek nesmí tvrdit děj, který aktuální stav modelu neumožňuje; samotné přepínání dne a noci není cílem sdělení.
@@ -15,7 +14,7 @@
 
 ## Fotosyntéza
 
-- Výchozí a tematické texty jsou nasazené v průvodci kapitoly; texty pro noc a využití světla zůstávají návrhem k dopracování.
+- Texty v této části slouží jako podklad pro výuku.
 - Texty cílí na [Mýty a porozumění](strategi_problems.md#mýty-a-porozumění); nasazení samo nepotvrzuje porozumění žáků.
 
 | Kontext | Navržený text | Cíl porozumění |

@@ -115,15 +115,6 @@ export const kontextoveTexty = {
     vychozi: 'Z mnoha bukvic jen malá část doroste ve strom.',
     varianty: {},
   },
-  photosynthesis: {
-    vychozi: 'Cukry jsou hlavním produktem fotosyntézy. Strom je využívá k růstu a při jejich tvorbě se uvolňuje kyslík.',
-    varianty: {
-      co2: 'Uhlík pro tvorbu dřeva pochází z CO₂ ve vzduchu.',
-      cukry: 'Z cukrů strom staví své tělo. Živé buňky listů, kmene i kořenů z nich získávají energii.',
-      voda: 'Kořeny nepřijímají hlínu, ale vodu a minerální živiny. Část přijaté vody odchází z listů jako pára.',
-      kyslik: 'Při fotosyntéze se kyslík uvolňuje. Buněčným dýcháním ho strom také spotřebovává, ve dne i v noci.',
-    },
-  },
 };
 
 export const pruvodceTranspiraci = {

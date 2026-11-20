@@ -47,7 +47,7 @@ history:
 - Přenos vyžaduje renderer, společné CSS, převodník veličin a validátor; renderer přijímá model a callback zvýraznění. Průvodce a pozice konkrétní kapitoly nejsou přenositelnou částí okna.
 
 - `okna/tree_annotations.js` vytváří bloky, přepíná detaily a přebírá ovládací prvky s jejich událostmi.
-- `okna/element_ui_okna_vzhled.css` určuje rozložení kapitol, rozměry, písmo a barvy. Fotosyntéza vkládá levé okno pod kontextový text a pravá okna skládá do samostatného sloupce.
+- `okna/element_ui_okna_vzhled.css` určuje rozložení kapitol, rozměry, písmo a barvy. Fotosyntéza vkládá okno Cukry pod nadpis kapitoly a pravá okna skládá do samostatného sloupce.
 - `okna/tree_annotations.css` obsahuje společný základ bloků kapitol.
 - Rozložení pracuje v souřadnicích rozhraní; aktualizace za snímek obsluhuje ovládání období a synchronizaci zvýraznění s aktivní kapitolou.
 - `kapitoly/chapters.js` určuje pořadí a přepínání kapitol; `kapitoly/chapters.css` vzhled navigace.

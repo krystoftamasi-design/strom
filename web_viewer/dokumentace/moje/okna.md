@@ -83,7 +83,7 @@ history:
 - Popisek: „Tvorba cukrů ≈ glukóza“.
 - Detailní text: „Rašení čerpá cukry. Na podzim se část vrací z listů.“
 - Produkce a spotřeba se zobrazují v `g/min` na jedno desetinné místo. Sezónní přírůstky vycházejí ze [společné bilance cukrů](#společná-bilance-cukrů).
-- Zásoba se zobrazuje v kilogramech společně s kapacitou a průběhem během roku. Zásobu a kapacitu určuje [společná bilance cukrů](#společná-bilance-cukrů).
+- Zásoba se zobrazuje v kilogramech v kruhovém grafu s průběhem během roku. Zásobu a kapacitu určuje [společná bilance cukrů](#společná-bilance-cukrů).
 - Nejmenší zobrazovaná kladná spotřeba cukru je 0,1 g/min. Při nulové spotřebě ukazuje číslo 0,0 g/min.
 - Roční graf začíná 1. ledna nahoře a běží po směru hodin. Výplň sahá od vnitřního okraje pro 0 kg po aktuální průběh. Vnější kruh označuje kapacitu. Ryska s tečkou ukazuje aktuální datum a hodnotu. Přechod průhlednosti se otáčí s ryskou. Před ryskou výplň postupně nabírá barvu a krátce za ní dosáhne plné barvy. Graf v průběhu roku ukládá aktuální hodnoty. Při rychlém posunu doplní přeskočené dny plynulým přechodem mezi hodnotou před posunem a po něm. Ostatní dny si drží dřívější průběh nebo hodnotu typického roku spočítaného při načítání stromu. Průběh i přechod průhlednosti pokračují přes přelom roku. Při návratu v čase nebo resetu se záznam začne kreslit znovu.
 - Ovládání: červený pohyblivý konec horního pruhu funguje jako horní zarážka (strop) — produkci cukrů omezuje až od chvíle, kdy se dotkne barevného pruhu a zatlačí jej zpět; nad aktuální hodnotou produkci nemění.
