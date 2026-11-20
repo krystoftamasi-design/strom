@@ -1,6 +1,6 @@
 import { zobrazitHodnotu, vyhladitHodnotu } from '../okna/element_ui_okna_veliciny.js?v=light-consumption-1';
 import { SEASONS } from '../ekologie/tree_ecology.js?v=affinity-cap-1';
-import { createTreeAnnotations } from '../okna/tree_annotations.js?v=ipad-smooth-1';
+import { createTreeAnnotations } from '../okna/tree_annotations.js?v=water-hectolitres-1';
 
 const chapters = [
   ['seasons', 'Období'], ['photosynthesis', 'Fotosyntéza'], ['transpiration', 'Transpirace'],
@@ -349,6 +349,7 @@ export function createChapters({ model, applySeason, setSun, setAzimuth, setVisu
       if (now - lastUI >= 50) { render(); lastUI = now; }
     },
     modelReady() {
+      treeAnnotations.prepareStockHistory();
       if (ready) { setVisualChapter(chapter); return render(); }
       ready = true;
       restoring = true;

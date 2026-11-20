@@ -13,7 +13,7 @@ export const vzorce = {
     rozsah: [0, 1],
   },
   lightConsumption: {
-    vstupy: ['light', 'activity'],
+    vstupy: ['light', 'activity', 'photosyntheticLightShare'],
     rozsah: [0, 1],
   },
   glucoseGramsPerMinute: {
@@ -28,10 +28,12 @@ export const vzorce = {
 };
 
 // 8 µmol CO₂/m²/s, six CO₂ per glucose, molar mass, seconds per minute.
+// ~2 % of incoming solar energy is converted into chemical energy by photosynthesis.
 export const konstanty = {
   glucoseConversion: 8e-6 / 6 * 180.156 * 60,
   co2Conversion: 8e-6 * 44.01 * 60,
   oxygenPerGlucose: 6 * 31.998 / 180.156,
+  photosyntheticLightShare: 0.02,
 };
 
 const ohlaseneChyby = new Set();

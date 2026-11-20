@@ -39,11 +39,11 @@ export const oknaPodleKapitol = {
       strana: 'right',
       otevrene: false,
       vypocet: 'lightConsumption',
-      vzorecText: 'Dostupnost světla × aktivita fotosyntézy',
+      vzorecText: 'Dostupnost světla × aktivita × 2 %',
       zobrazitVzorec: true,
       zobrazitHodnotu: true,
       text: [
-        'Odhad využití světla.',
+        'Fotosyntéza využije jen asi 2 % sluneční energie; zbytek ohřívá okolí a odpařuje vodu.',
       ],
     },
     {
@@ -95,7 +95,7 @@ export const oknaPodleKapitol = {
       nadpis: 'Voda',
       tema: 'water',
       strana: 'right',
-      zasoba: { hodnota: 'reserve', maximum: 'capacity', jednotka: 'l' },
+      zasoba: { hodnota: 'reserve', maximum: 'capacity', jednotka: 'hl' },
       vypocet: 'waterConsumptionLitresPerHour',
       zobrazitVzorec: true,
       zobrazitHodnotu: true,

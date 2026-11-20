@@ -19,6 +19,7 @@ export const veliciny = {
   photosynthesisTemperatureFactor: { nazev: 'teplota', tema: 'temperature' },
   photosynthesisEfficiency: { nazev: 'účinnost', tema: 'light' },
   glucoseConversion: { nazev: 'přepočet', tema: 'sugar', veVzorci: false },
+  photosyntheticLightShare: { nazev: 'podíl', tema: 'light', veVzorci: false },
   activity: {
     nazev: 'aktivita', tema: 'light',
     jednotka: '%', nasobek: 100, desetinnaMista: 0,
@@ -26,7 +27,7 @@ export const veliciny = {
   },
   lightConsumption: {
     nazev: 'Spotřeba světla', tema: 'light',
-    jednotka: '%', nasobek: 100, desetinnaMista: 0,
+    jednotka: '%', nasobek: 100, desetinnaMista: 1,
     vystupId: 'ecoLightConsumption', popisHodnoty: 'spotřeba',
   },
   glucoseGramsPerMinute: {

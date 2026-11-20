@@ -868,9 +868,9 @@ export class LeafControls {
     const cov = this.canopyCoverage ?? 1;
     const cache = this.photosyntheticFoliageCache;
     if (cache && cache.progressKey === progressKey && cache.dryingSpeed === dryingSpeed
-        && cache.dryingSharpness === dryingSharpness && cache.dryingFrontWidth === dryingFrontWidth
-        && cache.canopyCoverage === cov && time >= cache.atTime
-        && time < cache.nextFallTime) return cache.value;
+      && cache.dryingSharpness === dryingSharpness && cache.dryingFrontWidth === dryingFrontWidth
+      && cache.canopyCoverage === cov && time >= cache.atTime
+      && time < cache.nextFallTime) return cache.value;
     const speed = Math.max(dryingSpeed, 0.05);
     const sharpness = THREE.MathUtils.clamp(dryingSharpness, 0, 1);
     let selected = 0, producing = 0, nextFallTime = Infinity;
@@ -918,8 +918,10 @@ export class LeafControls {
       }
     }
     const value = selected > 0 ? producing / selected : 0;
-    this.photosyntheticFoliageCache = { value, progressKey, dryingSpeed, dryingSharpness,
-      dryingFrontWidth, canopyCoverage: cov, atTime: time, nextFallTime };
+    this.photosyntheticFoliageCache = {
+      value, progressKey, dryingSpeed, dryingSharpness,
+      dryingFrontWidth, canopyCoverage: cov, atTime: time, nextFallTime
+    };
     return value;
   }
 

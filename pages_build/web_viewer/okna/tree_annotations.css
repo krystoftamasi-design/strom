@@ -147,6 +147,10 @@ body .tree-overlay [data-chapter] .chapter-context-guide h2 { font-weight: 400; 
   pointer-events: none;
 }
 
+body[data-chapter="photosynthesis"] .tree-overlay .season-center-tick {
+  width: 16px;
+}
+
 body.scene-night .tree-overlay .season-center-tick {
   background: #b2ff7c;
 }

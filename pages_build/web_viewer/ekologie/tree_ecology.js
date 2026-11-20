@@ -32,6 +32,10 @@ export const CO2_PPM = 420; // Fixed teaching scenario, not a live atmospheric m
 export const PREINDUSTRIAL_CO2_PPM = 280;
 const clamp = (v, low, high) => Math.max(low, Math.min(high, v));
 const smoothstep = value => value * value * (3 - 2 * value);
+// European beech (Fagus sylvatica) teaching curve: optimum 18–25 °C,
+// cold limitation down to 0 °C and heat limitation down to 42 °C.
+const photosynthesisTempFactor = temp =>
+  smoothstep(clamp(temp / 18, 0, 1)) * (1 - smoothstep(clamp((temp - 25) / 17, 0, 1)));
 const calendarDate = position => seasonDayForPosition(position) + 365 * Math.floor(position / 4);
 function monthlyValue(values, day) {
   let next = MONTH_MID_DAYS.findIndex(midpoint => day < midpoint);
@@ -111,6 +115,7 @@ export class TreeEcology {
     this.sugarCapacity = 40000;
     this.sugarReserve = 20000;
     this.hydration = 1;
+    this.springHydration = 1;
   }
 
   configure({ height, woodVolume, crownArea }) {
@@ -142,7 +147,7 @@ export class TreeEcology {
 
   startSpringBudburst() {
     const sugarShare = clamp(this.sugarReserve / SUGAR_BUDBURST_COST, 0, 1);
-    const waterShare = clamp(this.hydration, 0, 1);
+    const waterShare = clamp(this.springHydration, 0, 1);
     this.canopyLimit = Math.min(sugarShare, waterShare);
     return this.canopyLimit;
   }
@@ -245,10 +250,7 @@ export class TreeEcology {
     const nightFraction = smoothstep(clamp(-this.sunElevation / 12, 0, 1));
     const retainedWarmth = 0.5 * effectiveFoliage * nightFraction;
     this.temperatureNearCanopy = this.ambientTemperature - 2 * coolingFraction + retainedWarmth;
-    // Teaching curve: gradual cold limitation below 10 °C and heat limitation
-    // above 30 °C, reaching zero at 0/50 °C. Not a calibrated beech response.
-    this.photosynthesisTemperatureFactor = smoothstep(clamp(this.ambientTemperature / 10, 0, 1))
-      * (1 - smoothstep(clamp((this.ambientTemperature - 30) / 20, 0, 1)));
+    this.photosynthesisTemperatureFactor = photosynthesisTempFactor(this.ambientTemperature);
     this.co2Response = (CO2_PPM / (CO2_PPM + 200)) / (420 / 620);
     const kLight = 0.25;
     this.lightResponse = (this.light / (this.light + kLight)) / (1 / (1 + kLight));
@@ -292,15 +294,14 @@ export class TreeEcology {
     if (daytimeLight !== null) {
       const dayOfYear = seasonDayForPosition(this.seasonPosition) % 365;
       const meanTemp = monthlyValue(CZECH_MONTHLY_MEAN, dayOfYear) + this.weatherTemperatureOffset;
-      const meanTempFactor = smoothstep(clamp(meanTemp / 10, 0, 1))
-        * (1 - smoothstep(clamp((meanTemp - 30) / 20, 0, 1)));
+      const meanTempFactor = photosynthesisTempFactor(meanTemp);
       const kLight = 0.25;
       const meanLightResponse = (daytimeLight / (daytimeLight + kLight)) / (1 / (1 + kLight));
       const dayEfficiency = meanLightResponse * this.hydration * this.co2Response
         * meanTempFactor * this.sugarProductionFraction;
-      meanGlucose = 0.5 * this.activeLeafArea * clamp(this.leafGrowth, 0, 1) * dayEfficiency * konstanty.glucoseConversion;
+      const dayGlucose = this.activeLeafArea * clamp(this.leafGrowth, 0, 1) * dayEfficiency * konstanty.glucoseConversion;
       const capGlucose = clamp(this.sugarProductionCap, 0, 1) * Math.max(this.maxGlucoseGramsPerMinute, 0.0001);
-      meanGlucose = Math.min(meanGlucose, capGlucose);
+      meanGlucose = 0.5 * Math.min(dayGlucose, capGlucose);
       const effectiveFoliage = clamp(this.activeFoliage, 0, 1) * clamp(this.leafGrowth, 0, 1);
       const meanRespFrac = 0.15 * Math.pow(2, (clamp(meanTemp, -10, 40) - 20) / 10) * (0.2 + 0.8 * effectiveFoliage);
       meanRespiration = this.leafArea * konstanty.glucoseConversion * meanRespFrac;
@@ -310,27 +311,52 @@ export class TreeEcology {
     return net >= 0 ? net * storageShare : net;
   }
 
-  advanceSugarOnSeek(fromPosition, toPosition, daytimeLight = null, crossedBudburst = false) {
-    const skippedDays = calendarDate(toPosition) - calendarDate(fromPosition);
-    if (!Number.isFinite(skippedDays) || skippedDays <= 0) return;
-    if (crossedBudburst) {
-      const dayOfYear = seasonDayForPosition(toPosition) % 365;
-      const daysAfter = Math.max(0, dayOfYear - BEECH_CALENDAR.budburst);
-      const daysBefore = Math.max(0, skippedDays - daysAfter);
-      this.sugarReserve = clamp(
-        this.sugarReserve + this.getSugarStorageRate(daytimeLight) * daysBefore * 1440,
-        0, this.sugarCapacity
-      );
-      this.startSpringBudburst();
-      const doneFraction = dayOfYear >= BEECH_CALENDAR.fullLeaf
-        ? 1 : clamp(daysAfter / (BEECH_CALENDAR.fullLeaf - BEECH_CALENDAR.budburst), 0, 1);
-      this.sugarReserve = clamp(this.sugarReserve - this.canopyLimit * SUGAR_BUDBURST_COST * doneFraction, 0, this.sugarCapacity);
-      return;
+  advanceSugarOnSeek(fromPosition, toPosition, daytimeLight = null) {
+    const startCal = calendarDate(fromPosition);
+    const endCal = calendarDate(toPosition);
+    if (!Number.isFinite(startCal) || !Number.isFinite(endCal) || endCal <= startCal) return;
+    const light = daytimeLight ?? this.light;
+    const kLight = 0.25;
+    const meanLightResponse = (light / (light + kLight)) / (1 / (1 + kLight));
+    const capGlucose = clamp(this.sugarProductionCap, 0, 1) * Math.max(this.maxGlucoseGramsPerMinute, 0.0001);
+    const droughtLoss = 1 - clamp(this.droughtFall, 0, 1);
+    let cursor = startCal;
+    while (cursor < endCal) {
+      const calDay = Math.floor(cursor);
+      const day = ((calDay % 365) + 365) % 365;
+      if (cursor > startCal && cursor === calDay && day === BEECH_CALENDAR.budburst) {
+        this.startSpringBudburst();
+      }
+      const next = Math.min(endCal, calDay + 1);
+      const spanDays = next - cursor;
+      const growth = day < BEECH_CALENDAR.budburst || day >= BEECH_CALENDAR.leafFallEnd ? 0
+        : smoothstep(clamp((day - BEECH_CALENDAR.budburst) / (BEECH_CALENDAR.fullLeaf - BEECH_CALENDAR.budburst), 0, 1));
+      const fall = day < BEECH_CALENDAR.budburst ? 1
+        : smoothstep(clamp((day - BEECH_CALENDAR.leafFallStart) / (BEECH_CALENDAR.leafFallEnd - BEECH_CALENDAR.leafFallStart), 0, 1));
+      const colourLoss = smoothstep(clamp((day - BEECH_CALENDAR.colourStart) / (303 - BEECH_CALENDAR.colourStart), 0, 1));
+      const activeFoliage = this.canopyLimit * (1 - fall) * droughtLoss;
+      const photosyntheticFoliage = activeFoliage * (1 - colourLoss);
+      const effectiveFoliage = activeFoliage * growth;
+      const meanTemp = monthlyValue(CZECH_MONTHLY_MEAN, day);
+      const meanTempFactor = photosynthesisTempFactor(meanTemp);
+      const dayEfficiency = meanLightResponse * this.hydration * this.co2Response
+        * meanTempFactor * this.sugarProductionFraction;
+      const dayGlucose = this.leafArea * photosyntheticFoliage * growth * dayEfficiency * konstanty.glucoseConversion;
+      const meanGlucose = 0.5 * Math.min(dayGlucose, capGlucose);
+      const meanRespFrac = 0.15 * Math.pow(2, (clamp(meanTemp, -10, 40) - 20) / 10) * (0.2 + 0.8 * effectiveFoliage);
+      const meanRespiration = this.leafArea * konstanty.glucoseConversion * meanRespFrac;
+      const budburstRate = day >= BEECH_CALENDAR.budburst && day < BEECH_CALENDAR.fullLeaf
+        ? this.canopyLimit * SUGAR_BUDBURST_COST / BUDBURST_MINUTES
+        : 0;
+      const autumnReturnRate = day >= BEECH_CALENDAR.leafFallStart && day < BEECH_CALENDAR.leafFallEnd
+        ? this.canopyLimit * droughtLoss * SUGAR_AUTUMN_RETURN / AUTUMN_RETURN_MINUTES
+        : 0;
+      const net = (meanGlucose + autumnReturnRate) - (meanRespiration + budburstRate);
+      const storageShare = SURPLUS_TO_STORAGE + 0.15 * clamp((0.75 - this.canopyLimit) / 0.75, 0, 1);
+      const rate = net >= 0 ? net * storageShare : net;
+      this.sugarReserve = clamp(this.sugarReserve + rate * spanDays * 1440, 0, this.sugarCapacity);
+      cursor = next;
     }
-    this.sugarReserve = clamp(
-      this.sugarReserve + this.getSugarStorageRate(daytimeLight) * skippedDays * 1440,
-      0, this.sugarCapacity
-    );
   }
 
   // The viewer supplies the same model-minute increment used by its clock.
@@ -368,6 +394,8 @@ export class TreeEcology {
     const rotTime = rotTarget > this.rootRot ? 5 : 12;
     this.rootRot += (rotTarget - this.rootRot) * (1 - Math.exp(-modelDays / rotTime));
     this.evaluate(0);
+    // Multi-day rolling hydration so a single dry day on April 25 does not cap the whole year's canopy.
+    this.springHydration += (this.hydration - this.springHydration) * (1 - Math.exp(-modelDays / 10));
     const target = effectiveFoliage > 0 ? 1 - this.hydration : 0;
     const timeConstant = target > this.dryness ? 12 : 6;
     this.dryness += (target - this.dryness) * (1 - Math.exp(-modelDays / timeConstant));
