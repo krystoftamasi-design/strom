@@ -28,6 +28,11 @@ export function createSugarStockHistory() {
     coordinates = [];
   }
 
+  function recordDay(index, day, grams) {
+    daily[index] = { day, grams };
+    coordinates[index] = undefined;
+  }
+
   return {
     clear,
     sample(position, grams) {
@@ -40,10 +45,19 @@ export function createSugarStockHistory() {
       const dayIndex = Math.floor(day);
       if (current?.date === date && current.grams === grams) return;
       if (current && date < current.date) clear();
-      // Each day keeps its last observed value until the clock visits it again.
+      if (current) {
+        const targetDate = Math.floor(date);
+        const firstSkipped = Math.max(Math.floor(current.date) + 1, targetDate - (DAYS_IN_YEAR - 1));
+        // A fast seek only measures its endpoints. Interpolate the days it crosses
+        // so isolated points do not alternate with the older curve.
+        for (let skipped = firstSkipped; skipped < targetDate; skipped++) {
+          const index = ((skipped % DAYS_IN_YEAR) + DAYS_IN_YEAR) % DAYS_IN_YEAR;
+          const progress = (skipped - current.date) / (date - current.date);
+          recordDay(index, index, current.grams + (grams - current.grams) * progress);
+        }
+      }
       current = { date, day, grams };
-      daily[dayIndex] = current;
-      coordinates[dayIndex] = undefined;
+      recordDay(dayIndex, day, grams);
     },
     geometry(capacity, reference = []) {
       if (!current || !Number.isFinite(capacity) || capacity <= 0) return null;

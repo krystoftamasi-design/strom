@@ -27,7 +27,18 @@ for (const [year, limit] of [[simulatedYear, capacity], [water, tree.capacity]])
   const afterEdge = outerEdge(after);
   assert.equal(after.angle, 0);
   assert.equal(afterEdge[0], after.dot.join(' '));
-  assert.deepEqual(afterEdge.slice(1), before.slice(1), 'Seeking across New Year preserves every other day');
+  assert.deepEqual(afterEdge.slice(1, 188), before.slice(1, 188), 'Seeking across New Year preserves days outside the seek');
+
+  history.clear();
+  history.sample(seasonForMonthClock(11), 0);
+  const beforeDrySeek = outerEdge(history.geometry(limit, year));
+  history.sample(seasonForMonthClock(12.25), 0);
+  const afterDrySeek = outerEdge(history.geometry(limit, year));
+  assert.deepEqual(afterDrySeek.slice(8, 334), beforeDrySeek.slice(8, 334), 'Only dates crossed by the seek are updated');
+  for (const point of [...afterDrySeek.slice(334), ...afterDrySeek.slice(0, 8)]) {
+    const [x, y] = point.split(' ').map(Number);
+    assert.ok(Math.abs(Math.hypot(x - 50, y - 50) - 24) < 0.01, 'Skipped days between zero readings have no spikes');
+  }
 }
 const firstFullDay = simulatedYear.findIndex(day => day.start >= capacity);
 assert.ok(firstFullDay >= 265 && firstFullDay < 334, 'The reference tree first fills its store in autumn');
