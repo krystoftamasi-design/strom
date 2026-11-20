@@ -472,6 +472,11 @@ body.scene-night .tree-overlay .element-ui-okno .ui-word {
 
 .element-ui-stock-history .stock-history-fill {
   fill: var(--flow-accent, var(--ui-topic));
+  mask-origin: view-box;
+  mask-clip: view-box;
+  mask-image: conic-gradient(from var(--stock-history-angle, 0deg) at center,
+    rgb(0 0 0 / 70%) 0deg, transparent 42deg 168deg,
+    black 200deg 350deg, rgb(0 0 0 / 70%) 360deg);
 }
 .element-ui-stock-history .stock-history-needle { stroke-width: 3; }
 .element-ui-stock-history .stock-history-dot { fill: currentColor; }

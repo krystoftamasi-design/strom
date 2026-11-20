@@ -1,7 +1,7 @@
 import { oknaPodleKapitol, kontextoveTexty, pruvodceTranspiraci } from './element_ui_okna_obsah.js?v=adjustable-value-1';
 import { veliciny, vstupyVzorce, ohlasitChybuOken, vyhladitHodnotu } from './element_ui_okna_veliciny.js?v=light-consumption-1';
 import { zkontrolovatOkna } from './element_ui_okna_kontrola.js?v=seeds-1';
-import { createSugarStockHistory } from './sugar_stock_history.js?v=year-reveal-1';
+import { createSugarStockHistory } from './sugar_stock_history.js?v=rolling-fade-1';
 import { simulateAnnualStocks } from '../ekologie/rocni_zasoba_cukru.js?v=annual-stocks-1';
 
 // Original embedded assets from ui_new.svg, at their exported stroke widths.
@@ -745,6 +745,7 @@ export function createTreeAnnotations({ shell, model, createSeasonControl, setEl
       needle.style.visibility = geometry ? 'visible' : 'hidden';
       dot.style.visibility = needle.style.visibility;
       if (!geometry) return;
+      fill.style.setProperty('--stock-history-angle', `${geometry.angle}deg`);
       ['x1', 'y1', 'x2', 'y2'].forEach((key, index) => needle.setAttribute(key, geometry.needle[index]));
       dot.setAttribute('cx', geometry.dot[0]);
       dot.setAttribute('cy', geometry.dot[1]);

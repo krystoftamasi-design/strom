@@ -89,8 +89,22 @@ export function createSugarStockHistory() {
         }
         elapsed.push(sample);
       }
+      // Complete the loop with the latest known value for each upcoming date.
+      if (elapsed[0].day > 0) elapsed.unshift({ day: 0, grams: elapsed[0].grams });
+      const cycleStart = elapsed[0].grams;
+      const nowOffset = current.grams - (referenceStock(guide, current.day) || 0);
+      const endOffset = cycleStart - (guide[DAYS_IN_YEAR]?.start ?? cycleStart);
+      for (let day = Math.floor(current.day) + 1; day < DAYS_IN_YEAR; day++) {
+        const progress = (day - current.day) / (DAYS_IN_YEAR - current.day);
+        const offset = nowOffset + (endOffset - nowOffset) * progress;
+        const expected = guide[day]?.start;
+        const grams = Number.isFinite(expected) ? expected + offset : current.grams;
+        elapsed.push({ day, grams });
+      }
+      elapsed.push({ day: DAYS_IN_YEAR, grams: cycleStart });
       return {
         path: fillRun(elapsed, radius),
+        angle: current.day / DAYS_IN_YEAR * 360,
         needle: [...point(current.day, radius(current.grams)), ...point(current.day, OUTER_RADIUS + 8)],
         dot: point(current.day, radius(current.grams)),
       };
