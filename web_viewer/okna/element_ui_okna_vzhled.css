@@ -426,15 +426,18 @@ body.scene-night .tree-overlay .element-ui-okno .ui-word {
   outline-offset: 2px;
 }
 
-.element-ui-stock-history,
-.element-ui-stock-dial[aria-pressed="true"] > span {
+.tree-overlay .time-playback-panel > .element-ui-stock-history {
   display: none;
 }
 
-.element-ui-stock-dial[aria-pressed="true"] .element-ui-stock-history {
+body[data-chapter="photosynthesis"] .tree-overlay .time-playback-panel > .element-ui-stock-history:not([hidden]) {
+  --stock-history-size: clamp(48px, 11vh, 100px);
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
   display: block;
-  width: 100%;
-  height: 100%;
+  width: var(--stock-history-size);
+  height: var(--stock-history-size);
   fill: none;
   pointer-events: none;
 }
@@ -448,7 +451,7 @@ body.scene-night .tree-overlay .element-ui-okno .ui-word {
 .element-ui-stock-history .stock-history-zero { opacity: .6; }
 .element-ui-stock-history .stock-history-ticks { opacity: .8; }
 .element-ui-stock-history .stock-history-line {
-  stroke: var(--balance-production, var(--ui-topic));
+  stroke: #e5241c;
   stroke-width: 3.5;
   stroke-linecap: round;
   stroke-linejoin: round;
