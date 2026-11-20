@@ -1,4 +1,4 @@
-import { TreeEcology } from './tree_ecology.js?v=light-slider-1';
+import { TreeEcology } from './tree_ecology.js?v=annual-stock-1';
 import {
   BEECH_CALENDAR, seasonDayForPosition, beechColourForPosition,
   beechLeafFallProgress, beechLeafGrowthProgress, monthClockForSeason,
@@ -102,6 +102,42 @@ export function createAnnualSugarCurve(tree, capacity) {
   // Start from the stock left by the previous season, including its autumn refilling.
   const previousYear = simulateYear(flows, capacity, capacity);
   return simulateYear(flows, capacity, previousYear.at(-1).reserve);
+}
+
+// Run the viewer's ecology on a separate tree under the default light and water settings.
+export function simulateAnnualSugarStock(tree, capacity) {
+  const sample = new TreeEcology();
+  sample.setSeasonPosition(positionForDay(181));
+  sample.configure({ height: tree.height, woodVolume: tree.woodVolume, crownArea: tree.crownArea });
+  sample.setSugarCapacity(capacity);
+  sample.sugarReserve = capacity / 2;
+  sample.hourOfDay = 12;
+  sample.sunElevation = 55;
+  const daylight = Array.from({ length: 12 }, (_, hour) =>
+    Math.sin((hour + 0.5) * Math.PI / 12) * Math.cos(35 * Math.PI / 180) / Math.sin(Math.PI / 3)
+  ).reduce((sum, light) => sum + light, 0) / 12;
+
+  function advance(day) {
+    const position = positionForDay(day);
+    if (day === BEECH_CALENDAR.budburst) sample.startSpringBudburst();
+    const retained = 1 - beechLeafFallProgress(position);
+    const colourLoss = Math.max(0, (beechColourForPosition(position) - 0.25) / 0.75);
+    sample.activeFoliage = sample.canopyLimit * retained;
+    sample.photosyntheticFoliage = sample.activeFoliage * (1 - colourLoss);
+    sample.leafGrowth = beechLeafGrowthProgress(position);
+    sample.setSeasonPosition(position);
+    sample.step(minutesPerDay, daylight);
+  }
+
+  // Start from the default summer state, then carry that tree's reserves into January.
+  for (let day = 181; day < daysPerYear; day++) advance(day);
+  const year = Array.from({ length: daysPerYear }, (_, day) => {
+    const start = sample.sugarReserve;
+    advance(day);
+    return { start };
+  });
+  year.push({ start: sample.sugarReserve });
+  return year;
 }
 
 export function sugarAtSeason(curve, position) {

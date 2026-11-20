@@ -1,11 +1,17 @@
 import assert from 'node:assert/strict';
 import { TreeEcology } from '../ekologie/tree_ecology.js';
-import { createAnnualSugarCurve, createSeasonalSugarBalance } from '../ekologie/rocni_zasoba_cukru.js';
+import { createAnnualSugarCurve, createSeasonalSugarBalance, simulateAnnualSugarStock } from '../ekologie/rocni_zasoba_cukru.js';
 import { seasonForMonthClock } from '../obdobi/beech_phenology.js';
 
 const tree = new TreeEcology();
 tree.configure({ height: 26, woodVolume: 4, crownArea: 100 });
 const capacity = 40000;
+const reserveBeforePreview = tree.sugarReserve;
+const simulatedYear = simulateAnnualSugarStock(tree, capacity);
+assert.equal(simulatedYear.length, 366, 'One reading per day plus the end of December');
+assert.equal(tree.sugarReserve, reserveBeforePreview, 'The reference run does not alter the live tree');
+const firstFullDay = simulatedYear.findIndex(day => day.start >= capacity);
+assert.ok(firstFullDay >= 265 && firstFullDay < 334, 'The reference tree first fills its store in autumn');
 const curve = createAnnualSugarCurve(tree, capacity);
 
 const fall = curve.slice(297, 323);

@@ -2,7 +2,7 @@ import { oknaPodleKapitol, kontextoveTexty, pruvodceTranspiraci } from './elemen
 import { veliciny, vstupyVzorce, ohlasitChybuOken, vyhladitHodnotu } from './element_ui_okna_veliciny.js?v=light-consumption-1';
 import { zkontrolovatOkna } from './element_ui_okna_kontrola.js?v=seeds-1';
 import { createSugarStockHistory } from './sugar_stock_history.js?v=aligned-reference-1';
-import { createAnnualSugarCurve } from '../ekologie/rocni_zasoba_cukru.js';
+import { simulateAnnualSugarStock } from '../ekologie/rocni_zasoba_cukru.js?v=annual-stock-1';
 
 // Original embedded assets from ui_new.svg, at their exported stroke widths.
 const strokes = {
@@ -764,8 +764,7 @@ export function createTreeAnnotations({ shell, model, createSeasonControl, setEl
       const { height, woodVolume, crownArea, sugarCapacity } = model;
       const key = [height, woodVolume, crownArea, sugarCapacity].join('/');
       if (model.ready && referenceKey !== key) {
-        const year = createAnnualSugarCurve(model, sugarCapacity);
-        reference = [...year, { start: year.at(-1).reserve }];
+        reference = simulateAnnualSugarStock(model, sugarCapacity);
         referenceKey = key;
       }
       const geometry = sugarHistory.geometry(sugarCapacity, reference);

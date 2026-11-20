@@ -12,7 +12,7 @@ export const SEASONS = {
 export const MODEL_MINUTES_PER_SECOND = 24; // One displayed day (60 s) advances one model day.
 export const SUGAR_BUDBURST_COST = 14000; // g of sugar needed for a full spring canopy (Apr 25 – May 13).
 export const SUGAR_AUTUMN_RETURN = 3000; // g returned from a full canopy during leaf fall (Oct 25 – Nov 20).
-const SURPLUS_TO_STORAGE = 0.10;
+const SURPLUS_TO_STORAGE = 0.073;
 const BUDBURST_MINUTES = (BEECH_CALENDAR.fullLeaf - BEECH_CALENDAR.budburst) * 1440;
 const AUTUMN_RETURN_MINUTES = (BEECH_CALENDAR.leafFallEnd - BEECH_CALENDAR.leafFallStart) * 1440;
 // Parameter evidence and remaining uncertainty: EKOLOGIE_PODKLADY.md.
@@ -298,15 +298,16 @@ export class TreeEcology {
       const meanLightResponse = (daytimeLight / (daytimeLight + kLight)) / (1 / (1 + kLight));
       const dayEfficiency = meanLightResponse * this.hydration * this.co2Response
         * meanTempFactor * this.sugarProductionFraction;
-      meanGlucose = 0.5 * this.activeLeafArea * clamp(this.leafGrowth, 0, 1) * dayEfficiency * konstanty.glucoseConversion;
+      const dayGlucose = this.activeLeafArea * clamp(this.leafGrowth, 0, 1) * dayEfficiency * konstanty.glucoseConversion;
       const capGlucose = clamp(this.sugarProductionCap, 0, 1) * Math.max(this.maxGlucoseGramsPerMinute, 0.0001);
-      meanGlucose = Math.min(meanGlucose, capGlucose);
+      meanGlucose = 0.5 * Math.min(dayGlucose, capGlucose);
       const effectiveFoliage = clamp(this.activeFoliage, 0, 1) * clamp(this.leafGrowth, 0, 1);
       const meanRespFrac = 0.15 * Math.pow(2, (clamp(meanTemp, -10, 40) - 20) / 10) * (0.2 + 0.8 * effectiveFoliage);
       meanRespiration = this.leafArea * konstanty.glucoseConversion * meanRespFrac;
     }
     const net = (meanGlucose + this.autumnReturnRate) - (meanRespiration + this.budburstRate);
-    const storageShare = SURPLUS_TO_STORAGE + 0.15 * clamp((0.75 - this.canopyLimit) / 0.75, 0, 1);
+    const storagePriority = clamp((0.75 - this.canopyLimit) / 0.75, 0, 1);
+    const storageShare = SURPLUS_TO_STORAGE + (0.25 - SURPLUS_TO_STORAGE) * storagePriority;
     return net >= 0 ? net * storageShare : net;
   }
 
