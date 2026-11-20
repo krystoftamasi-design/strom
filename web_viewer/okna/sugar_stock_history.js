@@ -1,7 +1,7 @@
 import { seasonDayForPosition } from '../obdobi/beech_phenology.js?v=month-clock-1';
 
 const DAYS_IN_YEAR = 365;
-const INNER_RADIUS = 14;
+const INNER_RADIUS = 24;
 const OUTER_RADIUS = 43;
 const CENTER = 50;
 
@@ -11,6 +11,15 @@ function point(day, radius) {
     (CENTER + radius * Math.sin(angle)).toFixed(2),
     (CENTER - radius * Math.cos(angle)).toFixed(2),
   ];
+}
+
+function fillRun(run, radius) {
+  if (run.length < 2) return '';
+  const start = run[0].day;
+  const end = run.at(-1).day;
+  const edge = run.map(({ day, grams }) => point(day, radius(grams)).join(' ')).join('L');
+  const largeArc = Number(end - start > DAYS_IN_YEAR / 2);
+  return `M${edge}L${point(end, INNER_RADIUS).join(' ')}A${INNER_RADIUS} ${INNER_RADIUS} 0 ${largeArc} 0 ${point(start, INNER_RADIUS).join(' ')}Z`;
 }
 
 export function createSugarStockHistory() {
@@ -45,14 +54,16 @@ export function createSugarStockHistory() {
     geometry(capacity, reference = []) {
       if (!current || !Number.isFinite(capacity) || capacity <= 0) return null;
       const radius = grams => INNER_RADIUS + (OUTER_RADIUS - INNER_RADIUS) * Math.max(0, Math.min(1, grams / capacity));
-      const path = daily.map(({ day, grams, connected }) => {
-        const xy = point(day, radius(grams)).join(' ');
-        return connected ? `L${xy}` : `M${xy}h.01`;
-      }).join(' ');
-      // Real samples replace the reference only where they form a continuous line.
+      const recordedRuns = [];
+      for (const sample of daily) {
+        if (!sample.connected) recordedRuns.push([]);
+        recordedRuns.at(-1).push(sample);
+      }
+      const path = recordedRuns.map(run => fillRun(run, radius)).join('');
+      // Keep separate areas across jumps in time or changes of opacity.
       const recorded = new Set(daily.filter(sample => sample.connected).map(sample => sample.dayIndex - 1));
-      const referencePaths = ['', '', '', ''];
-      let pastReferencePath = '';
+      const referenceRuns = [[], [], [], [], []];
+      const pastBand = referenceRuns.length - 1;
       const remainingDays = DAYS_IN_YEAR - current.day;
       const today = Math.floor(current.day);
       const start = reference[today]?.start;
@@ -65,20 +76,17 @@ export function createSugarStockHistory() {
         const future = day >= today;
         const fromDay = future ? Math.max(day, current.day) : day;
         const ahead = Math.max(0, fromDay - current.day) / remainingDays;
-        const band = Math.min(referencePaths.length - 1, Math.floor(ahead * referencePaths.length));
+        const band = future ? Math.min(pastBand - 1, Math.floor(ahead * pastBand)) : pastBand;
         const fromGrams = day === today ? current.grams : reference[day].start + (future ? offset : 0);
         const toGrams = next.start + (future ? offset : 0);
-        const from = point(fromDay, radius(fromGrams)).join(' ');
-        const to = point(day + 1, radius(toGrams)).join(' ');
-        const segment = `M${from}L${to}`;
-        if (future) referencePaths[band] += segment;
-        else pastReferencePath += segment;
+        const runs = referenceRuns[band];
+        if (runs.at(-1)?.at(-1)?.day !== fromDay) runs.push([{ day: fromDay, grams: fromGrams }]);
+        runs.at(-1).push({ day: day + 1, grams: toGrams });
       }
       return {
         path,
-        referencePaths,
-        pastReferencePath,
-        needle: [...point(current.day, INNER_RADIUS - 4), ...point(current.day, OUTER_RADIUS + 3)],
+        referencePaths: referenceRuns.map(runs => runs.map(run => fillRun(run, radius)).join('')),
+        needle: [...point(current.day, radius(current.grams)), ...point(current.day, OUTER_RADIUS + 8)],
         dot: point(current.day, radius(current.grams)),
       };
     },

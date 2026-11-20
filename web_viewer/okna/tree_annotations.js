@@ -1,7 +1,7 @@
 import { oknaPodleKapitol, kontextoveTexty, pruvodceTranspiraci } from './element_ui_okna_obsah.js?v=adjustable-value-1';
 import { veliciny, vstupyVzorce, ohlasitChybuOken, vyhladitHodnotu } from './element_ui_okna_veliciny.js?v=light-consumption-1';
 import { zkontrolovatOkna } from './element_ui_okna_kontrola.js?v=seeds-1';
-import { createSugarStockHistory } from './sugar_stock_history.js?v=reference-fade-1';
+import { createSugarStockHistory } from './sugar_stock_history.js?v=filled-stock-1';
 import { simulateAnnualSugarStock } from '../ekologie/rocni_zasoba_cukru.js?v=annual-stock-1';
 
 // Original embedded assets from ui_new.svg, at their exported stroke widths.
@@ -267,36 +267,33 @@ function createElementUiOkno({ panel, body, reveal, toggle, model, definition })
       panel.classList.add('element-ui-flow-window');
       if (hasStock) {
         const { zdroj = 'model', hodnota, maximum, jednotka } = definition.zasoba;
+        const hasHistory = zdroj === 'cukry';
         const stock = document.createElement('div');
         stock.className = 'element-ui-stock';
+        stock.classList.toggle('element-ui-stock--history', hasHistory);
         const label = document.createElement('div');
         label.className = 'chapter-metric element-ui-stock-label';
         const labelText = document.createElement('span');
         labelText.textContent = 'zásoba';
         label.append(labelText);
-        const dial = document.createElement(zdroj === 'cukry' ? 'button' : 'div');
+        const dial = document.createElement('div');
         dial.className = 'element-ui-stock-dial';
-        if (zdroj === 'cukry') {
-          dial.type = 'button';
-          dial.setAttribute('aria-label', 'Roční graf zásoby cukrů');
-          dial.setAttribute('aria-keyshortcuts', 'T');
-          dial.setAttribute('aria-pressed', 'false');
-          dial.title = 'Zobrazit roční graf zásoby cukrů pod ovládáním času (T)';
+        if (!hasHistory) {
+          const dialClip = document.createElement('span');
+          dialClip.className = 'element-ui-stock-dial-clip';
+          dialClip.setAttribute('aria-hidden', 'true');
+          const dialFill = document.createElement('span');
+          dialFill.className = 'element-ui-stock-dial-fill';
+          dialClip.append(dialFill);
+          const dialRing = document.createElement('span');
+          dialRing.className = 'element-ui-stock-dial-ring';
+          dialRing.setAttribute('aria-hidden', 'true');
+          const trend = document.createElement('span');
+          trend.className = 'element-ui-stock-trend';
+          trend.setAttribute('role', 'img');
+          trend.hidden = true;
+          dial.append(dialClip, dialRing, trend);
         }
-        const dialClip = document.createElement('span');
-        dialClip.className = 'element-ui-stock-dial-clip';
-        dialClip.setAttribute('aria-hidden', 'true');
-        const dialFill = document.createElement('span');
-        dialFill.className = 'element-ui-stock-dial-fill';
-        dialClip.append(dialFill);
-        const dialRing = document.createElement('span');
-        dialRing.className = 'element-ui-stock-dial-ring';
-        dialRing.setAttribute('aria-hidden', 'true');
-        const trend = document.createElement('span');
-        trend.className = 'element-ui-stock-trend';
-        trend.setAttribute('role', 'img');
-        trend.hidden = true;
-        dial.append(dialClip, dialRing, trend);
         const metric = document.createElement('div');
         metric.className = 'chapter-metric element-ui-stock-readout';
         const value = document.createElement('strong');
@@ -313,7 +310,8 @@ function createElementUiOkno({ panel, body, reveal, toggle, model, definition })
         unit.textContent = jednotka;
         value.append(output, unit);
         metric.append(value);
-        stock.append(label, dial, metric);
+        stock.append(label, dial);
+        (hasHistory ? dial : stock).append(metric);
         footer.append(stock);
       }
     }
@@ -732,33 +730,28 @@ export function createTreeAnnotations({ shell, model, createSeasonControl, setEl
   }
   const stockByChapter = new Map();
   const sugarHistory = createSugarStockHistory();
-  const sugarDial = shell.querySelector('button.element-ui-stock-dial');
-  const playback = shell.querySelector('.time-playback-panel');
+  const sugarDial = shell.querySelector('.element-ui-stock--history .element-ui-stock-dial');
   let renderSugarHistory;
   let prepareSugarHistory;
-  if (sugarDial && playback) {
+  if (sugarDial) {
     const chart = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
     chart.classList.add('element-ui-stock-history');
     chart.setAttribute('viewBox', '0 0 100 100');
     chart.setAttribute('role', 'img');
     chart.setAttribute('aria-label', 'Roční průběh zásoby cukrů od ledna nahoře po směru hodin');
-    chart.setAttribute('hidden', '');
     chart.innerHTML = `
-      <circle cx="50" cy="50" r="43" class="stock-history-capacity"/>
-      <circle cx="50" cy="50" r="14" class="stock-history-zero"/>
-      <path class="stock-history-ticks" d="M50 3v7 M97 50h-5 M50 97v-5 M3 50h5"/>
       <g class="stock-history-reference">
-        <path opacity=".08"/><path opacity=".16"/><path opacity=".26"/><path opacity=".38"/>
+        <path opacity=".08"/><path opacity=".16"/><path opacity=".26"/><path opacity=".38"/><path opacity=".52"/>
       </g>
-      <path class="stock-history-reference stock-history-reference-past" opacity=".52"/>
-      <path class="stock-history-line"/>
+      <path class="stock-history-recorded"/>
+      <circle cx="50" cy="50" r="43" class="stock-history-capacity"/>
+      <path class="stock-history-ticks" d="M50 2v7 M98 50h-7 M50 98v-7 M2 50h7"/>
       <line class="stock-history-needle"/>
-      <circle class="stock-history-dot" r="4"/>
+      <circle class="stock-history-dot" r="3"/>
     `;
-    playback.append(chart);
+    sugarDial.prepend(chart);
     const referencePaths = chart.querySelectorAll('.stock-history-reference path');
-    const pastReference = chart.querySelector('.stock-history-reference-past');
-    const line = chart.querySelector('.stock-history-line');
+    const recorded = chart.querySelector('.stock-history-recorded');
     const needle = chart.querySelector('.stock-history-needle');
     const dot = chart.querySelector('.stock-history-dot');
     let reference = [];
@@ -773,9 +766,8 @@ export function createTreeAnnotations({ shell, model, createSeasonControl, setEl
     };
     renderSugarHistory = () => {
       const geometry = sugarHistory.geometry(model.sugarCapacity, reference);
-      line.setAttribute('d', geometry?.path ?? '');
+      recorded.setAttribute('d', geometry?.path ?? '');
       referencePaths.forEach((path, index) => path.setAttribute('d', geometry?.referencePaths[index] ?? ''));
-      pastReference.setAttribute('d', geometry?.pastReferencePath ?? '');
       needle.style.visibility = geometry ? 'visible' : 'hidden';
       dot.style.visibility = needle.style.visibility;
       if (!geometry) return;
@@ -783,23 +775,6 @@ export function createTreeAnnotations({ shell, model, createSeasonControl, setEl
       dot.setAttribute('cx', geometry.dot[0]);
       dot.setAttribute('cy', geometry.dot[1]);
     };
-    sugarDial.addEventListener('click', () => {
-      const showChart = sugarDial.getAttribute('aria-pressed') === 'false';
-      sugarDial.setAttribute('aria-pressed', String(showChart));
-      chart.toggleAttribute('hidden', !showChart);
-      sugarDial.title = showChart
-        ? 'Skrýt roční graf zásoby cukrů (T)'
-        : 'Zobrazit roční graf zásoby cukrů pod ovládáním času (T)';
-      if (showChart) renderSugarHistory();
-    });
-    document.addEventListener('keydown', event => {
-      if (event.key.toLowerCase() !== 't' || event.defaultPrevented || event.repeat ||
-        event.ctrlKey || event.altKey || event.metaKey || event.isComposing ||
-        activeChapter !== 'photosynthesis' ||
-        event.target.closest?.('input, textarea, select, [contenteditable]')) return;
-      event.preventDefault();
-      sugarDial.click();
-    });
     document.getElementById('btnTimeReset')?.addEventListener('click', () => sugarHistory.clear());
   }
   for (const output of shell.querySelectorAll('[data-stock-source]')) {
@@ -842,7 +817,7 @@ export function createTreeAnnotations({ shell, model, createSeasonControl, setEl
       const draggingSlider = activeBars?.some(entry =>
         entry.slider?.matches(sliderIsActive) || entry.limitSlider?.matches(sliderIsActive)) || false;
       if (!chapterChanged && !draggingSlider && now - lastDomUpdate < 50) return;
-      if (chapter === 'photosynthesis' && sugarDial?.getAttribute('aria-pressed') === 'true') {
+      if (chapter === 'photosynthesis') {
         renderSugarHistory?.();
       }
       const dt = lastDomUpdate > 0 ? (now - lastDomUpdate) / 1000 : 0.05;
@@ -1009,6 +984,7 @@ export function createTreeAnnotations({ shell, model, createSeasonControl, setEl
             entry.prevDisplayed = displayed;
             output.value = displayed;
           }
+          if (!trend) continue;
           const previous = previousStocks.get(output);
           if (!available || previous === undefined) {
             if (entry.prevTrend !== true) {

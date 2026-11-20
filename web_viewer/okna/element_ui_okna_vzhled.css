@@ -412,49 +412,66 @@ body.scene-night .tree-overlay .element-ui-okno .ui-word {
   align-self: center;
 }
 
-.tree-overlay button.element-ui-stock-dial {
-  padding: 0;
-  border: 0;
-  border-radius: 50%;
-  background: none;
-  color: var(--flow-heading-ink, #151d3a);
-  cursor: pointer;
+.tree-overlay .element-ui-stock--history {
+  position: relative;
+  color: var(--flow-heading-ink);
 }
 
-.tree-overlay button.element-ui-stock-dial:focus-visible {
-  outline: 2px solid currentColor;
-  outline-offset: 2px;
-}
-
-.tree-overlay .time-playback-panel > .element-ui-stock-history {
-  display: none;
-}
-
-body[data-chapter="photosynthesis"] .tree-overlay .time-playback-panel > .element-ui-stock-history:not([hidden]) {
-  --stock-history-size: clamp(48px, 11vh, 100px);
+.tree-overlay .element-ui-stock--history .element-ui-stock-label {
   position: absolute;
-  top: calc(100% + 6px);
-  left: 0;
+  inset-inline: 0;
+  bottom: calc(100% + 4px);
+  white-space: nowrap;
+}
+
+.tree-overlay .element-ui-stock--history .element-ui-stock-dial {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: min(100%, 84px);
+  height: auto;
+  aspect-ratio: 1;
+  translate: -50% -50%;
+}
+
+.tree-overlay .element-ui-stock--history .element-ui-stock-readout {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+}
+
+.tree-overlay .element-ui-flow-window .element-ui-stock--history .element-ui-stock-dial .element-ui-stock-readout strong {
+  display: grid;
+  justify-items: center;
+}
+
+.tree-overlay .element-ui-stock--history .element-ui-stock-readout output {
+  font-size: clamp(10px, 4cqi, 20px);
+}
+
+.tree-overlay .element-ui-flow-window .element-ui-stock--history .element-ui-stock-readout .element-ui-unit {
+  margin: 0;
+  font-size: clamp(6px, 2cqi, 10px);
+  line-height: 1;
+}
+
+.element-ui-stock-history {
   display: block;
-  width: var(--stock-history-size);
-  height: var(--stock-history-size);
+  width: 100%;
+  height: 100%;
+  overflow: visible;
   fill: none;
-  pointer-events: none;
 }
 
-.element-ui-stock-history :is(.stock-history-capacity, .stock-history-zero, .stock-history-ticks, .stock-history-needle) {
+.element-ui-stock-history :is(.stock-history-capacity, .stock-history-ticks, .stock-history-needle) {
   stroke: currentColor;
-  stroke-width: 2;
+  stroke-width: 1.8;
+  stroke-linecap: round;
 }
 
-.element-ui-stock-history .stock-history-capacity { opacity: .45; }
-.element-ui-stock-history .stock-history-zero { opacity: .6; }
-.element-ui-stock-history .stock-history-ticks { opacity: .8; }
-.element-ui-stock-history :is(.stock-history-line, .stock-history-reference) {
-  stroke: #e5241c;
-  stroke-width: 3.5;
-  stroke-linecap: round;
-  stroke-linejoin: round;
+.element-ui-stock-history :is(.stock-history-recorded, .stock-history-reference) {
+  fill: var(--flow-accent, var(--ui-topic));
 }
 .element-ui-stock-history .stock-history-needle { stroke-width: 3; }
 .element-ui-stock-history .stock-history-dot { fill: currentColor; }
@@ -1535,6 +1552,10 @@ body.scene-night .tree-overlay .element-ui-flow-window {
 }
 
 @media (max-width: 700px) {
+  .tree-overlay .element-ui-okno[data-chapter="photosynthesis"][data-topic="sugar"] {
+    --photosynthesis-stock-width: min(33cqi, 58px);
+  }
+
   .tree-overlay :is(.photosynthesis-title, .scene-chapter-title) {
     left: 4%;
   }

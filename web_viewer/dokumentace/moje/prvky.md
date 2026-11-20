@@ -50,7 +50,6 @@ history:
 - Při výchozí rychlosti 1× trvá automatický modelový rok 9 minut a 36 sekund. Pauza zastaví běh času a dalším stiskem jej obnoví. Volba jiné rychlosti obnoví běh zvolenou rychlostí. Opětovný stisk zpomalení vrátí 1×.
 - V Úvodu jsou tlačítka běhu času skrytá a animace běží automaticky.
 - V ostatních kapitolách jsou tlačítka viditelná a přístupná klávesnicí; fokus má viditelný obrys.
-- Ve Fotosyntéze klávesa T nebo stisknutí kruhu u okna Cukry zobrazí či skryje roční graf zásoby pod tlačítky času.
 
 [Zpět na architekturu obsahu](../architektura_obsahu.md)
 
