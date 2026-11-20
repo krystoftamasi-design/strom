@@ -1,7 +1,7 @@
 import { oknaPodleKapitol, kontextoveTexty, pruvodceTranspiraci } from './element_ui_okna_obsah.js?v=adjustable-value-1';
 import { veliciny, vstupyVzorce, ohlasitChybuOken, vyhladitHodnotu } from './element_ui_okna_veliciny.js?v=light-consumption-1';
 import { zkontrolovatOkna } from './element_ui_okna_kontrola.js?v=seeds-1';
-import { createSugarStockHistory } from './sugar_stock_history.js?v=filled-stock-2';
+import { createSugarStockHistory } from './sugar_stock_history.js?v=filled-stock-3';
 import { simulateAnnualSugarStock } from '../ekologie/rocni_zasoba_cukru.js?v=annual-stock-1';
 
 // Original embedded assets from ui_new.svg, at their exported stroke widths.
@@ -740,18 +740,14 @@ export function createTreeAnnotations({ shell, model, createSeasonControl, setEl
     chart.setAttribute('role', 'img');
     chart.setAttribute('aria-label', 'Roční průběh zásoby cukrů od ledna nahoře po směru hodin');
     chart.innerHTML = `
-      <g class="stock-history-reference">
-        <path opacity=".08"/><path opacity=".16"/><path opacity=".26"/><path opacity=".38"/><path opacity=".52"/>
-      </g>
-      <path class="stock-history-recorded"/>
+      <path class="stock-history-fill"/>
       <circle cx="50" cy="50" r="43" class="stock-history-capacity"/>
       <path class="stock-history-ticks" d="M50 2v7 M98 50h-7 M50 98v-7 M2 50h7"/>
       <line class="stock-history-needle"/>
       <circle class="stock-history-dot" r="3"/>
     `;
     sugarDial.prepend(chart);
-    const referencePaths = chart.querySelectorAll('.stock-history-reference path');
-    const recorded = chart.querySelector('.stock-history-recorded');
+    const fill = chart.querySelector('.stock-history-fill');
     const needle = chart.querySelector('.stock-history-needle');
     const dot = chart.querySelector('.stock-history-dot');
     let reference = [];
@@ -766,8 +762,7 @@ export function createTreeAnnotations({ shell, model, createSeasonControl, setEl
     };
     renderSugarHistory = () => {
       const geometry = sugarHistory.geometry(model.sugarCapacity, reference);
-      recorded.setAttribute('d', geometry?.path ?? '');
-      referencePaths.forEach((path, index) => path.setAttribute('d', geometry?.referencePaths[index] ?? ''));
+      fill.setAttribute('d', geometry?.path ?? '');
       needle.style.visibility = geometry ? 'visible' : 'hidden';
       dot.style.visibility = needle.style.visibility;
       if (!geometry) return;

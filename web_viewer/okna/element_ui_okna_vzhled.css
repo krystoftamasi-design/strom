@@ -470,7 +470,7 @@ body.scene-night .tree-overlay .element-ui-okno .ui-word {
   stroke-linecap: round;
 }
 
-.element-ui-stock-history :is(.stock-history-recorded, .stock-history-reference) {
+.element-ui-stock-history .stock-history-fill {
   fill: var(--flow-accent, var(--ui-topic));
 }
 .element-ui-stock-history .stock-history-needle { stroke-width: 3; }
