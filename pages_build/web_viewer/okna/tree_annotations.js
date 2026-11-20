@@ -720,20 +720,27 @@ export function createTreeAnnotations({ shell, model, createSeasonControl, setEl
     const dial = stock?.querySelector('.element-ui-stock-dial');
     if (!dial || !panelChapter) continue;
     const isSugar = output.dataset.stockSource === 'cukry';
+    const fillLayer = document.createElement('div');
+    fillLayer.className = 'stock-history-fill-layer';
+    fillLayer.setAttribute('aria-hidden', 'true');
+    const fillSvg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    fillSvg.classList.add('element-ui-stock-history');
+    fillSvg.setAttribute('viewBox', '0 0 100 100');
+    fillSvg.innerHTML = '<path class="stock-history-fill" fill-rule="evenodd"/>';
+    fillLayer.append(fillSvg);
     const chart = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
     chart.classList.add('element-ui-stock-history');
     chart.setAttribute('viewBox', '0 0 100 100');
     chart.setAttribute('role', 'img');
     chart.setAttribute('aria-label', `Roční průběh zásoby ${isSugar ? 'cukrů' : 'vody'} od ledna nahoře po směru hodin`);
     chart.innerHTML = `
-      <path class="stock-history-fill" fill-rule="evenodd"/>
       <circle cx="50" cy="50" r="43" class="stock-history-capacity"/>
       <path class="stock-history-ticks" d="M50 2v7 M98 50h-7 M50 98v-7 M2 50h7"/>
       <line class="stock-history-needle"/>
       <circle class="stock-history-dot" r="3"/>
     `;
-    dial.prepend(chart);
-    const fill = chart.querySelector('.stock-history-fill');
+    dial.prepend(fillLayer, chart);
+    const fill = fillSvg.querySelector('.stock-history-fill');
     const needle = chart.querySelector('.stock-history-needle');
     const dot = chart.querySelector('.stock-history-dot');
     const history = createSugarStockHistory();
@@ -762,7 +769,7 @@ export function createTreeAnnotations({ shell, model, createSeasonControl, setEl
       needle.style.visibility = geometry ? 'visible' : 'hidden';
       dot.style.visibility = needle.style.visibility;
       if (!geometry) return;
-      fill.style.setProperty('--stock-history-angle', `${geometry.angle}deg`);
+      fillLayer.style.setProperty('--stock-history-angle', `${geometry.angle}deg`);
       ['x1', 'y1', 'x2', 'y2'].forEach((key, index) => needle.setAttribute(key, geometry.needle[index]));
       dot.setAttribute('cx', geometry.dot[0]);
       dot.setAttribute('cy', geometry.dot[1]);

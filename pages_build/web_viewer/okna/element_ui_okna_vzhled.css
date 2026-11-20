@@ -470,16 +470,17 @@ body.scene-night .tree-overlay .element-ui-okno .ui-word {
   stroke-linecap: round;
 }
 
-.element-ui-stock-history .stock-history-fill {
-  fill: var(--flow-accent, var(--ui-topic));
-  -webkit-mask-origin: view-box;
-  -webkit-mask-clip: view-box;
+.stock-history-fill-layer {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
   -webkit-mask-image: conic-gradient(from var(--stock-history-angle, 0deg) at center,
     transparent 0deg 45deg, black 360deg);
-  mask-origin: view-box;
-  mask-clip: view-box;
   mask-image: conic-gradient(from var(--stock-history-angle, 0deg) at center,
     transparent 0deg 45deg, black 360deg);
+}
+.element-ui-stock-history .stock-history-fill {
+  fill: var(--flow-accent, var(--ui-topic));
 }
 .element-ui-stock-history .stock-history-needle { stroke-width: 3; }
 .element-ui-stock-history .stock-history-dot { fill: currentColor; }
