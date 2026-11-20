@@ -78,6 +78,7 @@ export function createSugarStockHistory() {
         path: `M${coordinates.join('L')}Z${innerEdge}`,
         angle: current.day / DAYS_IN_YEAR * 360,
         needle: [...dot, ...point(current.day, OUTER_RADIUS + 8)],
+        innerNeedle: [...point(current.day, INNER_RADIUS), ...dot],
         dot,
       };
     },

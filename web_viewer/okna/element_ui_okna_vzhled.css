@@ -488,6 +488,16 @@ body.scene-night .tree-overlay .element-ui-okno .ui-word {
 .element-ui-stock-history .stock-history-needle { stroke-width: 3; }
 .element-ui-stock-history .stock-history-dot { fill: currentColor; }
 
+.element-ui-stock-history .stock-history-inner-needle {
+  stroke: #e5241c;
+  stroke-width: 1.5;
+  stroke-linecap: round;
+}
+
+.stock-history-inner-needle + .stock-history-dot {
+  transform: translateY(-2px);
+}
+
 .tree-overlay .element-ui-stock-dial-clip {
   position: absolute;
   inset: 0;
