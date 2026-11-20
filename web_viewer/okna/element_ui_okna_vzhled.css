@@ -1360,7 +1360,7 @@ body.scene-night .chapter-context-guide .transpiration-legend {
 
 .tree-overlay .element-ui-okno[data-chapter="photosynthesis"][data-side="right"] {
   --photosynthesis-stock-width: min(18cqi, clamp(62px, 6.4vw, 94px));
-  --photosynthesis-stock-gap: min(3cqi, clamp(14px, 1.5vw, 24px));
+  --photosynthesis-stock-gap: min(4cqi, clamp(18px, 2vw, 32px));
   --flow-window-width: calc(100cqi - var(--photosynthesis-stock-width) - var(--photosynthesis-stock-gap) - min(2cqi, 12px));
   position: relative;
   inset: auto;
