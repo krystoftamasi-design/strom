@@ -59,7 +59,7 @@ export function createSugarStockHistory() {
       current = { date, day, grams };
       recordDay(dayIndex, day, grams);
     },
-    geometry(capacity, reference = []) {
+    geometry(capacity, reference = [], extendNeedle = false) {
       if (!current || !Number.isFinite(capacity) || capacity <= 0) return null;
       const radius = grams => INNER_RADIUS + (OUTER_RADIUS - INNER_RADIUS) * Math.max(0, Math.min(1, grams / capacity));
       if (cachedCapacity !== capacity || cachedReference !== reference) {
@@ -77,8 +77,7 @@ export function createSugarStockHistory() {
       return {
         path: `M${coordinates.join('L')}Z${innerEdge}`,
         angle: current.day / DAYS_IN_YEAR * 360,
-        needle: [...dot, ...point(current.day, OUTER_RADIUS + 8)],
-        innerNeedle: [...point(current.day, INNER_RADIUS), ...dot],
+        needle: [...(extendNeedle ? point(current.day, INNER_RADIUS) : dot), ...point(current.day, OUTER_RADIUS + 8)],
         dot,
       };
     },

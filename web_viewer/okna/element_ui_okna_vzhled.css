@@ -488,14 +488,21 @@ body.scene-night .tree-overlay .element-ui-okno .ui-word {
 .element-ui-stock-history .stock-history-needle { stroke-width: 3; }
 .element-ui-stock-history .stock-history-dot { fill: currentColor; }
 
-.element-ui-stock-history .stock-history-inner-needle {
-  stroke: #e5241c;
-  stroke-width: 1.5;
-  stroke-linecap: round;
+.element-ui-stock-dial > .element-ui-stock-history {
+  position: relative;
 }
 
-.stock-history-inner-needle + .stock-history-dot {
-  transform: translateY(-2px);
+.stock-history-seasons {
+  fill: currentColor;
+  font: 500 9px var(--ui-font-text);
+  text-anchor: middle;
+  dominant-baseline: middle;
+}
+
+.stock-history-seasons + .stock-history-dot {
+  stroke: var(--ui-ink);
+  stroke-width: 1px;
+  transform: translateY(-4px);
 }
 
 .tree-overlay .element-ui-stock-dial-clip {
@@ -1443,7 +1450,7 @@ body.scene-night .chapter-context-guide .transpiration-legend {
 
 .tree-overlay .element-ui-okno[data-chapter="photosynthesis"][data-side="left"] .element-ui-stock {
   grid-template-rows: auto auto auto;
-  gap: 3px;
+  gap: 13px;
 }
 
 .tree-overlay .element-ui-okno[data-chapter="photosynthesis"][data-side="left"] .element-ui-stock-label {

@@ -1,7 +1,7 @@
 import { oknaPodleKapitol, kontextoveTexty, pruvodceTranspiraci } from './element_ui_okna_obsah.js?v=sugar-focus-1';
 import { veliciny, vstupyVzorce, ohlasitChybuOken, vyhladitHodnotu } from './element_ui_okna_veliciny.js?v=light-consumption-1';
 import { zkontrolovatOkna } from './element_ui_okna_kontrola.js?v=seeds-1';
-import { createSugarStockHistory } from './sugar_stock_history.js?v=inner-needle-1';
+import { createSugarStockHistory } from './sugar_stock_history.js?v=stock-season-labels-1';
 import { simulateAnnualStocks } from '../ekologie/rocni_zasoba_cukru.js?v=annual-stocks-1';
 
 // Original embedded assets from ui_new.svg, at their exported stroke widths.
@@ -736,13 +736,18 @@ export function createTreeAnnotations({ shell, model, createSeasonControl, setEl
       <circle cx="50" cy="50" r="43" class="stock-history-capacity"/>
       <path class="stock-history-ticks" d="M50 2v7 M98 50h-7 M50 98v-7 M2 50h7"/>
       <line class="stock-history-needle"/>
-      ${isSugar ? '<line class="stock-history-inner-needle"/>' : ''}
+      ${isSugar ? `
+        <g class="stock-history-seasons">
+          <text x="50" y="-4">Zima</text>
+          <text transform="translate(106 50) rotate(90)">Jaro</text>
+          <text x="50" y="109">Léto</text>
+          <text transform="translate(-5 50) rotate(-90)">Podzim</text>
+        </g>` : ''}
       <circle class="stock-history-dot" r="3"/>
     `;
     dial.prepend(chart);
     const fill = chart.querySelector('.stock-history-fill');
     const needle = chart.querySelector('.stock-history-needle');
-    const innerNeedle = chart.querySelector('.stock-history-inner-needle');
     const dot = chart.querySelector('.stock-history-dot');
     const history = createSugarStockHistory();
     const referenceName = isSugar ? 'sugar' : 'water';
@@ -771,17 +776,13 @@ export function createTreeAnnotations({ shell, model, createSeasonControl, setEl
       const available = Number.isFinite(value) && Number.isFinite(capacity) && capacity > 0;
       const displayed = available ? stockNumber.format(value / (isSugar ? 1000 : 1)) : '—';
       if (output.value !== displayed) output.value = displayed;
-      const geometry = history.geometry(capacity, guide);
+      const geometry = history.geometry(capacity, guide, isSugar);
       fill.setAttribute('d', geometry?.path ?? '');
       needle.style.visibility = geometry ? 'visible' : 'hidden';
       dot.style.visibility = needle.style.visibility;
-      if (innerNeedle) innerNeedle.style.visibility = needle.style.visibility;
       if (!geometry) return;
       fill.style.setProperty('--stock-history-angle', `${geometry.angle}deg`);
       ['x1', 'y1', 'x2', 'y2'].forEach((key, index) => needle.setAttribute(key, geometry.needle[index]));
-      if (innerNeedle) {
-        ['x1', 'y1', 'x2', 'y2'].forEach((key, index) => innerNeedle.setAttribute(key, geometry.innerNeedle[index]));
-      }
       dot.setAttribute('cx', geometry.dot[0]);
       dot.setAttribute('cy', geometry.dot[1]);
     }
