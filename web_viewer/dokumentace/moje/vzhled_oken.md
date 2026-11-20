@@ -94,7 +94,7 @@ history:
 - Vzorem tematického okna je Teplota, Chlazení nebo Příjem vody; hlavní variantou je Transpirace. Společný základ tvoří barevný tah, blok údajů a samostatný detail podle pravidel výše.
 - Tematické okno má první sloupec široký podle nezalomeného nadpisu a tlačítka; detail dostává zbývající šířku po odečtení mezery. Hlavní varianta používá samostatný detail pod údaji.
 - Nadpis nebo tlačítko přepíná detail. Tlačítko je dostupné klávesnicí a oznamuje otevření. Viditelnost vzorce se řídí jeho umístěním v bloku údajů nebo v detailu. Výchozí stav určuje [Obsah oken](okna.md).
-- Samostatný průvodce kapitoly není součástí šablony okna.
+- Samostatní kontextoví průvodci sdílejí typografii. Text má v Období, Fotosyntéze a Transpiraci přibližně 19–31 px, na úzké obrazovce 16 px. Kompaktní průvodce Semenací má přibližně 12–17 px.
 - U dalšího okna určuj pouze roli, umístění, rozměry a případnou vzhledovou odlišnost; obsah patří do [Obsahu oken](okna.md).
 - Technické použití společné komponenty popisuje [Architektura oken](../system/architektura_oken.md#rozložení).
 
