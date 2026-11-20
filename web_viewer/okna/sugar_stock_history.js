@@ -13,6 +13,13 @@ function point(day, radius) {
   ];
 }
 
+function referenceStock(reference, day) {
+  const index = Math.floor(day);
+  const start = reference[index]?.start;
+  const end = reference[index + 1]?.start ?? start;
+  return start + (end - start) * (day - index);
+}
+
 function fillRun(run, radius) {
   if (run.length < 2) return '';
   const start = run[0].day;
@@ -60,9 +67,15 @@ export function createSugarStockHistory() {
       const elapsed = [];
       for (const sample of daily) {
         if (!sample.connected) {
-          const firstMissingDay = Math.floor(elapsed.at(-1)?.day ?? -1) + 1;
+          const previous = elapsed.at(-1);
+          const startDay = previous?.day ?? 0;
+          const firstMissingDay = previous ? Math.floor(startDay) + 1 : 0;
+          const startOffset = previous ? previous.grams - referenceStock(reference, startDay) : 0;
+          const endOffset = sample.grams - referenceStock(reference, sample.day);
           for (let day = firstMissingDay; day < sample.day && day < reference.length; day++) {
-            elapsed.push({ day, grams: reference[day].start });
+            const fraction = (day - startDay) / (sample.day - startDay);
+            const offset = startOffset + (endOffset - startOffset) * fraction;
+            elapsed.push({ day, grams: reference[day].start + offset });
           }
         }
         elapsed.push(sample);
