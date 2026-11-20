@@ -10,6 +10,7 @@ export function computeCanopyVisibility({ bounds, wood, leaves, samples, masks, 
   const size = high.map((v, i) => Math.ceil((v - low[i]) / cell) + 1);
   const [nx, ny, nz] = size, plane = nx * ny;
   const density = new Float32Array(plane * nz);
+  const occupied = new Uint8Array(density.length);
   const inv = 1 / cell, volume = cell ** 3;
   function deposit(x, y, z, amount) {
     const ix = Math.floor((x - low[0]) * inv), iy = Math.floor((y - low[1]) * inv), iz = Math.floor((z - low[2]) * inv);
@@ -46,11 +47,25 @@ export function computeCanopyVisibility({ bounds, wood, leaves, samples, masks, 
   }
   rasterize(wood, 9, false);
   rasterize(leaves, 16, true);
+  // Mark interpolation cells that touch at least one nonempty grid point.
+  for (let z = 0; z < nz - 1; z++) {
+    for (let y = 0; y < ny - 1; y++) {
+      const row = z * plane + y * nx;
+      for (let x = 0; x < nx - 1; x++) {
+        const i = row + x;
+        if (density[i] || density[i + 1] || density[i + nx] || density[i + nx + 1] ||
+            density[i + plane] || density[i + plane + 1] ||
+            density[i + plane + nx] || density[i + plane + nx + 1]) occupied[i] = 1;
+      }
+    }
+  }
   function sampleDensity(x, y, z) {
     const fx = (x - low[0]) * inv - 0.5, fy = (y - low[1]) * inv - 0.5, fz = (z - low[2]) * inv - 0.5;
     const ix = Math.floor(fx), iy = Math.floor(fy), iz = Math.floor(fz);
     if (ix < 0 || iy < 0 || iz < 0 || ix + 1 >= nx || iy + 1 >= ny || iz + 1 >= nz) return 0;
-    const tx = fx - ix, ty = fy - iy, tz = fz - iz, i = ix + nx * iy + plane * iz;
+    const i = ix + nx * iy + plane * iz;
+    if (!occupied[i]) return 0;
+    const tx = fx - ix, ty = fy - iy, tz = fz - iz;
     const a = density[i] * (1 - tx) + density[i + 1] * tx;
     const b = density[i + nx] * (1 - tx) + density[i + nx + 1] * tx;
     const c = density[i + plane] * (1 - tx) + density[i + plane + 1] * tx;

@@ -10,7 +10,7 @@ export const SEASONS = {
   latefall: { label: 'Zima', foliage: 0, demand: 0.04, waterSupply: 0.06, startingReserve: 0.6, color: 1, elevation: 16 }
 };
 export const MODEL_MINUTES_PER_SECOND = 24; // One displayed day (60 s) advances one model day.
-export const SUGAR_BUDBURST_COST = 14000; // g of sugar needed for a full spring canopy (Apr 25 – May 15).
+export const SUGAR_BUDBURST_COST = 14000; // g of sugar needed for a full spring canopy (Apr 25 – May 13).
 export const SUGAR_AUTUMN_RETURN = 3000; // g returned from a full canopy during leaf fall (Oct 25 – Nov 20).
 const SURPLUS_TO_STORAGE = 0.10;
 const BUDBURST_MINUTES = (BEECH_CALENDAR.fullLeaf - BEECH_CALENDAR.budburst) * 1440;
@@ -54,6 +54,8 @@ export class TreeEcology {
     this.manualWaterInputValue = 0;
     this.automaticWaterFraction = null;
     this.sugarProductionFraction = 1;
+    this.sugarProductionCap = 1;
+    this.waterAvailabilityCap = 1;
     this.sunElevation = 45;
     this.sunAzimuth = 0;
     this.dayCycleEnabled = true;
@@ -79,6 +81,7 @@ export class TreeEcology {
     this.ambientTemperature = 0;
     this.weatherTemperatureOffset = 0;
     this.activity = 0;
+    this.lightConsumption = 0;
     this.light = 0;
     this.leafArea = 0;
     this.co2Response = 1;
@@ -191,9 +194,13 @@ export class TreeEcology {
       + 0.35 * Math.sin(2 * Math.PI * weatherDay / 6.5);
     const rainFactor = clamp(1 + 0.7 * rainWave, 0.25, 1.75);
     this.seasonalWaterLimit = this.baseTranspiration * season.waterSupply;
-    this.waterInput = this.manualWaterInput && this.automaticWaterFraction === null
+    const naturalWater = this.seasonalWaterLimit * AUTOMATIC_WATER_SUPPLY_FRACTION * rainFactor * (this.automaticWaterFraction ?? 1);
+    const waterBarMax = Math.max(this.seasonalWaterLimit * 2, this.baseTranspiration * 1.015, 0.001);
+    const waterCap = clamp(this.waterAvailabilityCap, 0, 1);
+    const cappedWater = waterCap < 1 ? Math.min(naturalWater, waterBarMax * waterCap) : naturalWater;
+    this.waterInput = this.manualWaterInput && this.automaticWaterFraction === null && waterCap >= 1
       ? this.manualWaterInputValue
-      : this.seasonalWaterLimit * AUTOMATIC_WATER_SUPPLY_FRACTION * rainFactor * (this.automaticWaterFraction ?? 1);
+      : cappedWater;
     this.excessWater = Math.max(0, this.waterInput - this.seasonalWaterLimit);
     // Surplus stays outside the tree and drains gradually; sustained
     // waterlogging damages roots and reduces uptake.
@@ -247,8 +254,14 @@ export class TreeEcology {
     this.lightResponse = (this.light / (this.light + kLight)) / (1 / (1 + kLight));
     // Active leaf area reflects attached non-red leaves; leafGrowth multiplies the formula outside.
     this.activeLeafArea = this.leafArea * clamp(this.photosyntheticFoliage, 0, 1);
-    this.photosynthesisEfficiency = vypocitatVzorec('photosynthesisEfficiency', this) * this.sugarProductionFraction;
-    this.activity = vypocitatVzorec('activity', this) * this.sugarProductionFraction;
+    const baseEfficiency = vypocitatVzorec('photosynthesisEfficiency', this) * this.sugarProductionFraction;
+    const baseActivity = vypocitatVzorec('activity', this) * this.sugarProductionFraction;
+    const naturalGlucose = this.activeLeafArea * clamp(this.leafGrowth, 0, 1) * baseEfficiency * konstanty.glucoseConversion;
+    const capGlucose = clamp(this.sugarProductionCap, 0, 1) * Math.max(this.maxGlucoseGramsPerMinute, 0.0001);
+    const capScale = naturalGlucose > capGlucose && naturalGlucose > 0 ? capGlucose / naturalGlucose : 1;
+    this.photosynthesisEfficiency = baseEfficiency * capScale;
+    this.activity = baseActivity * capScale;
+    this.lightConsumption = vypocitatVzorec('lightConsumption', this);
     // 8 µmol CO₂/m²/s, six CO₂ per glucose; show glucose equivalent, not storage.
     this.glucoseGramsPerMinute = vypocitatVzorec('glucoseGramsPerMinute', this);
     this.oxygenGramsPerMinute = vypocitatVzorec('oxygenGramsPerMinute', this);
@@ -256,9 +269,7 @@ export class TreeEcology {
     // Illustrative whole-tree maintenance respiration: bare dormant trees use 20% of full-canopy rate.
     this.respirationFraction = 0.15 * Math.pow(2, (clamp(this.ambientTemperature, -10, 40) - 20) / 10)
       * (0.2 + 0.8 * effectiveFoliage);
-    this.respirationSugar = this.leafArea * konstanty.glucoseConversion * this.respirationFraction;
-    this.respirationOxygen = this.respirationSugar * konstanty.oxygenPerGlucose;
-    this.respirationCO2 = this.leafArea * konstanty.co2Conversion * this.respirationFraction;
+    const demandedRespiration = this.leafArea * konstanty.glucoseConversion * this.respirationFraction;
     this.budburstRate = dayOfYear >= BEECH_CALENDAR.budburst && dayOfYear < BEECH_CALENDAR.fullLeaf
       ? this.canopyLimit * SUGAR_BUDBURST_COST / BUDBURST_MINUTES
       : 0;
@@ -266,6 +277,11 @@ export class TreeEcology {
       ? this.canopyLimit * (1 - clamp(this.droughtFall, 0, 1)) * SUGAR_AUTUMN_RETURN / AUTUMN_RETURN_MINUTES
       : 0;
     this.totalSugarProduction = this.glucoseGramsPerMinute + this.autumnReturnRate;
+    this.respirationSugar = this.sugarReserve > 0
+      ? demandedRespiration
+      : Math.min(demandedRespiration, this.totalSugarProduction);
+    this.respirationOxygen = this.respirationSugar * konstanty.oxygenPerGlucose;
+    this.respirationCO2 = this.respirationSugar * (konstanty.co2Conversion / konstanty.glucoseConversion);
     this.totalSugarConsumption = this.respirationSugar + this.budburstRate;
     return this;
   }
@@ -283,6 +299,8 @@ export class TreeEcology {
       const dayEfficiency = meanLightResponse * this.hydration * this.co2Response
         * meanTempFactor * this.sugarProductionFraction;
       meanGlucose = 0.5 * this.activeLeafArea * clamp(this.leafGrowth, 0, 1) * dayEfficiency * konstanty.glucoseConversion;
+      const capGlucose = clamp(this.sugarProductionCap, 0, 1) * Math.max(this.maxGlucoseGramsPerMinute, 0.0001);
+      meanGlucose = Math.min(meanGlucose, capGlucose);
       const effectiveFoliage = clamp(this.activeFoliage, 0, 1) * clamp(this.leafGrowth, 0, 1);
       const meanRespFrac = 0.15 * Math.pow(2, (clamp(meanTemp, -10, 40) - 20) / 10) * (0.2 + 0.8 * effectiveFoliage);
       meanRespiration = this.leafArea * konstanty.glucoseConversion * meanRespFrac;

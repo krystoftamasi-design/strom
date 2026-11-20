@@ -45,7 +45,7 @@ export function createIntroForest({ scene, camera, controls, sun, getHeight, inv
           position: camera.position.clone(), target: controls.target.clone(), far: camera.far, maxDistance: controls.maxDistance,
           shadow: Object.fromEntries(['near', 'far', 'left', 'right', 'top', 'bottom'].map(key => [key, shadow[key]]))
         };
-        Object.assign(shadow, { near: 1, far: 260, left: -90, right: 90, top: 85, bottom: -85 });
+        Object.assign(shadow, { near: 20, far: 180, left: -24, right: 24, top: 28, bottom: -20 });
         shadow.updateProjectionMatrix();
         fit();
       } else if (snapshot) {

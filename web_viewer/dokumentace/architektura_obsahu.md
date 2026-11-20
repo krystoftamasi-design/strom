@@ -42,10 +42,11 @@ history:
 ### Text
 
 - [Datum](moje/texty.md#datum)
+- [Fotosyntéza](moje/texty.md#fotosyntéza)
 
 ### Okna
 
-- [Fotosyntéza](moje/okna.md#fotosyntéza)
+- [Světlo](moje/okna.md#světlo)
 - [O₂](moje/okna.md#o₂)
 - [CO₂](moje/okna.md#co₂)
 - [Cukry](moje/okna.md#cukry)

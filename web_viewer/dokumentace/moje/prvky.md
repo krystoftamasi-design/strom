@@ -21,7 +21,7 @@ history:
 
 - Vodorovná textová navigace vlevo nahoře podle [Untitled.svg](../../web_assets/ui_from_af/Untitled.svg).
 - V kapitolách začíná menu u levého okraje nad okny; v Úvodu zůstává vpravo uprostřed výšky obrazovky. Na úzké obrazovce se položky zalamují.
-- Pořadí: Období, Fotosyntéza, Transpirace, Semenace, Kořeny.
+- Pořadí: Období, Fotosyntéza, Transpirace, Semenace. Kořeny jsou dočasně skryté.
 - Průvodce Transpirací výslovně pojmenovává aktuální kapitolu.
 - Aktivní kapitola i položka pod kurzorem jsou zvýrazněny pouze tučným písmem bez podtržení. Šířka počítá s tučným písmem předem; přechod řezu trvá 300 ms a při omezení pohybu je vypnutý. Položky nemají viditelnou výplň ani rámeček; fokus je viditelný.
 - Písmo: Satoshi; v podkladu přibližně 21 px.
@@ -30,7 +30,7 @@ history:
 #### Přiblížení stromu
 
 - Nejmenší vzdálenost kamery od cíle otáčení je 17 jednotek scény; hodnotu lze doladit po vizuálním ověření.
-- Pohled kamery je posunutý o 2 % šířky obrazovky doleva při zachování osy otáčení v kmeni.
+- Pohled kamery je vystředěný na osu stromu (0 % vodorovného posunu) při zachování osy otáčení v kmeni.
 
 #### Kruh ročních období
 
@@ -45,14 +45,11 @@ history:
 
 #### Ovládání času
 
-- Před datem vlevo dole jsou zleva tlačítka zpomalení 0,5×, pauzy, zrychlení a resetu. Opakovaným kliknutím na zrychlení se postupně nastaví rychlost 2×, 4× a běžná rychlost. Tlačítko resetu obnoví výchozí zdravý stav stromu (plnou korunu, zásoby, automatické přísuny a rychlost 1×) a přepne na léto. Mají 48 × 48 px, ikony 28 × 28 px a v aktivním stavu kruhový obrys. Panel je bez výplně a barva ovládání se přizpůsobuje dni a noci.
+- V Období a Fotosyntéze jsou datum a tlačítka pod průvodcem: datum nahoře, tlačítka pod ním. Obě kapitoly používají stejné rozměry a umístění včetně úzké obrazovky.
+- Tlačítka jsou zleva zpomalení 0,5×, pauza, zrychlení a reset. Opakovaným kliknutím na zrychlení se postupně nastaví rychlost 2×, 4× a běžná rychlost. Tlačítko resetu obnoví výchozí zdravý stav stromu (plnou korunu, zásoby, automatické přísuny a rychlost 1×) a přepne na léto. V ostatních kapitolách mají tlačítka 48 × 48 px a ikony 28 × 28 px; v aktivním stavu mají kruhový obrys. Panel je bez výplně a barva ovládání se přizpůsobuje dni a noci.
 - Při výchozí rychlosti 1× trvá automatický modelový rok 9 minut a 36 sekund. Pauza zastaví běh času a dalším stiskem jej obnoví. Volba jiné rychlosti obnoví běh zvolenou rychlostí. Opětovný stisk zpomalení vrátí 1×.
 - V Úvodu jsou tlačítka běhu času skrytá a animace běží automaticky.
 - V ostatních kapitolách jsou tlačítka viditelná a přístupná klávesnicí; fokus má viditelný obrys.
-
-#### Kruhové ukazatele zásob
-
-- Ve Fotosyntéze klávesa T zapíná a vypíná režim kruhových zásob. V tomto režimu pruh zásoby cukrů ovládá produkci a pruh zásoby vody dostupnost. Posuvníky nastavují 0 až 100 % aktuální hodnoty podle simulace a oba začínají na 100 %. Zásoby se zobrazují v kruzích pod ovládáním času. Po vypnutí režimu nebo odchodu z kapitoly se obnoví běžné ovládání simulace.
 
 [Zpět na architekturu obsahu](../architektura_obsahu.md)
 

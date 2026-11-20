@@ -33,8 +33,8 @@ history:
 ### Vzorec: `světlo × voda × (listy / max. listy) × CO₂ × teplota`
 
 - Téma: světlo; strana: vpravo; tematické okno.
-- Detailní text: „Listy využívají světlo podle dostupnosti vody a dalších podmínek.“
-- Aktivita: aktivita fotosyntézy v procentech.
+- Detailní text: „Odhad využití světla.“
+- Spotřeba: dostupnost světla × aktivita fotosyntézy, na stejné procentní škále jako dostupnost.
 - Dostupnost: intenzita světla modelu v procentech, nezávislá na vodě.
 - Vstupy výpočtu: zapnuté.
 - Výsledná hodnota: zapnutá.
@@ -48,7 +48,7 @@ history:
 
 - Nadpis: `O₂`.
 - Téma: kyslík; strana: vpravo.
-- Detailní text: „Fotosyntéza uvolňuje O₂. Dýchání ho spotřebovává v odhadovaném množství.“
+- Detailní text: „Fotosyntéza O₂ uvolňuje, dýchání spotřebovává.“
 - Zobrazení vzorce: .
 - Vstupy výpočtu: `Světlo × voda × listy × CO₂ × teplota`.
 - Hodnota: produkce O₂ v `g/min`, zobrazena na jedno desetinné místo.
@@ -64,7 +64,7 @@ history:
 
 - Nadpis: `CO₂`.
 - Téma: CO₂; strana: vpravo.
-- Detailní text: „Fotosyntéza přijímá CO₂. Dýchání ho uvolňuje v odhadovaném množství.“
+- Detailní text: „Fotosyntéza CO₂ přijímá, dýchání uvolňuje.“
 - Zobrazení vzorce: .
 - Vstupy výpočtu: `Světlo × voda × listy × CO₂ × teplota`.
 - Hodnota: spotřeba CO₂ v `g/min`, zobrazena na jedno desetinné místo.
@@ -81,9 +81,9 @@ history:
 - Nadpis: `Cukry`.
 - Téma: cukry; strana: vpravo.
 - Popisek: „Tvorba cukrů ≈ glukóza“.
-- Detailní text: „Při rašení se do spotřeby počítá růst listů. Na podzim se k produkci přičítají cukry přesunuté z listů do zásoby.“
-- Produkce a spotřeba se zobrazují v `g/min` na jedno desetinné místo. Sezónní přírůstky vycházejí ze [společné bilance cukrů](#kapitola-prototyp).
-- Zásoba: aktuální výukový odhad v kilogramech podle [společné bilance cukrů](#kapitola-prototyp). Kruhový ukazatel vpravo ukazuje podíl na nastavené kapacitě zleva doprava.
+- Detailní text: „Rašení čerpá cukry. Na podzim se část vrací z listů.“
+- Produkce a spotřeba se zobrazují v `g/min` na jedno desetinné místo. Sezónní přírůstky vycházejí ze [společné bilance cukrů](#společná-bilance-cukrů).
+- Zásoba: aktuální výukový odhad v kilogramech podle [společné bilance cukrů](#společná-bilance-cukrů). Kruhový ukazatel vpravo ukazuje podíl na nastavené kapacitě zleva doprava.
 - Ovládání: červený pohyblivý konec horního pruhu funguje jako horní zarážka (strop) — produkci cukrů omezuje až od chvíle, kdy se dotkne barevného pruhu a zatlačí jej zpět; nad aktuální hodnotou produkci nemění.
 - Při automatickém běhu roku určuje dostupná zásoba, kolik jarního růstu může strom pokrýt. Když cukry nestačí, doroste menší listová plocha, která sníží tvorbu cukrů. Zmenšená plocha přetrvá do dalšího rašení. Jde o výukové znázornění oslabení.
 - Zobrazení vzorce: .
@@ -101,7 +101,7 @@ history:
 
 - Nadpis: `Voda`.
 - Téma: voda; strana: vpravo.
-- Detailní text: „Voda zavodňuje listy a jejím odparem se koruna ochlazuje.“
+- Detailní text: „Odpar vody ochlazuje korunu.“
 - Zobrazení vzorce: .
 - Vstup výpočtu: `voda`.
 - Hodnota: spotřeba vody v `l/h`, zobrazena na jedno desetinné místo.
@@ -228,7 +228,7 @@ history:
 
 ## Kapitola Období
 
-- Průvodce popisuje proměnu koruny buku během roku od jarního rašení až po přezimování pupenů. Roční období se mění kruhem u stromu. Pauza a rychlost dole u data řídí společně kalendář, slunce a zásoby. Každý měsíc běží při rychlosti 1× 24 sekund od úsvitu do dalšího úsvitu, z toho 20 sekund den a 4 sekundy noc. Obě části odpovídají 12 modelovým hodinám. Při ručním otáčení kruhem se poloha slunce a denní doba drží a po ukončení posunu plynule navážou od stejné hodiny. Přeskočený čas nepřidává vodě další spotřebu. Zásoba cukrů se dopočítá mezi oběma daty podle roční bilance a aktuálního nastavení produkce.
+- Průvodce popisuje proměnu koruny buku během roku od jarního rašení až po přezimování pupenů. Roční období se mění kruhem u stromu. Pauza a rychlost dole u data řídí společně kalendář, slunce a zásoby. Při rychlosti 1× trvá jeden měsíc zhruba 53 sekund od úsvitu do úsvitu. Noc trvá 2 sekundy a den zbytek. Den i noc stále představují po 12 hodinách modelového slunečního cyklu. Výpočty zásob se řídí uplynulým kalendářním časem. Při ručním otáčení kruhem se poloha slunce a denní doba drží a po ukončení posunu plynule navážou od stejné hodiny. Přeskočený čas nepřidává vodě další spotřebu. Zásoba cukrů se dopočítá mezi oběma daty podle roční bilance a aktuálního nastavení produkce.
 
 ### Společná pravidla Fotosyntézy
 
@@ -239,11 +239,11 @@ history:
 - Červený pohyblivý konec u Cukrů a Vody funguje jako horní zarážka na škále pruhu (0 až 100 %): dokud se nedotkne barevného pruhu, přirozenou hodnotu nemění; jakmile se jej dotkne, táhne jej s sebou a zastropuje produkci cukrů, resp. automatický přísun vody (ten v průměru činí 90 % sezónní kapacity příjmu a v čase plynule kolísá kolem tohoto průměru jako simulace vlhčích a sušších dnů). Nastavení přetrvá při automatickém běhu. Příjem stromu omezuje sezónní kapacita a stav kořenů.
 - Ukazatel dostupnosti světla nastavuje přes den intenzitu v rozsahu 0 až 100 %. Ovlivňuje tvorbu cukrů i emisi fotonů. V noci je dostupnost nulová a posuvník se zamkne. Nastavená hodnota se obnoví po východu slunce. Ruční změna období vrátí automatickou dostupnost podle slunce.
 - Ukazatele fotosyntetických toků používají maximum modelu pro plnou korunu a plnou účinnost; ukazatel spotřeby vody používá základní odpar včetně udržovací spotřeby. Rozsah dostupnosti vody sahá ke dvojnásobku sezónní kapacity kořenů, případně k aktuálně nastavenému přísunu, je-li vyšší.
-- Dýchání je orientační výukový odhad celého stromu, probíhá ve dne i v noci a jeho ukazatele používají stejné škály jako odpovídající fotosyntetické toky. Při 20 °C a plné koruně je zvolená spotřeba cukru 15 % teoretické produkce plné koruny; bez listů klesá na 20 % a každých 10 °C ji zdvojnásobí nebo sníží na polovinu (teplota je omezena na −10 až 40 °C). Hodnoty O₂ a CO₂ vycházejí ze vztahu glukóza + 6 O₂ → 6 CO₂ + voda. Jde o zvolený příklad, nikoli kalibraci nebo měření buku. Okamžitý odhad dýchání se počítá nezávisle na velikosti zásoby cukrů. Teplotní závislost udržovacího dýchání je inspirována [modelem GO+](https://gmd.copernicus.org/articles/13/5973/2020/).
+- Dýchání je orientační výukový odhad celého stromu, probíhá ve dne i v noci a jeho ukazatele používají stejné škály jako odpovídající fotosyntetické toky. Při 20 °C a plné koruně je zvolená spotřeba cukru 15 % teoretické produkce plné koruny; bez listů klesá na 20 % a každých 10 °C ji zdvojnásobí nebo sníží na polovinu (teplota je omezena na −10 až 40 °C). Hodnoty O₂ a CO₂ vycházejí ze vztahu glukóza + 6 O₂ → 6 CO₂ + voda. Jde o zvolený příklad, nikoli kalibraci nebo měření buku. Při vyčerpané zásobě cukrů (0 kg) se dýchání omezí nejvýše na aktuální produkci cukrů (v zimě na 0). Teplotní závislost udržovacího dýchání je inspirována [modelem GO+](https://gmd.copernicus.org/articles/13/5973/2020/).
 
-## Kapitola Prototyp
+### Společná bilance cukrů
 
-Tři zkušební varianty ukazují společnou zásobu cukrů v kilogramech (výchozí maximum 40 kg, nastavitelné nad ukazateli). Zásoba se počítá průběžně stejně jako zásoba vody z denního průměru bilance: při kladné bilanci se ukládá 10 % přebytku (u oslabené neplné koruny až 25 %, protože strom šetří na růstu dřeva a přednostně doplňuje zásoby), při záporné se čerpá 100 % rozdílu. Na začátku jarního rašení (25. dubna) určí dostupná zásoba cukrů i zavodnění stromu podíl vyrašené koruny (pro 100 % koruny je potřeba 14 kg cukrů a plné zavodnění) a odpovídající spotřeba cukrů se plynule rozloží po celou dobu rašení (25. dubna – 13. května, 18 dní) ve stejných jednotkách `g/min` jako dýchání. Při podzimním opadu (25. října – 20. listopadu) se plynule vrací až 3 kg cukrů úměrně listům, které na stromě zůstaly před opadem, a přičítají se k produkci v `g/min`. Při ručním posunu data dopředu se přičte aktuální denní bilance za přeskočené dny (a případný podíl rašení); pohyb zpět zásobu nemění. Zvolené limity jsou výukové parametry. [Měření rašení u buku](https://pubmed.ncbi.nlm.nih.gov/27126226/) dokládá výraznou spotřebu škrobu ve větvičkách. [Značení uhlíku u buku](https://nph.onlinelibrary.wiley.com/doi/10.1111/nph.14124) dokládá přenos z listů do zásobních orgánů před opadem.
+Výchozí kapacita zásoby cukrů je 40 kg. Zásoba se počítá průběžně stejně jako zásoba vody z denního průměru bilance: při kladné bilanci se ukládá 10 % přebytku (u oslabené neplné koruny až 25 %, protože strom šetří na růstu dřeva a přednostně doplňuje zásoby), při záporné se čerpá 100 % rozdílu. Na začátku jarního rašení (25. dubna) určí dostupná zásoba cukrů i zavodnění stromu podíl vyrašené koruny (pro 100 % koruny je potřeba 14 kg cukrů a plné zavodnění) a odpovídající spotřeba cukrů se plynule rozloží po celou dobu rašení (25. dubna – 13. května, 18 dní) ve stejných jednotkách `g/min` jako dýchání. Při podzimním opadu (25. října – 20. listopadu) se plynule vrací až 3 kg cukrů úměrně listům, které na stromě zůstaly před opadem, a přičítají se k produkci v `g/min`. Při ručním posunu data dopředu se přičte aktuální denní bilance za přeskočené dny (a případný podíl rašení); pohyb zpět zásobu nemění. Zvolené limity jsou výukové parametry. [Měření rašení u buku](https://pubmed.ncbi.nlm.nih.gov/27126226/) dokládá výraznou spotřebu škrobu ve větvičkách. [Značení uhlíku u buku](https://nph.onlinelibrary.wiley.com/doi/10.1111/nph.14124) dokládá přenos z listů do zásobních orgánů před opadem.
 
 ## Související dokumenty
 

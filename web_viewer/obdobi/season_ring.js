@@ -4,7 +4,7 @@ import { createSeasonTimeline } from './season_timeline.js?v=photosynthesis-summ
 const SEASONS = ['spring', 'summer', 'autumn', 'latefall'];
 const LABELS = ['JARO', 'LÉTO', 'PODZIM', 'ZIMA'];
 const QUARTER = Math.PI / 2;
-const RING_MARKER_X = 0.48;
+const RING_MARKER_X = 0.5;
 const angleDifference = value => Math.atan2(Math.sin(value), Math.cos(value));
 
 export function createSeasonRing({ scene, camera, controls, canvas, model }) {
@@ -18,7 +18,9 @@ export function createSeasonRing({ scene, camera, controls, canvas, model }) {
   const timeline = createSeasonTimeline(model);
   const centerTick = document.createElement('span');
   centerTick.className = 'season-center-tick';
-  centerTick.style.left = `${RING_MARKER_X * 100}%`;
+  const markerPosition = `${RING_MARKER_X * 100}%`;
+  centerTick.style.left = markerPosition;
+  document.documentElement.style.setProperty('--season-ring-marker-x', markerPosition);
   centerTick.hidden = true;
   centerTick.setAttribute('aria-hidden', 'true');
   document.querySelector('.chapter-panel').append(centerTick);
@@ -139,7 +141,7 @@ export function createSeasonRing({ scene, camera, controls, canvas, model }) {
   const labels = [];
   let lightInk = false;
   let activeSeason = model.season;
-  const labelWidth = 768, labelHeight = 192, labelResolution = 2;
+  const labelWidth = 768, labelHeight = 192, labelResolution = 1;
   for (let i = 0; i < SEASONS.length; i++) {
     const image = document.createElement('canvas');
     image.width = labelWidth * labelResolution;
@@ -148,7 +150,7 @@ export function createSeasonRing({ scene, camera, controls, canvas, model }) {
     texture.colorSpace = THREE.SRGBColorSpace;
     texture.minFilter = THREE.LinearMipmapLinearFilter;
     texture.magFilter = THREE.LinearFilter;
-    texture.anisotropy = 8;
+    texture.anisotropy = 4;
     const label = new THREE.Mesh(new THREE.PlaneGeometry(5.2, 1.3), new THREE.MeshBasicMaterial({
       map: texture, color: 0xffffff, transparent: true, opacity: 1,
       side: THREE.DoubleSide, depthWrite: false,
@@ -189,9 +191,14 @@ export function createSeasonRing({ scene, camera, controls, canvas, model }) {
   let suppressClick = false;
   let wheelRemaining = 0;
   let lastUpdate = performance.now();
+  let canvasBox = null;
+  const activeTouchPointers = new Set();
+  const invalidateCanvasBox = () => { canvasBox = null; };
+  window.addEventListener('resize', invalidateCanvasBox, { passive: true });
+  window.addEventListener('orientationchange', invalidateCanvasBox, { passive: true });
   const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
   function hit(event, anywhere = false) {
-    const box = canvas.getBoundingClientRect();
+    const box = canvasBox || (canvasBox = canvas.getBoundingClientRect());
     pointer.set((event.clientX - box.left) / box.width * 2 - 1, -(event.clientY - box.top) / box.height * 2 + 1);
     raycaster.setFromCamera(pointer, camera);
     if (!raycaster.ray.intersectPlane(plane, point)) return null;
@@ -204,7 +211,23 @@ export function createSeasonRing({ scene, camera, controls, canvas, model }) {
     if (Math.abs(Math.hypot(point.x, point.z) - radius) < 2.2) return { angle };
     return null;
   }
+  function cancelRingDrag() {
+    if (!drag) return;
+    const previous = drag;
+    drag = null;
+    controls.enabled = previous.previousControls;
+    if (canvas.hasPointerCapture(previous.pointerId)) canvas.releasePointerCapture(previous.pointerId);
+    canvas.style.cursor = '';
+  }
   canvas.addEventListener('pointerdown', event => {
+    if (event.pointerType === 'touch') {
+      activeTouchPointers.add(event.pointerId);
+      // Let two-finger pinch-zoom pass straight through to OrbitControls.
+      if (activeTouchPointers.size > 1) {
+        cancelRingDrag();
+        return;
+      }
+    }
     if (!group.visible || !interactive || event.button !== 0) return;
     const target = hit(event);
     if (!target) return;
@@ -219,7 +242,11 @@ export function createSeasonRing({ scene, camera, controls, canvas, model }) {
   }, true);
   canvas.addEventListener('pointermove', event => {
     if (!group.visible || !interactive) { canvas.style.cursor = ''; return; }
-    if (!drag) { canvas.style.cursor = hit(event) ? 'grab' : ''; return; }
+    if (!drag) {
+      if (event.pointerType === 'touch') return;
+      canvas.style.cursor = hit(event) ? 'grab' : '';
+      return;
+    }
     if (event.pointerId !== drag.pointerId) return;
     event.preventDefault();
     event.stopImmediatePropagation();
@@ -232,6 +259,7 @@ export function createSeasonRing({ scene, camera, controls, canvas, model }) {
     group.rotation.y = rotationForDate(timeline.position);
   }, true);
   function finish(event) {
+    if (event.pointerType === 'touch') activeTouchPointers.delete(event.pointerId);
     if (!drag || event.pointerId !== drag.pointerId) return;
     event.stopImmediatePropagation();
     const previous = drag;
@@ -245,7 +273,7 @@ export function createSeasonRing({ scene, camera, controls, canvas, model }) {
       timeline.moveTo(next);
     }
     suppressClick = true;
-    canvas.style.cursor = 'grab';
+    canvas.style.cursor = event.pointerType === 'touch' ? '' : 'grab';
   }
   canvas.addEventListener('pointerup', finish, true);
   canvas.addEventListener('pointercancel', finish, true);
@@ -254,7 +282,7 @@ export function createSeasonRing({ scene, camera, controls, canvas, model }) {
     if (suppressClick) { event.stopImmediatePropagation(); suppressClick = false; }
   }, true);
   canvas.addEventListener('wheel', event => {
-    if (!group.visible || !interactive || !hit(event)) return;
+    if (event.ctrlKey || !group.visible || !interactive || !hit(event)) return;
     event.preventDefault();
     event.stopImmediatePropagation();
     const delta = Math.abs(event.deltaY);

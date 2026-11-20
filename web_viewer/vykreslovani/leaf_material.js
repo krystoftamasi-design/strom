@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { leafFallDeclarations } from '../listy/leaf_fall.js?v=opt-age-1';
+import { leafFallDeclarations } from '../listy/leaf_fall.js?v=airborne-contour-1';
 
 function createStableBrushAlpha(image, type, edgeTransition = 0) {
   // Bake stochastic coverage in leaf UV space once, then filter it with mipmaps.
@@ -30,9 +30,12 @@ function createStableBrushAlpha(image, type, edgeTransition = 0) {
   let seed = 0x59e247c1;
   for (let i = 0; i < size * size; i++) {
     seed ^= seed << 13; seed ^= seed >>> 17; seed ^= seed << 5;
-    const coverage = rgba[i * 4 + 3] / 255;
-    const covered = coverage >= (seed >>> 0) / 4294967296 ? 255 : 0;
-    pixels.set([255, 255, 255, covered], i * 4);
+    const p = i * 4;
+    const coverage = rgba[p + 3] / 255;
+    pixels[p] = 255;
+    pixels[p + 1] = 255;
+    pixels[p + 2] = 255;
+    pixels[p + 3] = coverage >= (seed >>> 0) / 4294967296 ? 255 : 0;
   }
   const texture = new THREE.DataTexture(pixels, size, size, THREE.RGBAFormat);
   texture.generateMipmaps = true;
@@ -224,6 +227,7 @@ const alphaDeclarations = `
   uniform float uLeafDepth;
   varying vec2 vLeafUv;
   varying float vLeafFallProgress;
+  varying float vLeafAirborne;
 `;
 const alphaFragment = `
   if (vLeafFallProgress >= 0.999) discard;
@@ -234,14 +238,23 @@ const alphaFragment = `
     // Below 0.125, 4x MSAA alpha-to-coverage turns on 0/4 samples (invisible),
     // so discard immediately before sampling diffuse/procedural/3D LUT textures.
     float stableCoverage = clamp(texture2D(uStableLeafAlpha, vLeafUv).a * uLeafAlphaStrength * leafFade, 0.0, 1.0);
-    if (stableCoverage < 0.12) discard;
-    diffuseColor.a = stableCoverage >= 0.88 ? 1.0 : stableCoverage;
+    if (vLeafAirborne > 0.5) {
+      // A moving, edge-on leaf can lose all samples with alpha-to-coverage;
+      // keep using the verified 512x512 POT brush mask with opaque alpha.
+      if (stableCoverage < 0.5) discard;
+      diffuseColor.a = 1.0;
+    } else {
+      if (stableCoverage < 0.12) discard;
+      diffuseColor.a = stableCoverage >= 0.88 ? 1.0 : stableCoverage;
+    }
   } else {
     float leafCoverage = texture2D(uLeafAlpha, vLeafUv).a;
     // Only Material.005 has an alpha ramp. Material.003 uses image alpha directly.
     if (uLeafType > 0.5) leafCoverage = clamp((leafCoverage - 0.6145453453) / (1.0 - 0.6145453453), 0.0, 1.0);
     leafCoverage = clamp(leafCoverage * uLeafAlphaStrength * leafFade, 0.0, 1.0);
-    if (uLeafDepth > 0.5 || uAlphaMode <= 0.5) {
+    // A moving, edge-on leaf can lose all samples with alpha-to-coverage.
+    // Use the opaque silhouette during flight, including on mobile GPUs.
+    if (uLeafDepth > 0.5 || uAlphaMode <= 0.5 || vLeafAirborne > 0.5) {
       // Shadow maps are not multisampled: use a stable contour, never dithering.
       if (leafCoverage < 0.5) discard;
       diffuseColor.a = 1.0;
@@ -373,7 +386,7 @@ export function createLeafMaterial(type, reference, uniforms) {
   const mat = new THREE.MeshLambertMaterial({ color: 0xffffff, side: THREE.DoubleSide, alphaToCoverage: uniforms.uAlphaMode.value > 0.5, depthWrite: true });
   mat.name = type === 0 ? 'Material.003 (Blender reference)' : 'Material.005 (Blender reference)';
   mat.toneMapped = false; // Blender's saved AgX High Contrast transform is applied with a LUT.
-  mat.customProgramCacheKey = () => `reference_leaf_${type}_opt_v4_${reference.display3D ? '3d' : '2d'}`;
+  mat.customProgramCacheKey = () => `reference_leaf_${type}_opt_v5_${reference.display3D ? '3d' : '2d'}`;
   const yellowChroma = type === 0 ? rgbChroma(0.78, 0.60, 0.055) : rgbChroma(0.84, 0.54, 0.035);
   const redChroma = type === 0 ? rgbChroma(0.8589947224, 0.0204435382, 0.0008851319) : rgbChroma(0.8589913845, 0.0085899057, 0.0085899057);
   mat.onBeforeCompile = (shader, renderer) => {
@@ -407,8 +420,9 @@ export function createLeafMaterial(type, reference, uniforms) {
       attribute vec2 referenceUv; attribute vec4 leafSeasonData;
       attribute float leafGrowthRank; uniform float uLeafCoverage;
       uniform vec4 uLeafSourceAtlas; uniform vec4 uLeafDetailAtlas;
+      uniform vec3 uSunDirection;
       uniform float uLeafGrowth; uniform float uSeasonOffset; uniform float uDryingSpeed; uniform float uYellowPhaseWidth; uniform float uDryingSharpness; uniform float uDryingFrontWidth;
-      varying vec2 vReferenceUv; varying vec3 vLeafPhase;
+      varying vec2 vReferenceUv; varying vec3 vLeafPhase; varying vec3 vTransmittedSunDir;
       vec2 leafDetailUv(vec2 originalUv) {
         vec2 sourcePixel = vec2(originalUv.x, 1.0-originalUv.y) * uLeafSourceAtlas.x;
         vec2 sourceTile = floor(sourcePixel / uLeafSourceAtlas.y);
@@ -421,7 +435,8 @@ export function createLeafMaterial(type, reference, uniforms) {
       }\n` + shader.vertexShader.replace(
       '#include <begin_vertex>', `#include <begin_vertex>
         vReferenceUv = leafDetailUv(referenceUv);
-        float _sp = clamp(uSeasonOffset / 0.44 + 0.5, 0.0, 1.0);
+        vTransmittedSunDir = normalize((viewMatrix * vec4(uSunDirection, 0.0)).xyz);
+        float _sp = _fallAge > 0.0 ? 1.0 : clamp(uSeasonOffset / 0.44 + 0.5, 0.0, 1.0);
         float _sd = clamp(leafSeasonData.w, 0.0, 0.40);
         float _dsp = clamp((_sp - _sd) / max(0.001, 1.0 - _sd), 0.0, 1.0);
         float _sharp = clamp(uDryingSharpness, 0.0, 1.0);
@@ -449,7 +464,7 @@ export function createLeafMaterial(type, reference, uniforms) {
       uniform vec3 uLeafRandom; uniform vec3 uYellowChroma; uniform vec3 uRedChroma;
       uniform vec3 uSunDirection; uniform float uSunIntensity;
       uniform float uRampThreshold; uniform float uToonSteps;
-      varying vec2 vReferenceUv; varying vec3 vLeafPhase;\n` + shader.fragmentShader;
+      varying vec2 vReferenceUv; varying vec3 vLeafPhase; varying vec3 vTransmittedSunDir;\n` + shader.fragmentShader;
     // Inject after <common>, where Three's color conversion functions are already declared.
     shader.fragmentShader = shader.fragmentShader.replace('#include <common>', '#include <common>\n' + (use3D ? colorFunctions3D : colorFunctions2D));
     shader.fragmentShader = shader.fragmentShader.replace('#include <color_fragment>', `
@@ -512,7 +527,7 @@ export function createLeafMaterial(type, reference, uniforms) {
         // Thin leaves transmit a little sunlight towards their shaded side.
         // Match normal/view coordinates and attenuate leaves deep in the crown.
         if (uSunIntensity > 0.0001 && ramp > 0.0001) {
-          vec3 transmittedSunDirection = normalize((viewMatrix * vec4(uSunDirection, 0.0)).xyz);
+          vec3 transmittedSunDirection = normalize(vTransmittedSunDir);
           float backlit = max(dot(-nNorm, transmittedSunDirection), 0.0);
           float towardsSun = pow(max(dot(-geometryViewDir, transmittedSunDirection), 0.0), 3.0);
           float crownTransmission = mix(0.15, 1.0, clamp(vCanopyVisibility, 0.0, 1.0));

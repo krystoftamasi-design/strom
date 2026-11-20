@@ -1,10 +1,10 @@
-import { zobrazitHodnotu, vyhladitHodnotu } from '../okna/element_ui_okna_veliciny.js?v=affinity-windows-layout-2';
-import { SEASONS } from '../ekologie/tree_ecology.js?v=calendar-water-1';
-import { createTreeAnnotations } from '../okna/tree_annotations.js?v=spring-cover-1';
+import { zobrazitHodnotu, vyhladitHodnotu } from '../okna/element_ui_okna_veliciny.js?v=light-consumption-1';
+import { SEASONS } from '../ekologie/tree_ecology.js?v=affinity-cap-1';
+import { createTreeAnnotations } from '../okna/tree_annotations.js?v=ipad-smooth-1';
 
 const chapters = [
   ['seasons', 'Období'], ['photosynthesis', 'Fotosyntéza'], ['transpiration', 'Transpirace'],
-  ['seeds', 'Semenace'], ['roots', 'Kořeny'], ['prototype', 'Prototyp']
+  ['seeds', 'Semenace']
 ];
 const metric = (label, id, unit = '') => `<div class="chapter-metric"><span>${label}</span><strong><output id="${id}">—</output>${unit}</strong></div>`;
 const rootDiagram = `<svg class="root-diagram" viewBox="0 0 300 210" role="img" aria-label="Schéma rostoucí kořenové špičky: prodlužovací, přechodová a dělivá oblast a ochranná čepička. Kořen uhýbá před překážkou.">
@@ -50,14 +50,6 @@ export function createChapters({ model, applySeason, setSun, setAzimuth, setVisu
         <details><summary>Jak reakce vzniká</summary><p>Čepička chrání konec kořene a podílí se na vnímání gravitace. Změna rozložení auxinu ovlivňuje prodlužování buněk a zakřivení kořene. Dotyk s překážkou může změnit jeho růst.</p><p>Reakce na vlhkost se nazývá hydrotropismus. Pokusy na huseníčku ukázaly také účast buněk kůry prodlužovací oblasti. Přesný průběh u buku zde nesimulujeme.</p><p>„Mozek kořene“ je historická, diskutovaná metafora. Rostliny nemají mozek ani neurony. Pulz ve schématu znázorňuje signalizaci a pohyb je zrychlený.</p><a href="https://www.nature.com/articles/nplants201757" target="_blank" rel="noopener">Výzkum hydrotropismu ↗</a></details>
       </article>
       <article data-chapter="seeds" hidden></article>
-      <article data-chapter="prototype" hidden tabindex="0">
-        <h2>Prototyp</h2>
-        <div class="oxygen-balance-settings">
-          <label>Max. zásoba cukrů (g) <input data-prototype-capacity type="number" min="1" step="1" value="40000" required></label>
-          <span>Zásoba cukrů <output data-prototype-sugar-stock aria-live="off">—</output></span>
-        </div>
-        <div class="prototype-list"></div>
-      </article>
     </div>
     <section class="chapter-shared manager-controlled manager-hidden" id="chapterShared" aria-label="Společné podmínky stromu" hidden>
       <div class="shared-heading"><h3>Podmínky stromu</h3><output id="ecoSeasonLabel">—</output><button type="button" class="shared-toggle" aria-expanded="true" aria-label="Skrýt podmínky stromu">−</button></div>
@@ -139,17 +131,9 @@ export function createChapters({ model, applySeason, setSun, setAzimuth, setVisu
   closeSettings.addEventListener('click', syncDrawer);
   document.addEventListener('keydown', event => {
     if (event.key === 'Escape' && !drawer.inert) closeSettings.click();
-    const key = event.key.toLowerCase();
-    if ((key !== 'k' && key !== 't') || event.defaultPrevented || event.repeat ||
+    if (event.key.toLowerCase() !== 'k' || event.defaultPrevented || event.repeat ||
       event.ctrlKey || event.altKey || event.metaKey || event.shiftKey ||
       event.target.closest?.('input:not([type="range"]):not([type="checkbox"]), textarea, select, [contenteditable]')) return;
-
-    if (key === 't') {
-      if (drawer.inert && document.body.dataset.chapter === 'photosynthesis') {
-        treeAnnotations.toggleStockPrototypes();
-      }
-      return;
-    }
 
     if (drawer.inert) {
       settingsReturnFocus = document.activeElement;
@@ -201,7 +185,6 @@ export function createChapters({ model, applySeason, setSun, setAzimuth, setVisu
       setInput('sliderLightRot', saved.azimuth);
     }
     if (id === 'photosynthesis' && chapter !== id) applySeason('summer');
-    if (id !== 'photosynthesis') treeAnnotations.closeStockPrototypes();
     chapter = id;
     titleTestButton.hidden = id !== 'photosynthesis';
     shell.querySelectorAll('[data-chapter]').forEach(a => { a.hidden = a.dataset.chapter !== id; });
@@ -238,12 +221,21 @@ export function createChapters({ model, applySeason, setSun, setAzimuth, setVisu
       return `${a}:${b.getAttribute(a)}`;
     });
     const leafCountDefault = document.getElementById('sliderLeafCount').defaultValue;
-    try { localStorage.setItem(storageKey, JSON.stringify({ inputs, choices, leafCountDefault })); } catch { /* Storage is optional. */ }
+    const leafSizeDefault = document.getElementById('sliderLeafSize').defaultValue;
+    try { localStorage.setItem(storageKey, JSON.stringify({ inputs, choices, leafCountDefault, leafSizeDefault })); } catch { /* Storage is optional. */ }
   }
   drawer.addEventListener('input', saveSettings);
   drawer.addEventListener('change', saveSettings);
   drawer.addEventListener('click', event => { if (event.target.closest('button')) saveSettings(); });
-  const fmt = (n, digits = 1) => n.toLocaleString('cs-CZ', { maximumFractionDigits: digits });
+  const numberFormats = new Map();
+  const fmt = (n, digits = 1) => {
+    let formatter = numberFormats.get(digits);
+    if (!formatter) {
+      formatter = new Intl.NumberFormat('cs-CZ', { maximumFractionDigits: digits });
+      numberFormats.set(digits, formatter);
+    }
+    return formatter.format(n);
+  };
   const hourly = ratePerMinute => fmt(ratePerMinute * 60, 2);
   const smoothedValues = new Map();
   let lastSmoothTime = performance.now();
@@ -275,49 +267,57 @@ export function createChapters({ model, applySeason, setSun, setAzimuth, setVisu
     const now = performance.now();
     const dt = (now - lastSmoothTime) / 1000;
     lastSmoothTime = now;
-    const season = SEASONS[model.season];
-    out('ecoSeasonLabel', season.label);
-    out('ecoTemperature', fmt(model.ambientTemperature, 1));
-    out('ecoTemperatureNearTree', fmt(model.temperatureNearCanopy, 1));
-    const temperatureDifference = Math.round((model.temperatureNearCanopy - model.ambientTemperature) * 10) / 10;
-    const differenceText = `${temperatureDifference < 0 ? '−' : temperatureDifference > 0 ? '+' : ''}${fmt(Math.abs(temperatureDifference), 1)} °C`;
-    out('ecoTemperatureDifference', differenceText);
-    const lightPhase = model.sunElevation > 6 ? 'Den' : model.sunElevation < -6 ? 'Noc' : model.sunAzimuth < 180 ? 'Svítání' : 'Soumrak';
-    out('ecoDaylight', model.dayCycleEnabled
-      ? `${lightPhase} · denní cyklus`
-      : 'Ruční nastavení slunce');
-    out('ecoReserve', `${fmt(model.reserve)} / ${fmt(model.capacity)} l`);
-    out('ecoWaterLimit', `${hourly(model.seasonalWaterLimit)} l/h`);
-    const nextMeter = model.reserve / model.capacity || 0;
-    if (reserveMeterEl && nextMeter !== prevMeterValue) {
-      prevMeterValue = nextMeter;
-      reserveMeterEl.value = nextMeter;
+    const sharedVisible = !sharedConditions.hidden && !sharedConditions.classList.contains('manager-hidden');
+    const rootsVisible = chapter === 'roots';
+    if (sharedVisible) {
+      const season = SEASONS[model.season];
+      out('ecoSeasonLabel', season.label);
+      out('ecoTemperature', fmt(model.ambientTemperature, 1));
+      out('ecoTemperatureNearTree', fmt(model.temperatureNearCanopy, 1));
+      const temperatureDifference = Math.round((model.temperatureNearCanopy - model.ambientTemperature) * 10) / 10;
+      const differenceText = `${temperatureDifference < 0 ? '−' : temperatureDifference > 0 ? '+' : ''}${fmt(Math.abs(temperatureDifference), 1)} °C`;
+      out('ecoTemperatureDifference', differenceText);
+      const lightPhase = model.sunElevation > 6 ? 'Den' : model.sunElevation < -6 ? 'Noc' : model.sunAzimuth < 180 ? 'Svítání' : 'Soumrak';
+      out('ecoDaylight', model.dayCycleEnabled
+        ? `${lightPhase} · denní cyklus`
+        : 'Ruční nastavení slunce');
+      out('ecoReserve', `${fmt(model.reserve)} / ${fmt(model.capacity)} l`);
+      out('ecoWaterLimit', `${hourly(model.seasonalWaterLimit)} l/h`);
+      const nextMeter = model.reserve / model.capacity || 0;
+      if (reserveMeterEl && nextMeter !== prevMeterValue) {
+        prevMeterValue = nextMeter;
+        reserveMeterEl.value = nextMeter;
+      }
+      out('ecoReserveTrend', model.reserve >= model.capacity - 0.001
+        ? 'Zásoba je plná.'
+        : model.inflow > model.consumption + 0.0001
+          ? 'Zásoba se doplňuje.'
+          : model.inflow < model.consumption - 0.0001
+            ? 'Zásoba ubývá.'
+            : 'Příjem a spotřeba jsou vyrovnané.');
+      out('ecoConsumption', `${hourly(model.consumption)} l/h`);
+      out('ecoLeafState', model.activeFoliage <= 0.001 ? 'Bez aktivních listů · nízká potřeba vody.' : model.hydration < 0.95 ? `Nedostatek vody · stres ${fmt((1 - model.hydration) * 100, 0)} %. Listy postupně schnou.` : model.dryness > 0.05 ? 'Voda je dostupná · listy se postupně zotavují.' : 'Voda je dostupná · listy jsou zavodněné.');
     }
-    out('ecoReserveTrend', model.reserve >= model.capacity - 0.001
-      ? 'Zásoba je plná.'
-      : model.inflow > model.consumption + 0.0001
-        ? 'Zásoba se doplňuje.'
-        : model.inflow < model.consumption - 0.0001
-          ? 'Zásoba ubývá.'
-          : 'Příjem a spotřeba jsou vyrovnané.');
-    out('ecoConsumption', `${hourly(model.consumption)} l/h`);
-    out('ecoLeafState', model.activeFoliage <= 0.001 ? 'Bez aktivních listů · nízká potřeba vody.' : model.hydration < 0.95 ? `Nedostatek vody · stres ${fmt((1 - model.hydration) * 100, 0)} %. Listy postupně schnou.` : model.dryness > 0.05 ? 'Voda je dostupná · listy se postupně zotavují.' : 'Voda je dostupná · listy jsou zavodněné.');
-    out('ecoWaterlogging', fmt(model.waterlogging * 100, 0));
-    const rootState = model.rootRot >= 0.05
-      ? model.waterlogging > 0.5
-        ? `Kořeny zahnívají (${fmt(model.rootRot * 100, 0)} %) · skutečný příjem vody klesá.`
-        : `Kořeny se zotavují (${fmt(model.rootRot * 100, 0)} % poškození) · příjem vody je ještě omezený.`
-      : model.waterlogging > 0.5
-        ? 'Půda je silně zamokřená. Pokud voda neodteče, kořeny se začnou poškozovat.'
-        : model.waterlogging > 0.05
-          ? 'V půdě se drží přebytečná voda a postupně odtéká.'
-          : 'Kořeny přijímají vodu bez zamokření.';
-    out('ecoRootState', rootState);
-    out('ecoRootCondition', rootState);
-    const rotting = model.rootRot >= 0.05;
-    if (rootDiagramEl && rotting !== prevRotting) {
-      prevRotting = rotting;
-      rootDiagramEl.classList.toggle('rotting', rotting);
+    if (sharedVisible || rootsVisible) {
+      const rootState = model.rootRot >= 0.05
+        ? model.waterlogging > 0.5
+          ? `Kořeny zahnívají (${fmt(model.rootRot * 100, 0)} %) · skutečný příjem vody klesá.`
+          : `Kořeny se zotavují (${fmt(model.rootRot * 100, 0)} % poškození) · příjem vody je ještě omezený.`
+        : model.waterlogging > 0.5
+          ? 'Půda je silně zamokřená. Pokud voda neodteče, kořeny se začnou poškozovat.'
+          : model.waterlogging > 0.05
+            ? 'V půdě se drží přebytečná voda a postupně odtéká.'
+            : 'Kořeny přijímají vodu bez zamokření.';
+      if (sharedVisible) out('ecoRootState', rootState);
+      if (rootsVisible) {
+        out('ecoWaterlogging', fmt(model.waterlogging * 100, 0));
+        out('ecoRootCondition', rootState);
+        const rotting = model.rootRot >= 0.05;
+        if (rootDiagramEl && rotting !== prevRotting) {
+          prevRotting = rotting;
+          rootDiagramEl.classList.toggle('rotting', rotting);
+        }
+      }
     }
     for (const { output, key, chapter: outputChapter } of zivaOutputs) {
       if (outputChapter && outputChapter !== chapter) continue;
@@ -325,10 +325,12 @@ export function createChapters({ model, applySeason, setSun, setAzimuth, setVisu
       const smoothed = vyhladitHodnotu(smoothedValues, output.id, value, dt);
       setText(output, zobrazitHodnotu(key, { [key]: smoothed }));
     }
-    setText(capturedLabel, `${hourly(model.waterInput)} l/h`);
-    if (document.activeElement !== waterInput) {
-      const nextWaterValue = String(model.waterInput * 60);
-      if (waterInput.value !== nextWaterValue) waterInput.value = nextWaterValue;
+    if (!waterRow.hidden) {
+      setText(capturedLabel, `${hourly(model.waterInput)} l/h`);
+      if (document.activeElement !== waterInput) {
+        const nextWaterValue = String(model.waterInput * 60);
+        if (waterInput.value !== nextWaterValue) waterInput.value = nextWaterValue;
+      }
     }
   }
   select('intro');
@@ -354,8 +356,9 @@ export function createChapters({ model, applySeason, setSun, setAzimuth, setVisu
         const state = JSON.parse(localStorage.getItem(storageKey) || 'null');
         for (const input of settingInputs()) {
           // Apply a changed default once, then keep saving subsequent manual edits.
-          const value = input.id === 'sliderLeafCount' && state?.leafCountDefault !== input.defaultValue
-            ? input.defaultValue : state?.inputs?.[input.id];
+          const resetDefault = (input.id === 'sliderLeafCount' && state?.leafCountDefault !== input.defaultValue)
+            || (input.id === 'sliderLeafSize' && state?.leafSizeDefault !== input.defaultValue);
+          const value = resetDefault ? input.defaultValue : state?.inputs?.[input.id];
           if (input.type === 'checkbox' && typeof value === 'boolean') {
             input.checked = value;
             input.dispatchEvent(new Event('change', { bubbles: true }));

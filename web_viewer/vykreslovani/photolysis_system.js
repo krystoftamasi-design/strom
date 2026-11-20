@@ -123,6 +123,18 @@ export class PhotolysisSystem {
     this.activity = Math.max(0, Math.min(1, Number(value) || 0));
   }
 
+  setWinter(winter) {
+    this.winter = winter;
+    if (!winter) return;
+    for (const pool of [this.photonPool, this.bubblePool, this.carbonPool]) {
+      for (const particle of pool) {
+        particle.active = false;
+        particle.mesh.visible = false;
+      }
+    }
+    this.emitTimer = 0;
+  }
+
   setLightAvailability(value) {
     this.lightAvailability = Math.max(0, Math.min(1, Number(value) || 0));
   }
@@ -227,21 +239,21 @@ export class PhotolysisSystem {
       return texture;
     });
 
+    this.oxygenMaterials = this.bubbleTextures.map(texture => applyGasLeafStyle(new THREE.SpriteMaterial({
+      map: texture,
+      color: 0xffffff,
+      toneMapped: false,
+      transparent: false,
+      opacity: 1,
+      // Discard faint dark edge pixels instead of rendering them as opaque borders.
+      alphaTest: 0.5,
+      depthWrite: true
+    })));
+
     this.bubblePool = [];
     for (let i = 0; i < this.maxBubbles; i++) {
       // Opaque artwork with a cutout background; appearance is animated by size.
-      const mat = new THREE.SpriteMaterial({
-        map: this.bubbleTextures[i % this.bubbleTextures.length],
-        color: 0xffffff,
-        toneMapped: false,
-        transparent: false,
-        opacity: 1,
-        // Discard faint dark edge pixels instead of rendering them as opaque borders.
-        alphaTest: 0.5,
-        depthWrite: true
-      });
-
-      applyGasLeafStyle(mat);
+      const mat = this.oxygenMaterials[i % this.oxygenMaterials.length];
       const mesh = new THREE.Sprite(mat);
       mesh.name = `OxygenBubble_${i}`;
       mesh.visible = false;
@@ -271,10 +283,14 @@ export class PhotolysisSystem {
       texture.colorSpace = THREE.SRGBColorSpace;
       return texture;
     });
-    this.carbonPool = this.bubblePool.map((bubble, i) => {
-      const material = bubble.material.clone();
-      material.map = this.carbonTextures[i % this.carbonTextures.length];
-      applyGasLeafStyle(material);
+    const baseMaterial = this.oxygenMaterials[0];
+    this.carbonMaterials = this.carbonTextures.map(texture => {
+      const material = baseMaterial.clone();
+      material.map = texture;
+      return applyGasLeafStyle(material);
+    });
+    this.carbonPool = this.bubblePool.map((_, i) => {
+      const material = this.carbonMaterials[i % this.carbonMaterials.length];
       const mesh = new THREE.Sprite(material);
       mesh.name = `CarbonDioxide_${i}`;
       mesh.visible = false;
@@ -528,11 +544,37 @@ export class PhotolysisSystem {
   }
 
   // Main simulation update loop
-  update(delta = 0.016, camera = null) {
+  update(delta = 0.016, camera = null, { photolysis = true, water = true } = {}) {
     const dt = Math.min(delta, 0.1);
-    this._updateWaterVapour(dt);
+    if (water) {
+      this._updateWaterVapour(dt);
+    } else if (this._waterWasActive) {
+      this.waterEmitTimer = 0;
+      for (const b of this.waterPool) {
+        b.active = false;
+        b.mesh.visible = false;
+      }
+      this._waterWasActive = false;
+    }
+    if (water && this.waterGroup?.visible) this._waterWasActive = true;
 
-    const nightRespiration = this.showNightRespiration && this.sunElevationDeg <= 0;
+    if (!photolysis) {
+      if (this._photolysisWasActive) {
+        this.emitTimer = 0;
+        this.respirationTimer = 0;
+        for (const pool of [this.photonPool, this.bubblePool, this.carbonPool]) {
+          for (const particle of pool) {
+            particle.active = false;
+            particle.mesh.visible = false;
+          }
+        }
+        this._photolysisWasActive = false;
+      }
+      return;
+    }
+    this._photolysisWasActive = true;
+
+    const nightRespiration = !this.winter && this.showNightRespiration && this.sunElevationDeg <= 0;
     if (nightRespiration !== this.nightRespiration) {
       this.nightRespiration = nightRespiration;
       this.respirationTimer = 0.5;
@@ -559,7 +601,7 @@ export class PhotolysisSystem {
     }
 
     // 1. Emission logic (only emit when conditions are met)
-    const incomingLight = this.isPhotolysisActive()
+    const incomingLight = !this.winter && this.isPhotolysisActive()
       && (this.lightAvailability === null || this.lightAvailability > 0.0001);
     if (incomingLight && this.photonsPerSecond > 0) {
       // Keep the first photons visible even while photosynthesis is just starting.
@@ -664,7 +706,11 @@ export class PhotolysisSystem {
     this.totalCarbonDioxideEmitted = 0;
     this.totalCarbonDioxideAbsorbed = 0;
     this.waterEmitTimer = 0;
-    for (const b of [...this.carbonPool, ...this.waterPool]) {
+    for (const b of this.carbonPool) {
+      b.active = false;
+      b.mesh.visible = false;
+    }
+    for (const b of this.waterPool) {
       b.active = false;
       b.mesh.visible = false;
     }

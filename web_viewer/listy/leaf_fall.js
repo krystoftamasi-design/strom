@@ -9,6 +9,7 @@ export const leafFallDeclarations = `
   attribute vec3 leafFallLanding;
   attribute vec3 leafCameraDrift;
   varying float vLeafFallProgress;
+  varying float vLeafAirborne;
 
   mat3 leafAxisRotation(vec3 axis, float angle) {
     float s = sin(angle), c = cos(angle), k = 1.0 - c;
@@ -38,6 +39,7 @@ export const leafFallDeclarations = `
   mat3 leafFallRotationWithAge(vec3 originalNormal, float age) {
     if (age <= 0.0) return mat3(1.0);
     float flight = leafFlightTime();
+    if (age >= flight + 7.0) return mat3(1.0);
     float t = min(age, flight);
     float phase = leafFallSeed * 6.2831853;
     float release = leafWindRelease(t);
@@ -64,8 +66,15 @@ export const leafFallDeclarations = `
   }
   vec3 leafFallPositionWithAge(vec3 position, mat3 rotation, float age) {
     vLeafFallProgress = 0.0;
+    vLeafAirborne = 0.0;
     if (age <= 0.0) return position;
     float flight = leafFlightTime();
+    vLeafAirborne = age < flight ? 1.0 : 0.0;
+    if (age >= flight + 7.0) {
+      // Collapse completely faded leaves into a degenerate point to skip rasterization.
+      vLeafFallProgress = 1.0;
+      return leafFallLanding;
+    }
     float t = min(age, flight);
     float phase = leafFallSeed * 6.2831853;
     // Accelerate out of the branch, then approach an aerodynamic terminal speed.

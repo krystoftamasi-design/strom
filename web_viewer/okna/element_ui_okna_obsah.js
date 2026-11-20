@@ -32,16 +32,18 @@ export const oknaPodleKapitol = {
   photosynthesis: [
     {
       id: 'svetlo',
+      upravitelnaHodnota: 'dostupnost',
       viditelnyPrepinac: true,
       nadpis: 'Světlo',
       tema: 'light',
       strana: 'right',
       otevrene: false,
-      vypocet: 'activity',
+      vypocet: 'lightConsumption',
+      vzorecText: 'Dostupnost světla × aktivita fotosyntézy',
       zobrazitVzorec: true,
       zobrazitHodnotu: true,
       text: [
-        'Listy využívají světlo podle dostupnosti vody a dalších podmínek.',
+        'Odhad využití světla.',
       ],
     },
     {
@@ -54,7 +56,7 @@ export const oknaPodleKapitol = {
       zobrazitVzorec: true,
       zobrazitHodnotu: true,
       text: [
-        'Fotosyntéza uvolňuje O₂. Dýchání ho spotřebovává v odhadovaném množství.',
+        'Fotosyntéza O₂ uvolňuje, dýchání spotřebovává.',
       ],
     },
     {
@@ -67,11 +69,12 @@ export const oknaPodleKapitol = {
       zobrazitVzorec: true,
       zobrazitHodnotu: true,
       text: [
-        'Fotosyntéza přijímá CO₂. Dýchání ho uvolňuje v odhadovaném množství.',
+        'Fotosyntéza CO₂ přijímá, dýchání uvolňuje.',
       ],
     },
     {
       id: 'cukry',
+      upravitelnaHodnota: 'strop',
       viditelnyPrepinac: true,
       nadpis: 'Cukry',
       tema: 'sugar',
@@ -82,11 +85,12 @@ export const oknaPodleKapitol = {
       zobrazitVzorec: true,
       zobrazitHodnotu: true,
       text: [
-        'Při rašení se do spotřeby počítá růst listů. Na podzim se k produkci přičítají cukry přesunuté z listů do zásoby.',
+        'Rašení čerpá cukry. Na podzim se část vrací z listů.',
       ],
     },
     {
       id: 'voda',
+      upravitelnaHodnota: 'strop',
       viditelnyPrepinac: true,
       nadpis: 'Voda',
       tema: 'water',
@@ -96,7 +100,7 @@ export const oknaPodleKapitol = {
       zobrazitVzorec: true,
       zobrazitHodnotu: true,
       text: [
-        'Voda zavodňuje listy a jejím odparem se koruna ochlazuje.',
+        'Odpar vody ochlazuje korunu.',
       ],
     },
   ],

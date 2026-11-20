@@ -1,5 +1,5 @@
-import { oknaPodleKapitol, kontextoveTexty, pruvodceTranspiraci } from './element_ui_okna_obsah.js?v=sugar-phenology-1';
-import { veliciny, vstupyVzorce, ohlasitChybuOken, vyhladitHodnotu } from './element_ui_okna_veliciny.js?v=affinity-windows-layout-2';
+import { oknaPodleKapitol, kontextoveTexty, pruvodceTranspiraci } from './element_ui_okna_obsah.js?v=adjustable-value-1';
+import { veliciny, vstupyVzorce, ohlasitChybuOken, vyhladitHodnotu } from './element_ui_okna_veliciny.js?v=light-consumption-1';
 import { zkontrolovatOkna } from './element_ui_okna_kontrola.js?v=seeds-1';
 
 // Original embedded assets from ui_new.svg, at their exported stroke widths.
@@ -32,30 +32,102 @@ function pickUiWindowStroke(direction) {
   return { ...stroke, url: new URL(`../web_assets/${stroke.file}`, import.meta.url).href };
 }
 
-function createBalanceBar({ top, bottom, adjustable = false }) {
+function createBalanceBar({ top, bottom, editable = false }) {
   const bar = document.createElement('div');
   bar.className = 'element-ui-balance-bar';
-  bar.innerHTML = `
-    <span class="element-ui-balance-fill" aria-hidden="true">
-      <span class="element-ui-balance-track"></span>
-      <span class="element-ui-balance-markers"></span>
-    </span>`;
-  const markers = bar.querySelector('.element-ui-balance-markers');
-  for (const [side, letter] of Object.entries({ top, bottom })) {
-    if (letter === undefined) continue;
-    const marker = document.createElement('span');
-    marker.className = `element-ui-balance-marker element-ui-balance-marker-${side}`;
-    marker.classList.toggle('element-ui-balance-adjustable', adjustable && side === 'top');
-    const cap = document.createElement('span');
-    cap.className = 'element-ui-balance-marker-cap';
-    cap.textContent = letter;
-    marker.append(cap);
-    markers.append(marker);
+  if (editable) {
+    bar.classList.add('has-editable-value');
+    bar.style.setProperty('--balance-limit-ratio', '1');
   }
+  const makeLane = (side, letter, openEnd) => {
+    const lane = document.createElement('div');
+    lane.className = `element-ui-balance-lane element-ui-balance-lane-${side}`;
+    const rail = document.createElement('span');
+    rail.className = `element-ui-balance-rail element-ui-balance-rail-${side}`;
+    rail.setAttribute('aria-hidden', 'true');
+    const railStart = document.createElement('span');
+    railStart.className = 'element-ui-balance-rail-start';
+    const railMid = document.createElement('span');
+    railMid.className = 'element-ui-balance-rail-mid';
+    rail.append(railStart, railMid);
+    if (!openEnd) {
+      const railEnd = document.createElement('span');
+      railEnd.className = 'element-ui-balance-rail-end';
+      rail.append(railEnd);
+    }
+    const markers = document.createElement('span');
+    markers.className = 'element-ui-balance-markers';
+    markers.setAttribute('aria-hidden', 'true');
+    if (letter !== undefined) {
+      const marker = document.createElement('span');
+      marker.className = `element-ui-balance-marker element-ui-balance-marker-${side}`;
+      const fill = document.createElement('span');
+      fill.className = 'element-ui-balance-marker-fill';
+      const end = document.createElement('span');
+      end.className = 'element-ui-balance-marker-end';
+      const cap = document.createElement('span');
+      cap.className = 'element-ui-balance-marker-cap';
+      cap.textContent = letter;
+      marker.append(fill, end, cap);
+      markers.append(marker);
+    }
+    lane.append(rail, markers);
+    if (openEnd) {
+      const limit = document.createElement('span');
+      limit.className = 'element-ui-balance-limit';
+      limit.setAttribute('aria-hidden', 'true');
+      const limitCap = document.createElement('span');
+      limitCap.className = 'element-ui-balance-limit-cap';
+      limitCap.textContent = '−';
+      limit.append(limitCap);
+      lane.append(limit);
+    }
+    return lane;
+  };
+  bar.append(makeLane('top', top, editable), makeLane('bottom', bottom, false));
   return bar;
 }
 
-const stockNumber = new Intl.NumberFormat('cs-CZ', { maximumFractionDigits: 1 });
+const stockNumber = new Intl.NumberFormat('cs-CZ', { maximumFractionDigits: 0 });
+const sliderIsActive = ':active, [data-touch-drag]';
+
+function enableTouchDrag(slider, handle) {
+  let pointerId = null;
+  let trackLeft = 0;
+  let trackSpan = 1;
+  let thumbHalf = 0;
+  const update = event => {
+    const fraction = (event.clientX - trackLeft - thumbHalf) / trackSpan;
+    const previousValue = slider.value;
+    slider.valueAsNumber = Math.min(1, Math.max(0, fraction)) * Number(slider.max);
+    if (slider.value !== previousValue) slider.dispatchEvent(new Event('input', { bubbles: true }));
+  };
+  const endDrag = event => {
+    if (event.pointerId !== pointerId) return;
+    if (slider.hasPointerCapture?.(pointerId)) slider.releasePointerCapture(pointerId);
+    pointerId = null;
+    delete slider.dataset.touchDrag;
+  };
+  slider.addEventListener('pointerdown', event => {
+    if (event.pointerType === 'mouse' || pointerId !== null || slider.disabled) return;
+    event.preventDefault();
+    const track = slider.getBoundingClientRect();
+    const thumb = handle.offsetWidth;
+    trackLeft = track.left;
+    thumbHalf = thumb / 2;
+    trackSpan = Math.max(1, track.width - thumb);
+    pointerId = event.pointerId;
+    slider.dataset.touchDrag = '';
+    slider.setPointerCapture(pointerId);
+    update(event);
+  });
+  slider.addEventListener('pointermove', event => {
+    if (event.pointerId === pointerId) update(event);
+  });
+  slider.addEventListener('pointerup', endDrag);
+  slider.addEventListener('pointercancel', endDrag);
+  slider.addEventListener('lostpointercapture', endDrag);
+}
 
 function createElementUiOkno({ panel, body, reveal, toggle, model, definition }) {
   panel.classList.add('element-ui-okno');
@@ -79,7 +151,7 @@ function createElementUiOkno({ panel, body, reveal, toggle, model, definition })
   const header = panel.querySelector(':scope > header');
   const formula = body.querySelector('.ui-window-formula');
   readout.append(header, footer);
-  const isFlowChapter = ['photosynthesis', 'prototype'].includes(panel.dataset.chapter);
+  const isFlowChapter = panel.dataset.chapter === 'photosynthesis';
   if (formula && !isFlowChapter) readout.append(formula);
   panel.insertBefore(readout, reveal);
   const edge = panel.querySelector('.annotation-frame-left');
@@ -124,45 +196,74 @@ function createElementUiOkno({ panel, body, reveal, toggle, model, definition })
     availabilityUnit.textContent = definition.id === 'svetlo' ? '%' : 'l/h';
     availabilityValue.append(availabilityOutput, availabilityUnit);
     availability.append(availabilityLabel, availabilityValue);
-    const isAvailabilityWindow = ['voda', 'svetlo'].includes(definition.id);
+    const isLight = definition.id === 'svetlo';
+    const isWater = definition.id === 'voda';
+    const isAvailabilityWindow = isLight || isWater;
     const isCo2 = definition.id === 'co2';
+    const hasStock = Boolean(definition.zasoba);
     const topMetric = isAvailabilityWindow ? availability : isCo2 ? unavailable : current;
     const bottomMetric = isAvailabilityWindow || isCo2 ? current : unavailable;
 
     if (current) {
       const bar = createBalanceBar({
-        top: isAvailabilityWindow ? '' : 'P',
-        bottom: definition.id === 'voda' ? '' : 'S',
-        adjustable: isAvailabilityWindow,
+        top: isAvailabilityWindow ? '' : 'p',
+        bottom: 's',
+        editable: Boolean(definition.upravitelnaHodnota),
       });
+      const topLane = bar.querySelector('.element-ui-balance-lane-top');
 
-      if (isAvailabilityWindow) {
+      if (definition.upravitelnaHodnota === 'dostupnost') {
         const slider = document.createElement('input');
         slider.type = 'range';
-        slider.min = '0'; slider.max = '1000'; slider.step = '1';
-        slider.className = 'element-ui-flow-slider element-ui-balance-slider';
-        if (definition.id === 'svetlo') {
-          slider.setAttribute('aria-label', 'Dostupnost světla');
-          slider.addEventListener('input', () => model.setLightAvailability(Number(slider.value) / 1000));
-        } else {
-          slider.setAttribute('aria-label', 'Dostupnost vody pro kořeny');
-          slider.addEventListener('pointerdown', () => {
-            slider.dataset.scaleMax = String(waterAvailabilityMax(model));
-          });
-          for (const eventName of ['pointerup', 'pointercancel', 'lostpointercapture']) {
-            slider.addEventListener(eventName, () => { delete slider.dataset.scaleMax; });
+        slider.min = '0'; slider.max = '1000'; slider.step = '1'; slider.value = slider.max;
+        slider.className = 'element-ui-flow-slider element-ui-balance-slider element-ui-editable-value';
+        slider.setAttribute('aria-label', 'Dostupnost světla');
+        slider.addEventListener('click', event => event.stopPropagation());
+        slider.addEventListener('input', () => {
+          const fraction = slider.valueAsNumber / 1000;
+          bar.style.setProperty('--balance-limit-ratio', String(fraction));
+          model.setLightAvailability(fraction);
+        });
+        topLane.append(slider);
+        enableTouchDrag(slider, topLane.querySelector('.element-ui-balance-limit'));
+      }
+
+      if (definition.upravitelnaHodnota === 'strop') {
+        const limitSlider = document.createElement('input');
+        limitSlider.type = 'range';
+        limitSlider.min = '0'; limitSlider.max = '100'; limitSlider.step = '1'; limitSlider.value = '100';
+        limitSlider.className = 'element-ui-balance-slider element-ui-limit-slider element-ui-editable-value';
+        limitSlider.dataset.limitTarget = definition.id;
+        const limitLabel = definition.id === 'cukry' ? 'Omezení produkce' : 'Omezení dostupnosti';
+        limitSlider.setAttribute('aria-label', `${limitLabel} – ${definition.nadpis}`);
+        limitSlider.setAttribute('aria-valuetext', '100 %');
+        limitSlider.title = `${limitLabel}: 100 %`;
+        limitSlider.addEventListener('click', event => event.stopPropagation());
+        limitSlider.addEventListener('input', () => {
+          const percent = limitSlider.valueAsNumber;
+          const fraction = percent / 100;
+          bar.style.setProperty('--balance-limit-ratio', String(fraction));
+          limitSlider.setAttribute('aria-valuetext', `${percent} %`);
+          limitSlider.title = `${limitLabel}: ${percent} %`;
+          if (definition.id === 'cukry') {
+            model.sugarProductionCap = fraction;
+          } else if (definition.id === 'voda') {
+            if (percent >= 100) {
+              model.manualWaterInput = false;
+              model.waterAvailabilityCap = 1;
+            } else {
+              model.waterAvailabilityCap = fraction;
+            }
           }
-          slider.addEventListener('input', () => {
-            const max = Number(slider.dataset.scaleMax) || waterAvailabilityMax(model);
-            if (Number.isFinite(max) && max > 0) model.setWaterInput(max * Number(slider.value) / 1000);
-          });
-        }
-        bar.append(slider);
+          if (model.ready) model.evaluate(0);
+        });
+        topLane.append(limitSlider);
+        enableTouchDrag(limitSlider, topLane.querySelector('.element-ui-balance-limit'));
       }
 
       footer.replaceChildren(topMetric, bar, bottomMetric);
       panel.classList.add('element-ui-flow-window');
-      if (definition.zasoba) {
+      if (hasStock) {
         const { zdroj = 'model', hodnota, maximum, jednotka } = definition.zasoba;
         const stock = document.createElement('div');
         stock.className = 'element-ui-stock';
@@ -171,7 +272,22 @@ function createElementUiOkno({ panel, body, reveal, toggle, model, definition })
         const labelText = document.createElement('span');
         labelText.textContent = 'zásoba';
         label.append(labelText);
-        const stockBar = createBalanceBar({ top: 'Z' });
+        const dial = document.createElement('div');
+        dial.className = 'element-ui-stock-dial';
+        const dialClip = document.createElement('span');
+        dialClip.className = 'element-ui-stock-dial-clip';
+        dialClip.setAttribute('aria-hidden', 'true');
+        const dialFill = document.createElement('span');
+        dialFill.className = 'element-ui-stock-dial-fill';
+        dialClip.append(dialFill);
+        const dialRing = document.createElement('span');
+        dialRing.className = 'element-ui-stock-dial-ring';
+        dialRing.setAttribute('aria-hidden', 'true');
+        const trend = document.createElement('span');
+        trend.className = 'element-ui-stock-trend';
+        trend.setAttribute('role', 'img');
+        trend.hidden = true;
+        dial.append(dialClip, dialRing, trend);
         const metric = document.createElement('div');
         metric.className = 'chapter-metric element-ui-stock-readout';
         const value = document.createElement('strong');
@@ -186,13 +302,9 @@ function createElementUiOkno({ panel, body, reveal, toggle, model, definition })
         const unit = document.createElement('span');
         unit.className = 'element-ui-unit';
         unit.textContent = jednotka;
-        const trend = document.createElement('span');
-        trend.className = 'element-ui-stock-trend';
-        trend.setAttribute('role', 'img');
-        trend.hidden = true;
         value.append(output, unit);
-        metric.append(trend, value);
-        stock.append(label, stockBar, metric);
+        metric.append(value);
+        stock.append(label, dial, metric);
         footer.append(stock);
       }
     }
@@ -202,105 +314,6 @@ function createElementUiOkno({ panel, body, reveal, toggle, model, definition })
 }
 
 
-function enablePrototypeRotation(circle) {
-  circle.classList.add('rotatable');
-  circle.tabIndex = 0;
-  circle.setAttribute('role', 'group');
-  circle.setAttribute('aria-label', 'Otočný ukazatel. Pro otočení táhněte nebo použijte šipky vlevo a vpravo.');
-
-  let rotation = 0;
-  let drag = null;
-  const pointerAngle = event => {
-    const { left, top, width, height } = circle.getBoundingClientRect();
-    return Math.atan2(event.clientY - top - height / 2, event.clientX - left - width / 2) * 180 / Math.PI;
-  };
-  const rotate = angle => {
-    rotation = angle;
-    circle.style.rotate = `${angle}deg`;
-  };
-  circle.addEventListener('pointerdown', event => {
-    if (event.button !== 0 || drag) return;
-    drag = { id: event.pointerId, offset: rotation - pointerAngle(event) };
-    circle.setPointerCapture(event.pointerId);
-  });
-  circle.addEventListener('pointermove', event => {
-    if (drag?.id === event.pointerId) rotate(drag.offset + pointerAngle(event));
-  });
-  circle.addEventListener('lostpointercapture', event => {
-    if (drag?.id === event.pointerId) drag = null;
-  });
-  circle.addEventListener('keydown', event => {
-    if (event.key !== 'ArrowLeft' && event.key !== 'ArrowRight') return;
-    event.preventDefault();
-    rotate(rotation + (event.key === 'ArrowLeft' ? -10 : 10));
-  });
-}
-
-function createSugarStock() {
-  const panel = document.createElement('section');
-  panel.className = 'oxygen-balance-panel';
-  panel.innerHTML = `
-    <h3>Zásoba cukrů</h3>
-    <div class="oxygen-balance sugar-stock" aria-hidden="true">
-      <div class="sugar-stock-liquid"></div>
-      <svg class="sugar-stock-wave" viewBox="0 0 240 16" preserveAspectRatio="none">
-        <defs>
-          <g id="prototype-sugar-wave">
-            <path fill="currentColor" d="M0 8 C16 3 25 2 39 7 S59 13 73 8 S94 2 105 7 Q112 11 120 8 V16 H0 Z"/>
-            <path fill="none" stroke="#ffadf3" stroke-width="0.75" stroke-linecap="round"
-              d="M4 10 Q20 4 32 8 M40 10 Q55 15 70 11 M76 10 Q93 4 102 9"/>
-          </g>
-        </defs>
-        <use href="#prototype-sugar-wave"/>
-        <use href="#prototype-sugar-wave" x="120"/>
-      </svg>
-    </div>`;
-  const circle = panel.querySelector('.sugar-stock');
-  return {
-    panel,
-    update(_production, _consumption, capacity, reserve) {
-      circle.style.setProperty('--oxygen-level', `${100 * reserve / capacity}%`);
-    }
-  };
-}
-
-function createOxygenBalance(variant) {
-  const rectangle = variant === 'rectangle';
-  const panel = document.createElement('section');
-  panel.className = 'oxygen-balance-panel';
-  panel.setAttribute('aria-label', 'Zkušební bilance cukrů');
-  panel.innerHTML = `
-    <h3>${rectangle ? 'Obdélník' : 'Dělicí čáry'}</h3>
-    <div class="oxygen-balance oxygen-balance-lines${rectangle ? ' oxygen-balance-rectangle' : ''}">
-      <div class="oxygen-balance-reserve"><abbr title="Zásoba">Z</abbr></div>
-      <div class="oxygen-balance-production"><abbr title="Produkce">P</abbr></div>
-      <div><abbr title="Spotřeba">S</abbr></div>
-    </div>
-  `;
-  const circle = panel.querySelector('.oxygen-balance');
-  if (!rectangle) enablePrototypeRotation(circle);
-  const [, productionSection, consumptionSection] = circle.children;
-  return {
-    panel,
-    update(production, consumption, capacity, reserve) {
-      circle.style.setProperty('--oxygen-level', `${100 * reserve / capacity}%`);
-      productionSection.setAttribute('aria-hidden', String(production <= 0));
-      consumptionSection.setAttribute('aria-hidden', String(consumption <= 0));
-      productionSection.classList.toggle('stronger-flow', production > consumption);
-      consumptionSection.classList.toggle('stronger-flow', consumption > production);
-      const smaller = Math.min(production, consumption);
-      const larger = Math.max(production, consumption);
-      const lineScale = Math.max(capacity, 60 * (production + consumption));
-      circle.style.setProperty('--oxygen-smaller-flow', String(60 * smaller / lineScale));
-      circle.style.setProperty('--oxygen-larger-flow', String(60 * larger / lineScale));
-      circle.classList.toggle('similar-flows', smaller > 0 && smaller >= 0.9 * larger);
-      circle.classList.toggle('production-at-bottom', production > consumption);
-    }
-  };
-}
-
-// Static screen-space UI. Camera and tree geometry never participate in layout.
-// Original content and controls are moved, so live outputs and handlers survive.
 export function createTreeAnnotations({ shell, model, createSeasonControl, setElementHighlight = () => { } }) {
   // This hint lives only until reload; defaults opening programmatically do not dismiss it.
   const hintTimer = setTimeout(() => shell.classList.add('window-toggle-hint'),
@@ -313,18 +326,7 @@ export function createTreeAnnotations({ shell, model, createSeasonControl, setEl
   const contextSelections = new Map();
   const contextGuides = new Map();
   let activeChapter = null;
-  const prototypes = [createSugarStock(), createOxygenBalance('lines'), createOxygenBalance('rectangle')];
-  const capacityInput = shell.querySelector('[data-prototype-capacity]');
-  model.setSugarCapacity(capacityInput.valueAsNumber);
-  const sugarStockOutput = shell.querySelector('[data-prototype-sugar-stock]');
-  const stockKg = new Intl.NumberFormat('cs-CZ', { maximumFractionDigits: 2 });
   const previousStocks = new WeakMap();
-  capacityInput.addEventListener('change', () => {
-    if (capacityInput.validity.valid && Number.isSafeInteger(capacityInput.valueAsNumber)) {
-      model.setSugarCapacity(capacityInput.valueAsNumber);
-    }
-    capacityInput.value = String(model.sugarCapacity);
-  });
   const previousHighlights = new Map();
   function syncHighlights() {
     const activeTags = new Set();
@@ -367,14 +369,24 @@ export function createTreeAnnotations({ shell, model, createSeasonControl, setEl
     }
     if (changed) syncHighlights();
   }
+  let hoverFrame = 0;
   window.addEventListener('pointermove', event => {
     if (event.pointerType === 'touch') return;
     pointerPosition = { x: event.clientX, y: event.clientY };
-    syncWindowHover();
+    if (!hoverFrame) {
+      hoverFrame = requestAnimationFrame(() => {
+        hoverFrame = 0;
+        syncWindowHover();
+      });
+    }
   }, { passive: true });
   window.addEventListener('pointerout', event => {
     if (event.relatedTarget) return;
     pointerPosition = null;
+    if (hoverFrame) {
+      cancelAnimationFrame(hoverFrame);
+      hoverFrame = 0;
+    }
     syncWindowHover();
   });
   const content = shell.querySelector('.chapter-content');
@@ -472,6 +484,16 @@ export function createTreeAnnotations({ shell, model, createSeasonControl, setEl
     body.append(...nodes.filter(Boolean));
     panel.append(header, reveal);
     if (definition) createElementUiOkno({ panel, body, reveal, toggle, model, definition });
+    const flowBar = article.dataset.chapter === 'photosynthesis'
+      && panel.querySelector('.element-ui-balance-bar');
+    if (flowBar) {
+      const bottomMetric = flowBar.nextElementSibling;
+      // Reserve the label below the bar so the explanation ends above it.
+      const resizeDetail = new ResizeObserver(([entry]) => {
+        reveal.style.setProperty('--flow-metric-below-bar', `${entry.borderBoxSize[0].blockSize}px`);
+      });
+      resizeDetail.observe(bottomMetric, { box: 'border-box' });
+    }
     let expanded = false;
     function expand(open) {
       expanded = open;
@@ -556,7 +578,7 @@ export function createTreeAnnotations({ shell, model, createSeasonControl, setEl
       const strong = document.createElement('strong');
       const output = document.createElement('output');
       const outputId = value.vystupId || `value-${definition.id}`;
-      output.id = article.dataset.chapter === 'prototype' ? `prototype-${outputId}` : outputId;
+      output.id = outputId;
       output.dataset.zivaVelicina = definition.vypocet;
       output.textContent = '—';
       strong.append(output);
@@ -596,13 +618,6 @@ export function createTreeAnnotations({ shell, model, createSeasonControl, setEl
   }
 
   for (const article of content.querySelectorAll('article[data-chapter]')) {
-    if (article.dataset.chapter === 'prototype') {
-      const list = article.querySelector('.prototype-list');
-      list.append(...prototypes.map(prototype => prototype.panel));
-      const sugars = oknaPodleKapitol.photosynthesis.find(definition => definition.id === 'cukry');
-      if (sugars && !kontrola.neplatnaOkna.has(sugars)) configuredCard(article, sugars);
-      continue;
-    }
     if (article.dataset.chapter === 'photosynthesis') {
       const title = document.createElement('h2');
       title.className = 'photosynthesis-title';
@@ -662,83 +677,10 @@ export function createTreeAnnotations({ shell, model, createSeasonControl, setEl
   shell.append(seasonRow);
   shell.querySelector('#sharedSeasons').hidden = true;
   const seasonControl = createSeasonControl();
-  const stockPrototypes = document.createElement('div');
-  stockPrototypes.className = 'photosynthesis-stock-prototypes';
-  stockPrototypes.hidden = true;
-  stockPrototypes.setAttribute('role', 'group');
-  stockPrototypes.setAttribute('aria-label', 'Kruhové ukazatele zásob');
-  stockPrototypes.setAttribute('aria-keyshortcuts', 'T');
-  const percentageControls = new Map();
-  for (const [id, label, setting] of [
-    ['cukry', 'Cukry', 'Podíl automatické produkce cukrů'],
-    ['voda', 'Voda', 'Podíl automatické dostupnosti vody'],
-  ]) {
-    const panel = shell.querySelector(`[data-chapter="photosynthesis"][data-window-id="${id}"]`);
-    const barStock = panel.querySelector('.element-ui-stock');
-    const stock = barStock.cloneNode(true);
-    stock.querySelector('.element-ui-stock-label span').textContent = label;
-    const circle = document.createElement('div');
-    circle.className = 'oxygen-balance sugar-stock element-ui-stock-circle';
-    circle.setAttribute('aria-hidden', 'true');
-    const fill = document.createElement('div');
-    fill.className = 'sugar-stock-liquid';
-    circle.append(fill);
-    stock.querySelector('.element-ui-balance-bar').replaceWith(circle);
-    stockPrototypes.append(stock);
-
-    const input = document.createElement('input');
-    input.type = 'range';
-    input.min = '0';
-    input.max = '100';
-    input.value = '100';
-    input.className = 'element-ui-balance-slider photosynthesis-stock-percentage';
-    input.hidden = true;
-    input.setAttribute('aria-label', setting);
-    input.setAttribute('aria-valuetext', '100 %');
-    const labelText = barStock.querySelector('.element-ui-stock-label span');
-    const stockOutput = barStock.querySelector('[data-stock-source]');
-    const unit = barStock.querySelector('.element-ui-unit');
-    const trend = barStock.querySelector('.element-ui-stock-trend');
-    input.addEventListener('input', () => {
-      input.setAttribute('aria-valuetext', `${input.value} %`);
-      barStock.style.setProperty('--balance-top-ratio', String(input.valueAsNumber / 100));
-      applyStockPercentages();
-    });
-    barStock.querySelector('.element-ui-balance-bar').append(input);
-    percentageControls.set(id, { barStock, input, labelText, stockOutput, unit, trend });
-  }
-  shell.querySelector('.time-playback-panel').after(stockPrototypes);
-  const waterSlider = shell.querySelector('[data-chapter="photosynthesis"][data-window-id="voda"] .element-ui-balance-slider');
-
-  function applyStockPercentages() {
-    const enabled = !stockPrototypes.hidden;
-    model.sugarProductionFraction = enabled ? percentageControls.get('cukry').input.valueAsNumber / 100 : 1;
-    model.automaticWaterFraction = enabled ? percentageControls.get('voda').input.valueAsNumber / 100 : null;
-    if (model.ready) model.evaluate(0);
-  }
-
-  function setStockPrototypeMode(enabled) {
-    if (stockPrototypes.hidden === !enabled) return;
-    stockPrototypes.hidden = !enabled;
-    waterSlider.hidden = enabled;
-    for (const [id, { barStock, input, labelText, stockOutput, unit, trend }] of percentageControls) {
-      barStock.classList.toggle('is-percentage', enabled);
-      input.hidden = !enabled;
-      labelText.textContent = enabled ? (id === 'cukry' ? 'produkce' : 'dostupnost') : 'zásoba';
-      unit.textContent = enabled ? '%' : (id === 'cukry' ? 'kg' : 'l');
-      if (enabled) {
-        trend.hidden = true;
-        stockOutput.value = input.value;
-        barStock.style.setProperty('--balance-top-ratio', String(input.valueAsNumber / 100));
-      }
-    }
-    applyStockPercentages();
-  }
 
   const smoothedValues = new Map();
   let lastDomUpdate = -Infinity;
   let prevSeasonRowHidden = null;
-  let prevProtoSugarText = '';
   const barsByChapter = new Map();
   for (const bar of shell.querySelectorAll('.element-ui-values > .element-ui-balance-bar')) {
     const panel = bar.closest('.element-ui-okno');
@@ -748,14 +690,16 @@ export function createTreeAnnotations({ shell, model, createSeasonControl, setEl
     if (!list) { list = []; barsByChapter.set(panelChapter, list); }
     list.push({
       bar,
-      slider: bar.querySelector('input'),
+      slider: bar.querySelector('.element-ui-flow-slider'),
+      limitSlider: bar.querySelector('.element-ui-limit-slider'),
       availabilityOutput: panel.querySelector('.element-ui-availability output'),
       windowId: panel.dataset.windowId,
       balanceKey: `${panelChapter}:${panel.dataset.windowId}`,
       isWater: panel.dataset.windowId === 'voda',
       isLight: panel.dataset.windowId === 'svetlo',
-      prevTop: '', prevBottom: '', prevTopZero: null, prevBottomZero: null, prevTopShorter: null,
-      prevAvail: '', prevDisabled: null, prevSliderVal: '', prevAria: ''
+      prevTop: '', prevBottom: '', prevTopZero: null, prevBottomZero: null,
+      prevAvail: '', prevDisabled: null, prevSliderVal: '', prevAria: '',
+      prevLimit: '', prevLimitDisabled: null, prevLimitVal: '', prevLimitAria: ''
     });
   }
   const respByChapter = new Map();
@@ -781,7 +725,7 @@ export function createTreeAnnotations({ shell, model, createSeasonControl, setEl
   for (const output of shell.querySelectorAll('[data-stock-source]')) {
     const stock = output.closest('.element-ui-stock');
     const panel = output.closest('.element-ui-okno');
-    const panelChapter = panel?.dataset.chapter || (output.closest('.photosynthesis-stock-prototypes') ? 'stock-prototypes' : null);
+    const panelChapter = panel?.dataset.chapter;
     if (!stock || !panelChapter) continue;
     let list = stockByChapter.get(panelChapter);
     if (!list) { list = []; stockByChapter.set(panelChapter, list); }
@@ -789,23 +733,16 @@ export function createTreeAnnotations({ shell, model, createSeasonControl, setEl
       output,
       stock,
       trend: stock.querySelector('.element-ui-stock-trend'),
-      percInput: stock.querySelector('.photosynthesis-stock-percentage'),
       isSugar: output.dataset.stockSource === 'cukry',
       valueKey: output.dataset.stockValue,
       maxKey: output.dataset.stockMaximum,
-      prevDisplayed: '', prevTrend: null, prevTrendText: '', prevTrendTitle: '',
+      prevDisplayed: '', prevTrend: null, prevTrendDir: '', prevTrendTitle: '',
       prevUnavailable: null, prevRatio: ''
     });
   }
 
   return {
     get sugarProduction() { return model.totalSugarProduction; },
-    toggleStockPrototypes() {
-      setStockPrototypeMode(stockPrototypes.hidden);
-    },
-    closeStockPrototypes() {
-      setStockPrototypeMode(false);
-    },
     advanceSeason(chapter, playbackDelta) {
       return seasonControl.update(chapter, playbackDelta);
     },
@@ -818,7 +755,8 @@ export function createTreeAnnotations({ shell, model, createSeasonControl, setEl
         syncHighlights();
       }
       const activeBars = barsByChapter.get(chapter);
-      const draggingSlider = activeBars?.some(entry => entry.slider?.matches(':active')) || false;
+      const draggingSlider = activeBars?.some(entry =>
+        entry.slider?.matches(sliderIsActive) || entry.limitSlider?.matches(sliderIsActive)) || false;
       if (!chapterChanged && !draggingSlider && now - lastDomUpdate < 50) return;
       const dt = lastDomUpdate > 0 ? (now - lastDomUpdate) / 1000 : 0.05;
       lastDomUpdate = now;
@@ -827,7 +765,7 @@ export function createTreeAnnotations({ shell, model, createSeasonControl, setEl
       const clamp01 = value => (Number.isFinite(value) ? Math.max(0, Math.min(1, value)) : 0);
       const balanceValues = windowId => {
         const clean = value => (Number.isFinite(value) && value > 0 ? value : 0);
-        if (windowId === 'svetlo') return [clean(model.light) * 100, clean(model.activity) * 100];
+        if (windowId === 'svetlo') return [clean(model.light) * 100, clean(model.lightConsumption) * 100];
         if (windowId === 'voda') return [clean(model.waterInput) * 60, clean(model.waterConsumption) * 60];
         if (windowId === 'kyslik') return [clean(model.oxygenGramsPerMinute), clean(model.respirationOxygen)];
         if (windowId === 'co2') return [clean(model.respirationCO2), clean(model.co2GramsPerMinute)];
@@ -836,10 +774,11 @@ export function createTreeAnnotations({ shell, model, createSeasonControl, setEl
       };
       if (activeBars) {
         for (const entry of activeBars) {
-          const { bar, slider, availabilityOutput, windowId, balanceKey, isWater, isLight } = entry;
-          const maxWater = Number(slider?.dataset.scaleMax) || waterAvailabilityMax(model);
+          const { bar, slider, limitSlider, availabilityOutput, windowId, balanceKey, isWater, isLight } = entry;
+          const maxWater = waterAvailabilityMax(model);
           const [rawTop, rawBottom] = balanceValues(windowId);
-          const topValue = slider?.matches(':active')
+          const activelyAdjusted = Boolean(slider?.matches(sliderIsActive) || limitSlider?.matches(sliderIsActive));
+          const topValue = activelyAdjusted
             ? (smoothedValues.set(`${balanceKey}:top`, rawTop), rawTop)
             : vyhladitHodnotu(smoothedValues, `${balanceKey}:top`, rawTop, dt);
           const bottomValue = vyhladitHodnotu(smoothedValues, `${balanceKey}:bottom`, rawBottom, dt);
@@ -852,7 +791,8 @@ export function createTreeAnnotations({ shell, model, createSeasonControl, setEl
           // Match the precision of the readouts: whole percentages, otherwise one decimal.
           const minimumVisible = isLight ? 0.5 : 0.05;
           const topRatio = topValue >= minimumVisible ? clamp01(topValue / scaleMax) : 0;
-          const bottomRatio = bottomValue >= minimumVisible ? clamp01(bottomValue / scaleMax) : 0;
+          const visibleBottom = isLight ? Math.min(bottomValue, topValue) : bottomValue;
+          const bottomRatio = visibleBottom >= minimumVisible ? clamp01(visibleBottom / scaleMax) : 0;
           const topRatioStr = String(topRatio);
           const bottomRatioStr = String(bottomRatio);
           if (entry.prevTop !== topRatioStr) {
@@ -873,10 +813,36 @@ export function createTreeAnnotations({ shell, model, createSeasonControl, setEl
             entry.prevBottomZero = bottomZero;
             bar.classList.toggle('is-bottom-zero', bottomZero);
           }
-          const topShorter = topRatio <= bottomRatio;
-          if (entry.prevTopShorter !== topShorter) {
-            entry.prevTopShorter = topShorter;
-            bar.classList.toggle('is-top-shorter', topShorter);
+
+          if (limitSlider) {
+            const disabled = !model.ready;
+            if (entry.prevLimitDisabled !== disabled) {
+              entry.prevLimitDisabled = disabled;
+              limitSlider.disabled = disabled;
+            }
+            if (!limitSlider.matches(sliderIsActive)) {
+              const fraction = windowId === 'cukry'
+                ? clamp01(model.sugarProductionCap)
+                : clamp01(model.waterAvailabilityCap);
+              const percent = Math.round(fraction * 100);
+              const limitRatioStr = String(percent / 100);
+              if (entry.prevLimit !== limitRatioStr) {
+                entry.prevLimit = limitRatioStr;
+                bar.style.setProperty('--balance-limit-ratio', limitRatioStr);
+              }
+              const limitVal = String(percent);
+              if (entry.prevLimitVal !== limitVal) {
+                entry.prevLimitVal = limitVal;
+                limitSlider.value = limitVal;
+              }
+              const ariaText = `${percent} %`;
+              if (entry.prevLimitAria !== ariaText) {
+                entry.prevLimitAria = ariaText;
+                limitSlider.setAttribute('aria-valuetext', ariaText);
+                const limitLabel = windowId === 'cukry' ? 'Omezení produkce' : 'Omezení dostupnosti';
+                limitSlider.title = `${limitLabel}: ${ariaText}`;
+              }
+            }
           }
 
           if (isLight && slider) {
@@ -892,43 +858,27 @@ export function createTreeAnnotations({ shell, model, createSeasonControl, setEl
               entry.prevDisabled = disabled;
               slider.disabled = disabled;
             }
-            if (disabled || !slider.matches(':active')) {
-              const sliderVal = String(Math.round(lightLevel * 1000));
+            const lightSetting = clamp01(model.manualLightAvailability ?? 1);
+            if (!slider.matches(sliderIsActive)) {
+              bar.style.setProperty('--balance-limit-ratio', String(lightSetting));
+              const sliderVal = String(Math.round(lightSetting * 1000));
               if (entry.prevSliderVal !== sliderVal) {
                 entry.prevSliderVal = sliderVal;
                 slider.value = sliderVal;
               }
             }
-            const ariaText = `${percent} procent`;
+            const ariaText = `${Math.round(lightSetting * 100)} procent`;
             if (entry.prevAria !== ariaText) {
               entry.prevAria = ariaText;
               slider.setAttribute('aria-valuetext', ariaText);
             }
             continue;
           }
-          if (slider) {
-            const waterLevel = clamp01(model.waterInput / maxWater);
-            if (!slider.matches(':active')) {
-              const sliderVal = String(Math.round(waterLevel * 1000));
-              if (entry.prevSliderVal !== sliderVal) {
-                entry.prevSliderVal = sliderVal;
-                slider.value = sliderVal;
-              }
-            }
+          if (isWater && availabilityOutput) {
             const displayed = Number.isFinite(model.waterInput) ? (model.waterInput * 60).toLocaleString('cs-CZ', { maximumFractionDigits: 1, minimumFractionDigits: 1 }) : '—';
-            if (availabilityOutput && entry.prevAvail !== displayed) {
+            if (entry.prevAvail !== displayed) {
               entry.prevAvail = displayed;
               availabilityOutput.textContent = displayed;
-            }
-            const ariaText = `${displayed} litrů za hodinu`;
-            if (entry.prevAria !== ariaText) {
-              entry.prevAria = ariaText;
-              slider.setAttribute('aria-valuetext', ariaText);
-            }
-            const disabled = !model.ready;
-            if (entry.prevDisabled !== disabled) {
-              entry.prevDisabled = disabled;
-              slider.disabled = disabled;
             }
           }
         }
@@ -960,20 +910,10 @@ export function createTreeAnnotations({ shell, model, createSeasonControl, setEl
         seasonRow.hidden = seasonHidden;
       }
       if (chapter === 'intro' || !model.ready) return;
-      const stockGroups = [stockByChapter.get(chapter)];
-      if (!stockPrototypes.hidden) stockGroups.push(stockByChapter.get('stock-prototypes'));
-      for (const activeStocks of stockGroups) {
-        if (!activeStocks) continue;
+      const activeStocks = stockByChapter.get(chapter);
+      if (activeStocks) {
         for (const entry of activeStocks) {
-          const { output, stock, trend, percInput, isSugar, valueKey, maxKey } = entry;
-          if (stock.classList.contains('is-percentage')) {
-            const val = percInput.value;
-            if (entry.prevDisplayed !== val) {
-              entry.prevDisplayed = val;
-              output.value = val;
-            }
-            continue;
-          }
+          const { output, stock, trend, isSugar, valueKey, maxKey } = entry;
           const value = isSugar ? model.sugarReserve / 1000 : model[valueKey];
           const maximum = isSugar ? model.sugarCapacity / 1000 : model[maxKey];
           const available = Number.isFinite(value) && Number.isFinite(maximum) && maximum > 0;
@@ -988,25 +928,32 @@ export function createTreeAnnotations({ shell, model, createSeasonControl, setEl
               entry.prevTrend = true;
               trend.hidden = true;
             }
-          } else if (value !== previous) {
-            const growing = value > previous;
-            const trendText = growing ? '→' : '←';
-            const trendTitle = growing ? 'Zásoba roste' : 'Zásoba klesá';
-            if (entry.prevTrendText !== trendText) {
-              entry.prevTrendText = trendText;
-              trend.textContent = trendText;
-            }
-            if (entry.prevTrendTitle !== trendTitle) {
-              entry.prevTrendTitle = trendTitle;
-              trend.title = trendTitle;
-              trend.setAttribute('aria-label', trendTitle);
-            }
-            if (entry.prevTrend !== false) {
-              entry.prevTrend = false;
-              trend.hidden = false;
+            previousStocks.set(output, available ? { value, rate: 0 } : undefined);
+          } else {
+            const instRate = dt > 0 ? (value - previous.value) / dt : 0;
+            const alpha = 1 - Math.exp(-Math.min(dt, 0.5) / 3.0);
+            const rate = previous.rate + alpha * (instRate - previous.rate);
+            previousStocks.set(output, { value, rate });
+            const deadband = maximum * 0.0002;
+            if (Math.abs(rate) > deadband) {
+              const growing = rate > 0;
+              const trendDir = growing ? 'up' : 'down';
+              const trendTitle = growing ? 'Zásoba roste' : 'Zásoba klesá';
+              if (entry.prevTrendDir !== trendDir) {
+                entry.prevTrendDir = trendDir;
+                trend.dataset.direction = trendDir;
+              }
+              if (entry.prevTrendTitle !== trendTitle) {
+                entry.prevTrendTitle = trendTitle;
+                trend.title = trendTitle;
+                trend.setAttribute('aria-label', trendTitle);
+              }
+              if (entry.prevTrend !== false) {
+                entry.prevTrend = false;
+                trend.hidden = false;
+              }
             }
           }
-          previousStocks.set(output, available ? value : undefined);
           const unavailable = !available;
           if (entry.prevUnavailable !== unavailable) {
             entry.prevUnavailable = unavailable;
@@ -1018,15 +965,6 @@ export function createTreeAnnotations({ shell, model, createSeasonControl, setEl
             stock.style.setProperty('--balance-top-ratio', ratioStr);
           }
         }
-      }
-      if (chapter !== 'prototype') return;
-      const text = `${stockKg.format(model.sugarReserve / 1000)} kg`;
-      if (prevProtoSugarText !== text && sugarStockOutput.value !== text) {
-        prevProtoSugarText = text;
-        sugarStockOutput.value = text;
-      }
-      for (const prototype of prototypes) {
-        prototype.update(sugarProduction, sugarConsumption, model.sugarCapacity, model.sugarReserve);
       }
     }
   };

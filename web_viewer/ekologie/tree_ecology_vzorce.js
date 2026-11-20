@@ -12,6 +12,10 @@ export const vzorce = {
     normalizace: { activeLeafArea: 'leafArea' },
     rozsah: [0, 1],
   },
+  lightConsumption: {
+    vstupy: ['light', 'activity'],
+    rozsah: [0, 1],
+  },
   glucoseGramsPerMinute: {
     vstupy: ['activeLeafArea', 'leafGrowth', 'photosynthesisEfficiency', 'glucoseConversion'],
   },

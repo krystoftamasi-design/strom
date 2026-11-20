@@ -44,7 +44,8 @@ export function seasonForMonthClock(clock) {
 export function solarHoursForMonthClock(clock) {
   const month = Math.floor(clock);
   const progress = clock - month;
-  const daylightShare = 20 / 24;
+  // A month takes 24 / 0.45 seconds at 1×. Keep two real seconds for the night.
+  const daylightShare = 1 - (2 * 0.45) / 24;
   const elapsedHours = progress < daylightShare
     ? 12 * progress / daylightShare
     : 12 + 12 * (progress - daylightShare) / (1 - daylightShare);

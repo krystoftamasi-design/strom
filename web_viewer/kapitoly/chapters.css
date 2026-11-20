@@ -204,3 +204,42 @@ body.has-chapters .chapter-nav [data-open-chapter]::after {
 /* Time anchors for the two chapter layouts. */
 body.has-chapters[data-chapter="transpiration"] .hud-bottom { top: 16%; bottom: auto; }
 body.has-chapters[data-chapter="photosynthesis"] .hud-bottom { top: auto; bottom: 8%; }
+.chapter-sun-title {
+  display: none;
+  position: fixed;
+  inset: 50% auto auto 50%;
+  translate: -50% -50%;
+  z-index: 11;
+  margin: 0;
+  pointer-events: none;
+  color: #fff8df;
+  font: 300 clamp(5rem, 16vmin, 14rem)/1 'Nohemi', sans-serif;
+  text-shadow: 0 1px 0.18em #181818;
+}
+
+body:is([data-chapter="transpiration"], [data-chapter="seeds"], [data-chapter="roots"]) .chapter-sun-title {
+  display: block;
+}
+
+body:is([data-chapter="transpiration"], [data-chapter="seeds"], [data-chapter="roots"]) :is(#canvas3d, .chapter-panel, .hud-bottom, #controlsPanel) {
+  filter: blur(16px);
+}
+
+body:is([data-chapter="transpiration"], [data-chapter="seeds"])::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: 10;
+  background: rgba(0, 0, 0, 0.24);
+  pointer-events: none;
+}
+
+@media (pointer: coarse) {
+  body.has-chapters .chapter-nav button {
+    padding-block: 8px;
+  }
+}
+
+body:is([data-chapter="transpiration"], [data-chapter="seeds"]) .chapter-nav {
+  z-index: 12;
+}

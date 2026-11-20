@@ -69,8 +69,8 @@ history:
 - `ekologie/tree_ecology.js` poskytuje živé hodnoty modelu.
 - `ekologie/tree_ecology_vzorce.js` obsahuje společné výpočty a jejich vstupy.
 - `okna/element_ui_okna_veliciny.js` určuje popisky, témata, jednotky a formát čísel.
-- V oknech Fotosyntézy se vykreslují dva údaje na okno včetně produkce a spotřeby O₂, CO₂ a cukrů. Posuvník dostupnosti vody volá `model.setWaterInput`.
-- Volitelný záznam `zasoba` rozšíří okno o druhý pruh. Voda čte vlastnosti modelu podle položek `hodnota` a `maximum`. Varianta `zdroj: 'cukry'` přebírá aktuální zásobu a kapacitu ze společné sezónní bilance používané i v Prototypu. Podíl určuje polohu značky Z a množství se zobrazuje v zadané jednotce.
+- V oknech Fotosyntézy se vykreslují dva údaje na okno na oddělených kolejích včetně produkce a spotřeby O₂, CO₂ a cukrů. Posuvník světla volá `model.setLightAvailability`; červené pohyblivé konce oken se zásobou fungují jako horní strop přes `model.sugarProductionCap` (Cukry) a `model.waterAvailabilityCap` (Voda).
+- Volitelný záznam `zasoba` rozšíří okno o kruhový ukazatel zásoby s plněním zleva doprava a směrovou šipkou. Voda čte vlastnosti modelu podle položek `hodnota` a `maximum`. Varianta `zdroj: 'cukry'` přebírá aktuální zásobu a kapacitu ze společné sezónní bilance. Podíl určuje vodorovné plnění kruhu a množství se zobrazuje v zadané jednotce.
 
 ### Vstupy výpočtu
 
