@@ -1,6 +1,6 @@
 import { zobrazitHodnotu, vyhladitHodnotu } from '../okna/element_ui_okna_veliciny.js?v=light-consumption-1';
 import { SEASONS } from '../ekologie/tree_ecology.js?v=affinity-cap-1';
-import { createTreeAnnotations } from '../okna/tree_annotations.js?v=filled-stock-1';
+import { createTreeAnnotations } from '../okna/tree_annotations.js?v=filled-stock-2';
 
 const chapters = [
   ['seasons', 'Období'], ['photosynthesis', 'Fotosyntéza'], ['transpiration', 'Transpirace'],

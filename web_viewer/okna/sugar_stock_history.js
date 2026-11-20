@@ -70,6 +70,10 @@ export function createSugarStockHistory() {
       const end = reference[today + 1]?.start;
       const referenceNow = start + (end - start) * (current.day - today);
       const offset = current.grams - referenceNow;
+      // Close only the faded guide at the year seam. Recorded values stay intact.
+      const januaryStock = daily[0]?.dayIndex === 0 ? daily[0].grams : reference[0]?.start;
+      const yearEndOffset = januaryStock - reference[DAYS_IN_YEAR]?.start;
+      const correction = day => offset + (yearEndOffset - offset) * (day - current.day) / remainingDays;
       for (let day = 0; day < reference.length; day++) {
         const next = reference[day + 1];
         if (!next || recorded.has(day)) continue;
@@ -77,8 +81,8 @@ export function createSugarStockHistory() {
         const fromDay = future ? Math.max(day, current.day) : day;
         const ahead = Math.max(0, fromDay - current.day) / remainingDays;
         const band = future ? Math.min(pastBand - 1, Math.floor(ahead * pastBand)) : pastBand;
-        const fromGrams = day === today ? current.grams : reference[day].start + (future ? offset : 0);
-        const toGrams = next.start + (future ? offset : 0);
+        const fromGrams = day === today ? current.grams : reference[day].start + (future ? correction(fromDay) : 0);
+        const toGrams = day + 1 === DAYS_IN_YEAR ? januaryStock : next.start + (future ? correction(day + 1) : 0);
         const runs = referenceRuns[band];
         if (runs.at(-1)?.at(-1)?.day !== fromDay) runs.push([{ day: fromDay, grams: fromGrams }]);
         runs.at(-1).push({ day: day + 1, grams: toGrams });
