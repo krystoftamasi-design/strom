@@ -943,9 +943,11 @@ export function createTreeAnnotations({ shell, model, createSeasonControl, setEl
       const activeResp = respByChapter.get(chapter);
       if (activeResp) {
         for (const entry of activeResp) {
-          const raw = entry.key === 'respirationSugar' ? sugarConsumption : model[entry.key];
+          const isSugar = entry.key === 'respirationSugar';
+          const raw = isSugar ? sugarConsumption : model[entry.key];
           const value = vyhladitHodnotu(smoothedValues, entry.cacheKey, raw, dt);
-          const text = model.ready && Number.isFinite(value) ? value.toLocaleString('cs-CZ', { minimumFractionDigits: 1, maximumFractionDigits: 1 }) : '—';
+          const displayed = isSugar && raw >= 0 ? (raw === 0 ? 0 : Math.max(0.1, value)) : value;
+          const text = model.ready && Number.isFinite(displayed) ? displayed.toLocaleString('cs-CZ', { minimumFractionDigits: 1, maximumFractionDigits: 1 }) : '—';
           if (entry.prevText !== text) {
             entry.prevText = text;
             entry.output.textContent = text;
