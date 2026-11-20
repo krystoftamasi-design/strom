@@ -1,0 +1,38 @@
+name: Publish web on GitHub Pages
+
+on:
+  push:
+    branches: [codex/zdurazneni-cukru]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          lfs: true
+      - uses: actions/configure-pages@v5
+      - name: Prepare web files
+        run: |
+          mkdir -p "$RUNNER_TEMP/strom-pages"
+          cp -R web_viewer obrazky "$RUNNER_TEMP/strom-pages/"
+          printf '%s\n' '<!doctype html><html lang="cs"><meta charset="utf-8"><meta http-equiv="refresh" content="0; url=web_viewer/index.html"><title>Život buku</title><a href="web_viewer/index.html">Otevřít web</a></html>' > "$RUNNER_TEMP/strom-pages/index.html"
+          test "$(head -c 4 "$RUNNER_TEMP/strom-pages/web_viewer/web_assets/strom_web_fast.glb")" = glTF
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: ${{ runner.temp }}/strom-pages
+      - id: deployment
+        uses: actions/deploy-pages@v4
