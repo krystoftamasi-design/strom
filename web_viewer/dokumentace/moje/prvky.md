@@ -45,7 +45,7 @@ history:
 
 #### Ovládání času
 
-- Období a Fotosyntéza mají vlevo shodné rozložení nadpisu a průvodce. Datum tvoří první řádek ovládání pod průvodcem, tlačítka druhý řádek. Rozložení je společné i na úzké obrazovce.
+- Období a Fotosyntéza mají vlevo shodné rozložení nadpisu a průvodce. Tlačítka jsou pod průvodcem a datum zůstává u levého dolního okraje. Rozložení je společné i na úzké obrazovce.
 - Tlačítka jsou zleva zpomalení 0,5×, pauza, zrychlení a reset. Opakovaným kliknutím na zrychlení se postupně nastaví rychlost 2×, 4× a běžná rychlost. Tlačítko resetu obnoví výchozí zdravý stav stromu (plnou korunu, zásoby, automatické přísuny a rychlost 1×) a přepne na léto. V ostatních kapitolách mají tlačítka 48 × 48 px a ikony 28 × 28 px; v aktivním stavu mají kruhový obrys. Panel je bez výplně a barva ovládání se přizpůsobuje dni a noci.
 - Při výchozí rychlosti 1× trvá automatický modelový rok 9 minut a 36 sekund. Pauza zastaví běh času a dalším stiskem jej obnoví. Volba jiné rychlosti obnoví běh zvolenou rychlostí. Opětovný stisk zpomalení vrátí 1×.
 - V Úvodu jsou tlačítka běhu času skrytá a animace běží automaticky.
