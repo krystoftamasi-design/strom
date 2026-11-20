@@ -2,7 +2,7 @@ import { oknaPodleKapitol, kontextoveTexty, pruvodceTranspiraci } from './elemen
 import { veliciny, vstupyVzorce, ohlasitChybuOken, vyhladitHodnotu } from './element_ui_okna_veliciny.js?v=light-consumption-1';
 import { zkontrolovatOkna } from './element_ui_okna_kontrola.js?v=seeds-1';
 import { createSugarStockHistory } from './sugar_stock_history.js?v=filled-stock-4';
-import { simulateAnnualSugarStock } from '../ekologie/rocni_zasoba_cukru.js?v=annual-stock-1';
+import { simulateAnnualStocks } from '../ekologie/rocni_zasoba_cukru.js?v=annual-stocks-1';
 
 // Original embedded assets from ui_new.svg, at their exported stroke widths.
 const strokes = {
@@ -267,10 +267,8 @@ function createElementUiOkno({ panel, body, reveal, toggle, model, definition })
       panel.classList.add('element-ui-flow-window');
       if (hasStock) {
         const { zdroj = 'model', hodnota, maximum, jednotka } = definition.zasoba;
-        const hasHistory = zdroj === 'cukry';
         const stock = document.createElement('div');
-        stock.className = 'element-ui-stock';
-        stock.classList.toggle('element-ui-stock--history', hasHistory);
+        stock.className = 'element-ui-stock element-ui-stock--history';
         const label = document.createElement('div');
         label.className = 'chapter-metric element-ui-stock-label';
         const labelText = document.createElement('span');
@@ -278,22 +276,6 @@ function createElementUiOkno({ panel, body, reveal, toggle, model, definition })
         label.append(labelText);
         const dial = document.createElement('div');
         dial.className = 'element-ui-stock-dial';
-        if (!hasHistory) {
-          const dialClip = document.createElement('span');
-          dialClip.className = 'element-ui-stock-dial-clip';
-          dialClip.setAttribute('aria-hidden', 'true');
-          const dialFill = document.createElement('span');
-          dialFill.className = 'element-ui-stock-dial-fill';
-          dialClip.append(dialFill);
-          const dialRing = document.createElement('span');
-          dialRing.className = 'element-ui-stock-dial-ring';
-          dialRing.setAttribute('aria-hidden', 'true');
-          const trend = document.createElement('span');
-          trend.className = 'element-ui-stock-trend';
-          trend.setAttribute('role', 'img');
-          trend.hidden = true;
-          dial.append(dialClip, dialRing, trend);
-        }
         const metric = document.createElement('div');
         metric.className = 'chapter-metric element-ui-stock-readout';
         const value = document.createElement('strong');
@@ -311,7 +293,7 @@ function createElementUiOkno({ panel, body, reveal, toggle, model, definition })
         value.append(output, unit);
         metric.append(value);
         stock.append(label, dial);
-        (hasHistory ? dial : stock).append(metric);
+        dial.append(metric);
         footer.append(stock);
       }
     }
@@ -333,7 +315,6 @@ export function createTreeAnnotations({ shell, model, createSeasonControl, setEl
   const contextSelections = new Map();
   const contextGuides = new Map();
   let activeChapter = null;
-  const previousStocks = new WeakMap();
   const previousHighlights = new Map();
   function syncHighlights() {
     const activeTags = new Set();
@@ -729,16 +710,20 @@ export function createTreeAnnotations({ shell, model, createSeasonControl, setEl
     if (output) seedOutputs.push({ output, stavObdobi: definition.stavObdobi, prevText: '' });
   }
   const stockByChapter = new Map();
-  const sugarHistory = createSugarStockHistory();
-  const sugarDial = shell.querySelector('.element-ui-stock--history .element-ui-stock-dial');
-  let renderSugarHistory;
-  let prepareSugarHistory;
-  if (sugarDial) {
+  const stocks = [];
+  let reference = {};
+  let referenceKey;
+  for (const output of shell.querySelectorAll('[data-stock-source]')) {
+    const stock = output.closest('.element-ui-stock');
+    const panelChapter = output.closest('.element-ui-okno')?.dataset.chapter;
+    const dial = stock?.querySelector('.element-ui-stock-dial');
+    if (!dial || !panelChapter) continue;
+    const isSugar = output.dataset.stockSource === 'cukry';
     const chart = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
     chart.classList.add('element-ui-stock-history');
     chart.setAttribute('viewBox', '0 0 100 100');
     chart.setAttribute('role', 'img');
-    chart.setAttribute('aria-label', 'Roční průběh zásoby cukrů od ledna nahoře po směru hodin');
+    chart.setAttribute('aria-label', `Roční průběh zásoby ${isSugar ? 'cukrů' : 'vody'} od ledna nahoře po směru hodin`);
     chart.innerHTML = `
       <path class="stock-history-fill"/>
       <circle cx="50" cy="50" r="43" class="stock-history-capacity"/>
@@ -746,22 +731,16 @@ export function createTreeAnnotations({ shell, model, createSeasonControl, setEl
       <line class="stock-history-needle"/>
       <circle class="stock-history-dot" r="3"/>
     `;
-    sugarDial.prepend(chart);
+    dial.prepend(chart);
     const fill = chart.querySelector('.stock-history-fill');
     const needle = chart.querySelector('.stock-history-needle');
     const dot = chart.querySelector('.stock-history-dot');
-    let reference = [];
-    let referenceKey;
-    prepareSugarHistory = () => {
-      const { height, woodVolume, crownArea, sugarCapacity } = model;
-      const key = [height, woodVolume, crownArea, sugarCapacity].join('/');
-      if (model.ready && referenceKey !== key) {
-        reference = simulateAnnualSugarStock(model, sugarCapacity);
-        referenceKey = key;
-      }
-    };
-    renderSugarHistory = () => {
-      const geometry = sugarHistory.geometry(model.sugarCapacity, reference);
+    const history = createSugarStockHistory();
+    const referenceName = isSugar ? 'sugar' : 'water';
+    const valueKey = isSugar ? 'sugarReserve' : output.dataset.stockValue;
+    const maxKey = isSugar ? 'sugarCapacity' : output.dataset.stockMaximum;
+    function render() {
+      const geometry = history.geometry(model[maxKey], reference[referenceName]);
       fill.setAttribute('d', geometry?.path ?? '');
       needle.style.visibility = geometry ? 'visible' : 'hidden';
       dot.style.visibility = needle.style.visibility;
@@ -769,37 +748,35 @@ export function createTreeAnnotations({ shell, model, createSeasonControl, setEl
       ['x1', 'y1', 'x2', 'y2'].forEach((key, index) => needle.setAttribute(key, geometry.needle[index]));
       dot.setAttribute('cx', geometry.dot[0]);
       dot.setAttribute('cy', geometry.dot[1]);
-    };
-    document.getElementById('btnTimeReset')?.addEventListener('click', () => sugarHistory.clear());
-  }
-  for (const output of shell.querySelectorAll('[data-stock-source]')) {
-    const stock = output.closest('.element-ui-stock');
-    const panel = output.closest('.element-ui-okno');
-    const panelChapter = panel?.dataset.chapter;
-    if (!stock || !panelChapter) continue;
+    }
+    const entry = { output, history, render, isSugar, valueKey, maxKey };
+    stocks.push(entry);
     let list = stockByChapter.get(panelChapter);
     if (!list) { list = []; stockByChapter.set(panelChapter, list); }
-    list.push({
-      output,
-      stock,
-      trend: stock.querySelector('.element-ui-stock-trend'),
-      isSugar: output.dataset.stockSource === 'cukry',
-      valueKey: output.dataset.stockValue,
-      maxKey: output.dataset.stockMaximum,
-      prevDisplayed: '', prevTrend: null, prevTrendDir: '', prevTrendTitle: '',
-      prevUnavailable: null, prevRatio: ''
-    });
+    list.push(entry);
   }
+  document.getElementById('btnTimeReset')?.addEventListener('click', () => {
+    for (const { history } of stocks) history.clear();
+  });
 
   return {
-    prepareSugarHistory() { prepareSugarHistory?.(); },
+    prepareStockHistory() {
+      const { height, woodVolume, crownArea, sugarCapacity } = model;
+      const key = [height, woodVolume, crownArea, sugarCapacity].join('/');
+      if (stocks.length && model.ready && referenceKey !== key) {
+        reference = simulateAnnualStocks(model, sugarCapacity);
+        referenceKey = key;
+      }
+    },
     get sugarProduction() { return model.totalSugarProduction; },
     advanceSeason(chapter, playbackDelta) {
       return seasonControl.update(chapter, playbackDelta);
     },
     update(chapter, continuous) {
-      if (sugarDial && chapter !== 'intro') {
-        sugarHistory.sample(model.seasonPosition, model.sugarReserve, continuous);
+      if (chapter !== 'intro') {
+        for (const { history, valueKey } of stocks) {
+          history.sample(model.seasonPosition, model[valueKey], continuous);
+        }
       }
       const now = performance.now();
       const chapterChanged = chapter !== activeChapter;
@@ -812,9 +789,6 @@ export function createTreeAnnotations({ shell, model, createSeasonControl, setEl
       const draggingSlider = activeBars?.some(entry =>
         entry.slider?.matches(sliderIsActive) || entry.limitSlider?.matches(sliderIsActive)) || false;
       if (!chapterChanged && !draggingSlider && now - lastDomUpdate < 50) return;
-      if (chapter === 'photosynthesis') {
-        renderSugarHistory?.();
-      }
       const dt = lastDomUpdate > 0 ? (now - lastDomUpdate) / 1000 : 0.05;
       lastDomUpdate = now;
       const sugarProduction = model.totalSugarProduction;
@@ -972,58 +946,12 @@ export function createTreeAnnotations({ shell, model, createSeasonControl, setEl
       const activeStocks = stockByChapter.get(chapter);
       if (activeStocks) {
         for (const entry of activeStocks) {
-          const { output, stock, trend, isSugar, valueKey, maxKey } = entry;
-          const value = isSugar ? model.sugarReserve / 1000 : model[valueKey];
-          const maximum = isSugar ? model.sugarCapacity / 1000 : model[maxKey];
-          const available = Number.isFinite(value) && Number.isFinite(maximum) && maximum > 0;
+          const { output, render, isSugar, valueKey, maxKey } = entry;
+          const value = model[valueKey] / (isSugar ? 1000 : 1);
+          const available = Number.isFinite(value) && Number.isFinite(model[maxKey]) && model[maxKey] > 0;
           const displayed = available ? stockNumber.format(value) : '—';
-          if (entry.prevDisplayed !== displayed && output.value !== displayed) {
-            entry.prevDisplayed = displayed;
-            output.value = displayed;
-          }
-          if (!trend) continue;
-          const previous = previousStocks.get(output);
-          if (!available || previous === undefined) {
-            if (entry.prevTrend !== true) {
-              entry.prevTrend = true;
-              trend.hidden = true;
-            }
-            previousStocks.set(output, available ? { value, rate: 0 } : undefined);
-          } else {
-            const instRate = dt > 0 ? (value - previous.value) / dt : 0;
-            const alpha = 1 - Math.exp(-Math.min(dt, 0.5) / 3.0);
-            const rate = previous.rate + alpha * (instRate - previous.rate);
-            previousStocks.set(output, { value, rate });
-            const deadband = maximum * 0.0002;
-            if (Math.abs(rate) > deadband) {
-              const growing = rate > 0;
-              const trendDir = growing ? 'up' : 'down';
-              const trendTitle = growing ? 'Zásoba roste' : 'Zásoba klesá';
-              if (entry.prevTrendDir !== trendDir) {
-                entry.prevTrendDir = trendDir;
-                trend.dataset.direction = trendDir;
-              }
-              if (entry.prevTrendTitle !== trendTitle) {
-                entry.prevTrendTitle = trendTitle;
-                trend.title = trendTitle;
-                trend.setAttribute('aria-label', trendTitle);
-              }
-              if (entry.prevTrend !== false) {
-                entry.prevTrend = false;
-                trend.hidden = false;
-              }
-            }
-          }
-          const unavailable = !available;
-          if (entry.prevUnavailable !== unavailable) {
-            entry.prevUnavailable = unavailable;
-            stock.classList.toggle('is-unavailable', unavailable);
-          }
-          const ratioStr = String(available ? clamp01(value / maximum) : 0);
-          if (entry.prevRatio !== ratioStr) {
-            entry.prevRatio = ratioStr;
-            stock.style.setProperty('--balance-top-ratio', ratioStr);
-          }
+          if (output.value !== displayed) output.value = displayed;
+          render();
         }
       }
     }

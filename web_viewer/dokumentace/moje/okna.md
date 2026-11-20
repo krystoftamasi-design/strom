@@ -107,7 +107,7 @@ history:
 - Zobrazení vzorce: .
 - Vstup výpočtu: `voda`.
 - Hodnota: spotřeba vody v `l/h`, zobrazena na jedno desetinné místo.
-- Zásoba: aktuální množství dostupné vody ve stromě a kořenové půdě v litrech (výuková kapacita vystačí zhruba na 3–4 letní dny bez srážek). Kruhový ukazatel vpravo ukazuje podíl na kapacitě zásoby zleva doprava. Při běhu roku se její celodenní bilance započítává podle uplynulých kalendářních dní. Denní odpar se pro tuto bilanci průměruje s nocí. Údaj o spotřebě dál ukazuje okamžitou hodnotu.
+- Zásoba: aktuální množství dostupné vody ve stromě a kořenové půdě v litrech (výuková kapacita vystačí zhruba na 3–4 letní dny bez srážek). Vpravo je stejný roční kruhový graf jako u [Cukrů](#cukry), s výplní v barvě vody a hodnotou v litrech uprostřed. Graf používá živou zásobu vody a pro dny bez záznamu předpočítanou vodní bilanci. Při běhu roku se celodenní bilance započítává podle uplynulých kalendářních dní. Denní odpar se pro tuto bilanci průměruje s nocí. Údaj o spotřebě dál ukazuje okamžitou hodnotu.
 - Ovládání: červený pohyblivý konec horního pruhu funguje jako horní zarážka — automatický přísun vody omezuje až od chvíle, kdy se dotkne barevného pruhu; nad aktuální hodnotou přísun nemění.
 - Výchozí stav detailu: zavřený.
 - Související element: [Voda linka](elementy.md#voda-linka).

@@ -1552,7 +1552,7 @@ body.scene-night .tree-overlay .element-ui-flow-window {
 }
 
 @media (max-width: 700px) {
-  .tree-overlay .element-ui-okno[data-chapter="photosynthesis"][data-topic="sugar"] {
+  .tree-overlay .element-ui-okno[data-chapter="photosynthesis"]:is([data-topic="sugar"], [data-topic="water"]) {
     --photosynthesis-stock-width: min(33cqi, 58px);
   }
 

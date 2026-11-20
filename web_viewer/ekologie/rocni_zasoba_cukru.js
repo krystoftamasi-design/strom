@@ -105,7 +105,7 @@ export function createAnnualSugarCurve(tree, capacity) {
 }
 
 // Run the viewer's ecology on a separate tree under the default light and water settings.
-export function simulateAnnualSugarStock(tree, capacity) {
+export function simulateAnnualStocks(tree, capacity) {
   const sample = new TreeEcology();
   sample.setSeasonPosition(positionForDay(181));
   sample.configure({ height: tree.height, woodVolume: tree.woodVolume, crownArea: tree.crownArea });
@@ -131,13 +131,14 @@ export function simulateAnnualSugarStock(tree, capacity) {
 
   // Start from the default summer state, then carry that tree's reserves into January.
   for (let day = 181; day < daysPerYear; day++) advance(day);
-  const year = Array.from({ length: daysPerYear }, (_, day) => {
-    const start = sample.sugarReserve;
-    advance(day);
-    return { start };
-  });
-  year.push({ start: sample.sugarReserve });
-  return year;
+  const sugar = [];
+  const water = [];
+  for (let day = 0; day <= daysPerYear; day++) {
+    sugar.push({ start: sample.sugarReserve });
+    water.push({ start: sample.reserve });
+    if (day < daysPerYear) advance(day);
+  }
+  return { sugar, water };
 }
 
 export function sugarAtSeason(curve, position) {
