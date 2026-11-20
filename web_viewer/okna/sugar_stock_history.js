@@ -42,15 +42,29 @@ export function createSugarStockHistory() {
       }
       current = { date, year, day, grams };
     },
-    geometry(capacity) {
+    geometry(capacity, reference = []) {
       if (!current || !Number.isFinite(capacity) || capacity <= 0) return null;
       const radius = grams => INNER_RADIUS + (OUTER_RADIUS - INNER_RADIUS) * Math.max(0, Math.min(1, grams / capacity));
       const path = daily.map(({ day, grams, connected }) => {
         const xy = point(day, radius(grams)).join(' ');
         return connected ? `L${xy}` : `M${xy}h.01`;
       }).join(' ');
+      // Real samples replace the reference only where they form a continuous line.
+      const recorded = new Set(daily.filter(sample => sample.connected).map(sample => sample.dayIndex - 1));
+      const referencePaths = ['', '', '', ''];
+      const remainingDays = DAYS_IN_YEAR - current.day;
+      for (let day = 0; day < reference.length; day++) {
+        const next = reference[day + 1];
+        if (!next || recorded.has(day)) continue;
+        const ahead = Math.max(0, day - current.day) / remainingDays;
+        const band = Math.min(referencePaths.length - 1, Math.floor(ahead * referencePaths.length));
+        const from = point(day, radius(reference[day].start)).join(' ');
+        const to = point(day + 1, radius(next.start)).join(' ');
+        referencePaths[band] += `M${from}L${to}`;
+      }
       return {
         path,
+        referencePaths,
         needle: [...point(current.day, INNER_RADIUS - 4), ...point(current.day, OUTER_RADIUS + 3)],
         dot: point(current.day, radius(current.grams)),
       };

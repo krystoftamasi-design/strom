@@ -450,7 +450,7 @@ body[data-chapter="photosynthesis"] .tree-overlay .time-playback-panel > .elemen
 .element-ui-stock-history .stock-history-capacity { opacity: .45; }
 .element-ui-stock-history .stock-history-zero { opacity: .6; }
 .element-ui-stock-history .stock-history-ticks { opacity: .8; }
-.element-ui-stock-history .stock-history-line {
+.element-ui-stock-history :is(.stock-history-line, .stock-history-reference) {
   stroke: #e5241c;
   stroke-width: 3.5;
   stroke-linecap: round;
