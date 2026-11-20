@@ -70,38 +70,27 @@ export function createSugarStockHistory() {
     geometry(capacity, reference = []) {
       if (!current || !Number.isFinite(capacity) || capacity <= 0) return null;
       const radius = grams => INNER_RADIUS + (OUTER_RADIUS - INNER_RADIUS) * Math.max(0, Math.min(1, grams / capacity));
-      // Fill the elapsed year with live samples and use the typical year for skipped dates.
+      // Use last year's samples for unrecorded days, falling back to the typical year.
+      const previous = new Map(previousYear.map(sample => [sample.dayIndex, { start: sample.grams }]));
+      const guide = reference.map((entry, day) => previous.get(day) ?? entry);
       const elapsed = [];
       for (const sample of daily) {
         if (!sample.connected) {
           const previous = elapsed.at(-1);
           const startDay = previous?.day ?? 0;
           const firstMissingDay = previous ? Math.floor(startDay) + 1 : 0;
-          const startOffset = previous ? previous.grams - referenceStock(reference, startDay) : 0;
-          const endOffset = sample.grams - referenceStock(reference, sample.day);
-          for (let day = firstMissingDay; day < sample.day && day < reference.length; day++) {
+          const startOffset = previous ? previous.grams - referenceStock(guide, startDay) : 0;
+          const endOffset = sample.grams - referenceStock(guide, sample.day);
+          for (let day = firstMissingDay; day < sample.day && day < guide.length; day++) {
             const fraction = (day - startDay) / (sample.day - startDay);
             const offset = startOffset + (endOffset - startOffset) * fraction;
-            elapsed.push({ day, grams: reference[day].start + offset });
+            elapsed.push({ day, grams: guide[day].start + offset });
           }
         }
         elapsed.push(sample);
       }
-      let previousPath = '';
-      if (previousYear.length) {
-        const previous = new Map(previousYear.map(sample => [sample.dayIndex, sample.grams]));
-        const valueAt = day => previous.get(day) ?? reference[day]?.start;
-        const remaining = [{ day: current.day, grams: current.grams }];
-        for (let day = Math.floor(current.day) + 1; day < DAYS_IN_YEAR; day++) {
-          const grams = valueAt(day);
-          if (Number.isFinite(grams)) remaining.push({ day, grams });
-        }
-        const endValue = elapsed[0]?.grams;
-        if (Number.isFinite(endValue)) remaining.push({ day: DAYS_IN_YEAR, grams: endValue });
-        previousPath = fillRun(remaining, radius);
-      }
       return {
-        path: fillRun(elapsed, radius) + previousPath,
+        path: fillRun(elapsed, radius),
         needle: [...point(current.day, radius(current.grams)), ...point(current.day, OUTER_RADIUS + 8)],
         dot: point(current.day, radius(current.grams)),
       };
