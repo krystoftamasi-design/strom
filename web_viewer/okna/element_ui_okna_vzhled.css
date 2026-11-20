@@ -1383,7 +1383,7 @@ body.scene-night .chapter-context-guide .transpiration-legend {
   grid-template-columns: minmax(0, 1fr);
   grid-auto-rows: max-content;
   align-content: start;
-  row-gap: clamp(12px, 4vh, 36px);
+  row-gap: clamp(24px, 4.5vh, 48px);
   padding: 6px;
   overflow-x: hidden;
   overflow-y: auto;
@@ -1731,6 +1731,34 @@ body:is([data-chapter="photosynthesis"], [data-chapter="seasons"]) .season-date-
     grid-row: auto;
     width: min(100%, 94px);
     margin-top: 8px;
+  }
+}
+
+@container photosynthesis-windows (min-width: 281px) {
+  .tree-overlay .element-ui-okno[data-chapter="photosynthesis"][data-side="right"]:not(.collapsed) .element-ui-readout {
+    display: contents;
+  }
+
+  .tree-overlay .element-ui-okno[data-chapter="photosynthesis"][data-side="right"]:not(.collapsed) .element-ui-readout > header {
+    grid-column: 1;
+    grid-row: 1;
+  }
+
+  .tree-overlay .element-ui-okno[data-chapter="photosynthesis"][data-side="right"]:not(.collapsed) .element-ui-values {
+    grid-column: 1 / -1;
+    grid-row: 2;
+    margin-top: 12px;
+  }
+
+  .tree-overlay .element-ui-okno[data-chapter="photosynthesis"][data-side="right"]:not(.collapsed) .annotation-reveal {
+    grid-column: 2;
+    grid-row: 1;
+    margin: 0;
+    transform: translateY(-8px);
+  }
+
+  .tree-overlay .element-ui-okno[data-chapter="photosynthesis"][data-side="right"] .element-ui-values:has(> .element-ui-stock) {
+    grid-template-columns: minmax(0, 1fr) var(--photosynthesis-stock-width);
   }
 }
 

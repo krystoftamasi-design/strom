@@ -39,7 +39,7 @@ history:
 
 - Údaje tvoří svislý blok: nadpis → hodnota s jednotkou → vzorec nebo přehled vstupů. Ve Fotosyntéze je vzorec nebo přehled vstupů v detailu.
 - Detail Transpirace má vlastní posuv a je vpravo od údajů. V Semenaci je detail pod nadpisem. Hlavní okno používá variantu detailu pod údaji.
-- Ve Fotosyntéze se pravá okna po otevření rozšíří o pruhy a vysvětlení. Na širší obrazovce se vysvětlení objeví vedle pruhů. U Cukrů se detail otevírá pod ukazateli. Text je zarovnaný doleva a vzorec má 12 až 15 px.
+- Ve Fotosyntéze se pravá okna po otevření rozšíří o pruhy a vysvětlení. Na širší obrazovce je vysvětlení vedle nadpisu mírně výš a pruhy jsou pod ním přes šířku sloupce. U Cukrů se detail otevírá pod ukazateli. Text je zarovnaný doleva a vzorec má 12 až 15 px.
 - Nadpis zůstává na jednom řádku bez zmenšování podle délky; při nedostatku místa je dostupný vodorovný posuv.
 - Tlačítko +/− má vlastní prostor vedle nadpisu, odstup 8 px a viditelný fokus. Základní varianta má kruhový obrys o průměru 28 px.
 - Ve Fotosyntéze tvoří tlačítko původní štětcový kroužek z Affinity, široký 19 až 25 px, se symbolem +/− v průhledném středu. Otvor kroužku míří od detailu. Klikací plocha je 28 až 35 px a kroužek se při najetí na okno zesvětlí.
