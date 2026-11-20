@@ -13,36 +13,24 @@ function point(day, radius) {
   ];
 }
 
-function referenceStock(reference, day) {
-  const index = Math.floor(day);
-  const start = reference[index]?.start;
-  const end = reference[index + 1]?.start ?? start;
-  return start + (end - start) * (day - index);
-}
-
-function fillRun(run, radius) {
-  if (run.length < 2) return '';
-  const start = run[0].day;
-  const end = run.at(-1).day;
-  const edge = run.map(({ day, grams }) => point(day, radius(grams)).join(' ')).join('L');
-  const innerArc = day => `A${INNER_RADIUS} ${INNER_RADIUS} 0 0 0 ${point(day, INNER_RADIUS).join(' ')}`;
-  return `M${edge}L${point(end, INNER_RADIUS).join(' ')}${innerArc((end + start) / 2)}${innerArc(start)}Z`;
-}
+const innerEdge = `M${CENTER} ${CENTER - INNER_RADIUS}A${INNER_RADIUS} ${INNER_RADIUS} 0 0 0 ${CENTER} ${CENTER + INNER_RADIUS}A${INNER_RADIUS} ${INNER_RADIUS} 0 0 0 ${CENTER} ${CENTER - INNER_RADIUS}Z`;
 
 export function createSugarStockHistory() {
-  const daily = [];
+  const daily = new Array(DAYS_IN_YEAR);
   let current;
-  let previousYear = [];
+  let coordinates = [];
+  let cachedCapacity;
+  let cachedReference;
 
   function clear() {
-    daily.length = 0;
+    daily.fill(undefined);
     current = undefined;
-    previousYear = [];
+    coordinates = [];
   }
 
   return {
     clear,
-    sample(position, grams, continuous) {
+    sample(position, grams) {
       if (!Number.isFinite(position) || !Number.isFinite(grams)) return;
       const rawDate = seasonDayForPosition(position) + DAYS_IN_YEAR * Math.floor(position / 4);
       const wholeDay = Math.round(rawDate);
@@ -50,63 +38,33 @@ export function createSugarStockHistory() {
       const year = Math.floor(date / DAYS_IN_YEAR);
       const day = date - year * DAYS_IN_YEAR;
       const dayIndex = Math.floor(day);
-      if (current && year !== current.year && date > current.date) {
-        previousYear = year === current.year + 1 ? daily.slice() : [];
-        daily.length = 0;
-      } else if (current && date < current.date) {
-        clear();
-      }
-
-      const previousDay = daily.at(-1);
-      if (previousDay?.dayIndex === dayIndex) {
-        previousDay.day = day;
-        previousDay.grams = grams;
-      } else {
-        const connected = Boolean(continuous && previousDay?.dayIndex === dayIndex - 1);
-        daily.push({ dayIndex, day, grams, connected });
-      }
-      current = { date, year, day, grams };
+      if (current?.date === date && current.grams === grams) return;
+      if (current && date < current.date) clear();
+      // Each day keeps its last observed value until the clock visits it again.
+      current = { date, day, grams };
+      daily[dayIndex] = current;
+      coordinates[dayIndex] = undefined;
     },
     geometry(capacity, reference = []) {
       if (!current || !Number.isFinite(capacity) || capacity <= 0) return null;
       const radius = grams => INNER_RADIUS + (OUTER_RADIUS - INNER_RADIUS) * Math.max(0, Math.min(1, grams / capacity));
-      // Use last year's samples for unrecorded days, falling back to the typical year.
-      const previous = new Map(previousYear.map(sample => [sample.dayIndex, { start: sample.grams }]));
-      const guide = reference.map((entry, day) => previous.get(day) ?? entry);
-      const elapsed = [];
-      for (const sample of daily) {
-        if (!sample.connected) {
-          const previous = elapsed.at(-1);
-          const startDay = previous?.day ?? 0;
-          const firstMissingDay = previous ? Math.floor(startDay) + 1 : 0;
-          const startOffset = previous ? previous.grams - referenceStock(guide, startDay) : 0;
-          const endOffset = sample.grams - referenceStock(guide, sample.day);
-          for (let day = firstMissingDay; day < sample.day && day < guide.length; day++) {
-            const fraction = (day - startDay) / (sample.day - startDay);
-            const offset = startOffset + (endOffset - startOffset) * fraction;
-            elapsed.push({ day, grams: guide[day].start + offset });
-          }
-        }
-        elapsed.push(sample);
+      if (cachedCapacity !== capacity || cachedReference !== reference) {
+        coordinates = [];
+        cachedCapacity = capacity;
+        cachedReference = reference;
       }
-      // Complete the loop with the latest known value for each upcoming date.
-      if (elapsed[0].day > 0) elapsed.unshift({ day: 0, grams: elapsed[0].grams });
-      const cycleStart = elapsed[0].grams;
-      const nowOffset = current.grams - (referenceStock(guide, current.day) || 0);
-      const endOffset = cycleStart - (guide[DAYS_IN_YEAR]?.start ?? cycleStart);
-      for (let day = Math.floor(current.day) + 1; day < DAYS_IN_YEAR; day++) {
-        const progress = (day - current.day) / (DAYS_IN_YEAR - current.day);
-        const offset = nowOffset + (endOffset - nowOffset) * progress;
-        const expected = guide[day]?.start;
-        const grams = Number.isFinite(expected) ? expected + offset : current.grams;
-        elapsed.push({ day, grams });
+      for (let day = 0; day < DAYS_IN_YEAR; day++) {
+        if (coordinates[day] !== undefined) continue;
+        const sample = daily[day];
+        const grams = sample?.grams ?? reference[day]?.start ?? 0;
+        coordinates[day] = point(sample?.day ?? day, radius(grams)).join(' ');
       }
-      elapsed.push({ day: DAYS_IN_YEAR, grams: cycleStart });
+      const dot = coordinates[Math.floor(current.day)].split(' ');
       return {
-        path: fillRun(elapsed, radius),
+        path: `M${coordinates.join('L')}Z${innerEdge}`,
         angle: current.day / DAYS_IN_YEAR * 360,
-        needle: [...point(current.day, radius(current.grams)), ...point(current.day, OUTER_RADIUS + 8)],
-        dot: point(current.day, radius(current.grams)),
+        needle: [...dot, ...point(current.day, OUTER_RADIUS + 8)],
+        dot,
       };
     },
   };

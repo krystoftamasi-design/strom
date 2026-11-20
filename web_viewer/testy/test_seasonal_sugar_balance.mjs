@@ -2,6 +2,7 @@ import assert from 'node:assert/strict';
 import { TreeEcology } from '../ekologie/tree_ecology.js';
 import { createAnnualSugarCurve, createSeasonalSugarBalance, simulateAnnualStocks } from '../ekologie/rocni_zasoba_cukru.js';
 import { seasonForMonthClock } from '../obdobi/beech_phenology.js';
+import { createSugarStockHistory } from '../okna/sugar_stock_history.js';
 
 const tree = new TreeEcology();
 tree.configure({ height: 26, woodVolume: 4, crownArea: 100 });
@@ -16,6 +17,18 @@ assert.equal(tree.reserve, waterBeforePreview, 'The reference run does not alter
 assert.equal(water.length, 366);
 assert.ok(water.every(day => day.start >= 0 && day.start <= tree.capacity));
 assert.ok(water.some(day => day.start !== water[0].start), 'The reference water reserve changes over the year');
+for (const [year, limit] of [[simulatedYear, capacity], [water, tree.capacity]]) {
+  const history = createSugarStockHistory();
+  const outerEdge = geometry => geometry.path.split('Z')[0].slice(1).split('L');
+  history.sample(seasonForMonthClock(6.2), limit * 0.3);
+  const before = outerEdge(history.geometry(limit, year));
+  history.sample(seasonForMonthClock(12), limit * 0.8);
+  const after = history.geometry(limit, year);
+  const afterEdge = outerEdge(after);
+  assert.equal(after.angle, 0);
+  assert.equal(afterEdge[0], after.dot.join(' '));
+  assert.deepEqual(afterEdge.slice(1), before.slice(1), 'Seeking across New Year preserves every other day');
+}
 const firstFullDay = simulatedYear.findIndex(day => day.start >= capacity);
 assert.ok(firstFullDay >= 265 && firstFullDay < 334, 'The reference tree first fills its store in autumn');
 const curve = createAnnualSugarCurve(tree, capacity);

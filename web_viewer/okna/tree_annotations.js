@@ -1,7 +1,7 @@
 import { oknaPodleKapitol, kontextoveTexty, pruvodceTranspiraci } from './element_ui_okna_obsah.js?v=adjustable-value-1';
 import { veliciny, vstupyVzorce, ohlasitChybuOken, vyhladitHodnotu } from './element_ui_okna_veliciny.js?v=light-consumption-1';
 import { zkontrolovatOkna } from './element_ui_okna_kontrola.js?v=seeds-1';
-import { createSugarStockHistory } from './sugar_stock_history.js?v=rolling-fade-1';
+import { createSugarStockHistory } from './sugar_stock_history.js?v=stable-ring-1';
 import { simulateAnnualStocks } from '../ekologie/rocni_zasoba_cukru.js?v=annual-stocks-1';
 
 // Original embedded assets from ui_new.svg, at their exported stroke widths.
@@ -725,7 +725,7 @@ export function createTreeAnnotations({ shell, model, createSeasonControl, setEl
     chart.setAttribute('role', 'img');
     chart.setAttribute('aria-label', `Roční průběh zásoby ${isSugar ? 'cukrů' : 'vody'} od ledna nahoře po směru hodin`);
     chart.innerHTML = `
-      <path class="stock-history-fill"/>
+      <path class="stock-history-fill" fill-rule="evenodd"/>
       <circle cx="50" cy="50" r="43" class="stock-history-capacity"/>
       <path class="stock-history-ticks" d="M50 2v7 M98 50h-7 M50 98v-7 M2 50h7"/>
       <line class="stock-history-needle"/>
@@ -739,8 +739,24 @@ export function createTreeAnnotations({ shell, model, createSeasonControl, setEl
     const referenceName = isSugar ? 'sugar' : 'water';
     const valueKey = isSugar ? 'sugarReserve' : output.dataset.stockValue;
     const maxKey = isSugar ? 'sugarCapacity' : output.dataset.stockMaximum;
-    function render() {
-      const geometry = history.geometry(model[maxKey], reference[referenceName]);
+    let lastPosition;
+    let lastValue;
+    let lastCapacity;
+    let lastReference;
+    function render(force = false) {
+      const position = model.seasonPosition;
+      const value = model[valueKey];
+      const capacity = model[maxKey];
+      const guide = reference[referenceName];
+      if (!force && lastPosition === position && lastValue === value && lastCapacity === capacity && lastReference === guide) return;
+      lastPosition = position;
+      lastValue = value;
+      lastCapacity = capacity;
+      lastReference = guide;
+      const available = Number.isFinite(value) && Number.isFinite(capacity) && capacity > 0;
+      const displayed = available ? stockNumber.format(value / (isSugar ? 1000 : 1)) : '—';
+      if (output.value !== displayed) output.value = displayed;
+      const geometry = history.geometry(capacity, guide);
       fill.setAttribute('d', geometry?.path ?? '');
       needle.style.visibility = geometry ? 'visible' : 'hidden';
       dot.style.visibility = needle.style.visibility;
@@ -750,14 +766,18 @@ export function createTreeAnnotations({ shell, model, createSeasonControl, setEl
       dot.setAttribute('cx', geometry.dot[0]);
       dot.setAttribute('cy', geometry.dot[1]);
     }
-    const entry = { output, history, render, isSugar, valueKey, maxKey };
+    function reset() {
+      history.clear();
+      lastPosition = undefined;
+    }
+    const entry = { history, render, reset, valueKey };
     stocks.push(entry);
     let list = stockByChapter.get(panelChapter);
     if (!list) { list = []; stockByChapter.set(panelChapter, list); }
     list.push(entry);
   }
   document.getElementById('btnTimeReset')?.addEventListener('click', () => {
-    for (const { history } of stocks) history.clear();
+    for (const { reset } of stocks) reset();
   });
 
   return {
@@ -773,14 +793,17 @@ export function createTreeAnnotations({ shell, model, createSeasonControl, setEl
     advanceSeason(chapter, playbackDelta) {
       return seasonControl.update(chapter, playbackDelta);
     },
-    update(chapter, continuous) {
+    update(chapter) {
+      const chapterChanged = chapter !== activeChapter;
       if (chapter !== 'intro') {
         for (const { history, valueKey } of stocks) {
-          history.sample(model.seasonPosition, model[valueKey], continuous);
+          history.sample(model.seasonPosition, model[valueKey]);
         }
       }
+      if (model.ready) {
+        for (const { render } of stockByChapter.get(chapter) ?? []) render(chapterChanged);
+      }
       const now = performance.now();
-      const chapterChanged = chapter !== activeChapter;
       activeChapter = chapter;
       if (chapterChanged) {
         syncWindowHover();
@@ -942,18 +965,6 @@ export function createTreeAnnotations({ shell, model, createSeasonControl, setEl
       if (prevSeasonRowHidden !== seasonHidden) {
         prevSeasonRowHidden = seasonHidden;
         seasonRow.hidden = seasonHidden;
-      }
-      if (chapter === 'intro' || !model.ready) return;
-      const activeStocks = stockByChapter.get(chapter);
-      if (activeStocks) {
-        for (const entry of activeStocks) {
-          const { output, render, isSugar, valueKey, maxKey } = entry;
-          const value = model[valueKey] / (isSugar ? 1000 : 1);
-          const available = Number.isFinite(value) && Number.isFinite(model[maxKey]) && model[maxKey] > 0;
-          const displayed = available ? stockNumber.format(value) : '—';
-          if (output.value !== displayed) output.value = displayed;
-          render();
-        }
       }
     }
   };

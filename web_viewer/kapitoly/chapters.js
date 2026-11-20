@@ -1,6 +1,6 @@
 import { zobrazitHodnotu, vyhladitHodnotu } from '../okna/element_ui_okna_veliciny.js?v=light-consumption-1';
 import { SEASONS } from '../ekologie/tree_ecology.js?v=affinity-cap-1';
-import { createTreeAnnotations } from '../okna/tree_annotations.js?v=rolling-fade-1';
+import { createTreeAnnotations } from '../okna/tree_annotations.js?v=stable-ring-1';
 
 const chapters = [
   ['seasons', 'Období'], ['photosynthesis', 'Fotosyntéza'], ['transpiration', 'Transpirace'],
@@ -341,9 +341,9 @@ export function createChapters({ model, applySeason, setSun, setAzimuth, setVisu
     advanceSeason(playbackDelta) {
       return ready && treeAnnotations.advanceSeason(chapter, playbackDelta);
     },
-    updateScene(continuous) {
+    updateScene() {
       if (!ready) return;
-      treeAnnotations.update(chapter, continuous);
+      treeAnnotations.update(chapter);
       // Refresh the current model after evaluation, even while its clock is paused.
       const now = performance.now();
       if (now - lastUI >= 50) { render(); lastUI = now; }
