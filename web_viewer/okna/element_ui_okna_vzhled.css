@@ -1343,7 +1343,7 @@ body.scene-night .chapter-context-guide .transpiration-legend {
 .tree-overlay .photosynthesis-windows {
   --flow-toggle-angle: 0deg;
   position: absolute;
-  inset: 0 4% 0 70%;
+  inset: 0 1% 0 70%;
   container: photosynthesis-windows / inline-size;
   box-sizing: border-box;
   display: grid;
@@ -1487,18 +1487,14 @@ body.scene-night .tree-overlay .element-ui-flow-window {
 }
 
 .tree-overlay .element-ui-okno[data-chapter="photosynthesis"][data-side="right"] .annotation-reveal {
-  position: relative;
-  inset: auto;
-  grid-column: 1 / -1;
-  grid-row: 1;
-  justify-self: end;
-  align-self: end;
+  position: absolute;
+  inset: 0 0 0 auto;
   box-sizing: border-box;
   inline-size: calc(100% - var(--flow-window-width) - var(--flow-gap) - var(--flow-detail-reserve, 0px));
-  height: auto;
+  height: 100%;
   margin: 0;
-  padding-block-end: calc(var(--flow-metric-below-bar, 0px) + 12px);
-  overflow: visible;
+  padding-block-end: 0;
+  overflow-y: auto;
   overflow-wrap: anywhere;
   text-align: left;
 }
