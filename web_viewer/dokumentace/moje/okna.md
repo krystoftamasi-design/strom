@@ -84,6 +84,7 @@ history:
 - Detailní text: „Rašení čerpá cukry. Na podzim se část vrací z listů.“
 - Produkce a spotřeba se zobrazují v `g/min` na jedno desetinné místo. Sezónní přírůstky vycházejí ze [společné bilance cukrů](#společná-bilance-cukrů).
 - Zásoba: aktuální výukový odhad v kilogramech podle [společné bilance cukrů](#společná-bilance-cukrů). Kruhový ukazatel vpravo ukazuje podíl na nastavené kapacitě zleva doprava.
+- Roční graf na místě kruhového ukazatele čte tutéž zásobu. Nahoře je 1. leden a čas běží po směru hodin. Vnitřní kružnice znamená 0 kg a vnější plnou kapacitu. Ryska s tečkou označuje aktuální datum a hodnotu. Při přeskočení data zůstane v křivce mezera. Na přelomu roku, při návratu v čase nebo při resetu začne graf zaznamenávat nový průběh.
 - Ovládání: červený pohyblivý konec horního pruhu funguje jako horní zarážka (strop) — produkci cukrů omezuje až od chvíle, kdy se dotkne barevného pruhu a zatlačí jej zpět; nad aktuální hodnotou produkci nemění.
 - Při automatickém běhu roku určuje dostupná zásoba, kolik jarního růstu může strom pokrýt. Když cukry nestačí, doroste menší listová plocha, která sníží tvorbu cukrů. Zmenšená plocha přetrvá do dalšího rašení. Jde o výukové znázornění oslabení.
 - Zobrazení vzorce: .

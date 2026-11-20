@@ -1,6 +1,7 @@
 import { oknaPodleKapitol, kontextoveTexty, pruvodceTranspiraci } from './element_ui_okna_obsah.js?v=adjustable-value-1';
 import { veliciny, vstupyVzorce, ohlasitChybuOken, vyhladitHodnotu } from './element_ui_okna_veliciny.js?v=light-consumption-1';
 import { zkontrolovatOkna } from './element_ui_okna_kontrola.js?v=seeds-1';
+import { createSugarStockHistory } from './sugar_stock_history.js';
 
 // Original embedded assets from ui_new.svg, at their exported stroke widths.
 const strokes = {
@@ -272,8 +273,15 @@ function createElementUiOkno({ panel, body, reveal, toggle, model, definition })
         const labelText = document.createElement('span');
         labelText.textContent = 'zásoba';
         label.append(labelText);
-        const dial = document.createElement('div');
+        const dial = document.createElement(zdroj === 'cukry' ? 'button' : 'div');
         dial.className = 'element-ui-stock-dial';
+        if (zdroj === 'cukry') {
+          dial.type = 'button';
+          dial.setAttribute('aria-label', 'Roční graf zásoby cukrů');
+          dial.setAttribute('aria-keyshortcuts', 'T');
+          dial.setAttribute('aria-pressed', 'false');
+          dial.title = 'Přepnout na roční graf zásoby cukrů (T)';
+        }
         const dialClip = document.createElement('span');
         dialClip.className = 'element-ui-stock-dial-clip';
         dialClip.setAttribute('aria-hidden', 'true');
@@ -722,6 +730,54 @@ export function createTreeAnnotations({ shell, model, createSeasonControl, setEl
     if (output) seedOutputs.push({ output, stavObdobi: definition.stavObdobi, prevText: '' });
   }
   const stockByChapter = new Map();
+  const sugarHistory = createSugarStockHistory();
+  const sugarDial = shell.querySelector('button.element-ui-stock-dial');
+  let renderSugarHistory;
+  if (sugarDial) {
+    const chart = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    chart.classList.add('element-ui-stock-history');
+    chart.setAttribute('viewBox', '0 0 100 100');
+    chart.setAttribute('aria-hidden', 'true');
+    chart.innerHTML = `
+      <circle cx="50" cy="50" r="43" class="stock-history-capacity"/>
+      <circle cx="50" cy="50" r="14" class="stock-history-zero"/>
+      <path class="stock-history-ticks" d="M50 3v7 M97 50h-5 M50 97v-5 M3 50h5"/>
+      <path class="stock-history-line"/>
+      <line class="stock-history-needle"/>
+      <circle class="stock-history-dot" r="4"/>
+    `;
+    sugarDial.append(chart);
+    const line = chart.querySelector('.stock-history-line');
+    const needle = chart.querySelector('.stock-history-needle');
+    const dot = chart.querySelector('.stock-history-dot');
+    renderSugarHistory = () => {
+      const geometry = sugarHistory.geometry(model.sugarCapacity);
+      line.setAttribute('d', geometry?.path ?? '');
+      needle.style.visibility = geometry ? 'visible' : 'hidden';
+      dot.style.visibility = needle.style.visibility;
+      if (!geometry) return;
+      ['x1', 'y1', 'x2', 'y2'].forEach((key, index) => needle.setAttribute(key, geometry.needle[index]));
+      dot.setAttribute('cx', geometry.dot[0]);
+      dot.setAttribute('cy', geometry.dot[1]);
+    };
+    sugarDial.addEventListener('click', () => {
+      const showChart = sugarDial.getAttribute('aria-pressed') === 'false';
+      sugarDial.setAttribute('aria-pressed', String(showChart));
+      sugarDial.title = showChart
+        ? 'Zásoba za celý rok · nahoře 1. leden · ryska ukazuje dnešek (T)'
+        : 'Přepnout na roční graf zásoby cukrů (T)';
+      if (showChart) renderSugarHistory();
+    });
+    document.addEventListener('keydown', event => {
+      if (event.key.toLowerCase() !== 't' || event.defaultPrevented || event.repeat ||
+        event.ctrlKey || event.altKey || event.metaKey || event.isComposing ||
+        activeChapter !== 'photosynthesis' ||
+        event.target.closest?.('input, textarea, select, [contenteditable]')) return;
+      event.preventDefault();
+      sugarDial.click();
+    });
+    document.getElementById('btnTimeReset')?.addEventListener('click', () => sugarHistory.clear());
+  }
   for (const output of shell.querySelectorAll('[data-stock-source]')) {
     const stock = output.closest('.element-ui-stock');
     const panel = output.closest('.element-ui-okno');
@@ -746,7 +802,10 @@ export function createTreeAnnotations({ shell, model, createSeasonControl, setEl
     advanceSeason(chapter, playbackDelta) {
       return seasonControl.update(chapter, playbackDelta);
     },
-    update(chapter) {
+    update(chapter, continuous) {
+      if (sugarDial && chapter !== 'intro') {
+        sugarHistory.sample(model.seasonPosition, model.sugarReserve, continuous);
+      }
       const now = performance.now();
       const chapterChanged = chapter !== activeChapter;
       activeChapter = chapter;
@@ -758,6 +817,9 @@ export function createTreeAnnotations({ shell, model, createSeasonControl, setEl
       const draggingSlider = activeBars?.some(entry =>
         entry.slider?.matches(sliderIsActive) || entry.limitSlider?.matches(sliderIsActive)) || false;
       if (!chapterChanged && !draggingSlider && now - lastDomUpdate < 50) return;
+      if (chapter === 'photosynthesis' && sugarDial?.getAttribute('aria-pressed') === 'true') {
+        renderSugarHistory();
+      }
       const dt = lastDomUpdate > 0 ? (now - lastDomUpdate) / 1000 : 0.05;
       lastDomUpdate = now;
       const sugarProduction = model.totalSugarProduction;
