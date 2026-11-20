@@ -78,9 +78,9 @@ export const oknaPodleKapitol = {
       viditelnyPrepinac: true,
       nadpis: 'Cukry',
       tema: 'sugar',
-      strana: 'right',
+      strana: 'left',
       popis: 'Tvorba cukrů ≈ glukóza',
-      zasoba: { zdroj: 'cukry', jednotka: 'kg' },
+      zasoba: { zdroj: 'cukry', jednotka: 'kg', popisek: 'Zásoba cukrů' },
       vypocet: 'glucoseGramsPerMinute',
       zobrazitVzorec: true,
       zobrazitHodnotu: true,
@@ -116,7 +116,7 @@ export const kontextoveTexty = {
     varianty: {},
   },
   photosynthesis: {
-    vychozi: 'Strom si vytváří cukry pro vlastní růst. Kyslík je odpad tohoto procesu.',
+    vychozi: 'Cukry jsou hlavním produktem fotosyntézy. Strom je využívá k růstu a při jejich tvorbě se uvolňuje kyslík.',
     varianty: {
       co2: 'Uhlík pro tvorbu dřeva pochází z CO₂ ve vzduchu.',
       cukry: 'Z cukrů strom staví své tělo. Živé buňky listů, kmene i kořenů z nich získávají energii.',

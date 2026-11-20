@@ -79,11 +79,11 @@ history:
 ### Vzorec: `listy × účinnost × 0,0144`
 
 - Nadpis: `Cukry`.
-- Téma: cukry; strana: vpravo.
+- Téma: cukry. Dvojice pruhů a zásoba jsou viditelné i při zavřeném detailu.
 - Popisek: „Tvorba cukrů ≈ glukóza“.
 - Detailní text: „Rašení čerpá cukry. Na podzim se část vrací z listů.“
 - Produkce a spotřeba se zobrazují v `g/min` na jedno desetinné místo. Sezónní přírůstky vycházejí ze [společné bilance cukrů](#společná-bilance-cukrů).
-- Zásoba: aktuální výukový odhad v kilogramech podle [společné bilance cukrů](#společná-bilance-cukrů). Roční graf je stále viditelný vpravo u pruhů podle artboardu „PODKLAD graf kole4ko“ v [podkladu Affinity](../../web_assets/af/2.af). Popisek je nad kruhem, hodnota uprostřed a plocha plná v barvě pruhu produkce.
+- Zásoba se zobrazuje v kilogramech společně s kapacitou a průběhem během roku. Zásobu a kapacitu určuje [společná bilance cukrů](#společná-bilance-cukrů).
 - Nejmenší zobrazovaná kladná spotřeba cukru je 0,1 g/min. Při nulové spotřebě ukazuje číslo 0,0 g/min.
 - Roční graf začíná 1. ledna nahoře a běží po směru hodin. Výplň sahá od vnitřního okraje pro 0 kg po aktuální průběh. Vnější kruh označuje kapacitu. Ryska s tečkou ukazuje aktuální datum a hodnotu. Přechod průhlednosti se otáčí s ryskou. Před ryskou výplň postupně nabírá barvu a krátce za ní dosáhne plné barvy. Graf v průběhu roku ukládá aktuální hodnoty. Při rychlém posunu doplní přeskočené dny plynulým přechodem mezi hodnotou před posunem a po něm. Ostatní dny si drží dřívější průběh nebo hodnotu typického roku spočítaného při načítání stromu. Průběh i přechod průhlednosti pokračují přes přelom roku. Při návratu v čase nebo resetu se záznam začne kreslit znovu.
 - Ovládání: červený pohyblivý konec horního pruhu funguje jako horní zarážka (strop) — produkci cukrů omezuje až od chvíle, kdy se dotkne barevného pruhu a zatlačí jej zpět; nad aktuální hodnotou produkci nemění.
@@ -234,8 +234,8 @@ history:
 
 ### Společná pravidla Fotosyntézy
 
-- Okna používají [společnou šablonu](vzhled_oken.md#šablona-jednoho-okna-podle-transpirace) ve variantě s dvojitými vodorovnými pruhy. Kliknutí v bloku údajů přepne detail. Posuvník světla a červené pohyblivé konce u oken se zásobou (Cukry, Voda) se ovládají samostatně myší, dotykem nebo klávesnicí. Stav detailu se zachovává při změně kapitoly.
-- Při každém přechodu do Fotosyntézy se nastaví léto. Fotosyntéza je samostatný nadpis kapitoly bez okna. Tematická okna jsou vpravo a jejich detaily jsou výchozí zavřené. Polohu otevřeného detailu určuje [vzhled oken](vzhled_oken.md#obecný-obsah).
+- Okna používají [společnou šablonu](vzhled_oken.md#šablona-jednoho-okna-podle-transpirace) ve variantě s dvojitými vodorovnými pruhy. Kliknutí na nadpis nebo tlačítko přepne detail. Posuvník světla a červené pohyblivé konce u oken se zásobou (Cukry, Voda) se ovládají samostatně myší, dotykem nebo klávesnicí. Stav detailu se zachovává při změně kapitoly.
+- Při každém přechodu do Fotosyntézy se nastaví léto. Fotosyntéza je samostatný nadpis kapitoly bez okna. Detaily jsou výchozí zavřené. Světlo, O₂, CO₂ a Voda v zavřeném okně ukazují nadpis a tlačítko pro otevření. Pruhy s hodnotami a případná zásoba se zobrazí po otevření. Rozložení určuje [vzhled oken](vzhled_oken.md#rozložení).
 - Vzorec nebo přehled vstupů se u oken Fotosyntézy zobrazuje až v otevřeném detailu.
 - Okna Světlo, O₂, CO₂, Cukry a Voda obsahují dva údaje o tocích nebo dostupnosti podle [popisu vzhledu](vzhled_oken.md). Cukry a Voda navíc ukazují kruhovou zásobu. Neznámá hodnota se označí „Zatím nemáme hodnotu“ bez vyplnění ukazatele.
 - Červený pohyblivý konec u Cukrů a Vody funguje jako horní zarážka na škále pruhu (0 až 100 %): dokud se nedotkne barevného pruhu, přirozenou hodnotu nemění; jakmile se jej dotkne, táhne jej s sebou a zastropuje produkci cukrů, resp. automatický přísun vody (ten v průměru činí 90 % sezónní kapacity příjmu a v čase plynule kolísá kolem tohoto průměru jako simulace vlhčích a sušších dnů). Nastavení přetrvá při automatickém běhu. Příjem stromu omezuje sezónní kapacita a stav kořenů.

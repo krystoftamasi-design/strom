@@ -34,9 +34,7 @@ history:
 
 ### Zdůraznění cukrů
 
-- Návrh: do kontextového okna doplnit, že cukr je hlavním a nejdůležitějším výsledkem fotosyntézy. Bar cukrů i s kruhovým ukazatelem zásoby přesunout vlevo pod text. Kruh zvětšit a doplnit popisky. Ostatní okna zobrazí bary až po rozkliknutí.
-- Cíl: dát tvorbě cukrů přednost v obsahu a zpřehlednit ostatní údaje.
-- Stav: Nápad; podobu popisků a otevírání je potřeba dopracovat.
+- Zavedeno. Chování určuje [obsah oken](okna.md#cukry) a umístění [rozložení](vzhled_oken.md#rozložení).
 
 ## Transpirace
 

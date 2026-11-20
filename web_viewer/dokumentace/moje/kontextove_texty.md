@@ -20,7 +20,7 @@
 
 | Kontext | Navržený text | Cíl porozumění |
 |---|---|---|
-| Výchozí | Strom si vytváří cukry pro vlastní růst. Kyslík je odpad tohoto procesu. | Přínos fotosyntézy pro strom; kyslík není jejím účelem pro lidi. |
+| Výchozí | Cukry jsou hlavním produktem fotosyntézy. Strom je využívá k růstu a při jejich tvorbě se uvolňuje kyslík. | Přínos fotosyntézy pro strom; kyslík není jejím účelem pro lidi. |
 | Otevřené [CO₂](okna.md#co₂) | Uhlík pro tvorbu dřeva pochází z CO₂ ve vzduchu. | Původ uhlíku v těle stromu, nikoli z hlíny. |
 | Otevřené [Cukry](okna.md#cukry) | Z cukrů strom staví své tělo. Živé buňky listů, kmene i kořenů z nich získávají energii. | Cukry jako stavební materiál a palivo; buněčné dýchání i mimo listy. |
 | Otevřená [Voda](okna.md#voda) | Kořeny nepřijímají hlínu, ale vodu a minerální živiny. Část přijaté vody odchází z listů jako pára. | Příjem kořeny a výpar; přijatá voda nezůstává všechna ve stromu. |

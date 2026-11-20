@@ -37,7 +37,7 @@ history:
 
 - Hlavní okna používají stejnou komponentu s variantou samostatného detailu pod oknem podle [šablony hlavního okna](../moje/vzhled_oken.md#šablona-hlavního-okna); příznak `hlavni` určuje vzhled, `otevrene` výchozí stav.
 
-- Komponenta má dva nezávislé bloky. `.element-ui-readout` skládá nadpis a údaje. `.annotation-reveal` drží vysvětlení a ve Fotosyntéze také vzorec. Detail při otevření neposouvá údaje. Polohu jednotlivých variant určuje [Vzhled oken](../moje/vzhled_oken.md).
+- Komponenta má dva nezávislé bloky. `.element-ui-readout` skládá nadpis a údaje. `.annotation-reveal` drží vysvětlení a ve Fotosyntéze také vzorec. V pravých oknech Fotosyntézy se s detailem zobrazují i údaje, u Cukrů zůstávají údaje stále viditelné. Polohu jednotlivých variant určuje [Vzhled oken](../moje/vzhled_oken.md).
 
 - Okno je společná komponenta vytvářená `configuredCard` a `createElementUiOkno`; nadpis, hodnota, vzorec a detail mají jednu strukturu a společné styly pro všechny záznamy Fotosyntézy a Transpirace.
 - Typografii a odstupy upravuj v `okna/element_ui_okna_vzhled.css`: `--ui-heading-size`, `--ui-main-heading-size`, `--ui-value-size`, `--ui-main-value-size`, `--ui-formula-size`, `--ui-column-gap`, `--ui-toggle-size` a `--ui-toggle-gap`. Změna sdílené proměnné platí pro všechna okna příslušné role; úzká obrazovka používá společnou sadu hodnot.
@@ -47,7 +47,7 @@ history:
 - Přenos vyžaduje renderer, společné CSS, převodník veličin a validátor; renderer přijímá model a callback zvýraznění. Průvodce a pozice konkrétní kapitoly nejsou přenositelnou částí okna.
 
 - `okna/tree_annotations.js` vytváří bloky, přepíná detaily a přebírá ovládací prvky s jejich událostmi.
-- `okna/element_ui_okna_vzhled.css` určuje rozložení kapitol, rozměry, písmo a barvy. Fotosyntéza skládá okna do mřížky v pořadí definic.
+- `okna/element_ui_okna_vzhled.css` určuje rozložení kapitol, rozměry, písmo a barvy. Fotosyntéza vkládá levé okno pod kontextový text a pravá okna skládá do samostatného sloupce.
 - `okna/tree_annotations.css` obsahuje společný základ bloků kapitol.
 - Rozložení pracuje v souřadnicích rozhraní; aktualizace za snímek obsluhuje ovládání období a synchronizaci zvýraznění s aktivní kapitolou.
 - `kapitoly/chapters.js` určuje pořadí a přepínání kapitol; `kapitoly/chapters.css` vzhled navigace.

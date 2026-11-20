@@ -380,6 +380,10 @@ body.scene-night .tree-overlay .element-ui-okno .ui-word {
   gap: 0;
 }
 
+.tree-overlay .element-ui-flow-window .element-ui-values[hidden] {
+  display: none;
+}
+
 .tree-overlay .element-ui-flow-window .element-ui-values:has(> .element-ui-stock) {
   --flow-stock-width: var(--photosynthesis-stock-width, min(18cqi, clamp(62px, 6.4vw, 94px)));
   --flow-stock-gap: var(--photosynthesis-stock-gap, min(3cqi, clamp(14px, 1.5vw, 24px)));
@@ -1328,9 +1332,13 @@ body.scene-night .chapter-context-guide .transpiration-legend {
   }
 }
 
-/* Photosynthesis starts level with the first topic window; context follows directly below. */
+/* Photosynthesis keeps sugar with the guide and the other topics in a separate column. */
 .tree-overlay :is([data-chapter="photosynthesis"], [data-chapter="seasons"]) {
   --photosynthesis-top: 25%;
+}
+
+.tree-overlay article[data-chapter="photosynthesis"] {
+  --photosynthesis-top: 14%;
 }
 
 .tree-overlay :is(.photosynthesis-title, .scene-chapter-title) {
@@ -1351,29 +1359,26 @@ body.scene-night .chapter-context-guide .transpiration-legend {
 .tree-overlay .photosynthesis-windows {
   --flow-toggle-angle: 0deg;
   position: absolute;
-  inset: 0 1% 0 70%;
+  inset: var(--photosynthesis-top) 1% 6% 70%;
   container: photosynthesis-windows / inline-size;
   box-sizing: border-box;
   display: grid;
   grid-template-columns: minmax(0, 1fr);
   grid-auto-rows: max-content;
-  align-content: space-between;
-  row-gap: 8px;
-  padding-block: 7vh 6vh;
+  align-content: start;
+  row-gap: clamp(12px, 4vh, 36px);
+  padding: 6px;
   overflow-x: hidden;
   overflow-y: auto;
   overscroll-behavior: contain;
   -webkit-overflow-scrolling: touch;
 }
 
-.tree-overlay .element-ui-okno[data-chapter="photosynthesis"][data-side="right"] {
-  --photosynthesis-stock-width: min(18cqi, clamp(62px, 6.4vw, 94px));
-  --photosynthesis-stock-gap: min(4cqi, clamp(18px, 2vw, 32px));
-  --flow-window-width: calc(100cqi - var(--photosynthesis-stock-width) - var(--photosynthesis-stock-gap) - min(2cqi, 12px));
+.tree-overlay .element-ui-okno[data-chapter="photosynthesis"] {
   position: relative;
   inset: auto;
   display: grid;
-  grid-template-columns: var(--flow-window-width) minmax(0, 1fr);
+  grid-template-columns: minmax(0, 1fr);
   grid-template-rows: auto;
   column-gap: var(--flow-gap);
   width: 100%;
@@ -1383,10 +1388,76 @@ body.scene-night .chapter-context-guide .transpiration-legend {
   text-align: left;
 }
 
-.tree-overlay .element-ui-okno[data-chapter="photosynthesis"][data-side="right"] .element-ui-readout {
-  grid-column: 1;
+.tree-overlay .element-ui-okno[data-chapter="photosynthesis"][data-side="right"]:not(.collapsed) {
+  --flow-gap: min(4cqi, 30px);
+  --flow-window-width: min(clamp(168px, 15.2vw, 286px), 37.5cqi);
+  grid-template-columns: var(--flow-window-width) minmax(0, 1fr);
+}
+
+.tree-overlay .element-ui-okno[data-chapter="photosynthesis"][data-side="right"]:has(.element-ui-stock) {
+  --photosynthesis-stock-width: min(18cqi, 84px);
+  --photosynthesis-stock-gap: min(4cqi, 32px);
+  --flow-detail-reserve: calc(var(--photosynthesis-stock-width) + var(--photosynthesis-stock-gap));
+}
+
+.tree-overlay .element-ui-okno[data-chapter="photosynthesis"] .element-ui-readout {
   pointer-events: auto;
+}
+
+.tree-overlay .element-ui-okno[data-chapter="photosynthesis"][data-side="right"] .element-ui-readout {
   cursor: pointer;
+}
+
+.tree-overlay .element-ui-okno[data-chapter="photosynthesis"][data-side="left"] {
+  --flow-toggle-angle: 0deg;
+  margin-top: clamp(10px, 2vh, 20px);
+  row-gap: 8px;
+}
+
+.tree-overlay .element-ui-okno[data-chapter="photosynthesis"][data-side="left"] .element-ui-readout > header {
+  cursor: pointer;
+}
+
+.tree-overlay .element-ui-okno[data-chapter="photosynthesis"][data-side="left"] .element-ui-values {
+  grid-template-columns: minmax(0, 1fr) minmax(0, 44%);
+  grid-template-rows: auto auto auto;
+  align-content: start;
+  align-items: center;
+  column-gap: clamp(8px, 1.2vw, 18px);
+}
+
+.tree-overlay .element-ui-okno[data-chapter="photosynthesis"][data-side="left"] .chapter-metric {
+  flex-wrap: wrap;
+  white-space: normal;
+}
+
+.tree-overlay .element-ui-okno[data-chapter="photosynthesis"][data-side="left"] .element-ui-stock {
+  grid-template-rows: auto auto auto;
+  gap: 3px;
+}
+
+.tree-overlay .element-ui-okno[data-chapter="photosynthesis"][data-side="left"] .element-ui-stock-label {
+  position: static;
+}
+
+.tree-overlay .element-ui-okno[data-chapter="photosynthesis"][data-side="left"] .element-ui-stock-dial {
+  position: relative;
+  inset: auto;
+  width: min(100%, clamp(88px, 16vh, 136px));
+  translate: none;
+}
+
+.tree-overlay .element-ui-okno[data-chapter="photosynthesis"][data-side="left"] .element-ui-stock-readout output {
+  font-size: clamp(18px, 3vh, 28px);
+}
+
+.tree-overlay .element-ui-okno[data-chapter="photosynthesis"][data-side="left"] .element-ui-stock-readout .element-ui-unit {
+  font-size: 11px;
+}
+
+.tree-overlay .element-ui-stock-capacity {
+  color: var(--ui-ink);
+  font: var(--ui-text-style);
 }
 
 .tree-overlay .element-ui-okno[data-chapter="photosynthesis"][data-side="right"] .element-ui-readout>header {
@@ -1468,20 +1539,6 @@ body.scene-night .tree-overlay .element-ui-flow-window {
   font-variant-numeric: tabular-nums;
 }
 
-.tree-overlay .element-ui-okno[data-chapter="photosynthesis"][data-side="right"]:not(.collapsed) {
-  --flow-gap: min(4cqi, 30px);
-  --flow-window-width: min(clamp(168px, 15.2vw, 286px), 37.5cqi);
-}
-
-.tree-overlay .element-ui-okno[data-chapter="photosynthesis"][data-side="right"]:has(.element-ui-stock) {
-  --flow-detail-reserve: calc(var(--photosynthesis-stock-gap) + var(--photosynthesis-stock-width));
-}
-
-.tree-overlay .element-ui-okno[data-chapter="photosynthesis"][data-side="right"]:not(.collapsed) .element-ui-readout {
-  align-self: stretch;
-  justify-content: space-between;
-}
-
 .tree-overlay .photosynthesis-windows .element-ui-okno[data-toggle-visible="true"] .element-ui-readout>header>h3 {
   white-space: normal;
   overflow-wrap: anywhere;
@@ -1494,33 +1551,19 @@ body.scene-night .tree-overlay .element-ui-flow-window {
   overflow-wrap: anywhere;
 }
 
-.tree-overlay .element-ui-okno[data-chapter="photosynthesis"][data-side="right"] .annotation-reveal {
-  position: absolute;
-  inset: 0 0 auto auto;
-  grid-column: 1 / -1;
-  box-sizing: border-box;
-  inline-size: calc(100% - var(--flow-window-width) - var(--flow-gap) - var(--flow-detail-reserve, 0px));
+.tree-overlay .element-ui-okno[data-chapter="photosynthesis"] .annotation-reveal {
   height: auto;
-  margin: 0;
-  padding-block-end: 0;
-  overflow: visible;
-  overflow-wrap: anywhere;
-  text-align: left;
+  max-height: min(32vh, 240px);
+  overflow: auto;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .tree-overlay .element-ui-okno[data-chapter="photosynthesis"][data-side="right"] {
-    transition: grid-template-columns 200ms ease-in-out;
-  }
-
-  .tree-overlay .element-ui-okno[data-chapter="photosynthesis"][data-side="right"]:not(.collapsed) .annotation-reveal {
-    animation: photosynthesis-detail-in 120ms ease-out 200ms both;
-  }
+.tree-overlay .element-ui-okno[data-chapter="photosynthesis"][data-side="right"] .annotation-reveal {
+  margin-inline-start: var(--flow-detail-reserve, 0px);
 }
 
-@keyframes photosynthesis-detail-in {
-  from { opacity: 0; }
-  to { opacity: 1; }
+.tree-overlay .element-ui-okno[data-chapter="photosynthesis"][data-side="left"] .annotation-reveal {
+  grid-column: 1;
+  grid-row: 2;
 }
 
 .tree-overlay .element-ui-okno[data-chapter="photosynthesis"] .annotation-body>p {
@@ -1557,18 +1600,8 @@ body.scene-night .tree-overlay .element-ui-flow-window {
 }
 
 @media (max-width: 700px) {
-  .tree-overlay .element-ui-okno[data-chapter="photosynthesis"]:is([data-topic="sugar"], [data-topic="water"]) {
-    --photosynthesis-stock-width: min(33cqi, 58px);
-  }
-
   .tree-overlay :is(.photosynthesis-title, .scene-chapter-title) {
     left: 4%;
-  }
-
-  .tree-overlay .photosynthesis-windows {
-    bottom: 12vh;
-    padding-block: 0;
-    overflow-y: auto;
   }
 
   .tree-overlay article:is([data-chapter="photosynthesis"], [data-chapter="seasons"]) {
@@ -1600,6 +1633,10 @@ body.scene-night .tree-overlay .element-ui-flow-window {
 
 body:is([data-chapter="photosynthesis"], [data-chapter="seasons"]) .tree-overlay {
   --photosynthesis-controls-top: 55%;
+}
+
+body[data-chapter="photosynthesis"] .tree-overlay {
+  --photosynthesis-controls-top: 73%;
 }
 
 body:is([data-chapter="photosynthesis"], [data-chapter="seasons"]) .tree-overlay .season-date-card {
@@ -1641,8 +1678,63 @@ body:is([data-chapter="photosynthesis"], [data-chapter="seasons"]) .season-date-
     bottom: 4%;
   }
 
+  body[data-chapter="photosynthesis"] .tree-overlay {
+    --photosynthesis-controls-top: 78%;
+  }
+
+  body[data-chapter="photosynthesis"] .season-date-card .time-playback-panel {
+    top: 0;
+  }
+
+  body[data-chapter="photosynthesis"] .season-date-card .time-playback-buttons button {
+    width: 44px;
+    height: 44px;
+  }
+
+  body[data-chapter="photosynthesis"] .season-date-card .time-playback-buttons svg {
+    width: 30px;
+    height: 30px;
+  }
+
+  .tree-overlay article[data-chapter="photosynthesis"] {
+    --photosynthesis-top: 12%;
+  }
+
   .tree-overlay .photosynthesis-windows {
-    top: calc(var(--photosynthesis-controls-top) + 96px);
+    inset: calc(var(--photosynthesis-top) + var(--ui-main-heading-size) + 16px) 4% 24% 52%;
+  }
+
+  .tree-overlay .element-ui-okno[data-chapter="photosynthesis"][data-side="left"] .element-ui-values {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: auto;
+  }
+
+  .tree-overlay .element-ui-okno[data-chapter="photosynthesis"][data-side="left"] .element-ui-stock {
+    grid-column: 1;
+    grid-row: auto;
+    width: min(100%, 94px);
+    margin-top: 8px;
+  }
+}
+
+@container photosynthesis-windows (max-width: 280px) {
+  .tree-overlay .element-ui-okno[data-chapter="photosynthesis"][data-side="right"]:not(.collapsed) {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .tree-overlay .element-ui-okno[data-chapter="photosynthesis"][data-side="right"] .annotation-reveal {
+    grid-column: 1;
+    grid-row: 2;
+    margin: 6px 0 0;
+  }
+
+  .tree-overlay .element-ui-okno[data-chapter="photosynthesis"][data-side="right"] .element-ui-values:has(> .element-ui-stock) {
+    grid-template-columns: minmax(0, 1fr) min(33%, 58px);
+  }
+
+  .tree-overlay .element-ui-okno[data-chapter="photosynthesis"][data-side="right"] .chapter-metric {
+    flex-wrap: wrap;
+    white-space: normal;
   }
 }
 

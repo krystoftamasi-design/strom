@@ -33,13 +33,13 @@ history:
 - Tematická okna Fotosyntézy používají návrh z Affinity. Vedle nadpisu je malované tlačítko +/−. Pod záhlavím jsou dva řádky s popiskem vlevo a hodnotou s jednotkou vpravo. Mezi řádky leží dvojitý vodorovný pruh s texturou z Affinity, vysoký přibližně 34 až 45 px (horní a dolní kolej oddělená mezerou 2 až 3 px).
 - Podklad obou kolejí je ve dne tmavě modrý (`#151d3a`) a v noci světlejší (`#a3adc6`). Horní kolej zobrazuje horní údaj s barvou tématu, dolní kolej dolní údaj ve světlejším odstínu; oba tahy jsou samostatné a nepřekrývají se. U kyslíku, CO₂ a cukrů je nahoře produkce (`p`) a dole spotřeba (`s`), na škále 0 až maximum modelu pro plnou korunu. U vody patří horní řádek dostupnosti a dolní spotřebě (`s`); u světla patří horní řádek dostupnosti a dolní spotřebě (`s`). Škála vody odpovídá rozsahu dostupnosti vody (nejméně základnímu odparu) a škála světla je 0 až 100 %. Ovládání dostupnosti světla má viditelný úchyt, rozšířenou plochu a viditelný klávesnicový fokus.
 - Pruhy mají zrcadlové koncovky. U upravitelných hodnot (dostupnost Světla a stropy Cukrů a Vody) nahrazuje horní pravou tmavou koncovku červený pohyblivý konec baru (`#ff1700`) se symbolem `−`, který lze táhnout myší i dotykem po celé délce horní koleje (0 až 100 %) a ovládat klávesnicí s viditelným fokusem. Při hodnotě zaokrouhlené na nulu zůstává písmenová značka na začátku pruhu a výplň daného toku má nulovou délku. Úchyt Světla ukazuje ruční nastavení a zůstává na místě i při změnách denního světla. V automatickém režimu je vpravo. Lze jej ovládat i z nulové polohy.
-- Volitelná zásoba má napravo od toků kompaktní sloupec s popiskem „zásoba“ nahoře, kruhovým ukazatelem uprostřed (34 až 45 px) a aktuálním množstvím zaokrouhleným na celé číslo s jednotkou dole. Odstup sloupce od pruhů ve Fotosyntéze je nejvýše 4 % šířky sloupce oken a řídí se rozsahem 18 až 32 px. Kruh má tmavý štětcový obrys pod barevnou výplní, plní se zleva doprava v barvě tématu se štětcovým okrajem podle podílu na kapacitě a uprostřed zobrazuje šipku směru poslední změny (doprava při růstu, doleva při poklesu).
+- Zásoba vody je vedle pruhů v kompaktním sloupci. Zásoba cukrů má větší kruhový graf široký 88 až 136 px podle dostupného místa. Nad kruhem je popisek „Zásoba cukrů“, uprostřed aktuální množství v kg a pod kruhem výuková kapacita. Kruhový graf ukazuje roční průběh od ledna nahoře po směru hodin. Vnější okraj označuje kapacitu, ryska s tečkou aktuální den a hodnotu.
 
 ### Obecný obsah
 
 - Údaje tvoří svislý blok: nadpis → hodnota s jednotkou → vzorec nebo přehled vstupů. Ve Fotosyntéze je vzorec nebo přehled vstupů v detailu.
 - Detail Transpirace má vlastní posuv a je vpravo od údajů. V Semenaci je detail pod nadpisem. Hlavní okno používá variantu detailu pod údaji.
-- Okna Fotosyntézy začínají na 70 % šířky obrazovky a končí 1 % od pravého okraje. Při otevření detailu se pruh zkrátí zprava a detail se objeví vedle údajů a případné zásoby. Po zavření se pruh prodlouží. Detail začíná nejvýše u horní hrany okna, sahá k pravému okraji sloupce a delší text pokračuje dolů bez změny výšky okna. Při omezení pohybu se délka pruhu změní ihned. Text je zarovnaný doleva a vzorec má 12 až 15 px.
+- Ve Fotosyntéze se pravá okna po otevření rozšíří o pruhy a vysvětlení. Na širší obrazovce se vysvětlení objeví vedle pruhů. U Cukrů se detail otevírá pod ukazateli. Text je zarovnaný doleva a vzorec má 12 až 15 px.
 - Nadpis zůstává na jednom řádku bez zmenšování podle délky; při nedostatku místa je dostupný vodorovný posuv.
 - Tlačítko +/− má vlastní prostor vedle nadpisu, odstup 8 px a viditelný fokus. Základní varianta má kruhový obrys o průměru 28 px.
 - Ve Fotosyntéze tvoří tlačítko původní štětcový kroužek z Affinity, široký 19 až 25 px, se symbolem +/− v průhledném středu. Otvor kroužku míří od detailu. Klikací plocha je 28 až 35 px a kroužek se při najetí na okno zesvětlí.
@@ -49,13 +49,13 @@ history:
 
 - V Transpiraci a Semenaci je uprostřed obrazovky velký nápis „soon ....“ písmem Nohemi Light. Obsah za ním je silně rozostřený a mírně ztmavený, menu zůstává ostré.
 
-- Fotosyntéza má vlevo samostatný nadpis kapitoly a pod ním kontextového průvodce s vlastním svislým posuvem. Při změně věty se 15 sekund čeká, pak text 3 sekundy mizí a nový se 3 sekundy objevuje. Pod průvodcem jsou tlačítka přehrávání o velikosti 62 až 80 px rovnoměrně rozložená v řadě široké 200 až 300 px. Menší datum je u spodní hrany okna Voda a na úzké obrazovce pod posuvnou plochou oken. Ovládání i datum jsou zarovnané s levou hranou nadpisu.
+- Fotosyntéza má vlevo samostatný nadpis kapitoly a pod ním posuvnou plochu s kontextovým průvodcem a oknem Cukry. Při změně věty se 15 sekund čeká, pak text 3 sekundy mizí a nový se 3 sekundy objevuje. Ovládání času je pod touto plochou a datum u levého spodního okraje.
 - Období přebírá samostatný nadpis a průvodce vlevo z Fotosyntézy. Kruh ročních období a ovládání času zůstávají u stromu.
 - Kruh období má krátké štětcové rysky mezi úseky. Pevná ryska dole je výrazná plná zelená čára ve středu obrazovky (50 %) v ose stromu; ve Fotosyntéze je široká 16 px. Začátek každého úseku míjí pevnou rysku v den začátku období. V tu chvíli se úsek i jeho popisek zbarví světle zeleně.
 
 - Aktuální vzor oken: Transpirace; původní grafický podklad: [podklad rozhraní](../../web_assets/ui_from_af/Untitled.svg), přibližně 2020 × 1143 px; procenta se vztahují k ploše rozhraní.
 - Transpirace má vlevo průvodce (32 % výšky) a hlavní okno dole; tematická okna jsou vpravo a střed zůstává volný pro strom.
-- Fotosyntéza řadí vpravo od stromu okna Světlo, O₂, CO₂, Cukry a Voda pod sebe. Horní odstup je 7 %, dolní 6 % výšky a mezera před detailem nebo zásobou 16 až 30 px. Šířka okna je 13 % šířky obrazovky s mezemi 144 a 248 px. Posouvat lze celý sloupec.
+- Fotosyntéza řadí vpravo od stromu Světlo, O₂, CO₂ a Vodu pod sebe. Celý pravý sloupec lze posouvat.
 - Transpirace: vpravo shora Teplota, Chlazení a Příjem vody; první sloupec se přizpůsobuje nezalomenému nadpisu a tlačítku.
 - Hlavní okno Transpirace: levý okraj 6 %, horní okraj 65 %, šířka 55 %, výška 21 %, nejméně 140 px.
 - Pravá okna Transpirace: levý okraj 68 %, šířka 29 %, horní okraje 28 / 48 / 68 %, výška 14 %, nejméně 85 px.
@@ -68,7 +68,7 @@ history:
 - Pravý sloupec začíná na 52 % a má šířku 44 %; okna Transpirace mají horní okraje 26 / 46 / 70 % a výšku 17 %.
 - Hlavní okno: levý okraj 4 %, horní 65 %, šířka 44 %, výška 24 %; minimální výška oken se ruší. Odsazení obsahu je 12 px, tematický tah má šířku 5 px a hlavní 6 px. Tematický detail má nad sebou mezeru 8 px.
 - Používá se společná typografická škála pro úzkou obrazovku, bez výjimek podle délky nadpisu.
-- Vzorce i přehledy vstupů se mohou zalomit. Na úzké obrazovce začíná posuvná plocha oken Fotosyntézy pod ovládáním času. Jemný obrys písma pomáhá oddělit text od kresby stromu.
+- Vzorce i přehledy vstupů se mohou zalomit. Ve Fotosyntéze začíná pravý sloupec v úrovni průvodce a detail se otevírá pod pruhy. Kruh zásoby cukrů je pod pruhy. Jemný obrys písma pomáhá oddělit text od kresby stromu.
 
 ### Písmo
 
