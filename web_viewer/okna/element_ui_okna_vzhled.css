@@ -1343,7 +1343,7 @@ body.scene-night .chapter-context-guide .transpiration-legend {
 .tree-overlay .photosynthesis-windows {
   --flow-toggle-angle: 0deg;
   position: absolute;
-  inset: 0 2% 0 69%;
+  inset: 0 4% 0 70%;
   container: photosynthesis-windows / inline-size;
   box-sizing: border-box;
   display: grid;
