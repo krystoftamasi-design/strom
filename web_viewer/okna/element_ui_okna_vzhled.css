@@ -472,6 +472,10 @@ body.scene-night .tree-overlay .element-ui-okno .ui-word {
 
 .element-ui-stock-history .stock-history-fill {
   fill: var(--flow-accent, var(--ui-topic));
+  -webkit-mask-origin: view-box;
+  -webkit-mask-clip: view-box;
+  -webkit-mask-image: conic-gradient(from var(--stock-history-angle, 0deg) at center,
+    transparent 0deg 45deg, black 360deg);
   mask-origin: view-box;
   mask-clip: view-box;
   mask-image: conic-gradient(from var(--stock-history-angle, 0deg) at center,
