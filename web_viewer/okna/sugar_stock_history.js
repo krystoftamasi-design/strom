@@ -32,10 +32,12 @@ function fillRun(run, radius) {
 export function createSugarStockHistory() {
   const daily = [];
   let current;
+  let previousYear = [];
 
   function clear() {
     daily.length = 0;
     current = undefined;
+    previousYear = [];
   }
 
   return {
@@ -48,7 +50,12 @@ export function createSugarStockHistory() {
       const year = Math.floor(date / DAYS_IN_YEAR);
       const day = date - year * DAYS_IN_YEAR;
       const dayIndex = Math.floor(day);
-      if (current && (year !== current.year || date < current.date)) clear();
+      if (current && year !== current.year && date > current.date) {
+        previousYear = year === current.year + 1 ? daily.slice() : [];
+        daily.length = 0;
+      } else if (current && date < current.date) {
+        clear();
+      }
 
       const previousDay = daily.at(-1);
       if (previousDay?.dayIndex === dayIndex) {
@@ -80,8 +87,21 @@ export function createSugarStockHistory() {
         }
         elapsed.push(sample);
       }
+      let previousPath = '';
+      if (previousYear.length) {
+        const previous = new Map(previousYear.map(sample => [sample.dayIndex, sample.grams]));
+        const valueAt = day => previous.get(day) ?? reference[day]?.start;
+        const remaining = [{ day: current.day, grams: current.grams }];
+        for (let day = Math.floor(current.day) + 1; day < DAYS_IN_YEAR; day++) {
+          const grams = valueAt(day);
+          if (Number.isFinite(grams)) remaining.push({ day, grams });
+        }
+        const endValue = elapsed[0]?.grams;
+        if (Number.isFinite(endValue)) remaining.push({ day: DAYS_IN_YEAR, grams: endValue });
+        previousPath = fillRun(remaining, radius);
+      }
       return {
-        path: fillRun(elapsed, radius),
+        path: fillRun(elapsed, radius) + previousPath,
         needle: [...point(current.day, radius(current.grams)), ...point(current.day, OUTER_RADIUS + 8)],
         dot: point(current.day, radius(current.grams)),
       };
