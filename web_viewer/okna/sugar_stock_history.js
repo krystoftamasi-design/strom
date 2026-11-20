@@ -53,13 +53,22 @@ export function createSugarStockHistory() {
       const recorded = new Set(daily.filter(sample => sample.connected).map(sample => sample.dayIndex - 1));
       const referencePaths = ['', '', '', ''];
       const remainingDays = DAYS_IN_YEAR - current.day;
+      const today = Math.floor(current.day);
+      const start = reference[today]?.start;
+      const end = reference[today + 1]?.start;
+      const referenceNow = start + (end - start) * (current.day - today);
+      const offset = current.grams - referenceNow;
       for (let day = 0; day < reference.length; day++) {
         const next = reference[day + 1];
         if (!next || recorded.has(day)) continue;
-        const ahead = Math.max(0, day - current.day) / remainingDays;
+        const future = day >= today;
+        const fromDay = future ? Math.max(day, current.day) : day;
+        const ahead = Math.max(0, fromDay - current.day) / remainingDays;
         const band = Math.min(referencePaths.length - 1, Math.floor(ahead * referencePaths.length));
-        const from = point(day, radius(reference[day].start)).join(' ');
-        const to = point(day + 1, radius(next.start)).join(' ');
+        const fromGrams = day === today ? current.grams : reference[day].start + (future ? offset : 0);
+        const toGrams = next.start + (future ? offset : 0);
+        const from = point(fromDay, radius(fromGrams)).join(' ');
+        const to = point(day + 1, radius(toGrams)).join(' ');
         referencePaths[band] += `M${from}L${to}`;
       }
       return {
