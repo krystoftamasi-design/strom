@@ -17,7 +17,7 @@ const BUDBURST_MINUTES = (BEECH_CALENDAR.fullLeaf - BEECH_CALENDAR.budburst) * 1
 const AUTUMN_RETURN_MINUTES = (BEECH_CALENDAR.leafFallEnd - BEECH_CALENDAR.leafFallStart) * 1440;
 // Parameter evidence and remaining uncertainty: EKOLOGIE_PODKLADY.md.
 const FULL_CANOPY_LEAF_AREA_INDEX = 4;
-const AVAILABLE_WATER_LITRES_PER_M3 = 250; // Teaching reserve (tree + root-zone soil, ~3–4 summer days).
+const AVAILABLE_WATER_CAPACITY_LITRES = 1000; // Teaching reserve for the tree and root-zone soil.
 const AUTOMATIC_WATER_SUPPLY_FRACTION = 0.9;
 // ČHMÚ: national monthly mean temperature normals, 1991–2020 (°C).
 // https://www.chmi.cz/namerena-data/historicka-data/uzemni-teplota-a-srazky
@@ -125,7 +125,7 @@ export class TreeEcology {
     this.maxOxygenGramsPerMinute = this.maxGlucoseGramsPerMinute * konstanty.oxygenPerGlucose;
     this.maxCo2GramsPerMinute = this.leafArea * konstanty.co2Conversion;
     // Only a teaching estimate of mobilisable water, not total wood water.
-    this.capacity = Math.max(1, this.woodVolume * AVAILABLE_WATER_LITRES_PER_M3);
+    this.capacity = AVAILABLE_WATER_CAPACITY_LITRES;
     // Illustrative maximum rate: 0.9 L/m² leaf over 12 full-light hours.
     // Actual daily use is integrated with daylight, foliage and hydration.
     this.baseTranspiration = this.leafArea * 0.9 / 720;

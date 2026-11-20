@@ -5,6 +5,7 @@ import { seasonForMonthClock } from '../obdobi/beech_phenology.js';
 
 const tree = new TreeEcology();
 tree.configure({ height: 26, woodVolume: 4, crownArea: 100 });
+assert.equal(tree.capacity, 1000, 'Water storage capacity is 1,000 litres');
 const capacity = 40000;
 const reserveBeforePreview = tree.sugarReserve;
 const waterBeforePreview = tree.reserve;
