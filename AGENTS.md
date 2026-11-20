@@ -30,6 +30,7 @@ history:
 - Web otevírej pouze v Google Chrome, nikdy v integrovaném prohlížeči ani přes `open_in_codex`. Pokud Chrome není dostupný, předej URL.
 - Použij `spustit_strom_web.bat`; `web_viewer/spustit_web_viewer.bat` volá stejný spouštěč.
 - Nejprve ověř běžící server a znovu jej použij. Výchozí URL je `http://localhost:8080/web_viewer/index.html`.
+- Zveřejněný web je na https://krystoftamasi-design.github.io/strom/web_viewer/index.html.
 - Server musí obsluhovat kořen projektu. Automatické spuštění: `python -m http.server 8080 --bind 127.0.0.1` na pozadí se skrytým oknem; nepoužívej `file://`.
 - Je-li port obsazen jinou službou, použij volný; cizí službu nezastavuj.
 - Finální vizuální a funkční test nech uživateli, pokud o něj výslovně nepožádá.
