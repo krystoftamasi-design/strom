@@ -1488,13 +1488,14 @@ body.scene-night .tree-overlay .element-ui-flow-window {
 
 .tree-overlay .element-ui-okno[data-chapter="photosynthesis"][data-side="right"] .annotation-reveal {
   position: absolute;
-  inset: 0 0 0 auto;
+  inset: 0 0 auto auto;
+  grid-column: 1 / -1;
   box-sizing: border-box;
   inline-size: calc(100% - var(--flow-window-width) - var(--flow-gap) - var(--flow-detail-reserve, 0px));
-  height: 100%;
+  height: auto;
   margin: 0;
   padding-block-end: 0;
-  overflow-y: auto;
+  overflow: visible;
   overflow-wrap: anywhere;
   text-align: left;
 }
