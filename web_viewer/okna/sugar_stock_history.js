@@ -52,6 +52,7 @@ export function createSugarStockHistory() {
       // Real samples replace the reference only where they form a continuous line.
       const recorded = new Set(daily.filter(sample => sample.connected).map(sample => sample.dayIndex - 1));
       const referencePaths = ['', '', '', ''];
+      let pastReferencePath = '';
       const remainingDays = DAYS_IN_YEAR - current.day;
       const today = Math.floor(current.day);
       const start = reference[today]?.start;
@@ -69,11 +70,14 @@ export function createSugarStockHistory() {
         const toGrams = next.start + (future ? offset : 0);
         const from = point(fromDay, radius(fromGrams)).join(' ');
         const to = point(day + 1, radius(toGrams)).join(' ');
-        referencePaths[band] += `M${from}L${to}`;
+        const segment = `M${from}L${to}`;
+        if (future) referencePaths[band] += segment;
+        else pastReferencePath += segment;
       }
       return {
         path,
         referencePaths,
+        pastReferencePath,
         needle: [...point(current.day, INNER_RADIUS - 4), ...point(current.day, OUTER_RADIUS + 3)],
         dot: point(current.day, radius(current.grams)),
       };

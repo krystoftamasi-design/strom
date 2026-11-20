@@ -1,7 +1,7 @@
 import { oknaPodleKapitol, kontextoveTexty, pruvodceTranspiraci } from './element_ui_okna_obsah.js?v=adjustable-value-1';
 import { veliciny, vstupyVzorce, ohlasitChybuOken, vyhladitHodnotu } from './element_ui_okna_veliciny.js?v=light-consumption-1';
 import { zkontrolovatOkna } from './element_ui_okna_kontrola.js?v=seeds-1';
-import { createSugarStockHistory } from './sugar_stock_history.js?v=aligned-reference-1';
+import { createSugarStockHistory } from './sugar_stock_history.js?v=reference-fade-1';
 import { simulateAnnualSugarStock } from '../ekologie/rocni_zasoba_cukru.js?v=annual-stock-1';
 
 // Original embedded assets from ui_new.svg, at their exported stroke widths.
@@ -735,6 +735,7 @@ export function createTreeAnnotations({ shell, model, createSeasonControl, setEl
   const sugarDial = shell.querySelector('button.element-ui-stock-dial');
   const playback = shell.querySelector('.time-playback-panel');
   let renderSugarHistory;
+  let prepareSugarHistory;
   if (sugarDial && playback) {
     const chart = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
     chart.classList.add('element-ui-stock-history');
@@ -747,29 +748,34 @@ export function createTreeAnnotations({ shell, model, createSeasonControl, setEl
       <circle cx="50" cy="50" r="14" class="stock-history-zero"/>
       <path class="stock-history-ticks" d="M50 3v7 M97 50h-5 M50 97v-5 M3 50h5"/>
       <g class="stock-history-reference">
-        <path opacity=".38"/><path opacity=".26"/><path opacity=".16"/><path opacity=".08"/>
+        <path opacity=".08"/><path opacity=".16"/><path opacity=".26"/><path opacity=".38"/>
       </g>
+      <path class="stock-history-reference stock-history-reference-past" opacity=".52"/>
       <path class="stock-history-line"/>
       <line class="stock-history-needle"/>
       <circle class="stock-history-dot" r="4"/>
     `;
     playback.append(chart);
     const referencePaths = chart.querySelectorAll('.stock-history-reference path');
+    const pastReference = chart.querySelector('.stock-history-reference-past');
     const line = chart.querySelector('.stock-history-line');
     const needle = chart.querySelector('.stock-history-needle');
     const dot = chart.querySelector('.stock-history-dot');
     let reference = [];
     let referenceKey;
-    renderSugarHistory = () => {
+    prepareSugarHistory = () => {
       const { height, woodVolume, crownArea, sugarCapacity } = model;
       const key = [height, woodVolume, crownArea, sugarCapacity].join('/');
       if (model.ready && referenceKey !== key) {
         reference = simulateAnnualSugarStock(model, sugarCapacity);
         referenceKey = key;
       }
-      const geometry = sugarHistory.geometry(sugarCapacity, reference);
+    };
+    renderSugarHistory = () => {
+      const geometry = sugarHistory.geometry(model.sugarCapacity, reference);
       line.setAttribute('d', geometry?.path ?? '');
       referencePaths.forEach((path, index) => path.setAttribute('d', geometry?.referencePaths[index] ?? ''));
+      pastReference.setAttribute('d', geometry?.pastReferencePath ?? '');
       needle.style.visibility = geometry ? 'visible' : 'hidden';
       dot.style.visibility = needle.style.visibility;
       if (!geometry) return;
@@ -816,6 +822,7 @@ export function createTreeAnnotations({ shell, model, createSeasonControl, setEl
   }
 
   return {
+    prepareSugarHistory() { prepareSugarHistory?.(); },
     get sugarProduction() { return model.totalSugarProduction; },
     advanceSeason(chapter, playbackDelta) {
       return seasonControl.update(chapter, playbackDelta);
